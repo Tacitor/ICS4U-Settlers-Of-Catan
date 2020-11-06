@@ -13,8 +13,8 @@ package krampitzkreutzwisersettlersofcatan;
 public abstract class WorldObject {
 
     // The object's x and y postion on the screen
-    private int xPos;
-    private int yPos;
+    protected int xPos;
+    protected int yPos;
 
     /**
      * Get the X position of the world object
