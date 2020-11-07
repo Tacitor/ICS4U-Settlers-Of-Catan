@@ -1,25 +1,28 @@
 /*
  * Evan Kreutzwiser & Lukas Krampiz ProjectManagementProject
- * Oct 23, 2020
- * Help sister learn about SDLC
+ * Nov 06, 2020
+ * The main menu for the game Settlers of Catan
  */
 package krampitzkreutzwisersettlersofcatan;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  *
  * @author Tacitor
+ * @author Evan
  */
 public class MainMenu extends javax.swing.JFrame {    
+    
+    private final UserManualUI userManualUIFrame; //referance to the user manual
+    private final CreditsUI creditsUIFrame; //referance to the user credits JFrame
 
     /**
      * Creates new form MainMenu
      */
     public MainMenu() {
         initComponents();
+        
+        userManualUIFrame = new UserManualUI(this);
+        creditsUIFrame = new CreditsUI(this);
         
     }
 
@@ -43,10 +46,11 @@ public class MainMenu extends javax.swing.JFrame {
         setTitle("Software Development Life Cycle");
         setResizable(false);
 
-        titleLbl.setFont(new java.awt.Font("Viner Hand ITC", 0, 24)); // NOI18N
+        titleLbl.setFont(new java.awt.Font("MV Boli", 0, 24)); // NOI18N
+        titleLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titleLbl.setText("Settlers of Catan");
 
-        exitBtn.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        exitBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
         exitBtn.setText("Exit");
         exitBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -54,7 +58,7 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
-        newGameBtn.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        newGameBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
         newGameBtn.setText("New Game");
         newGameBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -62,7 +66,7 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
-        loadGameBtn.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        loadGameBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
         loadGameBtn.setText("Load Game");
         loadGameBtn.setEnabled(false);
         loadGameBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -71,17 +75,16 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
-        creditsBtn.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        creditsBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
         creditsBtn.setText("Credits");
-        creditsBtn.setEnabled(false);
         creditsBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 creditsBtnActionPerformed(evt);
             }
         });
 
-        rulesBtn.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        rulesBtn.setText("Rules");
+        rulesBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
+        rulesBtn.setText("User Manual");
         rulesBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rulesBtnActionPerformed(evt);
@@ -92,21 +95,16 @@ public class MainMenu extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(35, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(titleLbl)
-                        .addGap(179, 179, 179))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rulesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 473, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(newGameBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(loadGameBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(creditsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(exitBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 473, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(30, 30, 30))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(rulesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+                    .addComponent(newGameBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loadGameBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(creditsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(exitBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+                    .addComponent(titleLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,38 +121,34 @@ public class MainMenu extends javax.swing.JFrame {
                 .addComponent(rulesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(exitBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
-        // TODO add your handling code here:
         System.exit(0); //close the program with 0 errors/normal conditions
     }//GEN-LAST:event_exitBtnActionPerformed
 
     private void newGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameBtnActionPerformed
-        //set is visible
-        //materialReviewFrame.setVisible(true);
-        //hid this one (main menu)
-        //this.setVisible(false);
+        
     }//GEN-LAST:event_newGameBtnActionPerformed
 
     private void loadGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGameBtnActionPerformed
-        // Reset the quiz UI's question ArrayList
-        //QuizUI_Frame.reloadQuestions();
-        // Hide this window and show the main menu
-        this.setVisible(false);
-        //QuizUI_Frame.setVisible(true);
+        
     }//GEN-LAST:event_loadGameBtnActionPerformed
 
     private void creditsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditsBtnActionPerformed
-        // TODO add your handling code here:
+        // Hide this window and show the credits
+        this.setVisible(false);
+        creditsUIFrame.setVisible(true);
     }//GEN-LAST:event_creditsBtnActionPerformed
 
     private void rulesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rulesBtnActionPerformed
-        // TODO add your handling code here:
+        // Hide this window and show the user manual
+        this.setVisible(false);
+        userManualUIFrame.setVisible(true);
     }//GEN-LAST:event_rulesBtnActionPerformed
 
     /**
