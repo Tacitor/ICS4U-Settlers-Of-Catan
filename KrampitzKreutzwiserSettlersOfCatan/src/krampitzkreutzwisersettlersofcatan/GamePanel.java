@@ -5,11 +5,13 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import dataFiles.OldCode;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -85,7 +87,7 @@ public class GamePanel extends javax.swing.JPanel {
     //overrides paintComponent in JPanel class
     //performs custom painting
     /**
-     * This does the set up for the draing in 2d graphics
+     * This does the set up for the drawing in 2d graphics
      * @param g 
      */
     @Override
@@ -106,13 +108,13 @@ public class GamePanel extends javax.swing.JPanel {
         //draw a string on the panel        
         g2d.drawString("Java 2D", 50, 50); //(text, x, y)        }
         
-        System.out.println("test");
+        System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
         }
-
+        
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
         g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
@@ -137,7 +139,7 @@ public class GamePanel extends javax.swing.JPanel {
         
         // Declare variables
         Scanner fileReader;
-        InputStream file = CreditsUI.class.getResourceAsStream("/dataFiles" + File.separator + "tilePos.txt");
+        InputStream file = OldCode.class.getResourceAsStream("tilePos.txt");
         String fileContents = "";
 
         // Try to read the file

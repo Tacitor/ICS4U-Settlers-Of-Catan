@@ -1,5 +1,5 @@
 /*
- * Evan Kreutzwiser
+ * Evan Kreutzwiser & Lukas Krampitz
  * Nov 6, 2020
  * A class representing the hexagonal world tiles of the game board.
  */
@@ -7,6 +7,7 @@ package krampitzkreutzwisersettlersofcatan;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import textures.ImageRef;
 
 
 public class Tile extends WorldObject {
@@ -18,13 +19,13 @@ public class Tile extends WorldObject {
     private Image image; //the image of the Tile, based off the type
     
     //image files
-    private final static Image WOOD_TILE = new ImageIcon("src\\textures\\wood.png").getImage(); 
-    private final static Image WHEAT_TILE = new ImageIcon("src\\textures\\wheat.png").getImage(); 
-    private final static Image SHEEP_TILE = new ImageIcon("src\\textures\\sheep.png").getImage(); 
-    private final static Image ORE_TILE = new ImageIcon("src\\textures\\ore.png").getImage(); 
-    private final static Image DESERT_TILE = new ImageIcon("src\\textures\\desert.png").getImage(); 
-    private final static Image CLAY_TILE = new ImageIcon("src\\textures\\clay.png").getImage(); 
-    private final static Image WATER_TILE = new ImageIcon("src\\textures\\water.png").getImage(); 
+    private final static Image WOOD_TILE = new ImageIcon(ImageRef.class.getResource("wood.png")).getImage(); 
+    private final static Image WHEAT_TILE = new ImageIcon(ImageRef.class.getResource("wheat.png")).getImage(); 
+    private final static Image SHEEP_TILE = new ImageIcon(ImageRef.class.getResource("sheep.png")).getImage(); 
+    private final static Image ORE_TILE = new ImageIcon(ImageRef.class.getResource("ore.png")).getImage(); 
+    private final static Image DESERT_TILE = new ImageIcon(ImageRef.class.getResource("desert.png")).getImage(); 
+    private final static Image CLAY_TILE = new ImageIcon(ImageRef.class.getResource("clay.png")).getImage(); 
+    private final static Image WATER_TILE = new ImageIcon(ImageRef.class.getResource("water.png")).getImage(); 
     
     /**
      * Constructor for a blank tile
