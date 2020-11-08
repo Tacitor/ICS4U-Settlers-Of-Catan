@@ -8,6 +8,7 @@ package krampitzkreutzwisersettlersofcatan;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 /**
@@ -15,22 +16,28 @@ import javax.swing.ImageIcon;
  * @author Tacitor
  */
 public class GamePanel extends javax.swing.JPanel {
-    
+
     private final GameFrame superFrame;
-    private Image WOOD_TILE; 
-    private Image WHEAT_TILE; 
-    private Image SHEEP_TILE; 
-    private Image ORE_TILE; 
-    private Image DESERT_TILE; 
-    private Image CLAY_TILE; 
+    private Image WOOD_TILE;
+    private Image WHEAT_TILE;
+    private Image SHEEP_TILE;
+    private Image ORE_TILE;
+    private Image DESERT_TILE;
+    private Image CLAY_TILE;
+
+    private final ArrayList<Tile> tiles;
+    private final int[] tileTypes = new int[]{1,1,1,2,2,2,2,3,3,0,3,3,4,4,4,4,5,5,5}; //the type of tile from left to right, and top to bottom
 
     /**
      * Creates new form NewGamePanel
+     * @param frame ref to the frame
      */
     public GamePanel(GameFrame frame) {
         superFrame = frame;
+        tiles = new ArrayList();
         initComponents();
         loadImage();
+        loadTiles();
     }
 
     /**
@@ -88,7 +95,10 @@ public class GamePanel extends javax.swing.JPanel {
         draw(g); //add the custom drawing (the game)
     }
 
-    //draw the game
+    /**
+     * Draw the game
+     * @param g 
+     */
     private void draw(Graphics g) {
         //the Graphics2D class is the class that handles all the drawing
         //must be casted from older Graphics class in order to have access to some newer methods
@@ -96,62 +106,70 @@ public class GamePanel extends javax.swing.JPanel {
         //draw a string on the panel        
         g2d.drawString("Java 2D", 50, 50); //(text, x, y)        }
         
-        //draw center tile
-        g2d.drawImage(DESERT_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2), null); //draw the image with the upper left corner on the x,y pos
-        
-        //draw the 2 below center
-        //draw 1 below center
-        g2d.drawImage(WOOD_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) + 130, null); 
-        //draw 2 below center
-        g2d.drawImage(CLAY_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) + (130 * 2), null); 
-        
-        //draw the 2 above center
-        //draw 1 above center
-        g2d.drawImage(ORE_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) - 130, null); 
-        //draw 2 above center
-        g2d.drawImage(SHEEP_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) - (130 * 2), null); //(x,y) (cut the screen in half then subtract half the tile size to center then add the y offset, cut the screen in half then subtract half the tile size to center then add the x offset)
-        
-        //draw the right middle column
-        //draw 1 above center, 1 right
-        g2d.drawImage(WHEAT_TILE, 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) - (130 / 2), null); //for x pos: center it and then shift by 112 with is the length requires to align properly
-        //draw 1 below center, 1 right
-        g2d.drawImage(WHEAT_TILE, 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) + (130 / 2), null); 
-        //draw 2 above center, 1 right
-        g2d.drawImage(CLAY_TILE, 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) - (130 / 2) - (130), null); //for the y pos: first center, then align to the next row of hexes, then move it up by one full hight
-        //draw 2 below center, 1 right
-        g2d.drawImage(WOOD_TILE, 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) + (130 / 2) + (130), null); 
-        
-        //draw the left middle column
-        //draw 1 above center, 1 left
-        g2d.drawImage(WHEAT_TILE, 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) - (130 / 2), null); //for x pos: center it and then shift by 112 with is the length requires to align properly
-        //draw 1 below center, 1 left
-        g2d.drawImage(WHEAT_TILE, 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) + (130 / 2), null); 
-        //draw 2 above center, 1 left
-        g2d.drawImage(CLAY_TILE, 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) - (130 / 2) - (130), null); //for the y pos: first center, then align to the next row of hexes, then move it up by one full hight
-        //draw 2 below center, 1 left
-        g2d.drawImage(WOOD_TILE, 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) + (130 / 2) + (130), null); 
-        
-        //draw right most column
-        //draw 2 right of center
-        g2d.drawImage(SHEEP_TILE, 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2), null);
-        //draw 2 right of center, 1 above
-        g2d.drawImage(SHEEP_TILE, 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2) - (130), null);
-        //draw 2 right of center, 1 below
-        g2d.drawImage(SHEEP_TILE, 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2) + (130), null);
+        System.out.println("test");
+        //draw the baord from left to right top to bottom
         
         //draw left most column
-        //draw 2 left of center
-        g2d.drawImage(SHEEP_TILE, 1920 / 2 - (150 / 2) - (112 * 2), 1080 / 2 - (130 / 2), null);
         //draw 2 left of center, 1 above
-        g2d.drawImage(SHEEP_TILE, 1920 / 2 - (150 / 2) - (112 * 2), 1080 / 2 - (130 / 2) - (130), null);
+        g2d.drawImage(tiles.get(0).getImage(), 1920 / 2 - (150 / 2) - (112 * 2), 1080 / 2 - (130 / 2) - (130), null);
+        //draw 2 left of center
+        g2d.drawImage(tiles.get(1).getImage(), 1920 / 2 - (150 / 2) - (112 * 2), 1080 / 2 - (130 / 2), null);        
         //draw 2 left of center, 1 below
-        g2d.drawImage(SHEEP_TILE, 1920 / 2 - (150 / 2) - (112 * 2), 1080 / 2 - (130 / 2) + (130), null);
+        g2d.drawImage(tiles.get(2).getImage(), 1920 / 2 - (150 / 2) - (112 * 2), 1080 / 2 - (130 / 2) + (130), null);
         
+        //draw the left middle column
+        //draw 2 above center, 1 left
+        g2d.drawImage(tiles.get(3).getImage(), 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) - (130 / 2) - (130), null); //for the y pos: first center, then align to the next row of hexes, then move it up by one full hight
+        //draw 1 above center, 1 left
+        g2d.drawImage(tiles.get(4).getImage(), 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) - (130 / 2), null); //for x pos: center it and then shift by 112 with is the length requires to align properly
+        //draw 1 below center, 1 left
+        g2d.drawImage(tiles.get(5).getImage(), 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) + (130 / 2), null);
+        //draw 2 below center, 1 left
+        g2d.drawImage(tiles.get(6).getImage(), 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) + (130 / 2) + (130), null);
+        
+        //draw the 2 above center
+        //draw 2 above center
+        g2d.drawImage(tiles.get(7).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) - (130 * 2), null); //(x,y) (cut the screen in half then subtract half the tile size to center then add the y offset, cut the screen in half then subtract half the tile size to center then add the x offset)
+        //draw 1 above center
+        g2d.drawImage(tiles.get(8).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) - 130, null);
+        
+        //draw center tile
+        g2d.drawImage(tiles.get(9).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2), null); //draw the image with the upper left corner on the x,y pos
+
+        //draw the 2 below center
+        //draw 1 below center
+        g2d.drawImage(tiles.get(10).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) + 130, null);
+        //draw 2 below center
+        g2d.drawImage(tiles.get(11).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) + (130 * 2), null);
+
+        
+        //draw the right middle column
+        //draw 2 above center, 1 right
+        g2d.drawImage(tiles.get(12).getImage(), 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) - (130 / 2) - (130), null); //for the y pos: first center, then align to the next row of hexes, then move it up by one full hight
+        //draw 1 above center, 1 right
+        g2d.drawImage(tiles.get(13).getImage(), 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) - (130 / 2), null); //for x pos: center it and then shift by 112 with is the length requires to align properly
+        //draw 1 below center, 1 right
+        g2d.drawImage(tiles.get(14).getImage(), 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) + (130 / 2), null);
+        //draw 2 below center, 1 right
+        g2d.drawImage(tiles.get(15).getImage(), 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) + (130 / 2) + (130), null);
+
+        
+
+        //draw right most column
+        //draw 2 right of center, 1 above
+        g2d.drawImage(tiles.get(16).getImage(), 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2) - (130), null);
+        //draw 2 right of center
+        g2d.drawImage(tiles.get(17).getImage(), 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2), null);
+        //draw 2 right of center, 1 below
+        g2d.drawImage(tiles.get(18).getImage(), 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2) + (130), null);
+
+        
+
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
         g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
     }
-    
+
     private void loadImage() {
         try {
             WOOD_TILE = new ImageIcon("src\\textures\\wood.png").getImage();
@@ -162,6 +180,15 @@ public class GamePanel extends javax.swing.JPanel {
             WHEAT_TILE = new ImageIcon("src\\textures\\wheat.png").getImage();
         } catch (Exception e) {
             System.out.println("Error: " + e);
+        }
+    }
+
+    private void loadTiles() {
+        Tile newTile;
+        for (int i = 0; i < 19; i++) {
+            int r = (int)(Math.random() * 6);
+            newTile = new Tile(0, 0, tileTypes[i]); //set the position and a randome type (int)(Math.random() * 6)
+            tiles.add(newTile);
         }
     }
 
