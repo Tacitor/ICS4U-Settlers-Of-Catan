@@ -67,6 +67,8 @@ public class Tile extends WorldObject {
     
         // Set the tile's type
         this.type = type;
+        
+        image = applyImage();
     }
     
     /**
