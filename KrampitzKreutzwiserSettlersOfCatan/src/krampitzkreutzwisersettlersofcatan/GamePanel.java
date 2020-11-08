@@ -99,19 +99,19 @@ public class GamePanel extends javax.swing.JPanel {
         //draw center tile
         g2d.drawImage(DESERT_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2), null); //draw the image with the upper left corner on the x,y pos
         
-        
+        //draw the 2 below center
         //draw 1 below center
         g2d.drawImage(WOOD_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) + 130, null); 
         //draw 2 below center
         g2d.drawImage(CLAY_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) + (130 * 2), null); 
         
-        
+        //draw the 2 above center
         //draw 1 above center
         g2d.drawImage(ORE_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) - 130, null); 
         //draw 2 above center
         g2d.drawImage(SHEEP_TILE, 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) - (130 * 2), null); //(x,y) (cut the screen in half then subtract half the tile size to center then add the y offset, cut the screen in half then subtract half the tile size to center then add the x offset)
         
-
+        //draw the right middle column
         //draw 1 above center, 1 right
         g2d.drawImage(WHEAT_TILE, 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) - (130 / 2), null); //for x pos: center it and then shift by 112 with is the length requires to align properly
         //draw 1 below center, 1 right
@@ -121,7 +121,7 @@ public class GamePanel extends javax.swing.JPanel {
         //draw 2 below center, 1 right
         g2d.drawImage(WOOD_TILE, 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) + (130 / 2) + (130), null); 
         
-        
+        //draw the left middle column
         //draw 1 above center, 1 left
         g2d.drawImage(WHEAT_TILE, 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) - (130 / 2), null); //for x pos: center it and then shift by 112 with is the length requires to align properly
         //draw 1 below center, 1 left
