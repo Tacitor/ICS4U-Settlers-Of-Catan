@@ -5,13 +5,9 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.event.*; 
+import java.awt.*; 
+import javax.swing.*; 
 
 /**
  *
@@ -19,11 +15,14 @@ import javax.swing.JPanel;
  */
 public class GamePanel extends JPanel {
     
-    private javax.swing.JButton backBtn;
+    private static JButton backBtn;
     private final GameFrame superFrame;
+    
     
     public GamePanel(GameFrame frame) {
         superFrame = frame;
+        backBtn = new JButton("Test");
+        this.add(backBtn);
     }
 
     //overrides paintComponent in JPanel class
@@ -46,41 +45,27 @@ public class GamePanel extends JPanel {
     }
     
     private void initComponents() {
-        backBtn = new javax.swing.JButton();
+        backBtn = new JButton("< Back");
         
-        backBtn.setText("< Back");
+        /*
         backBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backBtnActionPerformed(evt);
             }
         });
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                            .addComponent(backBtn)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(backBtn)
-                .addContainerGap())
-        );
+        */
+        
+        //this.setLayout(new GridLayout(500, 500));
+        //backBtn.setPreferredSize(new Dimension(100, 100));
+        this.add(backBtn);
+        this.setBackground(Color.gray);
     }
     
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {                                        
         // Hide this window and show the main menu
         superFrame.getMainMenu().setVisible(true);
         superFrame.setVisible(false);
+        this.add(backBtn);
     }  
 
 }
