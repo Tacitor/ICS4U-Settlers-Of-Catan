@@ -53,7 +53,6 @@ public class Tile extends WorldObject {
         // Set the position to the passed values
         this.xPos = xPos;
         this.yPos = yPos;
-        image = applyImage();
     }
     
     /**
@@ -68,7 +67,6 @@ public class Tile extends WorldObject {
     
         // Set the tile's type
         this.type = type;
-        image = applyImage();
     }
     
     /**
@@ -84,7 +82,6 @@ public class Tile extends WorldObject {
     
         // Set the tile's harvesting number
         this.harvestRollNum = harvestRollNum;
-        image = applyImage();
     }
     
     
