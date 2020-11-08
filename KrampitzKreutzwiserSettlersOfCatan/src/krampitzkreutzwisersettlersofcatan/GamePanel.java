@@ -7,9 +7,10 @@ package krampitzkreutzwisersettlersofcatan;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
-import javax.swing.ImageIcon;
+import java.util.Scanner;
 
 /**
  *
@@ -17,27 +18,22 @@ import javax.swing.ImageIcon;
  */
 public class GamePanel extends javax.swing.JPanel {
 
-    private final GameFrame superFrame;
-    private Image WOOD_TILE;
-    private Image WHEAT_TILE;
-    private Image SHEEP_TILE;
-    private Image ORE_TILE;
-    private Image DESERT_TILE;
-    private Image CLAY_TILE;
+    private final GameFrame superFrame; //ref to the JFrame this kept in
 
-    private final ArrayList<Tile> tiles;
+    private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
     private final int[] tileTypes = new int[]{1,1,1,2,2,2,2,3,3,0,3,3,4,4,4,4,5,5,5}; //the type of tile from left to right, and top to bottom
+    private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
 
     /**
      * Creates new form NewGamePanel
      * @param frame ref to the frame
      */
     public GamePanel(GameFrame frame) {
-        superFrame = frame;
-        tiles = new ArrayList();
-        initComponents();
-        loadImage();
-        loadTiles();
+        superFrame = frame; //save refernce
+        tiles = new ArrayList(); //init the master tile array list
+        initComponents(); //add the buttons and other Swing elements
+        loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
+        loadTiles(); //load the ArrayList of tiles with position and type data
     }
 
     /**
@@ -88,6 +84,10 @@ public class GamePanel extends javax.swing.JPanel {
 
     //overrides paintComponent in JPanel class
     //performs custom painting
+    /**
+     * This does the set up for the draing in 2d graphics
+     * @param g 
+     */
     @Override
     public void paintComponent(Graphics g) {
 
@@ -96,7 +96,7 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Draw the game
+     * Draw the game. Most game logic goes here
      * @param g 
      */
     private void draw(Graphics g) {
@@ -107,88 +107,62 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("Java 2D", 50, 50); //(text, x, y)        }
         
         System.out.println("test");
-        //draw the baord from left to right top to bottom
         
-        //draw left most column
-        //draw 2 left of center, 1 above
-        g2d.drawImage(tiles.get(0).getImage(), 1920 / 2 - (150 / 2) - (112 * 2), 1080 / 2 - (130 / 2) - (130), null);
-        //draw 2 left of center
-        g2d.drawImage(tiles.get(1).getImage(), 1920 / 2 - (150 / 2) - (112 * 2), 1080 / 2 - (130 / 2), null);        
-        //draw 2 left of center, 1 below
-        g2d.drawImage(tiles.get(2).getImage(), 1920 / 2 - (150 / 2) - (112 * 2), 1080 / 2 - (130 / 2) + (130), null);
-        
-        //draw the left middle column
-        //draw 2 above center, 1 left
-        g2d.drawImage(tiles.get(3).getImage(), 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) - (130 / 2) - (130), null); //for the y pos: first center, then align to the next row of hexes, then move it up by one full hight
-        //draw 1 above center, 1 left
-        g2d.drawImage(tiles.get(4).getImage(), 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) - (130 / 2), null); //for x pos: center it and then shift by 112 with is the length requires to align properly
-        //draw 1 below center, 1 left
-        g2d.drawImage(tiles.get(5).getImage(), 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) + (130 / 2), null);
-        //draw 2 below center, 1 left
-        g2d.drawImage(tiles.get(6).getImage(), 1920 / 2 - (150 / 2) - (112), 1080 / 2 - (130 / 2) + (130 / 2) + (130), null);
-        
-        //draw the 2 above center
-        //draw 2 above center
-        g2d.drawImage(tiles.get(7).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) - (130 * 2), null); //(x,y) (cut the screen in half then subtract half the tile size to center then add the y offset, cut the screen in half then subtract half the tile size to center then add the x offset)
-        //draw 1 above center
-        g2d.drawImage(tiles.get(8).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) - 130, null);
-        
-        //draw center tile
-        g2d.drawImage(tiles.get(9).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2), null); //draw the image with the upper left corner on the x,y pos
-
-        //draw the 2 below center
-        //draw 1 below center
-        g2d.drawImage(tiles.get(10).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) + 130, null);
-        //draw 2 below center
-        g2d.drawImage(tiles.get(11).getImage(), 1920 / 2 - (150 / 2), 1080 / 2 - (130 / 2) + (130 * 2), null);
-
-        
-        //draw the right middle column
-        //draw 2 above center, 1 right
-        g2d.drawImage(tiles.get(12).getImage(), 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) - (130 / 2) - (130), null); //for the y pos: first center, then align to the next row of hexes, then move it up by one full hight
-        //draw 1 above center, 1 right
-        g2d.drawImage(tiles.get(13).getImage(), 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) - (130 / 2), null); //for x pos: center it and then shift by 112 with is the length requires to align properly
-        //draw 1 below center, 1 right
-        g2d.drawImage(tiles.get(14).getImage(), 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) + (130 / 2), null);
-        //draw 2 below center, 1 right
-        g2d.drawImage(tiles.get(15).getImage(), 1920 / 2 - (150 / 2) + (112), 1080 / 2 - (130 / 2) + (130 / 2) + (130), null);
-
-        
-
-        //draw right most column
-        //draw 2 right of center, 1 above
-        g2d.drawImage(tiles.get(16).getImage(), 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2) - (130), null);
-        //draw 2 right of center
-        g2d.drawImage(tiles.get(17).getImage(), 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2), null);
-        //draw 2 right of center, 1 below
-        g2d.drawImage(tiles.get(18).getImage(), 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2) + (130), null);
-
-        
+        //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
+        for (int i = 0; i < 19; i++) {
+            g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
+        }
 
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
         g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
     }
-
-    private void loadImage() {
-        try {
-            WOOD_TILE = new ImageIcon("src\\textures\\wood.png").getImage();
-            CLAY_TILE = new ImageIcon("src\\textures\\clay.png").getImage();
-            DESERT_TILE = new ImageIcon("src\\textures\\desert.png").getImage();
-            ORE_TILE = new ImageIcon("src\\textures\\ore.png").getImage();
-            SHEEP_TILE = new ImageIcon("src\\textures\\sheep.png").getImage();
-            WHEAT_TILE = new ImageIcon("src\\textures\\wheat.png").getImage();
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
-        }
-    }
-
+    
+    /**
+     * Load the data into the mater Tile ArrayList
+     */
     private void loadTiles() {
         Tile newTile;
         for (int i = 0; i < 19; i++) {
             int r = (int)(Math.random() * 6);
-            newTile = new Tile(0, 0, tileTypes[i]); //set the position and a randome type (int)(Math.random() * 6)
+            newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i]); //set the position and a type based on the text file
             tiles.add(newTile);
+        }
+    }
+    
+    /**
+     * read in the tile positions
+     */
+    public final void loadTilePos() {
+        
+        // Declare variables
+        Scanner fileReader;
+        InputStream file = CreditsUI.class.getResourceAsStream("/dataFiles" + File.separator + "tilePos.txt");
+        String fileContents = "";
+
+        // Try to read the file
+        try {
+            // Create the scanner to read the file
+            fileReader = new Scanner(file);
+        
+            // Read the entire file into an array
+            for (int i = 0; i < 19; i++) {
+                for (int j = 0; j < 2; j++) {
+                // Read the line of the file into the next index
+                tilePos[i][j] = Integer.parseInt(fileReader.nextLine());
+                }
+                
+                //skip the next blank line but only if the scanner is not at the end
+                if (i < 18) {                
+                    fileReader.nextLine();
+                }
+            }
+        }
+        catch (Exception e) {
+            // Set the sring to be displayed to an error message
+            fileContents = "Error: Tile Position file could not be read.";
+            // Output the jsvs error to the standard output
+            System.out.println("Error reading Tile Position file: " + e);
         }
     }
 
