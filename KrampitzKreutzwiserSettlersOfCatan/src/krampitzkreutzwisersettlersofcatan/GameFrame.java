@@ -36,7 +36,11 @@ public class GameFrame extends javax.swing.JFrame {
         
     }
     
-    public MainMenu getMainMenu() {
+    /**
+     * Provide reference to the main menu to any subclasses
+     * @return 
+     */
+    protected MainMenu getMainMenu() {
         return mainMenuFrame;
     }
 
