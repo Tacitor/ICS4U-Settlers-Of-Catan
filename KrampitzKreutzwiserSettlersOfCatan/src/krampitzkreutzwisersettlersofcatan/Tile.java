@@ -5,6 +5,9 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import java.awt.Image;
+import javax.swing.ImageIcon;
+
 
 public class Tile extends WorldObject {
 
@@ -12,6 +15,16 @@ public class Tile extends WorldObject {
     private boolean hasThief; // If the thief is currently on this tile
     private int type; // The material type. Values are staticly available in the GamePanel class
     private int harvestRollNum; // The number that must be rolled to collect from this tile
+    private Image image; //the image of the Tile, based off the type
+    
+    //image files
+    private final static Image WOOD_TILE = new ImageIcon("src\\textures\\wood.png").getImage(); 
+    private final static Image WHEAT_TILE = new ImageIcon("src\\textures\\wheat.png").getImage(); 
+    private final static Image SHEEP_TILE = new ImageIcon("src\\textures\\sheep.png").getImage(); 
+    private final static Image ORE_TILE = new ImageIcon("src\\textures\\ore.png").getImage(); 
+    private final static Image DESERT_TILE = new ImageIcon("src\\textures\\desert.png").getImage(); 
+    private final static Image CLAY_TILE = new ImageIcon("src\\textures\\clay.png").getImage(); 
+    private final static Image WATER_TILE = new ImageIcon("src\\textures\\water.png").getImage(); 
     
     /**
      * Constructor for a blank tile
@@ -25,6 +38,7 @@ public class Tile extends WorldObject {
         hasThief = false; // Thief is not on this tile
         type = 0;
         harvestRollNum = 0; // Cannot harvest from here without setup
+        image = applyImage();
     }
     
     /**
@@ -39,6 +53,7 @@ public class Tile extends WorldObject {
         // Set the position to the passed values
         this.xPos = xPos;
         this.yPos = yPos;
+        image = applyImage();
     }
     
     /**
@@ -53,6 +68,7 @@ public class Tile extends WorldObject {
     
         // Set the tile's type
         this.type = type;
+        image = applyImage();
     }
     
     /**
@@ -68,6 +84,7 @@ public class Tile extends WorldObject {
     
         // Set the tile's harvesting number
         this.harvestRollNum = harvestRollNum;
+        image = applyImage();
     }
     
     
@@ -85,6 +102,45 @@ public class Tile extends WorldObject {
      */
     public void setType(int type) {
         this.type = type;
+    }
+    
+    /**
+     * Get the image of the tile
+     * @return 
+     */
+    public Image getImage() {
+        return image;
+    }
+    
+    /**
+     * set the image for the tile
+     * @param i 
+     */
+    public void setImage(Image i) {
+        image = i;
+    }
+    
+    /**
+     * Dynamically set the image based on the type 
+     * @return 
+     */
+    private Image applyImage() {
+        switch (type) {
+            case 0:
+                return DESERT_TILE;
+            case 1:
+                return CLAY_TILE;
+            case 2:
+                return WOOD_TILE;
+            case 3:
+                return WHEAT_TILE;
+            case 4:
+                return SHEEP_TILE;
+            case 5:
+                return ORE_TILE;
+            default:
+                return WATER_TILE;
+        }
     }
     
     /**

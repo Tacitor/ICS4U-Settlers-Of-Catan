@@ -14,6 +14,7 @@ public class MainMenu extends javax.swing.JFrame {
     
     private final UserManualUI userManualUIFrame; //referance to the user manual
     private final CreditsUI creditsUIFrame; //referance to the user credits JFrame
+    private final GameFrame gameJFrame; //ref to the game JFrame
 
     /**
      * Creates new form MainMenu
@@ -23,6 +24,7 @@ public class MainMenu extends javax.swing.JFrame {
         
         userManualUIFrame = new UserManualUI(this);
         creditsUIFrame = new CreditsUI(this);
+        gameJFrame = new GameFrame(this);
         
     }
 
@@ -132,7 +134,9 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_exitBtnActionPerformed
 
     private void newGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameBtnActionPerformed
-        
+        // Hide this window and show the game
+        this.setVisible(false);
+        gameJFrame.setVisible(true);
     }//GEN-LAST:event_newGameBtnActionPerformed
 
     private void loadGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGameBtnActionPerformed
