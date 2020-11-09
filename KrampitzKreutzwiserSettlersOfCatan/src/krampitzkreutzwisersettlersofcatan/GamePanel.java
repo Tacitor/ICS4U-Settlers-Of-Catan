@@ -11,7 +11,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 import javax.swing.ImageIcon;
 import textures.ImageRef;
@@ -152,7 +151,8 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Create the board's node network of settlements and roads
+     * Create the board's node network of settlements and roads. 
+     * All of the node data is read from files
      */
     public final void loadNodes() {
         
@@ -160,23 +160,23 @@ public class GamePanel extends javax.swing.JPanel {
         // Settlement attribute arrayLists
         int settlementX;
         int settlementY;
-        int settlementRoad1[] = new int[54];
-        int settlementRoad2[] = new int[54];
-        int settlementRoad3[] = new int[54];
-        int settlementHex1[] = new int[54];
-        int settlementHex2[] = new int[54];
-        int settlementHex3[] = new int[54];
+        int settlementLinkToRoad1[] = new int[54];
+        int settlementLinkToRoad2[] = new int[54];
+        int settlementLinkToRoad3[] = new int[54];
+        int settlementLinkToHex1[] = new int[54];
+        int settlementLinkToHex2[] = new int[54];
+        int settlementLinkToHex3[] = new int[54];
         // Road attribute arrayLists
         int roadX;
         int roadY;
         int roadRotation;
-        int roadSettlement1[] = new int[72];
-        int roadSettlement2[] = new int[72];
+        int roadLinkToSettlement1[] = new int[72];
+        int roadLinkToSettlement2[] = new int[72];
         
         // Declare variables
         Scanner fileReader;
-        InputStream settlementFile = CreditsUI.class.getResourceAsStream("/dataFiles" + File.separator + "settlementData.txt");
-        InputStream roadFile = CreditsUI.class.getResourceAsStream("/dataFiles" + File.separator + "roadData.txt");
+        InputStream settlementFile = OldCode.class.getResourceAsStream("settlementData.txt");
+        InputStream roadFile = OldCode.class.getResourceAsStream("roadData.txt");
 
         // Try to read the settlement file
         try {
@@ -189,13 +189,13 @@ public class GamePanel extends javax.swing.JPanel {
                 settlementX = fileReader.nextInt();
                 settlementY = fileReader.nextInt();
                 // Read the road connection data
-                settlementRoad1[i] = fileReader.nextInt();
-                settlementRoad2[i] = fileReader.nextInt();
-                settlementRoad3[i] = fileReader.nextInt();
+                settlementLinkToRoad1[i] = fileReader.nextInt();
+                settlementLinkToRoad2[i] = fileReader.nextInt();
+                settlementLinkToRoad3[i] = fileReader.nextInt();
                 // Read the tile connection data
-                settlementHex1[i] = fileReader.nextInt();
-                settlementHex2[i] = fileReader.nextInt();
-                settlementHex3[i] = fileReader.nextInt();
+                settlementLinkToHex1[i] = fileReader.nextInt();
+                settlementLinkToHex2[i] = fileReader.nextInt();
+                settlementLinkToHex3[i] = fileReader.nextInt();
                 
                 // Add an unlinked settlement
                 settlementNodes.add(new NodeSettlement(settlementX, settlementY));
@@ -221,18 +221,18 @@ public class GamePanel extends javax.swing.JPanel {
                 // Read the rotation
                 roadRotation = fileReader.nextInt();
                 // Read the road connection data
-                roadSettlement1[i] = fileReader.nextInt();
-                roadSettlement2[i] = fileReader.nextInt();
+                roadLinkToSettlement1[i] = fileReader.nextInt();
+                roadLinkToSettlement2[i] = fileReader.nextInt();
 
                 // Add a road linked with the settlements created above 
                 roadNodes.add(new NodeRoad(roadX, roadY, roadRotation, 
-                        settlementNodes.get(roadSettlement1[i]), 
-                        settlementNodes.get(roadSettlement2[i]) ) );
+                        settlementNodes.get(roadLinkToSettlement1[i]), 
+                        settlementNodes.get(roadLinkToSettlement2[i]) ) );
                 
                 // Blank line is skipped by int reader
             }
         }
-        catch (NoSuchElementException e) {
+        catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading settlement data file: " + e);
         }
@@ -243,14 +243,14 @@ public class GamePanel extends javax.swing.JPanel {
             
             // Set the roads of the settlement to the roads at the index store in the arrays
             // There are 3 arrays of roads to link to the 54 different settlements
-            settlementNodes.get(i).setRoad(1, roadNodes.get(settlementRoad1[i]));
-            settlementNodes.get(i).setRoad(2, roadNodes.get(settlementRoad2[i]));
-            settlementNodes.get(i).setRoad(3, roadNodes.get(settlementRoad3[i]));
+            settlementNodes.get(i).setRoad(1, roadNodes.get(settlementLinkToRoad1[i]));
+            settlementNodes.get(i).setRoad(2, roadNodes.get(settlementLinkToRoad2[i]));
+            settlementNodes.get(i).setRoad(3, roadNodes.get(settlementLinkToRoad3[i]));
 
             // Repeat to link the 3 hexagons to the settlement
-            settlementNodes.get(i).setTile(1, tiles.get(settlementHex1[i]));
-            settlementNodes.get(i).setTile(2, tiles.get(settlementHex2[i]));
-            settlementNodes.get(i).setTile(3, tiles.get(settlementHex3[i]));
+            settlementNodes.get(i).setTile(1, tiles.get(settlementLinkToHex1[i]));
+            settlementNodes.get(i).setTile(2, tiles.get(settlementLinkToHex2[i]));
+            settlementNodes.get(i).setTile(3, tiles.get(settlementLinkToHex3[i]));
 
         }
     }
