@@ -26,39 +26,39 @@ public class GamePanel extends javax.swing.JPanel {
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
     private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
-    private final int[] tileTypes = new int[]{1,3,4,2,2,5,1,4,3,0,4,2,4,5,1,2,3,3,5}; //the type of tile from left to right, and top to bottom
+    private final int[] tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}; //the type of tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
-    
+
     //images for the cards
-    private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage(); 
-    private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage(); 
-    private final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cardOre.png")).getImage(); 
-    private final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cardSheep.png")).getImage(); 
-    private final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cardWood.png")).getImage(); 
-    
+    private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage();
+    private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage();
+    private final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cardOre.png")).getImage();
+    private final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cardSheep.png")).getImage();
+    private final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cardWood.png")).getImage();
+
     //images for the roads
     private final static Image RED_ROAD_H = new ImageIcon(ImageRef.class.getResource("redRoadH.png")).getImage(); //horizontal road
-    private final static Image BLUE_ROAD_H = new ImageIcon(ImageRef.class.getResource("blueRoadH.png")).getImage(); 
+    private final static Image BLUE_ROAD_H = new ImageIcon(ImageRef.class.getResource("blueRoadH.png")).getImage();
     private final static Image RED_ROAD_R = new ImageIcon(ImageRef.class.getResource("redRoadR.png")).getImage(); //diagonal to the right (refernce point is the top of the road)
-    private final static Image BLUE_ROAD_R = new ImageIcon(ImageRef.class.getResource("blueRoadR.png")).getImage(); 
+    private final static Image BLUE_ROAD_R = new ImageIcon(ImageRef.class.getResource("blueRoadR.png")).getImage();
     private final static Image RED_ROAD_L = new ImageIcon(ImageRef.class.getResource("redRoadL.png")).getImage(); //diagonal to the left
-    private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage(); 
-    
+    private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage();
+
     //images for the settlements
-    private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage(); 
-    private final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("redHouseL.png")).getImage(); 
-    private final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blueHouseS.png")).getImage(); 
-    private final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("redHouseS.png")).getImage(); 
-    
+    private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage();
+    private final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("redHouseL.png")).getImage();
+    private final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blueHouseS.png")).getImage();
+    private final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("redHouseS.png")).getImage();
+
     //image for the thief
     private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
-    
-    
+
     //the image for the water ring
     private final Image WATER_RING;
 
     /**
      * Creates new form NewGamePanel
+     *
      * @param frame ref to the frame
      */
     public GamePanel(GameFrame frame) {
@@ -67,10 +67,10 @@ public class GamePanel extends javax.swing.JPanel {
         tiles = new ArrayList(); //init the master tile array list
         settlementNodes = new ArrayList(); // Init the settlement node array list
         roadNodes = new ArrayList(); // Init the road node array list
-        
+
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
-        
+
         loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
         loadTiles(); //load the ArrayList of tiles with position and type data
         loadNodes(); // Create and link all of the board's settlement and road nodes
@@ -128,7 +128,8 @@ public class GamePanel extends javax.swing.JPanel {
     //performs custom painting
     /**
      * This does the set up for the drawing in 2d graphics
-     * @param g 
+     *
+     * @param g
      */
     @Override
     public void paintComponent(Graphics g) {
@@ -139,7 +140,8 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Draw the game. Most game logic goes here
-     * @param g 
+     *
+     * @param g
      */
     private void draw(Graphics g) {
         //the Graphics2D class is the class that handles all the drawing
@@ -147,17 +149,24 @@ public class GamePanel extends javax.swing.JPanel {
         Graphics2D g2d = (Graphics2D) g;
         //draw a string on the panel        
         g2d.drawString("Java 2D", 50, 50); //(text, x, y)        }
-        
+
         System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
-        
+
         //draw the ring of water
         g2d.drawImage(WATER_RING, 1920 / 2 - WATER_RING.getWidth(null) / 2, 1080 / 2 - WATER_RING.getHeight(null) / 2, null);
-        
+
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
+
+            //check where the thief is and draw it there
+            if (tiles.get(i).hasThief()) {
+
+                //draw the thief
+                g2d.drawImage(THIEF, tiles.get(i).getXPos() + 150 / 2 - 12, tiles.get(i).getYPos() + 130 / 2 - 56 / 2, null);
+            }
         }
-        
+
         //draw testing art
         //cards
         g2d.drawImage(CARD_CLAY, 100, 1080 - 125, null); //space them 100 pixels apart and align the hight to 2 from the bottom
@@ -165,7 +174,7 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawImage(CARD_WHEAT, 300, 1080 - 125, null);
         g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
         g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
-        
+
         //settlements/houses
         g2d.drawImage(RED_HOUSE_L, (tiles.get(5).getXPos()), (tiles.get(5).getYPos() + 4), null); //align x to the tiles corner
         g2d.drawImage(BLUE_HOUSE_L, (tiles.get(14).getXPos()), (tiles.get(14).getYPos() + 4), null); //agign y to the tile with offset a spacer
@@ -180,65 +189,75 @@ public class GamePanel extends javax.swing.JPanel {
             switch (road.getOrientation()) {
                 case 0: // Horizontal road ( -- )
                     // Store the road image for the player's color
-                    if (road.getPlayer() == 1 || road.getPlayer() == 0) { image = RED_ROAD_H; }
-                    else { image = BLUE_ROAD_H; }
+                    if (road.getPlayer() == 1 || road.getPlayer() == 0) {
+                        image = RED_ROAD_H;
+                    } else {
+                        image = BLUE_ROAD_H;
+                    }
                     break;
                 case 1: // Road pointing to the top left ( \ ) 
                     // Store the road image for the player's color
-                    if (road.getPlayer() == 1 || road.getPlayer() == 0) { image = RED_ROAD_L; }
-                    else { image = BLUE_ROAD_L; }
+                    if (road.getPlayer() == 1 || road.getPlayer() == 0) {
+                        image = RED_ROAD_L;
+                    } else {
+                        image = BLUE_ROAD_L;
+                    }
                     break;
                 case 2: // Road pointing to the top right ( / ) 
                     // Store the road image for the player's color
-                    if (road.getPlayer() == 1 || road.getPlayer() == 0) { image = RED_ROAD_R; }
-                    else { image = BLUE_ROAD_R; }
+                    if (road.getPlayer() == 1 || road.getPlayer() == 0) {
+                        image = RED_ROAD_R;
+                    } else {
+                        image = BLUE_ROAD_R;
+                    }
                     break;
                 default: // Make the compiler happy and error handling
                     image = RED_ROAD_H; // Just add an image so theres something to render
                     break;
             }
-            
+
             // Draw the road image saved above, at the node's position
-            g2d.drawImage(image, road.getXPos() - RED_ROAD_H.getWidth(null)/2, 
-                    road.getYPos() - image.getHeight(null)/2, null);
+            g2d.drawImage(image, road.getXPos() - RED_ROAD_H.getWidth(null) / 2,
+                    road.getYPos() - image.getHeight(null) / 2, null);
         }
-        
+
         // TODO: Replace this with image drawing
         // Draw squares to represent settlements
         NodeSettlement node;
         for (int i = 0; i < 54; i++) {
             node = settlementNodes.get(i);
-            g2d.drawRect(node.getXPos()-15, node.getYPos()-15, 30, 30);
+            g2d.drawRect(node.getXPos() - 15, node.getYPos() - 15, 30, 30);
         }
-        
-        //draw the thief
-        g2d.drawImage(THIEF, tiles.get(5).getXPos() + 150 / 2 - 16, tiles.get(5).getYPos() + 130 / 2 - 74/2, null);
-        
+
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
         g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
     }
-    
+
     /**
      * Load the data into the mater Tile ArrayList
      */
     private void loadTiles() {
         Tile newTile;
         for (int i = 0; i < 19; i++) {
-            int r = (int)(Math.random() * 6);
+            //int r = (int) (Math.random() * 6);
             newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i]); //set the position and a type based on the text file
+            //check for the desert tile and start the thief off there
+            if (newTile.getType() == 0) { //type 0 is the desert type
+                newTile.setThief(true);
+            }
             tiles.add(newTile);
         }
         // Add a null entry for the settlement noed file to reference where there isnt a connection
-       tiles.add(null);
+        tiles.add(null);
     }
 
     /**
-     * Create the board's node network of settlements and roads. 
-     * All of the node data is read from files
+     * Create the board's node network of settlements and roads. All of the node
+     * data is read from files
      */
     public final void loadNodes() {
-        
+
         // Declare node attribute arrays
         // Settlement attribute arrayLists
         int settlementX;
@@ -255,7 +274,7 @@ public class GamePanel extends javax.swing.JPanel {
         int roadRotation;
         int roadLinkToSettlement1[] = new int[72];
         int roadLinkToSettlement2[] = new int[72];
-        
+
         // Declare variables
         Scanner fileReader;
         InputStream settlementFile = OldCode.class.getResourceAsStream("settlementData.txt");
@@ -265,7 +284,7 @@ public class GamePanel extends javax.swing.JPanel {
         try {
             // Create the scanner to read the file
             fileReader = new Scanner(settlementFile);
-        
+
             // Read the entire file into an array
             for (int i = 0; i < 54; i++) {
                 // Read the position data
@@ -279,23 +298,22 @@ public class GamePanel extends javax.swing.JPanel {
                 settlementLinkToHex1[i] = fileReader.nextInt();
                 settlementLinkToHex2[i] = fileReader.nextInt();
                 settlementLinkToHex3[i] = fileReader.nextInt();
-                
+
                 // Add an unlinked settlement
                 settlementNodes.add(new NodeSettlement(settlementX, settlementY));
-                
+
                 // Blank line is skipped by int reader
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading settlement data file: " + e);
         }
-        
+
         // Try to read the road file
         try {
             // Create the scanner to read the file
             fileReader = new Scanner(roadFile);
-        
+
             // Read the entire file into an array
             for (int i = 0; i < 72; i++) {
                 // Read the position data
@@ -308,24 +326,23 @@ public class GamePanel extends javax.swing.JPanel {
                 roadLinkToSettlement2[i] = fileReader.nextInt();
 
                 // Add a road linked with the settlements created above 
-                roadNodes.add(new NodeRoad(roadX, roadY, roadRotation, 
-                        settlementNodes.get(roadLinkToSettlement1[i]), 
-                        settlementNodes.get(roadLinkToSettlement2[i]) ) );
-                
+                roadNodes.add(new NodeRoad(roadX, roadY, roadRotation,
+                        settlementNodes.get(roadLinkToSettlement1[i]),
+                        settlementNodes.get(roadLinkToSettlement2[i])));
+
                 // Blank line is skipped by int reader
             }
             // Add a null entry for the file to reference where there isnt a connection
             roadNodes.add(null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading settlement data file: " + e);
         }
-        
+
         // Link the settlements to the tiles and roads
         for (int i = 0; i < 54; i++) {
             // For every settlement
-            
+
             // Set the roads of the settlement to the roads at the index store in the arrays
             // There are 3 arrays of roads to link to the 54 different settlements
             settlementNodes.get(i).setRoad(1, roadNodes.get(settlementLinkToRoad1[i]));
@@ -339,12 +356,12 @@ public class GamePanel extends javax.swing.JPanel {
 
         }
     }
-    
+
     /**
      * read in the tile positions
      */
     public final void loadTilePos() {
-        
+
         // Declare variables
         Scanner fileReader;
         InputStream file = OldCode.class.getResourceAsStream("tilePos.txt");
@@ -353,21 +370,20 @@ public class GamePanel extends javax.swing.JPanel {
         try {
             // Create the scanner to read the file
             fileReader = new Scanner(file);
-        
+
             // Read the entire file into an array
             for (int i = 0; i < 19; i++) {
                 for (int j = 0; j < 2; j++) {
-                // Read the line of the file into the next index
-                tilePos[i][j] = Integer.parseInt(fileReader.nextLine());
+                    // Read the line of the file into the next index
+                    tilePos[i][j] = Integer.parseInt(fileReader.nextLine());
                 }
-                
+
                 //skip the next blank line but only if the scanner is not at the end
-                if (i < 18) {                
+                if (i < 18) {
                     fileReader.nextLine();
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading Tile Position file: " + e);
         }
