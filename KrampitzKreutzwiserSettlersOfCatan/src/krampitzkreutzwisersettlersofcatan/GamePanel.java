@@ -6,6 +6,7 @@
 package krampitzkreutzwisersettlersofcatan;
 
 import dataFiles.OldCode;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -27,6 +28,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private final int[] tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}; //the type of tile from left to right, and top to bottom
+    private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 0, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
 
     //images for the cards
@@ -163,8 +165,13 @@ public class GamePanel extends javax.swing.JPanel {
             if (tiles.get(i).hasThief()) {
 
                 //draw the thief
-                g2d.drawImage(THIEF, tiles.get(i).getXPos() + 150 / 2 - 12, tiles.get(i).getYPos() + 130 / 2 - 56 / 2, null);
+                g2d.drawImage(THIEF, tiles.get(i).getXPos() + 150 / 2 - 12, tiles.get(i).getYPos() + 130 / 2 - 56 / 2, null);       
             }
+            
+            g2d.setColor(Color.red);
+            //draw the harvest roll num
+            g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), tiles.get(i).getXPos() + 150/2, tiles.get(i).getYPos() + 130/2);
+            g2d.setColor(Color.black);
         }
 
         //draw testing art
@@ -242,6 +249,10 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 0; i < 19; i++) {
             //int r = (int) (Math.random() * 6);
             newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i]); //set the position and a type based on the text file
+            
+            //add the harvest roll num
+            newTile.setHarvestRollNum(tileHarvestRollNums[i]);
+            
             //check for the desert tile and start the thief off there
             if (newTile.getType() == 0) { //type 0 is the desert type
                 newTile.setThief(true);
