@@ -29,6 +29,21 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] tileTypes = new int[]{1,1,1,2,2,2,2,3,3,0,3,3,4,4,4,4,5,5,5}; //the type of tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
     
+    //images for the cards
+    private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage(); 
+    private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage(); 
+    private final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cardOre.png")).getImage(); 
+    private final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cardSheep.png")).getImage(); 
+    private final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cardWood.png")).getImage(); 
+    
+    //images for the roads
+    private final static Image RED_ROAD_H = new ImageIcon(ImageRef.class.getResource("redRoadH.png")).getImage(); //horizontal road
+    private final static Image BLUE_ROAD_H = new ImageIcon(ImageRef.class.getResource("blueRoadH.png")).getImage(); 
+    private final static Image RED_ROAD_R = new ImageIcon(ImageRef.class.getResource("redRoadR.png")).getImage(); //diagonal to the right (refernce point is the top of the road)
+    private final static Image BLUE_ROAD_R = new ImageIcon(ImageRef.class.getResource("blueRoadR.png")).getImage(); 
+    private final static Image RED_ROAD_L = new ImageIcon(ImageRef.class.getResource("redRoadL.png")).getImage(); //diagonal to the left
+    private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage(); 
+    
     //the image for the water ring
     private final Image WATER_RING;
 
@@ -131,6 +146,45 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
+        }
+        
+        //draw testing art
+        //cards
+        g2d.drawImage(CARD_CLAY, 100, 1080 - 125, null); //space them 100 pixels apart and align the hight to 2 from the bottom
+        g2d.drawImage(CARD_ORE, 200, 1080 - 125, null);
+        g2d.drawImage(CARD_WHEAT, 300, 1080 - 125, null);
+        g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
+        g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
+        
+        // Draw the 72 road nodes
+        NodeRoad road;
+        Image image;
+        for (int i = 0; i < 72; i++) {
+            road = roadNodes.get(i);
+            switch (road.getOrientation()) {
+                case 0: // Horizontal road ( -- )
+                    // Store the road image for the player's color
+                    if (road.getPlayer() == 1 || road.getPlayer() == 0) { image = RED_ROAD_H; }
+                    else { image = BLUE_ROAD_H; }
+                    break;
+                case 1: // Road pointing to the top left ( \ ) 
+                    // Store the road image for the player's color
+                    if (road.getPlayer() == 1 || road.getPlayer() == 0) { image = RED_ROAD_L; }
+                    else { image = BLUE_ROAD_L; }
+                    break;
+                case 2: // Road pointing to the top right ( / ) 
+                    // Store the road image for the player's color
+                    if (road.getPlayer() == 1 || road.getPlayer() == 0) { image = RED_ROAD_R; }
+                    else { image = BLUE_ROAD_R; }
+                    break;
+                default: // Make the compiler happy and error handling
+                    image = RED_ROAD_H; // Just add an image so theres something to render
+                    break;
+            }
+            
+            // Draw the road image saved above, at the node's position
+            g2d.drawImage(image, road.getXPos() - RED_ROAD_H.getWidth(null)/2, 
+                    road.getYPos() - image.getHeight(null)/2, null);
         }
         
         // TODO: Replace this with image drawing
