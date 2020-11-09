@@ -160,6 +160,21 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
+            
+            //draw the resource harvest number
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.fillOval(tiles.get(i).getXPos() + 150/2 - 15, tiles.get(i).getYPos() + 130/2 - 15, 30, 30);
+            
+            //check if the colour of the number
+            if (tiles.get(i).getHarvestRollNum() == 8 || tiles.get(i).getHarvestRollNum() == 6) {
+                g2d.setColor(Color.red);
+            } else {
+               g2d.setColor(Color.white); 
+            }
+            
+            //draw the harvest roll num
+            g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), tiles.get(i).getXPos() + 150/2, tiles.get(i).getYPos() + 130/2);
+            g2d.setColor(Color.black);
 
             //check where the thief is and draw it there
             if (tiles.get(i).hasThief()) {
@@ -167,11 +182,6 @@ public class GamePanel extends javax.swing.JPanel {
                 //draw the thief
                 g2d.drawImage(THIEF, tiles.get(i).getXPos() + 150 / 2 - 12, tiles.get(i).getYPos() + 130 / 2 - 56 / 2, null);       
             }
-            
-            g2d.setColor(Color.red);
-            //draw the harvest roll num
-            g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), tiles.get(i).getXPos() + 150/2, tiles.get(i).getYPos() + 130/2);
-            g2d.setColor(Color.black);
         }
 
         //draw testing art
