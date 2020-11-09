@@ -26,7 +26,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
     private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
-    private final int[] tileTypes = new int[]{1,1,1,2,2,2,2,3,3,0,3,3,4,4,4,4,5,5,5}; //the type of tile from left to right, and top to bottom
+    private final int[] tileTypes = new int[]{1,3,4,2,2,5,1,4,3,0,4,2,4,5,1,2,3,3,5}; //the type of tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
     
     //images for the cards
@@ -43,6 +43,14 @@ public class GamePanel extends javax.swing.JPanel {
     private final static Image BLUE_ROAD_R = new ImageIcon(ImageRef.class.getResource("blueRoadR.png")).getImage(); 
     private final static Image RED_ROAD_L = new ImageIcon(ImageRef.class.getResource("redRoadL.png")).getImage(); //diagonal to the left
     private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage(); 
+    
+    
+    //images for the settlements
+    private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage(); 
+    private final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("redHouseL.png")).getImage(); 
+    private final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blueHouseS.png")).getImage(); 
+    private final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("redHouseS.png")).getImage(); 
+    
     
     //the image for the water ring
     private final Image WATER_RING;
@@ -156,6 +164,12 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
         g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
         
+        //settlements/houses
+        g2d.drawImage(RED_HOUSE_L, (tiles.get(5).getXPos()), (tiles.get(5).getYPos() + 4), null); //align x to the tiles corner
+        g2d.drawImage(BLUE_HOUSE_L, (tiles.get(14).getXPos()), (tiles.get(14).getYPos() + 4), null); //agign y to the tile with offset a spacer
+        g2d.drawImage(RED_HOUSE_S, (tiles.get(2).getXPos()), (tiles.get(5).getYPos() + 4), null); //align x to the tiles corner
+        g2d.drawImage(BLUE_HOUSE_S, (tiles.get(9).getXPos()), (tiles.get(14).getYPos() + 4), null); //agign y to the tile with offset a spacer
+
         // Draw the 72 road nodes
         NodeRoad road;
         Image image;
