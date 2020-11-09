@@ -7,6 +7,7 @@ package krampitzkreutzwisersettlersofcatan;
 
 import dataFiles.OldCode;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -57,6 +58,8 @@ public class GamePanel extends javax.swing.JPanel {
 
     //the image for the water ring
     private final Image WATER_RING;
+
+    private static int harvestRollNumOffset; //the number of pixels the harvest roll is ofset from. This allows both single and double diget number to be centered
 
     /**
      * Creates new form NewGamePanel
@@ -160,21 +163,31 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
-            
-            //draw the resource harvest number
-            g2d.setColor(Color.DARK_GRAY);
-            g2d.fillOval(tiles.get(i).getXPos() + 150/2 - 15, tiles.get(i).getYPos() + 130/2 - 15, 30, 30);
-            
-            //check if the colour of the number
-            if (tiles.get(i).getHarvestRollNum() == 8 || tiles.get(i).getHarvestRollNum() == 6) {
-                g2d.setColor(Color.red);
-            } else {
-               g2d.setColor(Color.white); 
+
+            //draw the resource harvest number only if it is not a desert
+            if (tiles.get(i).getType() != 0) {
+                g2d.setColor(Color.DARK_GRAY);
+                g2d.fillOval(tiles.get(i).getXPos() + 150 / 2 - 15, tiles.get(i).getYPos() + 130 / 2 - 15, 30, 30);
+
+                //check if the colour of the number
+                if (tiles.get(i).getHarvestRollNum() == 8 || tiles.get(i).getHarvestRollNum() == 6) {
+                    g2d.setColor(Color.red);
+                } else {
+                    g2d.setColor(Color.white);
+                }
+
+                //set the offset based on the number of digits
+                if (tiles.get(i).getHarvestRollNum() > 9) {
+                    harvestRollNumOffset = 10;
+                } else {
+                    harvestRollNumOffset = 4;
+                }
+
+                //draw the harvest roll num
+                g2d.setFont(new Font("Times New Roman", Font.BOLD, 20));
+                g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), tiles.get(i).getXPos() + 150 / 2 - harvestRollNumOffset, tiles.get(i).getYPos() + 130 / 2 + 5);
+                g2d.setColor(Color.black);
             }
-            
-            //draw the harvest roll num
-            g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), tiles.get(i).getXPos() + 150/2, tiles.get(i).getYPos() + 130/2);
-            g2d.setColor(Color.black);
 
             //check where the thief is and draw it there
             if (tiles.get(i).hasThief()) {
@@ -259,10 +272,10 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 0; i < 19; i++) {
             //int r = (int) (Math.random() * 6);
             newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i]); //set the position and a type based on the text file
-            
+
             //add the harvest roll num
             newTile.setHarvestRollNum(tileHarvestRollNums[i]);
-            
+
             //check for the desert tile and start the thief off there
             if (newTile.getType() == 0) { //type 0 is the desert type
                 newTile.setThief(true);
