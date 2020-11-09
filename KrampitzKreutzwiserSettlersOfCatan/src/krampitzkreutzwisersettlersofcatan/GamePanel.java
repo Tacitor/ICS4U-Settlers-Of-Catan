@@ -1,5 +1,5 @@
 /*
- * Lukas Krampitz
+ * Lukas Krampitz and Evan Kreutzwiser
  * Nov 8, 2020
  * The JPanel that is the main part of the game
  */
@@ -10,10 +10,11 @@ import java.awt.Graphics2D;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
- *
+ * @author Evan
  * @author Tacitor
  */
 public class GamePanel extends javax.swing.JPanel {
@@ -21,6 +22,8 @@ public class GamePanel extends javax.swing.JPanel {
     private final GameFrame superFrame; //ref to the JFrame this kept in
 
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
+    private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
+    private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private final int[] tileTypes = new int[]{1,1,1,2,2,2,2,3,3,0,3,3,4,4,4,4,5,5,5}; //the type of tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
 
@@ -29,11 +32,18 @@ public class GamePanel extends javax.swing.JPanel {
      * @param frame ref to the frame
      */
     public GamePanel(GameFrame frame) {
+        // Initalize variables
         superFrame = frame; //save refernce
         tiles = new ArrayList(); //init the master tile array list
+        settlementNodes = new ArrayList(); // Init the settlement node array list
+        roadNodes = new ArrayList(); // Init the road node array list
+        
+        // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
+        
         loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
         loadTiles(); //load the ArrayList of tiles with position and type data
+        loadNodes(); // Create and link all of the board's settlement and road nodes
     }
 
     /**
@@ -85,7 +95,7 @@ public class GamePanel extends javax.swing.JPanel {
     //overrides paintComponent in JPanel class
     //performs custom painting
     /**
-     * This does the set up for the draing in 2d graphics
+     * This does the set up for the drawing in 2d graphics
      * @param g 
      */
     @Override
@@ -112,7 +122,7 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
         }
-
+        
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
         g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
@@ -129,6 +139,110 @@ public class GamePanel extends javax.swing.JPanel {
             tiles.add(newTile);
         }
     }
+
+    /**
+     * Create the board's node network of settlements and roads
+     */
+    public final void loadNodes() {
+        
+        // Declare node attribute arrays
+        // Settlement attribute arrayLists
+        int settlementX;
+        int settlementY;
+        int settlementRoad1[] = new int[54];
+        int settlementRoad2[] = new int[54];
+        int settlementRoad3[] = new int[54];
+        int settlementHex1[] = new int[54];
+        int settlementHex2[] = new int[54];
+        int settlementHex3[] = new int[54];
+        // Road attribute arrayLists
+        int roadX;
+        int roadY;
+        int roadRotation;
+        int roadSettlement1[] = new int[72];
+        int roadSettlement2[] = new int[72];
+        
+        // Declare variables
+        Scanner fileReader;
+        InputStream settlementFile = CreditsUI.class.getResourceAsStream("/dataFiles" + File.separator + "settlementData.txt");
+        InputStream roadFile = CreditsUI.class.getResourceAsStream("/dataFiles" + File.separator + "roadData.txt");
+
+        // Try to read the settlement file
+        try {
+            // Create the scanner to read the file
+            fileReader = new Scanner(settlementFile);
+        
+            // Read the entire file into an array
+            for (int i = 0; i < 54; i++) {
+                // Read the position data
+                settlementX = fileReader.nextInt();
+                settlementY = fileReader.nextInt();
+                // Read the road connection data
+                settlementRoad1[i] = fileReader.nextInt();
+                settlementRoad2[i] = fileReader.nextInt();
+                settlementRoad3[i] = fileReader.nextInt();
+                // Read the tile connection data
+                settlementHex1[i] = fileReader.nextInt();
+                settlementHex2[i] = fileReader.nextInt();
+                settlementHex3[i] = fileReader.nextInt();
+                
+                // Add an unlinked settlement
+                settlementNodes.add(new NodeSettlement(settlementX, settlementY));
+                
+                // Blank line is skipped by int reader
+            }
+        }
+        catch (Exception e) {
+            // Output the jsvs error to the standard output
+            System.out.println("Error reading settlement data file: " + e);
+        }
+        
+        // Try to read the road file
+        try {
+            // Create the scanner to read the file
+            fileReader = new Scanner(roadFile);
+        
+            // Read the entire file into an array
+            for (int i = 0; i < 72; i++) {
+                // Read the position data
+                roadX = fileReader.nextInt();
+                roadY = fileReader.nextInt();
+                // Read the rotation
+                roadRotation = fileReader.nextInt();
+                // Read the road connection data
+                roadSettlement1[i] = fileReader.nextInt();
+                roadSettlement2[i] = fileReader.nextInt();
+
+                // Add a road linked with the settlements created above 
+                roadNodes.add(new NodeRoad(roadX, roadY, roadRotation, 
+                        settlementNodes.get(roadSettlement1[i]), 
+                        settlementNodes.get(roadSettlement2[i]) ) );
+                
+                // Blank line is skipped by int reader
+            }
+        }
+        catch (NoSuchElementException e) {
+            // Output the jsvs error to the standard output
+            System.out.println("Error reading settlement data file: " + e);
+        }
+        
+        // Link the settlements to the tiles and roads
+        for (int i = 0; i < 54; i++) {
+            // For every settlement
+            
+            // Set the roads of the settlement to the roads at the index store in the arrays
+            // There are 3 arrays of roads to link to the 54 different settlements
+            settlementNodes.get(i).setRoad(1, roadNodes.get(settlementRoad1[i]));
+            settlementNodes.get(i).setRoad(2, roadNodes.get(settlementRoad2[i]));
+            settlementNodes.get(i).setRoad(3, roadNodes.get(settlementRoad3[i]));
+
+            // Repeat to link the 3 hexagons to the settlement
+            settlementNodes.get(i).setTile(1, tiles.get(settlementHex1[i]));
+            settlementNodes.get(i).setTile(2, tiles.get(settlementHex2[i]));
+            settlementNodes.get(i).setTile(3, tiles.get(settlementHex3[i]));
+
+        }
+    }
     
     /**
      * read in the tile positions
@@ -138,7 +252,6 @@ public class GamePanel extends javax.swing.JPanel {
         // Declare variables
         Scanner fileReader;
         InputStream file = CreditsUI.class.getResourceAsStream("/dataFiles" + File.separator + "tilePos.txt");
-        String fileContents = "";
 
         // Try to read the file
         try {
@@ -159,8 +272,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
         catch (Exception e) {
-            // Set the sring to be displayed to an error message
-            fileContents = "Error: Tile Position file could not be read.";
             // Output the jsvs error to the standard output
             System.out.println("Error reading Tile Position file: " + e);
         }
