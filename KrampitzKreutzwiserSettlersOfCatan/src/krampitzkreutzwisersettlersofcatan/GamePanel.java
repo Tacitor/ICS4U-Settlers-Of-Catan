@@ -133,6 +133,14 @@ public class GamePanel extends javax.swing.JPanel {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
         }
         
+        // TODO: Replace this with image drawing
+        // Draw squares to represent settlements
+        NodeSettlement node;
+        for (int i = 0; i < 54; i++) {
+            node = settlementNodes.get(i);
+            g2d.drawRect(node.getXPos()-15, node.getYPos()-15, 30, 30);
+        }
+        
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
         g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
@@ -148,6 +156,8 @@ public class GamePanel extends javax.swing.JPanel {
             newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i]); //set the position and a type based on the text file
             tiles.add(newTile);
         }
+        // Add a null entry for the settlement noed file to reference where there isnt a connection
+       tiles.add(null);
     }
 
     /**
@@ -231,6 +241,8 @@ public class GamePanel extends javax.swing.JPanel {
                 
                 // Blank line is skipped by int reader
             }
+            // Add a null entry for the file to reference where there isnt a connection
+            roadNodes.add(null);
         }
         catch (Exception e) {
             // Output the jsvs error to the standard output
