@@ -29,11 +29,20 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] tileTypes = new int[]{1,1,1,2,2,2,2,3,3,0,3,3,4,4,4,4,5,5,5}; //the type of tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
     
+    //images for the cards
     private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage(); 
     private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage(); 
     private final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cardOre.png")).getImage(); 
     private final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cardSheep.png")).getImage(); 
     private final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cardWood.png")).getImage(); 
+    
+    //images for the roads
+    private final static Image RED_ROAD_H = new ImageIcon(ImageRef.class.getResource("redRoadH.png")).getImage(); //horizontal road
+    private final static Image BLUE_ROAD_H = new ImageIcon(ImageRef.class.getResource("blueRoadH.png")).getImage(); 
+    private final static Image RED_ROAD_R = new ImageIcon(ImageRef.class.getResource("redRoadR.png")).getImage(); //diagonal to the right (refernce point is the top of the road)
+    private final static Image BLUE_ROAD_R = new ImageIcon(ImageRef.class.getResource("blueRoadR.png")).getImage(); 
+    private final static Image RED_ROAD_L = new ImageIcon(ImageRef.class.getResource("redRoadL.png")).getImage(); //diagonal to the left
+    private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage(); 
     
     //the image for the water ring
     private final Image WATER_RING;
@@ -139,11 +148,23 @@ public class GamePanel extends javax.swing.JPanel {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
         }
         
-        g2d.drawImage(CARD_CLAY, 100, 1080 - 125, null);
+        //draw testing art
+        //cards
+        g2d.drawImage(CARD_CLAY, 100, 1080 - 125, null); //space them 100 pixels apart and align the hight to 2 from the bottom
         g2d.drawImage(CARD_ORE, 200, 1080 - 125, null);
         g2d.drawImage(CARD_WHEAT, 300, 1080 - 125, null);
         g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
         g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
+        
+        //roads
+        g2d.drawImage(RED_ROAD_H, (tiles.get(5).getXPos() + 150 / 2) - (30), 1080 / 2 - 4, null); //align the x to the center of the tile with an offset of 30 for half the road length
+        g2d.drawImage(BLUE_ROAD_H, (tiles.get(14).getXPos() + 150 / 2) - (30), 1080 / 2 - 4, null); //align the y to the center line though the screen with an offset for the road height
+        
+        g2d.drawImage(RED_ROAD_L, (tiles.get(5).getXPos()), (tiles.get(5).getYPos() + 12 + 56), null); //align x to the tiles corner
+        g2d.drawImage(BLUE_ROAD_L, (tiles.get(14).getXPos()), (tiles.get(14).getYPos() + 12 + 56), null); //agign y to the tile with offset for raod height and a spacer
+        
+        g2d.drawImage(RED_ROAD_R, (tiles.get(5).getXPos()), (tiles.get(5).getYPos() + 4), null); //align x to the tiles corner
+        g2d.drawImage(BLUE_ROAD_R, (tiles.get(14).getXPos()), (tiles.get(14).getYPos() + 4), null); //agign y to the tile with offset a spacer
         
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
