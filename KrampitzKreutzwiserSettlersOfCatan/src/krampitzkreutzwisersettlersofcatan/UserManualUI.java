@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import dataFiles.OldCode;
 import java.io.File; //File usage
 import java.io.InputStream; // File reference
 import java.util.Scanner; // File reading
@@ -37,7 +38,7 @@ public class UserManualUI extends javax.swing.JFrame {
         
         // Declare variables
         Scanner fileReader;
-        InputStream file = UserManualUI.class.getResourceAsStream("/dataFiles" + File.separator + "userManual.txt");
+        InputStream file = OldCode.class.getResourceAsStream("userManual.txt");
         String fileContents = "";
 
         // Try to read the file

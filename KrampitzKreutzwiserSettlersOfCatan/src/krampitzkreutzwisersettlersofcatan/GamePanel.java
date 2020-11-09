@@ -5,13 +5,16 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import dataFiles.OldCode;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.io.File;
+import java.awt.Image;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import javax.swing.ImageIcon;
+import textures.ImageRef;
 
 /**
  * @author Evan
@@ -26,6 +29,9 @@ public class GamePanel extends javax.swing.JPanel {
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private final int[] tileTypes = new int[]{1,1,1,2,2,2,2,3,3,0,3,3,4,4,4,4,5,5,5}; //the type of tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
+    
+    //the image for the water ring
+    private final Image WATER_RING;
 
     /**
      * Creates new form NewGamePanel
@@ -44,6 +50,8 @@ public class GamePanel extends javax.swing.JPanel {
         loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
         loadTiles(); //load the ArrayList of tiles with position and type data
         loadNodes(); // Create and link all of the board's settlement and road nodes
+        WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();
+
     }
 
     /**
@@ -116,7 +124,10 @@ public class GamePanel extends javax.swing.JPanel {
         //draw a string on the panel        
         g2d.drawString("Java 2D", 50, 50); //(text, x, y)        }
         
-        System.out.println("test");
+        System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
+        
+        //draw the ring of water
+        g2d.drawImage(WATER_RING, 1920 / 2 - WATER_RING.getWidth(null) / 2, 1080 / 2 - WATER_RING.getHeight(null) / 2, null);
         
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
@@ -251,7 +262,7 @@ public class GamePanel extends javax.swing.JPanel {
         
         // Declare variables
         Scanner fileReader;
-        InputStream file = CreditsUI.class.getResourceAsStream("/dataFiles" + File.separator + "tilePos.txt");
+        InputStream file = OldCode.class.getResourceAsStream("tilePos.txt");
 
         // Try to read the file
         try {

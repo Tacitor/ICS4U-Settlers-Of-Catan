@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import dataFiles.OldCode;
 import java.io.File; //File usage
 import java.io.InputStream; // File reference
 import java.util.Scanner; // File reading
@@ -35,9 +36,9 @@ public class CreditsUI extends javax.swing.JFrame {
      */
     public final void loadMaterial() {
         
-        // Declare variables
+        // Declare variablesD
         Scanner fileReader;
-        InputStream file = CreditsUI.class.getResourceAsStream("/dataFiles" + File.separator + "credits.txt");
+        InputStream file = OldCode.class.getResourceAsStream("credits.txt");
         String fileContents = "";
 
         // Try to read the file
@@ -53,9 +54,9 @@ public class CreditsUI extends javax.swing.JFrame {
         }
         catch (Exception e) {
             // Set the sring to be displayed to an error message
-            fileContents = "Error: User manual file could not be read.";
+            fileContents = "Error: credits file could not be read.";
             // Output the jsvs error to the standard output
-            System.out.println("Error reading User manual file: " + e);
+            System.out.println("Error reading credits file: " + e);
         }
         
         // Display the file's contents from the string
