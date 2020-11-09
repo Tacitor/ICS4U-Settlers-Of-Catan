@@ -164,23 +164,50 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
         g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
         
-        
         //settlements/houses
         g2d.drawImage(RED_HOUSE_L, (tiles.get(5).getXPos()), (tiles.get(5).getYPos() + 4), null); //align x to the tiles corner
         g2d.drawImage(BLUE_HOUSE_L, (tiles.get(14).getXPos()), (tiles.get(14).getYPos() + 4), null); //agign y to the tile with offset a spacer
         g2d.drawImage(RED_HOUSE_S, (tiles.get(2).getXPos()), (tiles.get(5).getYPos() + 4), null); //align x to the tiles corner
         g2d.drawImage(BLUE_HOUSE_S, (tiles.get(9).getXPos()), (tiles.get(14).getYPos() + 4), null); //agign y to the tile with offset a spacer
+
+        // Draw the 72 road nodes
+        NodeRoad road;
+        Image image;
+        for (int i = 0; i < 72; i++) {
+            road = roadNodes.get(i);
+            switch (road.getOrientation()) {
+                case 0: // Horizontal road ( -- )
+                    // Store the road image for the player's color
+                    if (road.getPlayer() == 1 || road.getPlayer() == 0) { image = RED_ROAD_H; }
+                    else { image = BLUE_ROAD_H; }
+                    break;
+                case 1: // Road pointing to the top left ( \ ) 
+                    // Store the road image for the player's color
+                    if (road.getPlayer() == 1 || road.getPlayer() == 0) { image = RED_ROAD_L; }
+                    else { image = BLUE_ROAD_L; }
+                    break;
+                case 2: // Road pointing to the top right ( / ) 
+                    // Store the road image for the player's color
+                    if (road.getPlayer() == 1 || road.getPlayer() == 0) { image = RED_ROAD_R; }
+                    else { image = BLUE_ROAD_R; }
+                    break;
+                default: // Make the compiler happy and error handling
+                    image = RED_ROAD_H; // Just add an image so theres something to render
+                    break;
+            }
+            
+            // Draw the road image saved above, at the node's position
+            g2d.drawImage(image, road.getXPos() - RED_ROAD_H.getWidth(null)/2, 
+                    road.getYPos() - image.getHeight(null)/2, null);
+        }
         
-        
-        //roads
-        g2d.drawImage(RED_ROAD_H, (tiles.get(5).getXPos() + 150 / 2) - (30), 1080 / 2 - 4, null); //align the x to the center of the tile with an offset of 30 for half the road length
-        g2d.drawImage(BLUE_ROAD_H, (tiles.get(14).getXPos() + 150 / 2) - (30), 1080 / 2 - 4, null); //align the y to the center line though the screen with an offset for the road height
-        
-        g2d.drawImage(RED_ROAD_L, (tiles.get(5).getXPos()), (tiles.get(5).getYPos() + 12 + 56), null); //align x to the tiles corner
-        g2d.drawImage(BLUE_ROAD_L, (tiles.get(14).getXPos()), (tiles.get(14).getYPos() + 12 + 56), null); //agign y to the tile with offset for raod height and a spacer
-        
-        g2d.drawImage(RED_ROAD_R, (tiles.get(5).getXPos()), (tiles.get(5).getYPos() + 4), null); //align x to the tiles corner
-        g2d.drawImage(BLUE_ROAD_R, (tiles.get(14).getXPos()), (tiles.get(14).getYPos() + 4), null); //agign y to the tile with offset a spacer
+        // TODO: Replace this with image drawing
+        // Draw squares to represent settlements
+        NodeSettlement node;
+        for (int i = 0; i < 54; i++) {
+            node = settlementNodes.get(i);
+            g2d.drawRect(node.getXPos()-15, node.getYPos()-15, 30, 30);
+        }
         
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
@@ -197,6 +224,8 @@ public class GamePanel extends javax.swing.JPanel {
             newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i]); //set the position and a type based on the text file
             tiles.add(newTile);
         }
+        // Add a null entry for the settlement noed file to reference where there isnt a connection
+       tiles.add(null);
     }
 
     /**
@@ -280,6 +309,8 @@ public class GamePanel extends javax.swing.JPanel {
                 
                 // Blank line is skipped by int reader
             }
+            // Add a null entry for the file to reference where there isnt a connection
+            roadNodes.add(null);
         }
         catch (Exception e) {
             // Output the jsvs error to the standard output
