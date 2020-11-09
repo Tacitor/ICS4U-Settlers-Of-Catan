@@ -29,6 +29,12 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] tileTypes = new int[]{1,1,1,2,2,2,2,3,3,0,3,3,4,4,4,4,5,5,5}; //the type of tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
     
+    private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage(); 
+    private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage(); 
+    private final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cardOre.png")).getImage(); 
+    private final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cardSheep.png")).getImage(); 
+    private final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cardWood.png")).getImage(); 
+    
     //the image for the water ring
     private final Image WATER_RING;
 
@@ -132,6 +138,12 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
         }
+        
+        g2d.drawImage(CARD_CLAY, 100, 1080 - 125, null);
+        g2d.drawImage(CARD_ORE, 200, 1080 - 125, null);
+        g2d.drawImage(CARD_WHEAT, 300, 1080 - 125, null);
+        g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
+        g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
         
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
