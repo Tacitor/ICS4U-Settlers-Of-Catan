@@ -44,12 +44,14 @@ public class GamePanel extends javax.swing.JPanel {
     private final static Image RED_ROAD_L = new ImageIcon(ImageRef.class.getResource("redRoadL.png")).getImage(); //diagonal to the left
     private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage(); 
     
-    
     //images for the settlements
     private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage(); 
     private final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("redHouseL.png")).getImage(); 
     private final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blueHouseS.png")).getImage(); 
     private final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("redHouseS.png")).getImage(); 
+    
+    //image for the thief
+    private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
     
     
     //the image for the water ring
@@ -208,6 +210,9 @@ public class GamePanel extends javax.swing.JPanel {
             node = settlementNodes.get(i);
             g2d.drawRect(node.getXPos()-15, node.getYPos()-15, 30, 30);
         }
+        
+        //draw the thief
+        g2d.drawImage(THIEF, tiles.get(5).getXPos() + 150 / 2 - 16, tiles.get(5).getYPos() + 130 / 2 - 74/2, null);
         
         //add alignment lines
         g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
