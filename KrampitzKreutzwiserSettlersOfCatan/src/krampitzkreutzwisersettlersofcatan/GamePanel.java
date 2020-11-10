@@ -98,14 +98,15 @@ public class GamePanel extends javax.swing.JPanel {
         inbetweenTurns = false;
         playerCount = 2; // 2 Player game
         currentPlayer = 1; // Player 1 starts
-        cards = new ArrayList[playerCount]; // Create the array of card lists
+        cards = new ArrayList[playerCount+1]; // Create the array of card lists
+        // the +1 allows methods to use player IDs directly without subtracting 1
         buildingObject = 0;
         showRoadHitbox = false;
         playerSetupRoadsLeft = 2;
 
         // Fill the list of card ArrayLists with new ArrayLists ()
-        for (ArrayList list : cards) {
-            list = new ArrayList();
+        for (int i = 0; i < cards.length; i++) {
+            cards[i] = new ArrayList();
         }
 
         // Initialize the window and board
@@ -478,14 +479,6 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the ring of water
         g2d.drawImage(WATER_RING, 1920 / 2 - WATER_RING.getWidth(null) / 2, 1080 / 2 - WATER_RING.getHeight(null) / 2, null);
 
-        //draw testing art
-        //cards
-        g2d.drawImage(CARD_CLAY, 100, 1080 - 125, null); //space them 100 pixels apart and align the hight to 2 from the bottom
-        g2d.drawImage(CARD_ORE, 200, 1080 - 125, null);
-        g2d.drawImage(CARD_WHEAT, 300, 1080 - 125, null);
-        g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
-        g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
-
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
@@ -601,7 +594,39 @@ public class GamePanel extends javax.swing.JPanel {
             g2d.drawImage(image, settlement.getXPos() - image.getWidth(null)/2, 
                     settlement.getYPos() - image.getHeight(null)/2, null);
         }
-
+        
+        // Get the number of cards the player has
+        int listSize = cards[currentPlayer].size();
+        // Calculate where the first card must go to center the list
+        int startPosition = 960 - (listSize*CARD_CLAY.getWidth(null) + (listSize-1)*10) / 2;
+        // Draw the player's cards
+        // Reuse the image variable
+        int type;
+        for (int i = 0; i < listSize; i++) {
+            // Get the card type
+            type = cards[currentPlayer].get(i);
+            // Get the image for that card
+            switch (type) {
+                case 1: // Clay card
+                    image = CARD_CLAY;
+                    break;
+                case 2: // Word card
+                    image = CARD_WOOD;
+                    break;
+                case 3: // Wheat card
+                    image = CARD_WHEAT;
+                    break;
+                case 4: // Sheep card
+                    image = CARD_SHEEP;
+                    break;
+                default: // 5: Ore card
+                    image = CARD_ORE;
+                    break;
+            }
+            // Draw the card
+            g2d.drawImage(image, startPosition +(CARD_CLAY.getWidth(null)+10)*i, 930, null);
+        }
+        
         // Add alignment lines
         // g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
         // g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
