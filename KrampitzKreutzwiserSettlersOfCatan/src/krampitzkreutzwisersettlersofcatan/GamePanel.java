@@ -361,7 +361,13 @@ public class GamePanel extends javax.swing.JPanel {
                 instructionLbl.setText("Place two roads and two small settlements each to start.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             }
-
+            else { // If a turn of the real game is starting (not setup)
+                // Roll the dice and display the rolled number to the user
+                diceRoll();
+                // The dice roll function calls the material collection method to
+                // Ensure that all players get the materials they earned from the roll
+            }    
+            
             // Redraw the board to the next player can see their cards
             repaint();
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
