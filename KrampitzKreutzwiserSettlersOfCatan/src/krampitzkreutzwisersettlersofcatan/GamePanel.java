@@ -595,38 +595,40 @@ public class GamePanel extends javax.swing.JPanel {
                     settlement.getYPos() - image.getHeight(null)/2, null);
         }
         
-        // Get the number of cards the player has
-        int listSize = cards[currentPlayer].size();
-        // Calculate where the first card must go to center the list
-        int startPosition = 960 - (listSize*CARD_CLAY.getWidth(null) + (listSize-1)*10) / 2;
-        // Draw the player's cards
-        // Reuse the image variable
-        int type;
-        for (int i = 0; i < listSize; i++) {
-            // Get the card type
-            type = cards[currentPlayer].get(i);
-            // Get the image for that card
-            switch (type) {
-                case 1: // Clay card
-                    image = CARD_CLAY;
-                    break;
-                case 2: // Word card
-                    image = CARD_WOOD;
-                    break;
-                case 3: // Wheat card
-                    image = CARD_WHEAT;
-                    break;
-                case 4: // Sheep card
-                    image = CARD_SHEEP;
-                    break;
-                default: // 5: Ore card
-                    image = CARD_ORE;
-                    break;
+        // If a turn is currently going on, render the current player's cards
+        if (!inbetweenTurns) {
+            // Get the number of cards the player has
+            int listSize = cards[currentPlayer].size();
+            // Calculate where the first card must go to center the list
+            int startPosition = 960 - (listSize*CARD_CLAY.getWidth(null) + (listSize-1)*10) / 2;
+            // Draw the player's cards
+            // Reuse the image variable
+            int type;
+            for (int i = 0; i < listSize; i++) {
+                // Get the card type
+                type = cards[currentPlayer].get(i);
+                // Get the image for that card
+                switch (type) {
+                    case 1: // Clay card
+                        image = CARD_CLAY;
+                        break;
+                    case 2: // Word card
+                        image = CARD_WOOD;
+                        break;
+                    case 3: // Wheat card
+                        image = CARD_WHEAT;
+                        break;
+                    case 4: // Sheep card
+                        image = CARD_SHEEP;
+                        break;
+                    default: // 5: Ore card
+                        image = CARD_ORE;
+                        break;
+                }
+                // Draw the card
+                g2d.drawImage(image, startPosition +(CARD_CLAY.getWidth(null)+10)*i, 930, null);
             }
-            // Draw the card
-            g2d.drawImage(image, startPosition +(CARD_CLAY.getWidth(null)+10)*i, 930, null);
         }
-        
         // Add alignment lines
         // g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
         // g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
