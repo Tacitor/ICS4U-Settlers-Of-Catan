@@ -37,6 +37,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
     private boolean inbetweenTurns; // true during the period where the game is waiting for the next player to start their turn
     private boolean showRoadHitbox;
+    private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
     private final int playerCount; // The number of players in the game
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
@@ -82,7 +83,8 @@ public class GamePanel extends javax.swing.JPanel {
 
     private int roadWidth; //used in finding the hitbox
     private int roadHeight;
-    private int playerSetupRoadsLeft;
+    private int playerSetupRoadsLeft; //number of roads to place
+    private int playerSetupSettlementLeft; //number of settlements to place
 
     //private Graphics awtGraphics;
     /**
@@ -103,7 +105,9 @@ public class GamePanel extends javax.swing.JPanel {
         cards = new ArrayList[playerCount]; // Create the array of card lists
         buildingObject = 0;
         showRoadHitbox = false;
+        showSettlementHitbox = false;
         playerSetupRoadsLeft = 2;
+        playerSetupSettlementLeft = 2;
 
         // Fill the list of card ArrayLists with new ArrayLists ()
         for (ArrayList list : cards) {
@@ -261,9 +265,17 @@ public class GamePanel extends javax.swing.JPanel {
     private void buildBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildBtnActionPerformed
         // If a turn is in progress
         if (!inbetweenTurns) {
+            //check to make sure there isn't already another building trying to be made
+            if (buildingObject != 0) {
+                //if there is turn off any building mode currently
+                buildingObject = 0;
+                showRoadHitbox = false;
+                showSettlementHitbox = false;
+            }
             //Update the vars
             if (buildRoadRbtn.isSelected()) {
                 buildingObject = 1;
+                
                 // If the player has more roads to place
                 if (playerSetupRoadsLeft > 0) {
                     // Show the building hitboxes and redraw the baord to render them
@@ -273,10 +285,27 @@ public class GamePanel extends javax.swing.JPanel {
                     instructionLbl.setText("You're all done placing your setup roads. There are none left.");
                     subInstructionLbl.setText("");
                 }
+                
             } else if (buildSettlementSRBtn.isSelected()) {
                 buildingObject = 2;
+                
+                // If the player has more settlements to place
+                if (playerSetupSettlementLeft > 0) {
+                    // Show the building hitboxes and redraw the baord to render them
+                    showSettlementHitbox = true;
+                    repaint();
+                } else {
+                    instructionLbl.setText("You're all done placing your setup settlements. There are none left.");
+                    subInstructionLbl.setText("");
+                }
+                
             } else if (buildSettlementLRBtn.isSelected()) {
                 buildingObject = 3;
+                //make sure you're not in setup mode
+                if (inSetup) {
+                    instructionLbl.setText("Sorry you don't have any large settlements to place.");
+                    subInstructionLbl.setText("You do still have " + playerSetupSettlementLeft + " small settlement(s) left");
+                }
             } else {
                 buildingObject = -1;
                 System.out.println("An error has occoured while building");
@@ -308,7 +337,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             // Redraw the board to the next player can see their cards
             repaint();
-        } else if (playerSetupRoadsLeft == 0) { // If the end turn button was clicked
+        } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             // And the user is done placing setup roads
             // Now the game is waiting to start the next turn
             inbetweenTurns = true;
@@ -326,6 +355,7 @@ public class GamePanel extends javax.swing.JPanel {
             // If the game is still in setup, give the next player roads to place
             if (inSetup) {
                 playerSetupRoadsLeft = 2;
+                playerSetupSettlementLeft = 2;
             }
 
             // Change the button to the Start Next Turn button
@@ -340,6 +370,10 @@ public class GamePanel extends javax.swing.JPanel {
         } else if (playerSetupRoadsLeft != 0) {
             //let the player know that they have more setup roads to place
             instructionLbl.setText("Make sure you place your " + playerSetupRoadsLeft + " remaining road(s).");
+            subInstructionLbl.setText("Build them from the build menu below.");
+        } else if (playerSetupSettlementLeft != 0) {
+            //let the player know that they have more setup roads to place
+            instructionLbl.setText("Make sure you place your " + playerSetupSettlementLeft + " remaining small settlment(s).");
             subInstructionLbl.setText("Build them from the build menu below.");
         }
 
@@ -358,8 +392,8 @@ public class GamePanel extends javax.swing.JPanel {
         if (buildingObject != 0) {
             //check what they are building
             if (buildingObject == 1) { //roads
-                //check the distance to the nearest road and check if it is close enough 
-
+                
+                //check the distance to the nearest road using hitboxes and check if it is close enough 
                 for (int i = 0; i < roadNodes.size() - 1; i++) {
 
                     //get the type of road and set the width and height //get this to not be hard coded if there is time
@@ -396,10 +430,40 @@ public class GamePanel extends javax.swing.JPanel {
 
                     }
                 }
-            } else if (buildingObject == 2) {
+            } else if (buildingObject == 2) { //small house
+                
+                //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
+                for (int i = 0; i < settlementNodes.size() - 1; i++) {
 
-            } else if (buildingObject == 3) {
+                    //if the player clicks in a valid hitbox for a settlement
+                    if (event.getX() > settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2
+                            && event.getX() < settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2 + RED_HOUSE_S.getWidth(null)
+                            && event.getY() > settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2
+                            && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
+                        //System.out.println("road match");
+                        //g2d.drawRect(settlement.getXPos() - image.getWidth(null) / 2, settlement.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
 
+                        //check that the road is unowned
+                        if (settlementNodes.get(i).getPlayer() == 0) {
+                            //check what mode the game is in 
+                            if (inSetup && playerSetupSettlementLeft > 0) {
+                                settlementNodes.get(i).setPlayer(currentPlayer);
+                                buildingObject = 0;
+                                showSettlementHitbox = false;
+                                playerSetupSettlementLeft--;
+                                repaint();
+
+                            }
+                        } else {
+                            instructionLbl.setText("Sorry but you can't take someone elses settlements.");
+                            subInstructionLbl.setText("Try building where there isn't already another settlements");
+                        }
+
+                    }
+                }
+
+            } else if (buildingObject == 3) { //large house
+                
             } else {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
@@ -633,6 +697,13 @@ public class GamePanel extends javax.swing.JPanel {
             // Draw the settlement image saved above, at the node's position
             g2d.drawImage(image, settlement.getXPos() - image.getWidth(null) / 2,
                     settlement.getYPos() - image.getHeight(null) / 2, null);
+            
+            //draw the hit box for the settlements.
+            if (showSettlementHitbox) {
+                g2d.setColor(Color.green);
+                g2d.drawRect(settlement.getXPos() - image.getWidth(null) / 2, settlement.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+                g2d.setColor(Color.black);
+            }
         }
 
         // Add alignment lines
