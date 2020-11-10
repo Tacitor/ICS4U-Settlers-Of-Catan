@@ -275,7 +275,7 @@ public class GamePanel extends javax.swing.JPanel {
             //Update the vars
             if (buildRoadRbtn.isSelected()) {
                 buildingObject = 1;
-                
+
                 // If the player has more roads to place
                 if (playerSetupRoadsLeft > 0) {
                     // Show the building hitboxes and redraw the baord to render them
@@ -285,10 +285,10 @@ public class GamePanel extends javax.swing.JPanel {
                     instructionLbl.setText("You're all done placing your setup roads. There are none left.");
                     subInstructionLbl.setText("");
                 }
-                
+
             } else if (buildSettlementSRBtn.isSelected()) {
                 buildingObject = 2;
-                
+
                 // If the player has more settlements to place
                 if (playerSetupSettlementLeft > 0) {
                     // Show the building hitboxes and redraw the baord to render them
@@ -298,7 +298,7 @@ public class GamePanel extends javax.swing.JPanel {
                     instructionLbl.setText("You're all done placing your setup settlements. There are none left.");
                     subInstructionLbl.setText("");
                 }
-                
+
             } else if (buildSettlementLRBtn.isSelected()) {
                 buildingObject = 3;
                 //make sure you're not in setup mode
@@ -385,14 +385,14 @@ public class GamePanel extends javax.swing.JPanel {
      * @param event The event triggered by the mouse click
      */
     public void mouseClick(MouseEvent event) {
-        // TODO: Add click handling code
-        System.out.println("Click recieved");
+        // debug click listener
+        //System.out.println("Click recieved");
 
         //check if the player is building
         if (buildingObject != 0) {
             //check what they are building
             if (buildingObject == 1) { //roads
-                
+
                 //check the distance to the nearest road using hitboxes and check if it is close enough 
                 for (int i = 0; i < roadNodes.size() - 1; i++) {
 
@@ -410,6 +410,7 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
                             && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
                             && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
+                        //debug road build detection
                         //System.out.println("road match");
 
                         //check that the road is unowned
@@ -431,7 +432,7 @@ public class GamePanel extends javax.swing.JPanel {
                     }
                 }
             } else if (buildingObject == 2) { //small house
-                
+
                 //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
                 for (int i = 0; i < settlementNodes.size() - 1; i++) {
 
@@ -440,7 +441,8 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getX() < settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2 + RED_HOUSE_S.getWidth(null)
                             && event.getY() > settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2
                             && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
-                        //System.out.println("road match");
+                        //debug settlent build detection
+                        //System.out.println("hitbox match");
                         //g2d.drawRect(settlement.getXPos() - image.getWidth(null) / 2, settlement.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
 
                         //check that the road is unowned
@@ -463,7 +465,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else if (buildingObject == 3) { //large house
-                
+
             } else {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
@@ -558,8 +560,8 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.setFont(new Font("Times New Roman", Font.BOLD, 40));
         g2d.drawString("Settlers of Catan", 10, 50); //(text, x, y)        }
 
-        System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
-
+        //debug the game pannel
+        //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
         g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
 
@@ -697,7 +699,7 @@ public class GamePanel extends javax.swing.JPanel {
             // Draw the settlement image saved above, at the node's position
             g2d.drawImage(image, settlement.getXPos() - image.getWidth(null) / 2,
                     settlement.getYPos() - image.getHeight(null) / 2, null);
-            
+
             //draw the hit box for the settlements.
             if (showSettlementHitbox) {
                 g2d.setColor(Color.green);
