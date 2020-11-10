@@ -52,7 +52,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="1409" max="32767" attributes="0"/>
+              <EmptySpace pref="1408" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -101,6 +101,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="End Current Player&apos;s Turn"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="turnSwitchBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="instructionPromptLbl">
       <Properties>
