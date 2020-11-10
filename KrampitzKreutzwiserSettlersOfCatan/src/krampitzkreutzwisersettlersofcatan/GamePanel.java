@@ -33,14 +33,15 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}; //the type of tile from left to right, and top to bottom
     private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 0, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
-    
+
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
+    private boolean showRoadHitbox;
     private int currentPlayer; // The player currently taking their turn
     private final int playerCount; // The number of players in the game
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private int buildingObject; // Indicates if/what the user is building. 
     // 0 when not placing anything, 1 for roads, 2 for settlements, and 3 for upgrading
-    
+
     //images for the cards
     private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage();
     private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage();
@@ -51,10 +52,13 @@ public class GamePanel extends javax.swing.JPanel {
     //images for the roads
     private final static Image RED_ROAD_H = new ImageIcon(ImageRef.class.getResource("redRoadH.png")).getImage(); //horizontal road
     private final static Image BLUE_ROAD_H = new ImageIcon(ImageRef.class.getResource("blueRoadH.png")).getImage();
+    private final static Image BLANK_ROAD_H = new ImageIcon(ImageRef.class.getResource("blankRoadH.png")).getImage();
     private final static Image RED_ROAD_R = new ImageIcon(ImageRef.class.getResource("redRoadR.png")).getImage(); //diagonal to the right (refernce point is the top of the road)
     private final static Image BLUE_ROAD_R = new ImageIcon(ImageRef.class.getResource("blueRoadR.png")).getImage();
+    private final static Image BLANK_ROAD_R = new ImageIcon(ImageRef.class.getResource("blankRoadR.png")).getImage();
     private final static Image RED_ROAD_L = new ImageIcon(ImageRef.class.getResource("redRoadL.png")).getImage(); //diagonal to the left
     private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage();
+    private final static Image BLANK_ROAD_L = new ImageIcon(ImageRef.class.getResource("blankRoadL.png")).getImage();
 
     //images for the settlements
     private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage();
@@ -66,13 +70,18 @@ public class GamePanel extends javax.swing.JPanel {
     private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
 
     //the image for the water ring
-    private final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();;
-    
+    private final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();
+
     //the image for the building materials
     private final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
 
     private static int harvestRollNumOffset; //the number of pixels the harvest roll is ofset from. This allows both single and double diget number to be centered
+    
+    private int roadWidth; //used in finding the hitbox
+    private int roadHeight;
+    private int playerSetupRoadsLeft;
 
+    //private Graphics awtGraphics;
     /**
      * Creates new form NewGamePanel
      *
@@ -88,12 +97,15 @@ public class GamePanel extends javax.swing.JPanel {
         playerCount = 2; // 2 Player game
         currentPlayer = 1; // Player 1 starts
         cards = new ArrayList[playerCount]; // Create the array of card lists
-        
+        buildingObject = 0;
+        showRoadHitbox = false;
+        playerSetupRoadsLeft = 2;
+
         // Fill the list of card ArrayLists with new ArrayLists ()
         for (ArrayList list : cards) {
             list = new ArrayList();
         }
-        
+
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
 
@@ -104,12 +116,13 @@ public class GamePanel extends javax.swing.JPanel {
         // Add the mouse listener that calls the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the game panel.
-             * Calls the game panel's click event handler.
+             * Triggered when the user clicks on the game panel. Calls the game
+             * panel's click event handler.
+             *
              * @param evt The event representing the mouse click
              */
             @Override
-            public void mouseClicked(MouseEvent evt) {
+            public final void mouseClicked(MouseEvent evt) {
                 // Send the mouse event over to the game panel's click handlers
                 mouseClick(evt);
             }
@@ -125,8 +138,17 @@ public class GamePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         backBtn = new javax.swing.JButton();
         turnSwitchBtn = new javax.swing.JButton();
+        instructionPromptLbl = new javax.swing.JLabel();
+        instructionLbl = new javax.swing.JLabel();
+        buildMenuLbl = new javax.swing.JLabel();
+        buildSettlementSRBtn = new javax.swing.JRadioButton();
+        buildSettlementLRBtn = new javax.swing.JRadioButton();
+        buildRoadRbtn = new javax.swing.JRadioButton();
+        buildBtn = new javax.swing.JButton();
+        subInstructionLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -142,6 +164,35 @@ public class GamePanel extends javax.swing.JPanel {
         turnSwitchBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         turnSwitchBtn.setText("End Current Player's Turn");
 
+        instructionPromptLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        instructionPromptLbl.setText("Instructions:");
+
+        instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        instructionLbl.setText("Place two roads and two small settlements each to start.");
+
+        buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        buildMenuLbl.setText("Build Menu:");
+
+        buttonGroup1.add(buildSettlementSRBtn);
+        buildSettlementSRBtn.setText("Small Settlement");
+
+        buttonGroup1.add(buildSettlementLRBtn);
+        buildSettlementLRBtn.setText("Large Settlement");
+
+        buttonGroup1.add(buildRoadRbtn);
+        buildRoadRbtn.setSelected(true);
+        buildRoadRbtn.setText("Road");
+
+        buildBtn.setText("Build");
+        buildBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buildBtnActionPerformed(evt);
+            }
+        });
+
+        subInstructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -149,16 +200,44 @@ public class GamePanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buildSettlementSRBtn)
                     .addComponent(backBtn)
-                    .addComponent(turnSwitchBtn))
-                .addContainerGap(1685, Short.MAX_VALUE))
+                    .addComponent(turnSwitchBtn)
+                    .addComponent(buildMenuLbl)
+                    .addComponent(buildRoadRbtn)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(instructionPromptLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(subInstructionLbl)
+                            .addComponent(instructionLbl))))
+                .addContainerGap(1409, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(70, 70, 70)
                 .addComponent(turnSwitchBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 945, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(instructionPromptLbl)
+                    .addComponent(instructionLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(subInstructionLbl)
+                .addGap(18, 18, 18)
+                .addComponent(buildMenuLbl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buildRoadRbtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buildSettlementSRBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buildSettlementLRBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buildBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 735, Short.MAX_VALUE)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -170,15 +249,82 @@ public class GamePanel extends javax.swing.JPanel {
         superFrame.setVisible(false); //hide the parent frame 
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void buildBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildBtnActionPerformed
+        //Update the vars
+        if (buildRoadRbtn.isSelected()) {
+            buildingObject = 1;
+            if (playerSetupRoadsLeft > 0) {
+                showRoadHitbox = true;
+                updatePanel();
+            } else {
+                instructionLbl.setText("You're all done placing your setup roads. There are none left.");
+                subInstructionLbl.setText("");
+            }
+        } else if (buildSettlementSRBtn.isSelected()) {
+            buildingObject = 2;
+        } else if (buildSettlementLRBtn.isSelected()) {
+            buildingObject = 3;
+        } else {
+            buildingObject = -1;
+            System.out.println("An error has occoured while building");
+        }
+    }//GEN-LAST:event_buildBtnActionPerformed
+
     /**
      * Handles mouse input, based on the state of the game
+     *
      * @param event The event triggered by the mouse click
      */
     public void mouseClick(MouseEvent event) {
         // TODO: Add click handling code
         System.out.println("Click recieved");
+
+        //check if the player is building
+        if (buildingObject != 0) {
+            //check what they are building
+            if (buildingObject == 1) { //roads
+                //check the distance to the nearest road and check if it is close enough 
+                
+                for (int i = 0; i < roadNodes.size() - 1; i++) {
+
+                    //get the type of road and set the width and height //get this to not be hard coded if there is time
+                    if (roadNodes.get(i).getOrientation() == 0) {
+                        roadWidth = 60;
+                        roadHeight = 8;
+                    } else {
+                        roadWidth = 38;
+                        roadHeight = 56;
+                    }
+
+                    //if the player click in a valid hitbox for a road
+                    if (event.getX() > roadNodes.get(i).getXPos() - RED_ROAD_H.getWidth(null) / 2
+                            && event.getX() < roadNodes.get(i).getXPos() - RED_ROAD_H.getWidth(null) / 2 + roadWidth
+                            && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
+                            && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
+                        //System.out.println("road match");
+
+                        //check what mode the game is in
+                        if (inSetup && playerSetupRoadsLeft > 0) {
+                            roadNodes.get(i).setPlayer(currentPlayer);
+                            buildingObject = 0;
+                            showRoadHitbox = false;
+                            playerSetupRoadsLeft--;
+                            updatePanel();
+                            
+                        }
+
+                    }
+                }
+            } else if (buildingObject == 2) {
+
+            } else if (buildingObject == 3) {
+
+            } else {
+                System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
+            }
+        }
     }
-    
+
     /**
      * Roll both of the 6 sided dice and act according to the roll.
      * 7 Will trigger thief movement, and other values give resources.
@@ -204,7 +350,7 @@ public class GamePanel extends javax.swing.JPanel {
             collectMaterials(roll);
         }
     }
-    
+
     /**
      * Collect resources from tiles with the passed harvest roll number and give
      * the collected resources to the owner of the settlements collecting them
@@ -238,7 +384,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     //overrides paintComponent in JPanel class
     //performs custom painting
     /**
@@ -267,10 +413,10 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("Settlers of Catan", 10, 50); //(text, x, y)        }
 
         System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
-        
+
         //draw the building material costs key
         g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
-        
+
         //draw the ring of water
         g2d.drawImage(WATER_RING, 1920 / 2 - WATER_RING.getWidth(null) / 2, 1080 / 2 - WATER_RING.getHeight(null) / 2, null);
 
@@ -281,7 +427,7 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawImage(CARD_WHEAT, 300, 1080 - 125, null);
         g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
         g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
-        
+
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
@@ -315,7 +461,7 @@ public class GamePanel extends javax.swing.JPanel {
             if (tiles.get(i).hasThief()) {
 
                 //draw the thief
-                g2d.drawImage(THIEF, tiles.get(i).getXPos() + 150 / 2 - 12, tiles.get(i).getYPos() + 130 / 2 - 56 / 2, null);       
+                g2d.drawImage(THIEF, tiles.get(i).getXPos() + 150 / 2 - 12, tiles.get(i).getYPos() + 130 / 2 - 56 / 2, null);
             }
         }
 
@@ -327,7 +473,9 @@ public class GamePanel extends javax.swing.JPanel {
             switch (road.getOrientation()) {
                 case 0: // Horizontal road ( -- )
                     // Store the road image for the player's color
-                    if (road.getPlayer() == 1 || road.getPlayer() == 0) {
+                    if (road.getPlayer() == 0) {
+                        image = BLANK_ROAD_H;
+                    } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_H;
                     } else {
                         image = BLUE_ROAD_H;
@@ -335,7 +483,9 @@ public class GamePanel extends javax.swing.JPanel {
                     break;
                 case 1: // Road pointing to the top left ( \ ) 
                     // Store the road image for the player's color
-                    if (road.getPlayer() == 1 || road.getPlayer() == 0) {
+                    if (road.getPlayer() == 0) {
+                        image = BLANK_ROAD_L;
+                    } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_L;
                     } else {
                         image = BLUE_ROAD_L;
@@ -343,7 +493,9 @@ public class GamePanel extends javax.swing.JPanel {
                     break;
                 case 2: // Road pointing to the top right ( / ) 
                     // Store the road image for the player's color
-                    if (road.getPlayer() == 1 || road.getPlayer() == 0) {
+                    if (road.getPlayer() == 0) {
+                        image = BLANK_ROAD_R;
+                    } else if (road.getPlayer() == 1 || road.getPlayer() == 0) {
                         image = RED_ROAD_R;
                     } else {
                         image = BLUE_ROAD_R;
@@ -357,6 +509,13 @@ public class GamePanel extends javax.swing.JPanel {
             // Draw the road image saved above, at the node's position
             g2d.drawImage(image, road.getXPos() - RED_ROAD_H.getWidth(null) / 2,
                     road.getYPos() - image.getHeight(null) / 2, null);
+
+            //draw the hit box for the road.
+            if (showRoadHitbox) {
+                g2d.setColor(Color.green);
+                g2d.drawRect(road.getXPos() - RED_ROAD_H.getWidth(null) / 2, road.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+                g2d.setColor(Color.black);
+            }
         }
 
         // Draw the 54 settlement nodes
@@ -365,18 +524,17 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 0; i < 54; i++) {
             settlement = settlementNodes.get(i);
             if (settlement.isLarge() == false) {
-                    if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
-                        image = RED_HOUSE_S;
-                    } else {
-                        image = BLUE_HOUSE_S;
-                    }
-            }
-            else {
-                    if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
-                        image = RED_HOUSE_L;
-                    } else {
-                        image = BLUE_HOUSE_L;
-                    }
+                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
+                    image = RED_HOUSE_S;
+                } else {
+                    image = BLUE_HOUSE_S;
+                }
+            } else {
+                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
+                    image = RED_HOUSE_L;
+                } else {
+                    image = BLUE_HOUSE_L;
+                }
 
             }
 
@@ -549,8 +707,25 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Update the GamePanel to show any changes made
+     */
+    private void updatePanel() {
+        this.setVisible(false);
+        this.setVisible(true);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
+    private javax.swing.JButton buildBtn;
+    private javax.swing.JLabel buildMenuLbl;
+    private javax.swing.JRadioButton buildRoadRbtn;
+    private javax.swing.JRadioButton buildSettlementLRBtn;
+    private javax.swing.JRadioButton buildSettlementSRBtn;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel instructionLbl;
+    private javax.swing.JLabel instructionPromptLbl;
+    private javax.swing.JLabel subInstructionLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 }
