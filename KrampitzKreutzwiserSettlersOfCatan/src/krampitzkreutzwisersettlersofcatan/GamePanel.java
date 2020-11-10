@@ -158,6 +158,8 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRbtn = new javax.swing.JRadioButton();
         buildBtn = new javax.swing.JButton();
         subInstructionLbl = new javax.swing.JLabel();
+        diceRollLbl = new javax.swing.JLabel();
+        diceRollPromptLbl1 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -207,6 +209,12 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
+        diceRollLbl.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        diceRollLbl.setText("num");
+
+        diceRollPromptLbl1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        diceRollPromptLbl1.setText("You rolled a: ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -214,21 +222,29 @@ public class GamePanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buildSettlementSRBtn)
-                    .addComponent(backBtn)
-                    .addComponent(turnSwitchBtn)
-                    .addComponent(buildMenuLbl)
-                    .addComponent(buildRoadRbtn)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(diceRollPromptLbl1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(diceRollLbl)
+                        .addGap(164, 164, 164))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(instructionPromptLbl)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(subInstructionLbl)
-                            .addComponent(instructionLbl))))
-                .addContainerGap(1408, Short.MAX_VALUE))
+                            .addComponent(buildSettlementSRBtn)
+                            .addComponent(backBtn)
+                            .addComponent(turnSwitchBtn)
+                            .addComponent(buildMenuLbl)
+                            .addComponent(buildRoadRbtn)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(instructionPromptLbl)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(subInstructionLbl)
+                                    .addComponent(instructionLbl)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addContainerGap(1409, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -251,7 +267,11 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementLRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buildBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 735, Short.MAX_VALUE)
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(diceRollPromptLbl1)
+                    .addComponent(diceRollLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 695, Short.MAX_VALUE)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -913,6 +933,8 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton buildSettlementLRBtn;
     private javax.swing.JRadioButton buildSettlementSRBtn;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel diceRollLbl;
+    private javax.swing.JLabel diceRollPromptLbl1;
     private javax.swing.JLabel instructionLbl;
     private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JLabel subInstructionLbl;
