@@ -34,6 +34,13 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 0, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
     
+    private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
+    private int currentPlayer; // The player currently taking their turn
+    private final int playerCount; // The number of players in the game
+    private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
+    private int buildingObject; // Indicates if/what the user is building. 
+    // 0 when not placing anything, 1 for roads, 2 for settlements, and 3 for upgrading
+    
     //images for the cards
     private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage();
     private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage();
@@ -74,7 +81,16 @@ public class GamePanel extends javax.swing.JPanel {
         tiles = new ArrayList(); //init the master tile array list
         settlementNodes = new ArrayList(); // Init the settlement node array list
         roadNodes = new ArrayList(); // Init the road node array list
-
+        inSetup = true;
+        playerCount = 2; // 2 Player game
+        currentPlayer = 1; // Player 1 starts
+        cards = new ArrayList[playerCount]; // Create the array of card lists
+        
+        // Fill the list of card ArrayLists with new ArrayLists ()
+        for (ArrayList list : cards) {
+            list = new ArrayList();
+        }
+        
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
 
