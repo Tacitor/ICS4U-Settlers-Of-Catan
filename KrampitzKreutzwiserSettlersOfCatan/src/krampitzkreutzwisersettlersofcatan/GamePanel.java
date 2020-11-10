@@ -468,7 +468,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else if (buildingObject == 2) { //small house
 
                 //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
-                for (int i = 0; i < settlementNodes.size() - 1; i++) {
+                for (int i = 0; i < settlementNodes.size(); i++) {
 
                     //if the player clicks in a valid hitbox for a settlement
                     if (event.getX() > settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2
@@ -477,7 +477,6 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
                         //debug settlent build detection
                         //System.out.println("hitbox match");
-                        //g2d.drawRect(settlement.getXPos() - image.getWidth(null) / 2, settlement.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
 
                         //check that the road is unowned
                         if (settlementNodes.get(i).getPlayer() == 0) {
