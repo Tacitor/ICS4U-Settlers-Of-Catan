@@ -297,6 +297,12 @@ public class GamePanel extends javax.swing.JPanel {
             // Begin the next turn
             inbetweenTurns = false; // No longer waiting to start a turn
             
+            //update the instructions
+            if (inSetup) {                
+                instructionLbl.setText("Place two roads and two small settlements each to start.");
+                subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
+            }
+            
             // Redraw the board to the next player can see their cards
             repaint();
         }
@@ -323,8 +329,16 @@ public class GamePanel extends javax.swing.JPanel {
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " +  currentPlayer + "'s Turn");
             
+            //update the instruction
+            instructionLbl.setText("Please allow the next player to use the mouse");
+            subInstructionLbl.setText("");
+            
             // Redraw the board so the next player doesnt see the other player's cards
             repaint();
+        } else if (playerSetupRoadsLeft != 0) {
+            //let the player know that they have more setup roads to place
+            instructionLbl.setText("Make sure you place your " + playerSetupRoadsLeft + " remaining road(s).");
+            subInstructionLbl.setText("Build them from the build menu below.");
         }
         
     }//GEN-LAST:event_turnSwitchBtnActionPerformed
