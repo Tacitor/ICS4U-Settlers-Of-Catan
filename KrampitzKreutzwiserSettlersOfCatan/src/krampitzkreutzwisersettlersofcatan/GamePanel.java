@@ -179,6 +179,22 @@ public class GamePanel extends javax.swing.JPanel {
         System.out.println("Click recieved");
     }
     
+    /**
+     * Roll both of the 6 sided dice and
+     */
+    private void diceRoll() {
+    
+    }
+    
+    /**
+     * Collect resources from tiles with the passed harvest roll number and give
+     * the collected resources to the current player
+     * @param harvestNumber The harvesting roll that selects which tiles to harvest from
+     */
+    private void collectMaterials(int harvestNumber) {
+    
+    }
+    
     //overrides paintComponent in JPanel class
     //performs custom painting
     /**
@@ -251,20 +267,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
-        //draw testing art
-        //cards
-        g2d.drawImage(CARD_CLAY, 100, 1080 - 125, null); //space them 100 pixels apart and align the hight to 2 from the bottom
-        g2d.drawImage(CARD_ORE, 200, 1080 - 125, null);
-        g2d.drawImage(CARD_WHEAT, 300, 1080 - 125, null);
-        g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
-        g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
-
-        //settlements/houses
-        g2d.drawImage(RED_HOUSE_L, (tiles.get(5).getXPos()), (tiles.get(5).getYPos() + 4), null); //align x to the tiles corner
-        g2d.drawImage(BLUE_HOUSE_L, (tiles.get(14).getXPos()), (tiles.get(14).getYPos() + 4), null); //agign y to the tile with offset a spacer
-        g2d.drawImage(RED_HOUSE_S, (tiles.get(2).getXPos()), (tiles.get(5).getYPos() + 4), null); //align x to the tiles corner
-        g2d.drawImage(BLUE_HOUSE_S, (tiles.get(9).getXPos()), (tiles.get(14).getYPos() + 4), null); //agign y to the tile with offset a spacer
-
         // Draw the 72 road nodes
         NodeRoad road;
         Image image;
@@ -305,17 +307,35 @@ public class GamePanel extends javax.swing.JPanel {
                     road.getYPos() - image.getHeight(null) / 2, null);
         }
 
-        // TODO: Replace this with image drawing
-        // Draw squares to represent settlements
-        NodeSettlement node;
+        // Draw the 54 settlement nodes
+        NodeSettlement settlement;
+        //Image image;
         for (int i = 0; i < 54; i++) {
-            node = settlementNodes.get(i);
-            g2d.drawRect(node.getXPos() - 15, node.getYPos() - 15, 30, 30);
+            settlement = settlementNodes.get(i);
+            if (settlement.isLarge() == false) {
+                    if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
+                        image = RED_HOUSE_S;
+                    } else {
+                        image = BLUE_HOUSE_S;
+                    }
+            }
+            else {
+                    if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
+                        image = RED_HOUSE_L;
+                    } else {
+                        image = BLUE_HOUSE_L;
+                    }
+
+            }
+
+            // Draw the road image saved above, at the node's position
+            g2d.drawImage(image, settlement.getXPos() - image.getWidth(null) / 2,
+                    settlement.getYPos() - image.getHeight(null) / 2, null);
         }
 
-        //add alignment lines
-        g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
-        g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
+        // Add alignment lines
+        // g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
+        // g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
     }
 
     /**
