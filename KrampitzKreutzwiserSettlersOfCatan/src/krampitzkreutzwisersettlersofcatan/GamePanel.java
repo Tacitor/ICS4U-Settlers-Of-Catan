@@ -76,8 +76,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
 
     private static int harvestRollNumOffset; //the number of pixels the harvest roll is ofset from. This allows both single and double diget number to be centered
-
-    private NodeRoad buildingRoad; //the road that the user wants to build
+    
     private int roadWidth; //used in finding the hitbox
     private int roadHeight;
     private int playerSetupRoadsLeft;
