@@ -125,8 +125,16 @@ public class GamePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         backBtn = new javax.swing.JButton();
         turnSwitchBtn = new javax.swing.JButton();
+        instructionPromptLbl = new javax.swing.JLabel();
+        instructionLbl = new javax.swing.JLabel();
+        buildMenuLbl = new javax.swing.JLabel();
+        buildSettlementSRBtn = new javax.swing.JRadioButton();
+        buildSettlementLRBtn = new javax.swing.JRadioButton();
+        buildRoadRbtn2 = new javax.swing.JRadioButton();
+        buildBtn = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -142,6 +150,26 @@ public class GamePanel extends javax.swing.JPanel {
         turnSwitchBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         turnSwitchBtn.setText("End Current Player's Turn");
 
+        instructionPromptLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        instructionPromptLbl.setText("Instructions:");
+
+        instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        instructionLbl.setText("Place two roads and two small settlements easch to start");
+
+        buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        buildMenuLbl.setText("Build Menu:");
+
+        buttonGroup1.add(buildSettlementSRBtn);
+        buildSettlementSRBtn.setText("Small Settlement");
+
+        buttonGroup1.add(buildSettlementLRBtn);
+        buildSettlementLRBtn.setText("Large Settlement");
+
+        buttonGroup1.add(buildRoadRbtn2);
+        buildRoadRbtn2.setText("Road");
+
+        buildBtn.setText("Build");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -149,16 +177,40 @@ public class GamePanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buildSettlementSRBtn)
                     .addComponent(backBtn)
-                    .addComponent(turnSwitchBtn))
-                .addContainerGap(1685, Short.MAX_VALUE))
+                    .addComponent(turnSwitchBtn)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(instructionPromptLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(instructionLbl))
+                    .addComponent(buildMenuLbl)
+                    .addComponent(buildRoadRbtn2)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(1508, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(70, 70, 70)
                 .addComponent(turnSwitchBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 945, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(instructionPromptLbl)
+                    .addComponent(instructionLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buildMenuLbl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buildRoadRbtn2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buildSettlementSRBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buildSettlementLRBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buildBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 798, Short.MAX_VALUE)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -479,6 +531,14 @@ public class GamePanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
+    private javax.swing.JButton buildBtn;
+    private javax.swing.JLabel buildMenuLbl;
+    private javax.swing.JRadioButton buildRoadRbtn2;
+    private javax.swing.JRadioButton buildSettlementLRBtn;
+    private javax.swing.JRadioButton buildSettlementSRBtn;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel instructionLbl;
+    private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 }
