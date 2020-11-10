@@ -59,7 +59,10 @@ public class GamePanel extends javax.swing.JPanel {
     private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
 
     //the image for the water ring
-    private final Image WATER_RING;
+    private final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();;
+    
+    //the image for the building materials
+    private final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
 
     private static int harvestRollNumOffset; //the number of pixels the harvest roll is ofset from. This allows both single and double diget number to be centered
 
@@ -81,7 +84,6 @@ public class GamePanel extends javax.swing.JPanel {
         loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
         loadTiles(); //load the ArrayList of tiles with position and type data
         loadNodes(); // Create and link all of the board's settlement and road nodes
-        WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();
 
         // Add the mouse listener that calls the mouse click event handler
         addMouseListener(new MouseAdapter() {
@@ -108,6 +110,7 @@ public class GamePanel extends javax.swing.JPanel {
     private void initComponents() {
 
         backBtn = new javax.swing.JButton();
+        turnSwitchBtn = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -120,19 +123,26 @@ public class GamePanel extends javax.swing.JPanel {
             }
         });
 
+        turnSwitchBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        turnSwitchBtn.setText("End Current Player's Turn");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backBtn)
-                .addContainerGap(1845, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(backBtn)
+                    .addComponent(turnSwitchBtn))
+                .addContainerGap(1685, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(1046, Short.MAX_VALUE)
+                .addGap(70, 70, 70)
+                .addComponent(turnSwitchBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 945, Short.MAX_VALUE)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -177,10 +187,14 @@ public class GamePanel extends javax.swing.JPanel {
         //must be casted from older Graphics class in order to have access to some newer methods
         Graphics2D g2d = (Graphics2D) g;
         //draw a string on the panel        
-        g2d.drawString("Java 2D", 50, 50); //(text, x, y)        }
+        g2d.setFont(new Font("Times New Roman", Font.BOLD, 40));
+        g2d.drawString("Settlers of Catan", 10, 50); //(text, x, y)        }
 
         System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
-
+        
+        //draw the building material costs key
+        g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
+        
         //draw the ring of water
         g2d.drawImage(WATER_RING, 1920 / 2 - WATER_RING.getWidth(null) / 2, 1080 / 2 - WATER_RING.getHeight(null) / 2, null);
 
@@ -449,5 +463,6 @@ public class GamePanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
+    private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 }
