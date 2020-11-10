@@ -565,40 +565,41 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             // Draw the road image saved above, at the node's position
-            g2d.drawImage(image, road.getXPos() - RED_ROAD_H.getWidth(null) / 2,
+            g2d.drawImage(image, road.getXPos() - image.getWidth(null) / 2,
                     road.getYPos() - image.getHeight(null) / 2, null);
 
             //draw the hit box for the road.
             if (showRoadHitbox) {
                 g2d.setColor(Color.green);
-                g2d.drawRect(road.getXPos() - RED_ROAD_H.getWidth(null) / 2, road.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+                g2d.drawRect(road.getXPos() - image.getWidth(null) / 2, road.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
                 g2d.setColor(Color.black);
             }
         }
 
         // Draw the 54 settlement nodes
         NodeSettlement settlement;
-        //Image image;
+        // Reuse the image variable;
         for (int i = 0; i < 54; i++) {
+            // Get the settlement node from the ArrayList
             settlement = settlementNodes.get(i);
-            if (settlement.isLarge() == false) {
-                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
-                    image = RED_HOUSE_S;
-                } else {
-                    image = BLUE_HOUSE_S;
-                }
-            } else {
-                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
-                    image = RED_HOUSE_L;
-                } else {
-                    image = BLUE_HOUSE_L;
-                }
-
+            
+            // Check the size of the settlement to see which image to use
+            if (settlement.isLarge() == false) { // Small settlement
+                // Store the small settlement image for the player's color
+                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) 
+                    { image = RED_HOUSE_S; } // Player 1: Red
+                else { image = BLUE_HOUSE_S; } // Player 2: Blue
             }
-
-            // Draw the road image saved above, at the node's position
-            g2d.drawImage(image, settlement.getXPos() - image.getWidth(null) / 2,
-                    settlement.getYPos() - image.getHeight(null) / 2, null);
+            else { // Large settlement
+                // Store the large settlement image for the player's color
+                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) 
+                    { image = RED_HOUSE_L; } // Player 1: Red
+                else { image = BLUE_HOUSE_L; } // Player 2: Blue
+            }
+            
+            // Draw the settlement image saved above, at the node's position
+            g2d.drawImage(image, settlement.getXPos() - image.getWidth(null)/2, 
+                    settlement.getYPos() - image.getHeight(null)/2, null);
         }
 
         // Add alignment lines
