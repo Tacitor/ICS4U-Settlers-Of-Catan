@@ -356,8 +356,8 @@ public class GamePanel extends javax.swing.JPanel {
                     }
 
                     //if the player click in a valid hitbox for a road
-                    if (event.getX() > roadNodes.get(i).getXPos() - RED_ROAD_H.getWidth(null) / 2
-                            && event.getX() < roadNodes.get(i).getXPos() - RED_ROAD_H.getWidth(null) / 2 + roadWidth
+                    if (event.getX() > roadNodes.get(i).getXPos() - roadWidth / 2
+                            && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
                             && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
                             && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
                         //System.out.println("road match");
