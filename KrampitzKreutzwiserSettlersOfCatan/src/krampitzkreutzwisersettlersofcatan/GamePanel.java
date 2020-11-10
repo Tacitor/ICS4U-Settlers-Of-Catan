@@ -102,7 +102,7 @@ public class GamePanel extends javax.swing.JPanel {
         inbetweenTurns = false;
         playerCount = 2; // 2 Player game
         currentPlayer = 1; // Player 1 starts
-        cards = new ArrayList[playerCount+1]; // Create the array of card lists
+        cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
         buildingObject = 0;
         showRoadHitbox = false;
@@ -277,28 +277,34 @@ public class GamePanel extends javax.swing.JPanel {
             if (buildRoadRbtn.isSelected()) {
                 buildingObject = 1;
 
-                // If the player has more roads to place
-                if (playerSetupRoadsLeft > 0) {
-                    // Show the building hitboxes and redraw the baord to render them
-                    showRoadHitbox = true;
-                    repaint();
-                } else {
-                    instructionLbl.setText("You're all done placing your setup roads. There are none left.");
-                    subInstructionLbl.setText("");
+                //check what mode it's in
+                if (inSetup) {
+                    // If the player has more roads to place
+                    if (playerSetupRoadsLeft > 0) {
+                        // Show the building hitboxes and redraw the baord to render them
+                        showRoadHitbox = true;
+                        repaint();
+                    } else {
+                        instructionLbl.setText("You're all done placing your setup roads. There are none left.");
+                        subInstructionLbl.setText("");
+                    }
                 }
 
             } else if (buildSettlementSRBtn.isSelected()) {
                 buildingObject = 2;
 
-                // If the player has more settlements to place
-                if (playerSetupSettlementLeft > 0) {
-                    // Show the building hitboxes and redraw the baord to render them
-                    showSettlementHitbox = true;
-                    repaint();
-                } else {
-                    instructionLbl.setText("You're all done placing your setup settlements. There are none left.");
-                    subInstructionLbl.setText("");
-                }
+                //check the mode
+                if (inSetup) {
+                    // If the player has more settlements to place
+                    if (playerSetupSettlementLeft > 0) {
+                        // Show the building hitboxes and redraw the baord to render them
+                        showSettlementHitbox = true;
+                        repaint();
+                    } else {
+                        instructionLbl.setText("You're all done placing your setup settlements. There are none left.");
+                        subInstructionLbl.setText("");
+                    }
+                } 
 
             } else if (buildSettlementLRBtn.isSelected()) {
                 buildingObject = 3;
@@ -700,13 +706,13 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setColor(Color.black);
             }
         }
-        
+
         // If a turn is currently going on, render the current player's cards
         if (!inbetweenTurns) {
             // Get the number of cards the player has
             int listSize = cards[currentPlayer].size();
             // Calculate where the first card must go to center the list
-            int startPosition = 960 - (listSize*CARD_CLAY.getWidth(null) + (listSize-1)*10) / 2;
+            int startPosition = 960 - (listSize * CARD_CLAY.getWidth(null) + (listSize - 1) * 10) / 2;
             // Draw the player's cards
             // Reuse the image variable
             int type;
@@ -732,7 +738,7 @@ public class GamePanel extends javax.swing.JPanel {
                         break;
                 }
                 // Draw the card
-                g2d.drawImage(image, startPosition +(CARD_CLAY.getWidth(null)+10)*i, 930, null);
+                g2d.drawImage(image, startPosition + (CARD_CLAY.getWidth(null) + 10) * i, 930, null);
             }
         }
         // Add alignment lines
