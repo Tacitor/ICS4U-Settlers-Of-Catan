@@ -200,6 +200,7 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRbtn.setSelected(true);
         buildRoadRbtn.setText("Road");
 
+        buildBtn.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
         buildBtn.setText("Build");
         buildBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -267,12 +268,12 @@ public class GamePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buildSettlementLRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buildBtn)
+                .addComponent(buildBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(diceRollPromptLbl1)
                     .addComponent(diceRollLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 680, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 676, Short.MAX_VALUE)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -293,6 +294,12 @@ public class GamePanel extends javax.swing.JPanel {
                 buildingObject = 0;
                 showRoadHitbox = false;
                 showSettlementHitbox = false;
+                // Change the button back to the build button
+                buildBtn.setText("Build");
+                // Redraw the board to remove hitbox outlines
+                repaint();
+                // Dont pick a new building to place
+                return;
             }
             //Update the vars
             if (buildRoadRbtn.isSelected()) {
@@ -343,6 +350,8 @@ public class GamePanel extends javax.swing.JPanel {
                 buildingObject = -1;
                 System.out.println("An error has occoured while building");
             }
+            // Change the build button to a cancel button
+            buildBtn.setText("Cancel");
         }
     }//GEN-LAST:event_buildBtnActionPerformed
 
@@ -377,7 +386,8 @@ public class GamePanel extends javax.swing.JPanel {
             // Redraw the board to the next player can see their cards
             repaint();
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
-            // And the user is done placing setup roads
+            // And the user is done placing setup buildinga
+            
             // Now the game is waiting to start the next turn
             inbetweenTurns = true;
 
@@ -397,6 +407,15 @@ public class GamePanel extends javax.swing.JPanel {
                 playerSetupSettlementLeft = 2;
             }
 
+            // If the game was waiting for the user to build
+            if (buildingObject != 0) {
+                // Cancel the building placement
+                buildingObject = 0;
+                showRoadHitbox = false; // Hide placement hitboxes
+                // Change the button back to the build button
+                buildBtn.setText("Build");
+            }
+            
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
 
@@ -457,10 +476,8 @@ public class GamePanel extends javax.swing.JPanel {
                             //check what mode the game is in 
                             if (inSetup && playerSetupRoadsLeft > 0) {
                                 roadNodes.get(i).setPlayer(currentPlayer);
-                                buildingObject = 0;
-                                showRoadHitbox = false;
                                 playerSetupRoadsLeft--;
-                                repaint();
+
                             }
                             // If the real gam is in progress and the user has cards needed
                             if (findCards(1, 1) && findCards(2, 1)) {
@@ -479,27 +496,23 @@ public class GamePanel extends javax.swing.JPanel {
                                     instructionLbl.setText("Sorry but you can't build a road there."); 
                                     subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
                                 }
-                                // Regardless of whether or not the player can build here
-                                // Stop building
-                                buildingObject = 0;
-                                showRoadHitbox = false;
-                                // Redraw the board
-                                repaint();
-                                
                             }
                             else { // If the user does not have the card they need
                                 System.out.println("Player does not have the needed cards");
-                                // Stop building
-                                buildingObject = 0;
-                                showRoadHitbox = false;
-                                // Redraw tge board
-                                repaint();
+                                
                             }
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses road.");
                             subInstructionLbl.setText("Try building where there isn't already another road");
                         }
 
+                        // Stop building
+                        buildingObject = 0;
+                        showRoadHitbox = false;
+                        // Change the button back to the build button
+                        buildBtn.setText("Build");
+                        // Redraw the board
+                        repaint();
                     }
                 }
             } else if (buildingObject == 2) { //small house

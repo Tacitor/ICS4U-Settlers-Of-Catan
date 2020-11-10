@@ -88,13 +88,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="buildSettlementLRBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="buildBtn" min="-2" max="-2" attributes="0"/>
+              <Component id="buildBtn" min="-2" pref="30" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="diceRollPromptLbl1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="diceRollLbl" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="680" max="32767" attributes="0"/>
+              <EmptySpace pref="676" max="32767" attributes="0"/>
               <Component id="backBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -172,6 +172,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="buildBtn">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Dialog" size="13" style="1"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Build"/>
       </Properties>
       <Events>
