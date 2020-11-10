@@ -207,20 +207,22 @@ public class GamePanel extends javax.swing.JPanel {
     
     /**
      * Collect resources from tiles with the passed harvest roll number and give
-     * the collected resources to the current player
+     * the collected resources to the owner of the settlements collecting them
      * @param harvestNumber The harvesting roll that selects which tiles to harvest from
      */
     private void collectMaterials(int harvestNumber) {
         NodeSettlement settlement; // Hold the settlement being searched
-
-        // Check every settlement to see if the player owns it and if any 
+        int player; // The id of the settlement's owner
+        
+        // Check every settlement to see if a player owns it and if any 
         // adjacent tiles have the harvesting number
         for (int i = 0; i < 54; i++) {
             // Store the node
             settlement = settlementNodes.get(i);
         
-            // If the settlement's owner matches the current player 
-            if (settlement.getPlayer() == currentPlayer) {
+            // Make sure the settlement is owned
+            player = settlement.getPlayer();
+            if (player != 0) {
                 // Search the tiles around the node
                 for (int j = 1; j <= 3; j++) {
                     // If the tile has the same harvest number
@@ -228,8 +230,8 @@ public class GamePanel extends javax.swing.JPanel {
                     if (settlement.getTile(j).getHarvestRollNum() == harvestNumber
                             && settlement.getTile(j).hasThief() == false) {
                         // Give the player the tile's resource
-                        cards[currentPlayer].add(settlement.getTile(j).getType());
-                        System.out.println("Gave player " + currentPlayer + " a type " 
+                        cards[player].add(settlement.getTile(j).getType());
+                        System.out.println("Gave player " + player + " a type " 
                                 + settlement.getTile(j).getType() + " resource");
                     }
                 }
