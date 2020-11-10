@@ -180,10 +180,29 @@ public class GamePanel extends javax.swing.JPanel {
     }
     
     /**
-     * Roll both of the 6 sided dice and
+     * Roll both of the 6 sided dice and act according to the roll.
+     * 7 Will trigger thief movement, and other values give resources.
+     * The roll is done as 2 1d6 rolls to create the same number rarity as 2 dice give
      */
     private void diceRoll() {
-    
+        int roll; // Holds the dice roll
+        
+        // Roll the first dice
+        roll = (int)(Math.random()*6) + 1;
+        // Roll the second dice and add to the total
+        roll += (int)(Math.random()*6) + 1;
+        
+        System.out.println("Rolled a " + roll);
+        
+        // Act on the dice roll
+        if (roll == 7) { // Move the thief on a 7
+            // TODO: Allow player to move thief
+        }
+        else { // Otherwise collect materials
+            // Search for tiles with the number rolled as their harvest number,
+            // And give players the materials
+            collectMaterials(roll);
+        }
     }
     
     /**
@@ -192,7 +211,30 @@ public class GamePanel extends javax.swing.JPanel {
      * @param harvestNumber The harvesting roll that selects which tiles to harvest from
      */
     private void collectMaterials(int harvestNumber) {
-    
+        NodeSettlement settlement; // Hold the settlement being searched
+
+        // Check every settlement to see if the player owns it and if any 
+        // adjacent tiles have the harvesting number
+        for (int i = 0; i < 54; i++) {
+            // Store the node
+            settlement = settlementNodes.get(i);
+        
+            // If the settlement's owner matches the current player 
+            if (settlement.getPlayer() == currentPlayer) {
+                // Search the tiles around the node
+                for (int j = 1; j <= 3; j++) {
+                    // If the tile has the same harvest number
+                    // And doesnt have the thief on it
+                    if (settlement.getTile(j).getHarvestRollNum() == harvestNumber
+                            && settlement.getTile(j).hasThief() == false) {
+                        // Give the player the tile's resource
+                        cards[currentPlayer].add(settlement.getTile(j).getType());
+                        System.out.println("Gave player " + currentPlayer + " a type " 
+                                + settlement.getTile(j).getType() + " resource");
+                    }
+                }
+            }
+        }
     }
     
     //overrides paintComponent in JPanel class
