@@ -285,8 +285,7 @@ public class GamePanel extends javax.swing.JPanel {
             //check what they are building
             if (buildingObject == 1) { //roads
                 //check the distance to the nearest road and check if it is close enough 
-                System.out.println(event.getX());
-                System.out.println(event.getY());
+                
                 for (int i = 0; i < roadNodes.size() - 1; i++) {
 
                     //get the type of road and set the width and height //get this to not be hard coded if there is time
