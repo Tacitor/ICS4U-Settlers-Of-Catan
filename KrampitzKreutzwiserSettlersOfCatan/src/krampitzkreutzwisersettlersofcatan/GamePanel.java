@@ -480,7 +480,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                             }
                             // If the real game is in progress and the user has the cards needed
-                            if (findCards(1, 1) && findCards(2, 1)) {
+                            else if (findCards(1, 1) && findCards(2, 1)) {
                                 if (canBuildRoad(roadNodes.get(i))) {
                                     // Remove the cards from the player's deck
                                     // Remove 1 clay and 1 wood
