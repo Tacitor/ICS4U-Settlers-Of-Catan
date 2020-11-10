@@ -38,8 +38,8 @@
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="diceRollPromptLbl1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="diceRollLbl" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="164" max="-2" attributes="0"/>
+                      <Component id="diceRollLbl" min="-2" pref="64" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="142" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -52,8 +52,8 @@
                               <Component id="instructionPromptLbl" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="subInstructionLbl" min="-2" max="-2" attributes="0"/>
                                   <Component id="instructionLbl" min="-2" max="-2" attributes="0"/>
+                                  <Component id="subInstructionLbl" min="-2" pref="645" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
@@ -61,7 +61,7 @@
                               <Component id="buildSettlementLRBtn" alignment="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="1409" max="32767" attributes="0"/>
+                      <EmptySpace pref="1163" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -78,7 +78,7 @@
                   <Component id="instructionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="subInstructionLbl" min="-2" max="-2" attributes="0"/>
+              <Component id="subInstructionLbl" min="-2" pref="20" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="buildMenuLbl" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -88,13 +88,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="buildSettlementLRBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="buildBtn" min="-2" max="-2" attributes="0"/>
+              <Component id="buildBtn" min="-2" pref="30" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="diceRollPromptLbl1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="diceRollLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="diceRollLbl" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="695" max="32767" attributes="0"/>
+              <EmptySpace pref="676" max="32767" attributes="0"/>
               <Component id="backBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -172,6 +172,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="buildBtn">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Dialog" size="13" style="1"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Build"/>
       </Properties>
       <Events>
@@ -191,7 +194,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Times New Roman" size="24" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="num"/>
+        <Property name="text" type="java.lang.String" value=" "/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="diceRollPromptLbl1">

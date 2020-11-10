@@ -200,6 +200,7 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRbtn.setSelected(true);
         buildRoadRbtn.setText("Road");
 
+        buildBtn.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
         buildBtn.setText("Build");
         buildBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -211,7 +212,7 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
         diceRollLbl.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        diceRollLbl.setText("num");
+        diceRollLbl.setText(" ");
 
         diceRollPromptLbl1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         diceRollPromptLbl1.setText("You rolled a: ");
@@ -227,8 +228,8 @@ public class GamePanel extends javax.swing.JPanel {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(diceRollPromptLbl1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(diceRollLbl)
-                        .addGap(164, 164, 164))
+                        .addComponent(diceRollLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(142, 142, 142))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(buildSettlementSRBtn)
@@ -240,12 +241,12 @@ public class GamePanel extends javax.swing.JPanel {
                                 .addComponent(instructionPromptLbl)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(subInstructionLbl)
-                                    .addComponent(instructionLbl)))
+                                    .addComponent(instructionLbl)
+                                    .addComponent(subInstructionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap(1409, Short.MAX_VALUE))))
+                        .addContainerGap(1163, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -257,7 +258,7 @@ public class GamePanel extends javax.swing.JPanel {
                     .addComponent(instructionPromptLbl)
                     .addComponent(instructionLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(subInstructionLbl)
+                .addComponent(subInstructionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(buildMenuLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -267,12 +268,12 @@ public class GamePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buildSettlementLRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buildBtn)
+                .addComponent(buildBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(diceRollPromptLbl1)
-                    .addComponent(diceRollLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 695, Short.MAX_VALUE)
+                    .addComponent(diceRollLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 676, Short.MAX_VALUE)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -293,6 +294,12 @@ public class GamePanel extends javax.swing.JPanel {
                 buildingObject = 0;
                 showRoadHitbox = false;
                 showSettlementHitbox = false;
+                // Change the button back to the build button
+                buildBtn.setText("Build");
+                // Redraw the board to remove hitbox outlines
+                repaint();
+                // Dont pick a new building to place
+                return;
             }
             //Update the vars
             if (buildRoadRbtn.isSelected()) {
@@ -309,6 +316,11 @@ public class GamePanel extends javax.swing.JPanel {
                         instructionLbl.setText("You're all done placing your setup roads. There are none left.");
                         subInstructionLbl.setText("");
                     }
+                }
+                else { // If the real game is in progress
+                    // Show the road hitboxes
+                    showRoadHitbox = true;
+                    repaint();
                 }
 
             } else if (buildSettlementSRBtn.isSelected()) {
@@ -338,6 +350,8 @@ public class GamePanel extends javax.swing.JPanel {
                 buildingObject = -1;
                 System.out.println("An error has occoured while building");
             }
+            // Change the build button to a cancel button
+            buildBtn.setText("Cancel");
         }
     }//GEN-LAST:event_buildBtnActionPerformed
 
@@ -372,7 +386,8 @@ public class GamePanel extends javax.swing.JPanel {
             // Redraw the board to the next player can see their cards
             repaint();
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
-            // And the user is done placing setup roads
+            // And the user is done placing setup buildinga
+            
             // Now the game is waiting to start the next turn
             inbetweenTurns = true;
 
@@ -392,6 +407,15 @@ public class GamePanel extends javax.swing.JPanel {
                 playerSetupSettlementLeft = 2;
             }
 
+            // If the game was waiting for the user to build
+            if (buildingObject != 0) {
+                // Cancel the building placement
+                buildingObject = 0;
+                showRoadHitbox = false; // Hide placement hitboxes
+                // Change the button back to the build button
+                buildBtn.setText("Build");
+            }
+            
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
 
@@ -452,17 +476,43 @@ public class GamePanel extends javax.swing.JPanel {
                             //check what mode the game is in 
                             if (inSetup && playerSetupRoadsLeft > 0) {
                                 roadNodes.get(i).setPlayer(currentPlayer);
-                                buildingObject = 0;
-                                showRoadHitbox = false;
                                 playerSetupRoadsLeft--;
-                                repaint();
 
+                            }
+                            // If the real game is in progress and the user has the cards needed
+                            else if (findCards(1, 1) && findCards(2, 1)) {
+                                if (canBuildRoad(roadNodes.get(i))) {
+                                    // Remove the cards from the player's deck
+                                    // Remove 1 clay and 1 wood
+                                    cards[currentPlayer].remove(new Integer(1));
+                                    cards[currentPlayer].remove(new Integer(2));
+                                
+                                    // Set the road's player to the current player
+                                    roadNodes.get(i).setPlayer(currentPlayer);
+                                }
+                                // If the player could not build there
+                                else { 
+                                    // Print out why the player could not build there
+                                    instructionLbl.setText("Sorry but you can't build a road there."); 
+                                    subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
+                                }
+                            }
+                            else { // If the user does not have the card they need
+                                System.out.println("Player does not have the needed cards");
+                                
                             }
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses road.");
                             subInstructionLbl.setText("Try building where there isn't already another road");
                         }
 
+                        // Stop building
+                        buildingObject = 0;
+                        showRoadHitbox = false;
+                        // Change the button back to the build button
+                        buildBtn.setText("Build");
+                        // Redraw the board
+                        repaint();
                     }
                 }
             } else if (buildingObject == 2) { //small house
@@ -481,19 +531,20 @@ public class GamePanel extends javax.swing.JPanel {
                         //check that the road is unowned
                         if (settlementNodes.get(i).getPlayer() == 0) {
                             //check what mode the game is in 
-                            if (inSetup && playerSetupSettlementLeft > 0) {
+                            if (inSetup && playerSetupSettlementLeft > 0) { // In Setup
                                 settlementNodes.get(i).setPlayer(currentPlayer);
-                                buildingObject = 0;
-                                showSettlementHitbox = false;
                                 playerSetupSettlementLeft--;
-                                repaint();
-
                             }
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
                             subInstructionLbl.setText("Try building where there isn't already another settlements");
                         }
 
+                        // Stop building and hide the hitboxes
+                        buildingObject = 0;
+                        showSettlementHitbox = false;
+                        // Redraw the board
+                        repaint();
                     }
                 }
 
@@ -505,6 +556,98 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Search for cards of a certain type in the current player's inventory and return if they are present
+     * Uses a linear search to find the type of card, and how many copies must be found.
+     * @param type What resource type to look for
+     * @param count How many cards of the type must be found to return true
+     * @return If the user has the given number of the type of cards
+     */
+    private boolean findCards(int type, int count) {
+        
+        int amountFound = 0; // How many cards of the target type have been found
+        
+        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+            // If the card type matches
+            if (cards[currentPlayer].get(i) == type) {
+                // Increment the counter
+                amountFound++;
+                // If the target number of cards have been found
+                if (amountFound == count) {
+                    return true; // The user has the cards
+                }
+            }
+            // The list is sorted by type, so if the type ID is greater than the target, stop searching
+            else if (cards[currentPlayer].get(i) == type) {
+                return false; // The user does not have the cards
+            }
+        }
+        
+        // If the user does not have the cards
+        return false;
+    }
+    
+    /**
+     * Sort a player's cards using an insertion sorting algorithm
+     * @param player The player who's cards will be sorted
+     */
+    public void insertionSort(int player) {
+        
+        // Get the player's card list
+        ArrayList<Integer> array = cards[player];
+        
+        //go through each index, first one is always considered sorted so skip it
+        for (int n = 1; n < array.size(); n++) {
+            Integer temp = array.get(n);
+            int j = n - 1;
+            while (j >= 0 && array.get(j) > temp) {
+                array.set(j + 1, array.get(j));
+                j = j - 1;
+            }
+            array.set(j+1, temp);
+        }
+    }
+    
+    /**
+     * Check if the player can build a road on the given node
+     * @param road The road node to check if the user can build on
+     * @return If the player can build on it
+     */
+    private boolean canBuildRoad(NodeRoad road) {
+        
+        // If the current player owns either of the settlements connected to this
+        if (road.getSettlement(1).getPlayer() == currentPlayer 
+                || road.getSettlement(2).getPlayer() == currentPlayer) {
+            // Then the player can build here
+            return true;
+        }
+
+        // If the first settlement is not owned by another player
+        if (road.getSettlement(1).getPlayer() != currentPlayer && road.getSettlement(1).getPlayer() != 0) {
+            // Check the first settlement node for a road owned by the current player
+            for (int i = 1; i <= 3; i++) {
+                // If one of the roads is owned by the player 
+                if (road.getSettlement(1).getRoad(i).getPlayer() == currentPlayer) {
+                    return true;
+                }
+            }
+        }
+
+        // If the second settlement is not owned by another player
+        if (road.getSettlement(2).getPlayer() != currentPlayer && road.getSettlement(2).getPlayer() != 0) {
+            // Check the first settlement node for a road owned by the current player
+            for (int i = 1; i <= 3; i++) {
+                // If one of the roads is owned by the player 
+                if (road.getSettlement(2).getRoad(i).getPlayer() == currentPlayer) {
+                    return true;
+                }
+            }
+        }
+        
+        // If the user cannot build here
+        return false;
+    }
+    
     /**
      * Roll both of the 6 sided dice and act according to the roll. 7 Will
      * trigger thief movement, and other values give resources. The roll is done
@@ -575,6 +718,13 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
         }
+        
+        // Sort every player's cards
+        for (int i = 1; i < cards.length; i++) {
+            // Sort the player's cards
+            insertionSort(i);
+        }
+        
     }
 
     //overrides paintComponent in JPanel class
