@@ -212,7 +212,7 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
         diceRollLbl.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        diceRollLbl.setText("num");
+        diceRollLbl.setText(" ");
 
         diceRollPromptLbl1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         diceRollPromptLbl1.setText("You rolled a: ");
@@ -228,8 +228,8 @@ public class GamePanel extends javax.swing.JPanel {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(diceRollPromptLbl1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(diceRollLbl)
-                        .addGap(164, 164, 164))
+                        .addComponent(diceRollLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(142, 142, 142))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(buildSettlementSRBtn)
@@ -272,7 +272,7 @@ public class GamePanel extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(diceRollPromptLbl1)
-                    .addComponent(diceRollLbl))
+                    .addComponent(diceRollLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 676, Short.MAX_VALUE)
                 .addComponent(backBtn)
                 .addContainerGap())
@@ -479,7 +479,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 playerSetupRoadsLeft--;
 
                             }
-                            // If the real gam is in progress and the user has cards needed
+                            // If the real game is in progress and the user has the cards needed
                             if (findCards(1, 1) && findCards(2, 1)) {
                                 if (canBuildRoad(roadNodes.get(i))) {
                                     // Remove the cards from the player's deck
@@ -532,19 +532,20 @@ public class GamePanel extends javax.swing.JPanel {
                         //check that the road is unowned
                         if (settlementNodes.get(i).getPlayer() == 0) {
                             //check what mode the game is in 
-                            if (inSetup && playerSetupSettlementLeft > 0) {
+                            if (inSetup && playerSetupSettlementLeft > 0) { // In Setup
                                 settlementNodes.get(i).setPlayer(currentPlayer);
-                                buildingObject = 0;
-                                showSettlementHitbox = false;
                                 playerSetupSettlementLeft--;
-                                repaint();
-
                             }
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
                             subInstructionLbl.setText("Try building where there isn't already another settlements");
                         }
 
+                        // Stop building and hide the hitboxes
+                        buildingObject = 0;
+                        showSettlementHitbox = false;
+                        // Redraw the board
+                        repaint();
                     }
                 }
 
