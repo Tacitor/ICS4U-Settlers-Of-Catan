@@ -37,6 +37,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
     private boolean inbetweenTurns; // true during the period where the game is waiting for the next player to start their turn
     private boolean showRoadHitbox;
+    private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
     private final int playerCount; // The number of players in the game
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
@@ -64,8 +65,10 @@ public class GamePanel extends javax.swing.JPanel {
     //images for the settlements
     private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage();
     private final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("redHouseL.png")).getImage();
+    private final static Image BLANK_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blankHouseL.png")).getImage();
     private final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blueHouseS.png")).getImage();
     private final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("redHouseS.png")).getImage();
+    private final static Image BLANK_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blankHouseS.png")).getImage();
 
     //image for the thief
     private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
@@ -77,10 +80,11 @@ public class GamePanel extends javax.swing.JPanel {
     private final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
 
     private static int harvestRollNumOffset; //the number of pixels the harvest roll is ofset from. This allows both single and double diget number to be centered
-    
+
     private int roadWidth; //used in finding the hitbox
     private int roadHeight;
-    private int playerSetupRoadsLeft;
+    private int playerSetupRoadsLeft; //number of roads to place
+    private int playerSetupSettlementLeft; //number of settlements to place
 
     //private Graphics awtGraphics;
     /**
@@ -98,11 +102,13 @@ public class GamePanel extends javax.swing.JPanel {
         inbetweenTurns = false;
         playerCount = 2; // 2 Player game
         currentPlayer = 1; // Player 1 starts
-        cards = new ArrayList[playerCount+1]; // Create the array of card lists
+        cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
         buildingObject = 0;
         showRoadHitbox = false;
+        showSettlementHitbox = false;
         playerSetupRoadsLeft = 2;
+        playerSetupSettlementLeft = 2;
 
         // Fill the list of card ArrayLists with new ArrayLists ()
         for (int i = 0; i < cards.length; i++) {
@@ -260,22 +266,53 @@ public class GamePanel extends javax.swing.JPanel {
     private void buildBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildBtnActionPerformed
         // If a turn is in progress
         if (!inbetweenTurns) {
+            //check to make sure there isn't already another building trying to be made
+            if (buildingObject != 0) {
+                //if there is turn off any building mode currently
+                buildingObject = 0;
+                showRoadHitbox = false;
+                showSettlementHitbox = false;
+            }
             //Update the vars
             if (buildRoadRbtn.isSelected()) {
                 buildingObject = 1;
-                // If the player has more roads to place
-                if (playerSetupRoadsLeft > 0) {
-                    // Show the building hitboxes and redraw the baord to render them
-                    showRoadHitbox = true;
-                    repaint();
-                } else {
-                    instructionLbl.setText("You're all done placing your setup roads. There are none left.");
-                    subInstructionLbl.setText("");
+
+                //check what mode it's in
+                if (inSetup) {
+                    // If the player has more roads to place
+                    if (playerSetupRoadsLeft > 0) {
+                        // Show the building hitboxes and redraw the baord to render them
+                        showRoadHitbox = true;
+                        repaint();
+                    } else {
+                        instructionLbl.setText("You're all done placing your setup roads. There are none left.");
+                        subInstructionLbl.setText("");
+                    }
                 }
+
             } else if (buildSettlementSRBtn.isSelected()) {
                 buildingObject = 2;
+
+                //check the mode
+                if (inSetup) {
+                    // If the player has more settlements to place
+                    if (playerSetupSettlementLeft > 0) {
+                        // Show the building hitboxes and redraw the baord to render them
+                        showSettlementHitbox = true;
+                        repaint();
+                    } else {
+                        instructionLbl.setText("You're all done placing your setup settlements. There are none left.");
+                        subInstructionLbl.setText("");
+                    }
+                } 
+
             } else if (buildSettlementLRBtn.isSelected()) {
                 buildingObject = 3;
+                //make sure you're not in setup mode
+                if (inSetup) {
+                    instructionLbl.setText("Sorry you don't have any large settlements to place.");
+                    subInstructionLbl.setText("You do still have " + playerSetupSettlementLeft + " small settlement(s) left");
+                }
             } else {
                 buildingObject = -1;
                 System.out.println("An error has occoured while building");
@@ -285,49 +322,68 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * End/start turn button click handling, for turn switching
+     *
      * @param evt The event generated by the button press
      */
     private void turnSwitchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_turnSwitchBtnActionPerformed
-        
+
         // If the game is waiting to start the next player's turn
         if (inbetweenTurns) {
-            
+
             // Change the button back to the End Turn button
             turnSwitchBtn.setText("End Current Player's Turn");
-            
+
             // Begin the next turn
             inbetweenTurns = false; // No longer waiting to start a turn
-            
+
+            //update the instructions
+            if (inSetup) {
+                instructionLbl.setText("Place two roads and two small settlements each to start.");
+                subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
+            }
+
             // Redraw the board to the next player can see their cards
             repaint();
-        }
-        else if (playerSetupRoadsLeft == 0) { // If the end turn button was clicked
-                                     // And the user is done placing setup roads
+        } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
+            // And the user is done placing setup roads
             // Now the game is waiting to start the next turn
             inbetweenTurns = true;
-            
+
             // Select the next player
             currentPlayer++;
-            
+
             // And go back to player 1 if the number exceeds the total number of players
             if (currentPlayer > playerCount) {
                 currentPlayer = 1;
                 // If the game was in setup, all of the turns have ended now and the normal game can begin
                 inSetup = false;
             }
-            
+
             // If the game is still in setup, give the next player roads to place
             if (inSetup) {
                 playerSetupRoadsLeft = 2;
+                playerSetupSettlementLeft = 2;
             }
-            
+
             // Change the button to the Start Next Turn button
-            turnSwitchBtn.setText("Start Player " +  currentPlayer + "'s Turn");
-            
+            turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
+
+            //update the instruction
+            instructionLbl.setText("Please allow the next player to use the mouse");
+            subInstructionLbl.setText("");
+
             // Redraw the board so the next player doesnt see the other player's cards
             repaint();
+        } else if (playerSetupRoadsLeft != 0) {
+            //let the player know that they have more setup roads to place
+            instructionLbl.setText("Make sure you place your " + playerSetupRoadsLeft + " remaining road(s).");
+            subInstructionLbl.setText("Build them from the build menu below.");
+        } else if (playerSetupSettlementLeft != 0) {
+            //let the player know that they have more setup roads to place
+            instructionLbl.setText("Make sure you place your " + playerSetupSettlementLeft + " remaining small settlment(s).");
+            subInstructionLbl.setText("Build them from the build menu below.");
         }
-        
+
     }//GEN-LAST:event_turnSwitchBtnActionPerformed
 
     /**
@@ -336,15 +392,15 @@ public class GamePanel extends javax.swing.JPanel {
      * @param event The event triggered by the mouse click
      */
     public void mouseClick(MouseEvent event) {
-        // TODO: Add click handling code
-        System.out.println("Click recieved");
+        // debug click listener
+        //System.out.println("Click recieved");
 
         //check if the player is building
         if (buildingObject != 0) {
             //check what they are building
             if (buildingObject == 1) { //roads
-                //check the distance to the nearest road and check if it is close enough 
-                
+
+                //check the distance to the nearest road using hitboxes and check if it is close enough 
                 for (int i = 0; i < roadNodes.size() - 1; i++) {
 
                     //get the type of road and set the width and height //get this to not be hard coded if there is time
@@ -357,26 +413,65 @@ public class GamePanel extends javax.swing.JPanel {
                     }
 
                     //if the player click in a valid hitbox for a road
-                    if (event.getX() > roadNodes.get(i).getXPos() - RED_ROAD_H.getWidth(null) / 2
-                            && event.getX() < roadNodes.get(i).getXPos() - RED_ROAD_H.getWidth(null) / 2 + roadWidth
+                    if (event.getX() > roadNodes.get(i).getXPos() - roadWidth / 2
+                            && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
                             && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
                             && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
+                        //debug road build detection
                         //System.out.println("road match");
 
-                        //check what mode the game is in
-                        if (inSetup && playerSetupRoadsLeft > 0) {
-                            roadNodes.get(i).setPlayer(currentPlayer);
-                            buildingObject = 0;
-                            showRoadHitbox = false;
-                            playerSetupRoadsLeft--;
-                            repaint();
+                        //check that the road is unowned
+                        if (roadNodes.get(i).getPlayer() == 0) {
+                            //check what mode the game is in 
+                            if (inSetup && playerSetupRoadsLeft > 0) {
+                                roadNodes.get(i).setPlayer(currentPlayer);
+                                buildingObject = 0;
+                                showRoadHitbox = false;
+                                playerSetupRoadsLeft--;
+                                repaint();
+
+                            }
+                        } else {
+                            instructionLbl.setText("Sorry but you can't take someone elses road.");
+                            subInstructionLbl.setText("Try building where there isn't already another road");
                         }
 
                     }
                 }
-            } else if (buildingObject == 2) {
+            } else if (buildingObject == 2) { //small house
 
-            } else if (buildingObject == 3) {
+                //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
+                for (int i = 0; i < settlementNodes.size() - 1; i++) {
+
+                    //if the player clicks in a valid hitbox for a settlement
+                    if (event.getX() > settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2
+                            && event.getX() < settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2 + RED_HOUSE_S.getWidth(null)
+                            && event.getY() > settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2
+                            && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
+                        //debug settlent build detection
+                        //System.out.println("hitbox match");
+                        //g2d.drawRect(settlement.getXPos() - image.getWidth(null) / 2, settlement.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+
+                        //check that the road is unowned
+                        if (settlementNodes.get(i).getPlayer() == 0) {
+                            //check what mode the game is in 
+                            if (inSetup && playerSetupSettlementLeft > 0) {
+                                settlementNodes.get(i).setPlayer(currentPlayer);
+                                buildingObject = 0;
+                                showSettlementHitbox = false;
+                                playerSetupSettlementLeft--;
+                                repaint();
+
+                            }
+                        } else {
+                            instructionLbl.setText("Sorry but you can't take someone elses settlements.");
+                            subInstructionLbl.setText("Try building where there isn't already another settlements");
+                        }
+
+                    }
+                }
+
+            } else if (buildingObject == 3) { //large house
 
             } else {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
@@ -385,25 +480,24 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Roll both of the 6 sided dice and act according to the roll.
-     * 7 Will trigger thief movement, and other values give resources.
-     * The roll is done as 2 1d6 rolls to create the same number rarity as 2 dice give
+     * Roll both of the 6 sided dice and act according to the roll. 7 Will
+     * trigger thief movement, and other values give resources. The roll is done
+     * as 2 1d6 rolls to create the same number rarity as 2 dice give
      */
     private void diceRoll() {
         int roll; // Holds the dice roll
-        
+
         // Roll the first dice
-        roll = (int)(Math.random()*6) + 1;
+        roll = (int) (Math.random() * 6) + 1;
         // Roll the second dice and add to the total
-        roll += (int)(Math.random()*6) + 1;
-        
+        roll += (int) (Math.random() * 6) + 1;
+
         System.out.println("Rolled a " + roll);
-        
+
         // Act on the dice roll
         if (roll == 7) { // Move the thief on a 7
             // TODO: Allow player to move thief
-        }
-        else { // Otherwise collect materials
+        } else { // Otherwise collect materials
             // Search for tiles with the number rolled as their harvest number,
             // And give players the materials
             collectMaterials(roll);
@@ -413,18 +507,20 @@ public class GamePanel extends javax.swing.JPanel {
     /**
      * Collect resources from tiles with the passed harvest roll number and give
      * the collected resources to the owner of the settlements collecting them
-     * @param harvestNumber The harvesting roll that selects which tiles to harvest from
+     *
+     * @param harvestNumber The harvesting roll that selects which tiles to
+     * harvest from
      */
     private void collectMaterials(int harvestNumber) {
         NodeSettlement settlement; // Hold the settlement being searched
         int player; // The id of the settlement's owner
-        
+
         // Check every settlement to see if a player owns it and if any 
         // adjacent tiles have the harvesting number
         for (int i = 0; i < 54; i++) {
             // Store the node
             settlement = settlementNodes.get(i);
-        
+
             // Make sure the settlement is owned
             player = settlement.getPlayer();
             if (player != 0) {
@@ -436,7 +532,7 @@ public class GamePanel extends javax.swing.JPanel {
                             && settlement.getTile(j).hasThief() == false) {
                         // Give the player the tile's resource
                         cards[player].add(settlement.getTile(j).getType());
-                        System.out.println("Gave player " + player + " a type " 
+                        System.out.println("Gave player " + player + " a type "
                                 + settlement.getTile(j).getType() + " resource");
                     }
                 }
@@ -471,8 +567,8 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.setFont(new Font("Times New Roman", Font.BOLD, 40));
         g2d.drawString("Settlers of Catan", 10, 50); //(text, x, y)        }
 
-        System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
-
+        //debug the game pannel
+        //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
         g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
 
@@ -575,32 +671,48 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 0; i < 54; i++) {
             // Get the settlement node from the ArrayList
             settlement = settlementNodes.get(i);
-            
+
             // Check the size of the settlement to see which image to use
             if (settlement.isLarge() == false) { // Small settlement
                 // Store the small settlement image for the player's color
-                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) 
-                    { image = RED_HOUSE_S; } // Player 1: Red
-                else { image = BLUE_HOUSE_S; } // Player 2: Blue
-            }
-            else { // Large settlement
+                if (settlement.getPlayer() == 0) {
+                    image = BLANK_HOUSE_S;
+                } else if (settlement.getPlayer() == 1) {
+                    image = RED_HOUSE_S;
+                } // Player 1: Red
+                else {
+                    image = BLUE_HOUSE_S;
+                } // Player 2: Blue
+            } else { // Large settlement
                 // Store the large settlement image for the player's color
-                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) 
-                    { image = RED_HOUSE_L; } // Player 1: Red
-                else { image = BLUE_HOUSE_L; } // Player 2: Blue
+                if (settlement.getPlayer() == 0) {
+                    image = BLANK_HOUSE_L;
+                } else if (settlement.getPlayer() == 1) {
+                    image = RED_HOUSE_L;
+                } // Player 1: Red
+                else {
+                    image = BLUE_HOUSE_L;
+                } // Player 2: Blue
             }
-            
+
             // Draw the settlement image saved above, at the node's position
-            g2d.drawImage(image, settlement.getXPos() - image.getWidth(null)/2, 
-                    settlement.getYPos() - image.getHeight(null)/2, null);
+            g2d.drawImage(image, settlement.getXPos() - image.getWidth(null) / 2,
+                    settlement.getYPos() - image.getHeight(null) / 2, null);
+
+            //draw the hit box for the settlements.
+            if (showSettlementHitbox) {
+                g2d.setColor(Color.green);
+                g2d.drawRect(settlement.getXPos() - image.getWidth(null) / 2, settlement.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+                g2d.setColor(Color.black);
+            }
         }
-        
+
         // If a turn is currently going on, render the current player's cards
         if (!inbetweenTurns) {
             // Get the number of cards the player has
             int listSize = cards[currentPlayer].size();
             // Calculate where the first card must go to center the list
-            int startPosition = 960 - (listSize*CARD_CLAY.getWidth(null) + (listSize-1)*10) / 2;
+            int startPosition = 960 - (listSize * CARD_CLAY.getWidth(null) + (listSize - 1) * 10) / 2;
             // Draw the player's cards
             // Reuse the image variable
             int type;
@@ -626,7 +738,7 @@ public class GamePanel extends javax.swing.JPanel {
                         break;
                 }
                 // Draw the card
-                g2d.drawImage(image, startPosition +(CARD_CLAY.getWidth(null)+10)*i, 930, null);
+                g2d.drawImage(image, startPosition + (CARD_CLAY.getWidth(null) + 10) * i, 930, null);
             }
         }
         // Add alignment lines
