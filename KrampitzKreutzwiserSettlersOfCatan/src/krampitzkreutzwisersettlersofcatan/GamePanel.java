@@ -587,6 +587,48 @@ public class GamePanel extends javax.swing.JPanel {
     }
     
     /**
+     * Check if the player can build a road on the given node
+     * @param road The road node to check if the user can build on
+     * @return If the player can build on it
+     */
+    private boolean canBuildRoad(NodeRoad road) {
+    
+        
+        
+        // If the current player owns either of the settlements connected to this
+        if (road.getSettlement(1).getPlayer() == currentPlayer 
+                || road.getSettlement(12).getPlayer() == currentPlayer) {
+            // Then the player can build here
+            return true;
+        }
+
+        // If the first settlement is not owned by another player
+        if (road.getSettlement(1).getPlayer() != currentPlayer && road.getSettlement(1).getPlayer() != 0) {
+            // Check the first settlement node for a road owned by the current player
+            for (int i = 1; i <= 3; i++) {
+                // If one of the roads is owned by the player 
+                if (road.getSettlement(1).getRoad(i).getPlayer() == currentPlayer) {
+                    return true;
+                }
+            }
+        }
+
+        // If the second settlement is not owned by another player
+        if (road.getSettlement(2).getPlayer() != currentPlayer && road.getSettlement(2).getPlayer() != 0) {
+            // Check the first settlement node for a road owned by the current player
+            for (int i = 1; i <= 3; i++) {
+                // If one of the roads is owned by the player 
+                if (road.getSettlement(2).getRoad(i).getPlayer() == currentPlayer) {
+                    return true;
+                }
+            }
+        }
+        
+        // If the user cannot build here
+        return false;
+    }
+    
+    /**
      * Roll both of the 6 sided dice and act according to the roll. 7 Will
      * trigger thief movement, and other values give resources. The roll is done
      * as 2 1d6 rolls to create the same number rarity as 2 dice give
