@@ -240,12 +240,12 @@ public class GamePanel extends javax.swing.JPanel {
                                 .addComponent(instructionPromptLbl)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(subInstructionLbl)
-                                    .addComponent(instructionLbl)))
+                                    .addComponent(instructionLbl)
+                                    .addComponent(subInstructionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap(1409, Short.MAX_VALUE))))
+                        .addContainerGap(1163, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -257,7 +257,7 @@ public class GamePanel extends javax.swing.JPanel {
                     .addComponent(instructionPromptLbl)
                     .addComponent(instructionLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(subInstructionLbl)
+                .addComponent(subInstructionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(buildMenuLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -272,7 +272,7 @@ public class GamePanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(diceRollPromptLbl1)
                     .addComponent(diceRollLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 695, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 680, Short.MAX_VALUE)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -464,19 +464,28 @@ public class GamePanel extends javax.swing.JPanel {
                             }
                             // If the real gam is in progress and the user has cards needed
                             if (findCards(1, 1) && findCards(2, 1)) {
-                                // Remove the cards from the player's deck
-                                // Remove 1 clay and 1 wood
-                                cards[currentPlayer].remove(new Integer(1));
-                                cards[currentPlayer].remove(new Integer(2));
+                                if (canBuildRoad(roadNodes.get(i))) {
+                                    // Remove the cards from the player's deck
+                                    // Remove 1 clay and 1 wood
+                                    cards[currentPlayer].remove(new Integer(1));
+                                    cards[currentPlayer].remove(new Integer(2));
                                 
-                                // Set the road's player to the current player
-                                roadNodes.get(i).setPlayer(currentPlayer);
-                                
+                                    // Set the road's player to the current player
+                                    roadNodes.get(i).setPlayer(currentPlayer);
+                                }
+                                // If the player could not build there
+                                else { 
+                                    // Print out why the player could not build there
+                                    instructionLbl.setText("Sorry but you can't build a road there."); 
+                                    subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
+                                }
+                                // Regardless of whether or not the player can build here
                                 // Stop building
                                 buildingObject = 0;
                                 showRoadHitbox = false;
                                 // Redraw the board
                                 repaint();
+                                
                             }
                             else { // If the user does not have the card they need
                                 System.out.println("Player does not have the needed cards");
@@ -592,12 +601,10 @@ public class GamePanel extends javax.swing.JPanel {
      * @return If the player can build on it
      */
     private boolean canBuildRoad(NodeRoad road) {
-    
-        
         
         // If the current player owns either of the settlements connected to this
         if (road.getSettlement(1).getPlayer() == currentPlayer 
-                || road.getSettlement(12).getPlayer() == currentPlayer) {
+                || road.getSettlement(2).getPlayer() == currentPlayer) {
             // Then the player can build here
             return true;
         }
