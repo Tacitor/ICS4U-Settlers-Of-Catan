@@ -230,6 +230,14 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the ring of water
         g2d.drawImage(WATER_RING, 1920 / 2 - WATER_RING.getWidth(null) / 2, 1080 / 2 - WATER_RING.getHeight(null) / 2, null);
 
+        //draw testing art
+        //cards
+        g2d.drawImage(CARD_CLAY, 100, 1080 - 125, null); //space them 100 pixels apart and align the hight to 2 from the bottom
+        g2d.drawImage(CARD_ORE, 200, 1080 - 125, null);
+        g2d.drawImage(CARD_WHEAT, 300, 1080 - 125, null);
+        g2d.drawImage(CARD_WOOD, 400, 1080 - 125, null);
+        g2d.drawImage(CARD_SHEEP, 500, 1080 - 125, null);
+        
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
             g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
