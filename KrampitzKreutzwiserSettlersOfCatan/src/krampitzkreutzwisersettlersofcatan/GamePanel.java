@@ -507,13 +507,13 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             // Draw the road image saved above, at the node's position
-            g2d.drawImage(image, road.getXPos() - RED_ROAD_H.getWidth(null) / 2,
+            g2d.drawImage(image, road.getXPos() - image.getWidth(null) / 2,
                     road.getYPos() - image.getHeight(null) / 2, null);
 
             //draw the hit box for the road.
             if (showRoadHitbox) {
                 g2d.setColor(Color.green);
-                g2d.drawRect(road.getXPos() - RED_ROAD_H.getWidth(null) / 2, road.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+                g2d.drawRect(road.getXPos() - image.getWidth(null) / 2, road.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
                 g2d.setColor(Color.black);
             }
         }
