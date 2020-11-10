@@ -11,6 +11,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -31,7 +33,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}; //the type of tile from left to right, and top to bottom
     private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 0, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
-
+    
     //images for the cards
     private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage();
     private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage();
@@ -81,6 +83,19 @@ public class GamePanel extends javax.swing.JPanel {
         loadNodes(); // Create and link all of the board's settlement and road nodes
         WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();
 
+        // Add the mouse listener that calls the mouse click event handler
+        addMouseListener(new MouseAdapter() {
+            /**
+             * Triggered when the user clicks on the game panel.
+             * Calls the game panel's click event handler.
+             * @param evt The event representing the mouse click
+             */
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                // Send the mouse event over to the game panel's click handlers
+                mouseClick(evt);
+            }
+        });
     }
 
     /**
@@ -129,6 +144,15 @@ public class GamePanel extends javax.swing.JPanel {
         superFrame.setVisible(false); //hide the parent frame 
     }//GEN-LAST:event_backBtnActionPerformed
 
+    /**
+     * Handles mouse input, based on the state of the game
+     * @param event The event triggered by the mouse click
+     */
+    public void mouseClick(MouseEvent event) {
+        // TODO: Add click handling code
+        System.out.println("Click recieved");
+    }
+    
     //overrides paintComponent in JPanel class
     //performs custom painting
     /**
@@ -144,7 +168,7 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Draw the game. Most game logic goes here
+     * Draw the game.
      *
      * @param g
      */
