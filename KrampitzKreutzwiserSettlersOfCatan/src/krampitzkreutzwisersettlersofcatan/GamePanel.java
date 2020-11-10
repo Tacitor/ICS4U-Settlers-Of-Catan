@@ -518,8 +518,9 @@ public class GamePanel extends javax.swing.JPanel {
         // Roll the second dice and add to the total
         roll += (int) (Math.random() * 6) + 1;
 
-        System.out.println("Rolled a " + roll);
-
+        // Display the number rolled to the user
+        diceRollLbl.setText(Integer.toString(roll));
+        
         // Act on the dice roll
         if (roll == 7) { // Move the thief on a 7
             // TODO: Allow player to move thief
