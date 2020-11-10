@@ -41,6 +41,7 @@ public class GamePanel extends javax.swing.JPanel {
     private int currentPlayer; // The player currently taking their turn
     private final int playerCount; // The number of players in the game
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
+    private int tileWithThief; // The index of the tile with the thief
     private int buildingObject; // Indicates if/what the user is building. 
     // 0 when not placing anything, 1 for roads, 2 for settlements, and 3 for upgrading
 
@@ -361,7 +362,13 @@ public class GamePanel extends javax.swing.JPanel {
                 instructionLbl.setText("Place two roads and two small settlements each to start.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             }
-
+            else { // If a turn of the real game is starting (not setup)
+                // Roll the dice and display the rolled number to the user
+                diceRoll();
+                // The dice roll function calls the material collection method to
+                // Ensure that all players get the materials they earned from the roll
+            }    
+            
             // Redraw the board to the next player can see their cards
             repaint();
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
@@ -512,11 +519,19 @@ public class GamePanel extends javax.swing.JPanel {
         // Roll the second dice and add to the total
         roll += (int) (Math.random() * 6) + 1;
 
-        System.out.println("Rolled a " + roll);
-
+        // Display the number rolled to the user
+        diceRollLbl.setText(Integer.toString(roll));
+        
         // Act on the dice roll
         if (roll == 7) { // Move the thief on a 7
-            // TODO: Allow player to move thief
+            // Pick a random tile to move the thief to
+            int random = (int)(Math.random() * 19);
+            // Remove the thief from the tile it was on before
+            tiles.get(tileWithThief).setThief(false);
+            // Place a thief on the randomly selected tile
+            tiles.get(random).setThief(true);
+            // Store the tile index of the thief's new location
+            tileWithThief = random;
         } else { // Otherwise collect materials
             // Search for tiles with the number rolled as their harvest number,
             // And give players the materials
@@ -546,14 +561,17 @@ public class GamePanel extends javax.swing.JPanel {
             if (player != 0) {
                 // Search the tiles around the node
                 for (int j = 1; j <= 3; j++) {
-                    // If the tile has the same harvest number
-                    // And doesnt have the thief on it
-                    if (settlement.getTile(j).getHarvestRollNum() == harvestNumber
-                            && settlement.getTile(j).hasThief() == false) {
-                        // Give the player the tile's resource
-                        cards[player].add(settlement.getTile(j).getType());
-                        System.out.println("Gave player " + player + " a type "
-                                + settlement.getTile(j).getType() + " resource");
+                    // If the tile is not null
+                    if (settlement.getTile(j) != null) {
+                        // If the tile has the same harvest number
+                        // And doesnt have the thief on it
+                        if (settlement.getTile(j).getHarvestRollNum() == harvestNumber
+                                && settlement.getTile(j).hasThief() == false) {
+                            // Give the player the tile's resource
+                            cards[player].add(settlement.getTile(j).getType());
+                            System.out.println("Gave player " + player + " a type "
+                                    + settlement.getTile(j).getType() + " resource");
+                        }
                     }
                 }
             }
@@ -780,7 +798,10 @@ public class GamePanel extends javax.swing.JPanel {
 
             //check for the desert tile and start the thief off there
             if (newTile.getType() == 0) { //type 0 is the desert type
+                // Place a thief on this dessert tile
                 newTile.setThief(true);
+                // Record this tile as the one with the thief
+                tileWithThief = i;
             }
             tiles.add(newTile);
         }
