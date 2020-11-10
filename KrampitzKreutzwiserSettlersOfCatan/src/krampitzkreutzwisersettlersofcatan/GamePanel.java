@@ -64,8 +64,10 @@ public class GamePanel extends javax.swing.JPanel {
     //images for the settlements
     private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage();
     private final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("redHouseL.png")).getImage();
+    private final static Image BLANK_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blankHouseL.png")).getImage();
     private final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blueHouseS.png")).getImage();
     private final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("redHouseS.png")).getImage();
+    private final static Image BLANK_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blankHouseS.png")).getImage();
 
     //image for the thief
     private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
@@ -608,7 +610,9 @@ public class GamePanel extends javax.swing.JPanel {
             // Check the size of the settlement to see which image to use
             if (settlement.isLarge() == false) { // Small settlement
                 // Store the small settlement image for the player's color
-                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
+                if (settlement.getPlayer() == 0) {
+                    image = BLANK_HOUSE_S;
+                } else if (settlement.getPlayer() == 1) {
                     image = RED_HOUSE_S;
                 } // Player 1: Red
                 else {
@@ -616,7 +620,9 @@ public class GamePanel extends javax.swing.JPanel {
                 } // Player 2: Blue
             } else { // Large settlement
                 // Store the large settlement image for the player's color
-                if (settlement.getPlayer() == 1 || settlement.getPlayer() == 0) {
+                if (settlement.getPlayer() == 0) {
+                    image = BLANK_HOUSE_L;
+                } else if (settlement.getPlayer() == 1) {
                     image = RED_HOUSE_L;
                 } // Player 1: Red
                 else {
