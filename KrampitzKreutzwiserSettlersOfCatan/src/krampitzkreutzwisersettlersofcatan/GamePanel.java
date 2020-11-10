@@ -310,6 +310,11 @@ public class GamePanel extends javax.swing.JPanel {
                         subInstructionLbl.setText("");
                     }
                 }
+                else { // If the real game is in progress
+                    // Show the road hitboxes
+                    showRoadHitbox = true;
+                    repaint();
+                }
 
             } else if (buildSettlementSRBtn.isSelected()) {
                 buildingObject = 2;
@@ -456,7 +461,30 @@ public class GamePanel extends javax.swing.JPanel {
                                 showRoadHitbox = false;
                                 playerSetupRoadsLeft--;
                                 repaint();
-
+                            }
+                            // If the real gam is in progress and the user has cards needed
+                            if (findCards(1, 1) && findCards(2, 1)) {
+                                // Remove the cards from the player's deck
+                                // Remove 1 clay and 1 wood
+                                cards[currentPlayer].remove(new Integer(1));
+                                cards[currentPlayer].remove(new Integer(2));
+                                
+                                // Set the road's player to the current player
+                                roadNodes.get(i).setPlayer(currentPlayer);
+                                
+                                // Stop building
+                                buildingObject = 0;
+                                showRoadHitbox = false;
+                                // Redraw the board
+                                repaint();
+                            }
+                            else { // If the user does not have the card they need
+                                System.out.println("Player does not have the needed cards");
+                                // Stop building
+                                buildingObject = 0;
+                                showRoadHitbox = false;
+                                // Redraw tge board
+                                repaint();
                             }
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses road.");
@@ -506,6 +534,58 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Search for cards of a certain type in the current player's inventory and return if they are present
+     * Uses a linear search to find the type of card, and how many copies must be found.
+     * @param type What resource type to look for
+     * @param count How many cards of the type must be found to return true
+     * @return If the user has the given number of the type of cards
+     */
+    private boolean findCards(int type, int count) {
+        
+        int amountFound = 0; // How many cards of the target type have been found
+        
+        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+            // If the card type matches
+            if (cards[currentPlayer].get(i) == type) {
+                // Increment the counter
+                amountFound++;
+                // If the target number of cards have been found
+                if (amountFound == count) {
+                    return true; // The user has the cards
+                }
+            }
+            // The list is sorted by type, so if the type ID is greater than the target, stop searching
+            else if (cards[currentPlayer].get(i) == type) {
+                return false; // The user does not have the cards
+            }
+        }
+        
+        // If the user does not have the cards
+        return false;
+    }
+    
+    /**
+     * Sort a player's cards using an insertion sorting algorithm
+     * @param player The player who's cards will be sorted
+     */
+    public void insertionSort(int player) {
+        
+        // Get the player's card list
+        ArrayList<Integer> array = cards[player];
+        
+        //go through each index, first one is always considered sorted so skip it
+        for (int n = 1; n < array.size(); n++) {
+            Integer temp = array.get(n);
+            int j = n - 1;
+            while (j >= 0 && array.get(j) > temp) {
+                array.set(j + 1, array.get(j));
+                j = j - 1;
+            }
+            array.set(j+1, temp);
+        }
+    }
+    
     /**
      * Roll both of the 6 sided dice and act according to the roll. 7 Will
      * trigger thief movement, and other values give resources. The roll is done
@@ -576,6 +656,13 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
         }
+        
+        // Sort every player's cards
+        for (int i = 1; i < cards.length; i++) {
+            // Sort the player's cards
+            insertionSort(i);
+        }
+        
     }
 
     //overrides paintComponent in JPanel class
