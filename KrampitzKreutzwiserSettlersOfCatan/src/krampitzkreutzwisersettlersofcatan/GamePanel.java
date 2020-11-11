@@ -352,9 +352,9 @@ public class GamePanel extends javax.swing.JPanel {
                     } else {
                         instructionLbl.setText("You're all done placing your setup settlements. There are none left.");
                         subInstructionLbl.setText("");
+                        buildingObject = 0; // Dont build
                     }
-                } 
-                else { // If the real game is in progress
+                } else { // If the real game is in progress
                     // Show the settlement hitboxes
                     showSettlementHitbox = true;
                     repaint();
@@ -366,7 +366,13 @@ public class GamePanel extends javax.swing.JPanel {
                 if (inSetup) {
                     instructionLbl.setText("Sorry you don't have any large settlements to place.");
                     subInstructionLbl.setText("You do still have " + playerSetupSettlementLeft + " small settlement(s) left");
+                    buildingObject = 0; // Dont build
+                } else { // If the real game is in progress
+                    // Show the settlement hitboxes
+                    showSettlementHitbox = true;
+                    repaint();
                 }
+                
             } else {
                 buildingObject = -1;
                 System.out.println("An error has occoured while building");
@@ -557,7 +563,7 @@ public class GamePanel extends javax.swing.JPanel {
                         //debug settlent build detection
                         //System.out.println("hitbox match");
 
-                        //check that the road is unowned
+                        //check that the settlement is unowned
                         if (settlementNodes.get(i).getPlayer() == 0) {
                             //check what mode the game is in 
                             if (inSetup && playerSetupSettlementLeft > 0) { // In Setup
@@ -571,11 +577,13 @@ public class GamePanel extends javax.swing.JPanel {
                             else if (findCards(1, 1) && findCards(2, 1) && findCards(3, 1) && findCards(4, 1)) {
                                 if (canBuildSettlement(settlementNodes.get(i))) {
                                     // Remove the cards from the player's deck
-                                    // Remove 1 clay and 1 wood
+                                    // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
                                     cards[currentPlayer].remove(new Integer(1));
                                     cards[currentPlayer].remove(new Integer(2));
+                                    cards[currentPlayer].remove(new Integer(3));
+                                    cards[currentPlayer].remove(new Integer(4));
                                 
-                                    // Set the road's player to the current player
+                                    // Set the settlement's player to the current player
                                     settlementNodes.get(i).setPlayer(currentPlayer);
                                     
                                     // Increment the player's victory point counter
@@ -604,7 +612,57 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else if (buildingObject == 3) { //large house
+                
+                //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
+                for (int i = 0; i < settlementNodes.size(); i++) {
 
+                    //if the player clicks in a valid hitbox for a settlement
+                    if (event.getX() > settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2
+                            && event.getX() < settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2 + RED_HOUSE_S.getWidth(null)
+                            && event.getY() > settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2
+                            && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
+                     
+                        // Check that the current player owns settlement
+                        if (settlementNodes.get(i).getPlayer() == currentPlayer) {
+
+                            // Check that the settlement isn't already large
+                            if (settlementNodes.get(i).isLarge() == false) {
+                                
+                                // Make sure the player has the right materials
+                                if (findCards(3, 2) && findCards(5, 3)) {
+                                    // Remove the cards from the player's deck
+                                    // Remove 2 wheat, and 3 ore
+                                    cards[currentPlayer].remove(new Integer(3));
+                                    cards[currentPlayer].remove(new Integer(3));
+                                    cards[currentPlayer].remove(new Integer(5));
+                                    cards[currentPlayer].remove(new Integer(5));
+                                    cards[currentPlayer].remove(new Integer(5));
+                                
+                                    // Make the settlement large
+                                    settlementNodes.get(i).setLarge(true);
+                                    
+                                    // Increment the player's victory point counter
+                                    victoryPoints[currentPlayer]++;
+                                }
+                                
+                            } else {  // If the settlement is already large
+                                instructionLbl.setText("Sorry but settlement is already large.");
+                                subInstructionLbl.setText("Try upgrading a small settlement");
+                            }
+                        } else { // If the settlement belongs to another player
+                            instructionLbl.setText("Sorry but you can't upgrade someone elses settlements.");
+                            subInstructionLbl.setText("Try upgrading your own settlement");
+                        }
+                        
+                        // Stop building and hide the hitboxes
+                        buildingObject = 0;
+                        showSettlementHitbox = false;
+                        // Change the button back to the build button
+                        buildBtn.setText("Build");
+                        // Redraw the board
+                        repaint();
+                    }
+                }
             } else {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
@@ -681,9 +739,12 @@ public class GamePanel extends javax.swing.JPanel {
         if (road.getSettlement(1).getPlayer() == currentPlayer || road.getSettlement(1).getPlayer() == 0) {
             // Check the first settlement node for a road owned by the current player
             for (int i = 1; i <= 3; i++) {
-                // If one of the roads is owned by the player 
-                if (road.getSettlement(1).getRoad(i).getPlayer() == currentPlayer) {
-                    return true;
+                // Make sure the road exists
+                if (road.getSettlement(1).getRoad(i) != null) {
+                    // If one of the roads is owned by the player 
+                    if (road.getSettlement(1).getRoad(i).getPlayer() == currentPlayer) {
+                        return true;
+                    }
                 }
             }
         }
@@ -692,9 +753,12 @@ public class GamePanel extends javax.swing.JPanel {
         if (road.getSettlement(2).getPlayer() == currentPlayer || road.getSettlement(2).getPlayer() == 0) {
             // Check the second settlement node for a road owned by the current player
             for (int i = 1; i <= 3; i++) {
-                // If one of the roads is owned by the player 
-                if (road.getSettlement(2).getRoad(i).getPlayer() == currentPlayer) {
-                    return true;
+                // Make sure the road exists
+                if (road.getSettlement(2).getRoad(i) != null) {
+                    // If one of the roads is owned by the player 
+                    if (road.getSettlement(2).getRoad(i).getPlayer() == currentPlayer) {
+                        return true;
+                    }
                 }
             }
         }        
@@ -875,7 +939,7 @@ public class GamePanel extends javax.swing.JPanel {
         msg += "</body></html>";
         
         // Display the output in a JOptionPane
-        JOptionPane.showMessageDialog(this, msg);
+        JOptionPane.showMessageDialog(this, msg, "Game Over", JOptionPane.PLAIN_MESSAGE);
         
         // Close the game panel
         // Hide this window and show the main menu

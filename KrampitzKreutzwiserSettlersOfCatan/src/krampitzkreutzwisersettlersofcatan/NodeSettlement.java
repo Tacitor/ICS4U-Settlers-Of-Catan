@@ -140,7 +140,7 @@ public class NodeSettlement extends WorldObject {
      * This should only be called once, to increase the size, to avoid violating game rules
      * @param isLarge The new size, as a boolean representing if it is a large settlement
      */
-    public void setPlayer(boolean isLarge) {
+    public void setLarge(boolean isLarge) {
         this.large = isLarge;
     }
     
