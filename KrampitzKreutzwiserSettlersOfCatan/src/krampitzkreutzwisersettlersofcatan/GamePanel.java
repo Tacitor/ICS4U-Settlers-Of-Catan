@@ -51,6 +51,10 @@ public class GamePanel extends javax.swing.JPanel {
     private int currentPlayer; // The player currently taking their turn
     private final int playerCount; // The number of players in the game
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
+    private final int victoryPoints[];
+    private final int totalCardsCollected[];
+    private final int victoryPointsToWin;
+    private int thiefMoveCounter;
     private int tileWithThief; // The index of the tile with the thief
     private int buildingObject; // Indicates if/what the user is building. 
     // 0 when not placing anything, 1 for roads, 2 for settlements, and 3 for upgrading
@@ -115,6 +119,9 @@ public class GamePanel extends javax.swing.JPanel {
         currentPlayer = 1; // Player 1 starts
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
+        victoryPoints = new int[playerCount + 1]; // Create the array of player's victory points
+        // the +1 allows methods to use player IDs directly without subtracting 1
+        totalCardsCollected = new int[5];
         buildingObject = 0;
         showRoadHitbox = false;
         showSettlementHitbox = false;
@@ -128,10 +135,21 @@ public class GamePanel extends javax.swing.JPanel {
         saveFileChooser.setDialogTitle("Select a file to save Settlers of Catan to:");
 
         // Fill the list of card ArrayLists with new ArrayLists ()
+        victoryPointsToWin = 10;
+        thiefMoveCounter = 0;
+		
+        // Fill the list of card ArrayLists with new ArrayLists and intialize
+        // the victory point array (Both are the same size and can share a loop)
         for (int i = 0; i < cards.length; i++) {
-            cards[i] = new ArrayList();
+            cards[i] = new ArrayList(); // Cards ArrayList
+            victoryPoints[i] = 0; // Victory point counter
         }
 
+        // Intialize the card counter array
+        for (int i = 0; i < totalCardsCollected.length; i++) {
+            totalCardsCollected[i] = 0; // Victory point counter
+        }
+        
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
 
@@ -365,6 +383,11 @@ public class GamePanel extends javax.swing.JPanel {
                         instructionLbl.setText("You're all done placing your setup settlements. There are none left.");
                         subInstructionLbl.setText("");
                     }
+                } 
+                else { // If the real game is in progress
+                    // Show the settlement hitboxes
+                    showSettlementHitbox = true;
+                    repaint();
                 }
 
             } else if (buildSettlementLRBtn.isSelected()) {
@@ -414,7 +437,13 @@ public class GamePanel extends javax.swing.JPanel {
             repaint();
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             // And the user is done placing setup buildinga
-
+            
+            // Check if the player has enough points to win
+            if (victoryPoints[currentPlayer] >= victoryPointsToWin) {
+                // If they have a winning amount of points end the game
+                endGame();
+                return;
+            }
             // Now the game is waiting to start the next turn
             inbetweenTurns = true;
 
@@ -439,6 +468,7 @@ public class GamePanel extends javax.swing.JPanel {
                 // Cancel the building placement
                 buildingObject = 0;
                 showRoadHitbox = false; // Hide placement hitboxes
+                showSettlementHitbox = false; // Hide placement hitboxes
                 // Change the button back to the build button
                 buildBtn.setText("Build");
             }
@@ -556,8 +586,32 @@ public class GamePanel extends javax.swing.JPanel {
                         if (settlementNodes.get(i).getPlayer() == 0) {
                             //check what mode the game is in 
                             if (inSetup && playerSetupSettlementLeft > 0) { // In Setup
+                                // Place one of the player's setup settlements
                                 settlementNodes.get(i).setPlayer(currentPlayer);
                                 playerSetupSettlementLeft--;
+                                // Increment the player's victory point counter
+                                victoryPoints[currentPlayer]++;
+                            }
+                            // If the main game is in progress and the user has the needed cards
+                            else if (findCards(1, 1) && findCards(2, 1) && findCards(3, 1) && findCards(4, 1)) {
+                                if (canBuildSettlement(settlementNodes.get(i))) {
+                                    // Remove the cards from the player's deck
+                                    // Remove 1 clay and 1 wood
+                                    cards[currentPlayer].remove(new Integer(1));
+                                    cards[currentPlayer].remove(new Integer(2));
+                                
+                                    // Set the road's player to the current player
+                                    settlementNodes.get(i).setPlayer(currentPlayer);
+                                    
+                                    // Increment the player's victory point counter
+                                    victoryPoints[currentPlayer]++;
+                                }
+                                // If the player could not build there
+                                else { 
+                                    // Print out why the player could not build there
+                                    instructionLbl.setText("Sorry but you can't build a settlement there."); 
+                                    subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
+                                }
                             }
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
@@ -567,6 +621,8 @@ public class GamePanel extends javax.swing.JPanel {
                         // Stop building and hide the hitboxes
                         buildingObject = 0;
                         showSettlementHitbox = false;
+                        // Change the button back to the build button
+                        buildBtn.setText("Build");
                         // Redraw the board
                         repaint();
                     }
@@ -742,7 +798,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // If the first settlement is not owned by another player
-        if (road.getSettlement(1).getPlayer() != currentPlayer && road.getSettlement(1).getPlayer() != 0) {
+        if (road.getSettlement(1).getPlayer() == currentPlayer || road.getSettlement(1).getPlayer() == 0) {
             // Check the first settlement node for a road owned by the current player
             for (int i = 1; i <= 3; i++) {
                 // If one of the roads is owned by the player 
@@ -751,22 +807,63 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
         }
-
+        
         // If the second settlement is not owned by another player
-        if (road.getSettlement(2).getPlayer() != currentPlayer && road.getSettlement(2).getPlayer() != 0) {
-            // Check the first settlement node for a road owned by the current player
+        if (road.getSettlement(2).getPlayer() == currentPlayer || road.getSettlement(2).getPlayer() == 0) {
+            // Check the second settlement node for a road owned by the current player
             for (int i = 1; i <= 3; i++) {
                 // If one of the roads is owned by the player 
                 if (road.getSettlement(2).getRoad(i).getPlayer() == currentPlayer) {
                     return true;
                 }
             }
-        }
-
+        }     
+        
         // If the user cannot build here
         return false;
     }
 
+    /**
+     * Check if the player can build a settlement on the given node
+     * @param settlement The settlement node to check if the user can build on
+     * @return If the player can build on it
+     */
+    private boolean canBuildSettlement(NodeSettlement settlement) {
+        
+        // Record how many of the 3 nodes are owned by other players
+        // And if one of the connected roads belong to the current player
+        int otherPlayerNumber = 0;
+        boolean currentPlayerHasRoad = false; // If the current player has a road connected to this node
+            // If the road exists
+            if (settlement.getRoad(i) != null) {
+                // If the road belongs to the player
+                if (settlement.getRoad(i).getPlayer() == currentPlayer) {
+                    // Then store that the user has a road connecting to this place
+                    currentPlayerHasRoad = true;
+                }
+                // If the road belongs to a different player (and is owned)
+                else if (settlement.getRoad(i).getPlayer() > 0) {
+                    // Check if this is the second time the same other player's road was found
+                    if (settlement.getRoad(i).getPlayer() == otherPlayerNumber) {
+                        // Then the other player has a road going through and past this point,
+                        // Blocking any other player from building a settlement there
+                        return false; // Node is blocked, cannot build here
+                    }
+                    // Record the number
+                    otherPlayerNumber = settlement.getRoad(i).getPlayer();
+                }
+            }
+        }
+
+        // If the current player owns a connected road, and the code didnt return above,
+        if (currentPlayerHasRoad) {
+            // Then the player can build here
+            return true;
+        }
+            
+        // If the user cannot build here
+        return false;
+    }
     /**
      * Roll both of the 6 sided dice and act according to the roll. 7 Will
      * trigger thief movement, and other values give resources. The roll is done
@@ -793,6 +890,8 @@ public class GamePanel extends javax.swing.JPanel {
             tiles.get(random).setThief(true);
             // Store the tile index of the thief's new location
             tileWithThief = random;
+            // Increment the thief movement counter
+            thiefMoveCounter++;
         } else { // Otherwise collect materials
             // Search for tiles with the number rolled as their harvest number,
             // And give players the materials
@@ -830,8 +929,8 @@ public class GamePanel extends javax.swing.JPanel {
                                 && settlement.getTile(j).hasThief() == false) {
                             // Give the player the tile's resource
                             cards[player].add(settlement.getTile(j).getType());
-                            System.out.println("Gave player " + player + " a type "
-                                    + settlement.getTile(j).getType() + " resource");
+                            // Add the collected card to the card counter
+                            totalCardsCollected[settlement.getTile(j).getType()-1]++;
                         }
                     }
                 }
@@ -846,6 +945,62 @@ public class GamePanel extends javax.swing.JPanel {
 
     }
 
+    /**
+     * End the game, generating a JOptionPane showing the winner and round statistics
+     */
+    private void endGame() {
+        
+        // Create a string for the output with html formating 
+        String msg = "<html><body>";
+        
+        // Find the player with the most victory points
+        int winningPlayer = 0;
+        for (int i = 1; i <= playerCount; i++) { // Check every player
+            // If the player has a larger number of victory points store them as the winner
+            if (victoryPoints[winningPlayer] < victoryPoints[i]) {
+                winningPlayer = i;
+            }
+        }
+        
+        // Add the line showing the winning player
+        msg += "<h1>Player " + winningPlayer + " wins!</h1>";
+        
+        // Print a table showing the players' victory points
+        msg += "<h3>Victory Points:</h3><h4>";
+        // Add a list of every player's points in smaller text
+        for (int i = 1; i <= playerCount; i++) {
+            if (i != 1) { msg += "<br>"; }
+            // Add rhe player's points to the output
+            msg += " - Player " + i + ": " + victoryPoints[i];
+        }
+        msg += "</h4>";
+        
+        // Print a table showing the number of each card collected and the total
+        msg += "<h3>Total Cards Collected:</h3>";
+        // Add a list of the card counters
+        msg += "<h4> - Clay:  " + totalCardsCollected[0];
+        msg += "<br> - Wood:  " + totalCardsCollected[1];
+        msg += "<br> - Wheat: " + totalCardsCollected[2];
+        msg += "<br> - Sheep: " + totalCardsCollected[3];
+        msg += "<br> - Ore:   " + totalCardsCollected[4];
+        msg += "<br> - Total: " + (totalCardsCollected[0] 
+                + totalCardsCollected[1] + totalCardsCollected[2] 
+                + totalCardsCollected[3] + totalCardsCollected[4]) + "</h4>";
+
+        msg += "<h3>Thief moved " + thiefMoveCounter + " times</h3>";
+        
+        // Close off the html tags
+        msg += "</body></html>";
+        
+        // Display the output in a JOptionPane
+        JOptionPane.showMessageDialog(this, msg);
+        
+        // Close the game panel
+        // Hide this window and show the main menu
+        superFrame.getMainMenu().setVisible(true); //show the main menu
+        superFrame.setVisible(false); //hide the parent frame 
+    }
+    
     //overrides paintComponent in JPanel class
     //performs custom painting
     /**
