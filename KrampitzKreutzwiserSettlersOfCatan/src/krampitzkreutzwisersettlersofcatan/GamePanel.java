@@ -338,6 +338,11 @@ public class GamePanel extends javax.swing.JPanel {
                         subInstructionLbl.setText("");
                     }
                 } 
+                else { // If the real game is in progress
+                    // Show the settlement hitboxes
+                    showSettlementHitbox = true;
+                    repaint();
+                }
 
             } else if (buildSettlementLRBtn.isSelected()) {
                 buildingObject = 3;
@@ -412,6 +417,7 @@ public class GamePanel extends javax.swing.JPanel {
                 // Cancel the building placement
                 buildingObject = 0;
                 showRoadHitbox = false; // Hide placement hitboxes
+                showSettlementHitbox = false; // Hide placement hitboxes
                 // Change the button back to the build button
                 buildBtn.setText("Build");
             }
@@ -536,6 +542,24 @@ public class GamePanel extends javax.swing.JPanel {
                                 settlementNodes.get(i).setPlayer(currentPlayer);
                                 playerSetupSettlementLeft--;
                             }
+                            // If the main game is in progress and the user has the needed cards
+                            else if (findCards(1, 1) && findCards(2, 1) && findCards(3, 1) && findCards(4, 1)) {
+                                if (canBuildSettlement(settlementNodes.get(i))) {
+                                    // Remove the cards from the player's deck
+                                    // Remove 1 clay and 1 wood
+                                    cards[currentPlayer].remove(new Integer(1));
+                                    cards[currentPlayer].remove(new Integer(2));
+                                
+                                    // Set the road's player to the current player
+                                    settlementNodes.get(i).setPlayer(currentPlayer);
+                                }
+                                // If the player could not build there
+                                else { 
+                                    // Print out why the player could not build there
+                                    instructionLbl.setText("Sorry but you can't build a settlement there."); 
+                                    subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
+                                }
+                            }
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
                             subInstructionLbl.setText("Try building where there isn't already another settlements");
@@ -544,6 +568,8 @@ public class GamePanel extends javax.swing.JPanel {
                         // Stop building and hide the hitboxes
                         buildingObject = 0;
                         showSettlementHitbox = false;
+                        // Change the button back to the build button
+                        buildBtn.setText("Build");
                         // Redraw the board
                         repaint();
                     }
@@ -649,6 +675,45 @@ public class GamePanel extends javax.swing.JPanel {
         return false;
     }
     
+    /**
+     * Check if the player can build a settlement on the given node
+     * @param settlement The settlement node to check if the user can build on
+     * @return If the player can build on it
+     */
+    private boolean canBuildSettlement(NodeSettlement settlement) {
+        
+        // Record how many of the 3 nodes are owned by other players
+        // And if one of the connected roads belong to the current player
+        int otherPlayerNumber = 0;
+        boolean currentPlayerHasRoad = false; // If the current player has a road connected to this node
+        for (int i = 1; i <= 3; i++) {
+            // If the road belongs to the player
+            if (settlement.getRoad(i).getPlayer() == currentPlayer) {
+                // Then store that the user has a road connecting to this place
+                currentPlayerHasRoad = true;
+            }
+            // If the road belongs to a different player (and is owned)
+            else if (settlement.getRoad(i).getPlayer() > 0) {
+                // Check if this is the second time the same other player's road was found
+                if (settlement.getRoad(i).getPlayer() == otherPlayerNumber) {
+                    // Then the other player has a road going through and past this point,
+                    // Blocking any other player from building a settlement there
+                    return false; // Node is blocked, cannot build here
+                }
+                // Record the number
+                otherPlayerNumber = settlement.getRoad(i).getPlayer();
+            }
+        }
+
+        // If the current player owns a connected road, and the code didnt return above,
+        if (currentPlayerHasRoad) {
+            // Then the player can build here
+            return true;
+        }
+            
+        // If the user cannot build here
+        return false;
+    }
     /**
      * Roll both of the 6 sided dice and act according to the roll. 7 Will
      * trigger thief movement, and other values give resources. The roll is done
