@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import textures.ImageRef;
 
@@ -32,7 +33,9 @@ public class GamePanel extends javax.swing.JPanel {
 
     private final GameFrame superFrame; //ref to the JFrame this kept in
 
-    private static String saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.save";
+    private static String saveAddress; //The path to where to save to
+    private static JFileChooser saveFileChooser;
+    private static int userSaveSelection;
 
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
     private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
@@ -117,6 +120,12 @@ public class GamePanel extends javax.swing.JPanel {
         showSettlementHitbox = false;
         playerSetupRoadsLeft = 2;
         playerSetupSettlementLeft = 2;
+
+        //set a deflaut save path
+        saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.save";
+        //initialize the filechooser
+        saveFileChooser = new JFileChooser();
+        saveFileChooser.setDialogTitle("Select a file to save Settlers of Catan to:");
 
         // Fill the list of card ArrayLists with new ArrayLists ()
         for (int i = 0; i < cards.length; i++) {
@@ -287,13 +296,22 @@ public class GamePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        //save the game and only close if it is successful
-        if (save()) {
+        //get the location to save to
+        userSaveSelection = saveFileChooser.showSaveDialog(this);
 
-            // Hide this window and show the main menu
-            superFrame.getMainMenu().setVisible(true); //show the main menu
-            superFrame.setVisible(false); //hide the parent frame 
+        //set the selected address
+        if (userSaveSelection == JFileChooser.APPROVE_OPTION) {
+            saveAddress = saveFileChooser.getSelectedFile().getPath();
+            System.out.println(saveAddress);
+            //save the game and only close if it is successful
+            if (save()) {
+
+                // Hide this window and show the main menu
+                superFrame.getMainMenu().setVisible(true); //show the main menu
+                superFrame.setVisible(false); //hide the parent frame 
+            }
         }
+
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void buildBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildBtnActionPerformed
@@ -605,9 +623,49 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public boolean writeToFile(String writeAdress) throws FileNotFoundException {
         try {
-            PrintWriter myFile = new PrintWriter(writeAdress);
-            myFile.println("Test Save");
-            myFile.close();
+            PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
+            saveFile.println("SettlersOfCatanSave"); //write a header to easily identify Settlers of Catan save files for loading
+            
+            //Add the tile data
+            saveFile.println("Tiles:");
+            for (int i = 0; i < tiles.size() - 1; i++) { //loop thorugh all the tiles and add it to the save file. Ignore the last null tile
+                saveFile.println("Tile number");
+                saveFile.println(i);
+                saveFile.println("Type:"); 
+                saveFile.println(tiles.get(i).getType()); 
+                saveFile.println("Has Thief:"); 
+                saveFile.println(tiles.get(i).hasThief()); 
+                saveFile.println("Harvesting Dice Roll:");  
+                saveFile.println(tiles.get(i).getHarvestRollNum()); 
+                saveFile.println(); //add a line break below
+            }
+            
+            //Add the road node data
+            saveFile.println("NodeRoads:");
+            for (int i = 0; i < roadNodes.size() - 1; i++) {
+                saveFile.println("Road node number:");
+                saveFile.println(i);
+                saveFile.println("Player ID:");
+                saveFile.println(roadNodes.get(i).getPlayer());
+                saveFile.println(); //add a line break below
+            }
+            
+            //Add the settlement node data
+            saveFile.println("NodeSettlements:");
+            for (int i = 0; i < settlementNodes.size() - 1; i++) {
+                saveFile.println("Settlement node number:");
+                saveFile.println(i);
+                saveFile.println("Player ID:");
+                saveFile.println(settlementNodes.get(i).getPlayer());
+                saveFile.println("Is Large:");
+                saveFile.println(settlementNodes.get(i).isLarge());
+                saveFile.println(); //add a line break below
+            }
+            
+            
+            //add the
+            
+            saveFile.close();
             return true;
         } catch (Exception e) {
             return false;
