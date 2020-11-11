@@ -533,8 +533,8 @@ public class GamePanel extends javax.swing.JPanel {
                                 }
                             }
                             else { // If the user does not have the card they need
-                                System.out.println("Player does not have the needed cards");
-                                
+                                instructionLbl.setText("Sorry but you don't have the right cards.");
+                                subInstructionLbl.setText("The cards needed are shown on the top right");
                             }
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses road.");
@@ -596,6 +596,11 @@ public class GamePanel extends javax.swing.JPanel {
                                     subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
                                 }
                             }
+                            else { // If the user does not have the card they need
+                                instructionLbl.setText("Sorry but you don't have the right cards.");
+                                subInstructionLbl.setText("The cards needed are shown on the top right");
+                            }
+                            
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
                             subInstructionLbl.setText("Try building where there isn't already another settlements");
@@ -643,6 +648,10 @@ public class GamePanel extends javax.swing.JPanel {
                                     
                                     // Increment the player's victory point counter
                                     victoryPoints[currentPlayer]++;
+                                }
+                                else { // If the user does not have the card they need
+                                    instructionLbl.setText("Sorry but you don't have the right cards.");
+                                    subInstructionLbl.setText("The cards needed are shown on the top right");
                                 }
                                 
                             } else {  // If the settlement is already large
@@ -701,24 +710,53 @@ public class GamePanel extends javax.swing.JPanel {
     }
     
     /**
-     * Sort a player's cards using an insertion sorting algorithm
+     * Sort a player's list of cards using a recursive quick sort algorithm
      * @param player The player who's cards will be sorted
+     * @param left The left bounds of the segment to sort (used to recursion, set to 0)
+     * @param right The right bounds of the segment to sort (used to recursion, set to length of array - 1)
+     * @return 
      */
-    public void insertionSort(int player) {
-        
-        // Get the player's card list
+    private void quickSortCards(int player, int left, int right) {
+    
+        Integer temp; // For swapping values
+        // Get the player's ArrayList of cards
         ArrayList<Integer> array = cards[player];
         
-        //go through each index, first one is always considered sorted so skip it
-        for (int n = 1; n < array.size(); n++) {
-            Integer temp = array.get(n);
-            int j = n - 1;
-            while (j >= 0 && array.get(j) > temp) {
-                array.set(j + 1, array.get(j));
-                j = j - 1;
-            }
-            array.set(j+1, temp);
+        // If the list bounds overlap 
+        if (left >= right) {
+            // Stop sorting this branch
+            return;
         }
+    
+        // Initially set the pointers to the bounds of the array to sort
+        int i = left;
+        int j = right;
+        // Get the value in the middle of the array as the pivot point
+        int pivotValue = array.get((left+right) / 2);
+        
+        // Repeat until all of the numbers are on the correct side
+        while (i<j) {
+            // Skip over numbers that are already on the correct side
+            // Move the pointers until they are on a value that's on the wrong side
+            while (array.get(i) < pivotValue) {i++;}
+            while (array.get(j) > pivotValue) {j--;}
+           
+            // If the pointers are still on the correct side
+            if (i <= j) {
+                // Swap the values on each side of the pivot point
+                temp = array.get(i);
+                array.set(i, array.get(j));
+                array.set(j ,temp);
+                // Move both pointers
+                i++;
+                j--;
+            }
+        }
+        
+        // Recursively call the algorithm on the left side of the pivot point
+        quickSortCards(player, left, j);
+        // Recursively call the algorithm on the right side of the pivot point
+        quickSortCards(player, i, right);
     }
     
     /**
@@ -885,8 +923,8 @@ public class GamePanel extends javax.swing.JPanel {
         
         // Sort every player's cards
         for (int i = 1; i < cards.length; i++) {
-            // Sort the player's cards
-            insertionSort(i);
+            // Sort the player's cards using a quick sort algorithm
+            quickSortCards(i, 0, cards[i].size()-1);
         }
         
     }
