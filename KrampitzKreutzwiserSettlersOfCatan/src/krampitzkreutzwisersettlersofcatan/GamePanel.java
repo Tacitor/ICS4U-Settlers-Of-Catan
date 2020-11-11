@@ -678,7 +678,25 @@ public class GamePanel extends javax.swing.JPanel {
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
             saveFile.println("SettlersOfCatanSave"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("thiefMoveCounter:");
+            saveFile.println(thiefMoveCounter);
+            saveFile.println("victoryPointsToWin:");
+            saveFile.println(victoryPointsToWin);
+            
+            saveFile.println("Total cards collected:");
+            for (int i = 0; i < totalCardsCollected.length; i++) { 
+                saveFile.println(totalCardsCollected[i]);
+            }
 
+            saveFile.println();
+            
+            saveFile.println("victoryPoints:");
+            for (int i = 1; i < victoryPoints.length; i++) { 
+                saveFile.println(victoryPoints[i]);
+            }
+            
+            saveFile.println();
+            
             //add the card data
             saveFile.println("Cards:");
             for (int i = 1; i < cards.length; i++) {
