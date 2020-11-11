@@ -16,4 +16,4 @@ The manual can be found [here](https://docs.google.com/document/d/1QKhQxhj773bPq
 
 ### Bugs and Issues
 
-Please report and bugs or issues on the [issue tracker](https://docs.google.com/document/d/1QKhQxhj773bPqVhxTzyTDrKYvnO2Q0CqAzI3E8s_Rhw/edit?usp=sharing)
+Please report and bugs or issues on the [issue tracker](https://github.com/Evan-Kreutzwiser/ICS4U-Settlers-Of-Catan/issues)
