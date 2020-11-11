@@ -1,8 +1,111 @@
-How to use the application:
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+Settlers of Catan - ICS4U Addition
 
-Rules:
+By: Lukas Krampitz, and Evan Kreutzwiser
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+Introduction:
+Settlers of Catan - ICS4U Addition is a digital version of the popular board game Settlers of Catan. It is written in Java by students of Centennial CVI. Enjoy a lovely game of Settlers of Catan on your computer with your friends.
+
+Table Of Contents:
+ 1. Installation
+ 2. Startup 
+ 3. Main Menu
+     a. New Game
+     b. Load Game
+     c. Credits
+     e. User Manual
+     f. Exit
+ 4. Objective Of Game
+ 5. Initial Setup
+ 6. Turns
+ 7. Resources
+ 8. Building
+ 9. Termination
+     a. Saving
+     b. Natural end
+
+1. Installation
+There is no installation required as the game is standalone. 
+
+Requirements:
+    Have Java 8 or higher installed
+    Download the game file from https://github.com/Evan-Kreutzwiser/ICS4U-Settlers-Of-Catan
+
+2. Startup 
+The program can be started by double clicking on the “Settlers of Catan - ICS4U.jar" file. The first thing shown upon start up is the main menu.
+
+3. Main Menu
+
+The main menu contains 5 buttons:
+
+a. New Game
+Starts a new game on a pre-generated board.
+See section 5 (initial setup) for details about starting the new game.
+
+b. Load Game
+Not available in the current version of the game.
+
+c. Credits
+Displays the credits of those who worked on the game.
+
+d. User Manual
+Displays this manual
+
+e. Exit
+Close the game
+
+4. Objective Of Game
+The goal of this game is to be the first to earn 10 victory points. Victory points are gained by building and upgrading settlements, and the first player to have 10 or more points at the end of their turn wins.
+
+5. Initial Setup
+When the game begins, players must place their initial 2 settlements and 2 roads.
+Use the build menu on the left to select what to build and then click on one of the green rectangles on the board. The green rectangles mark all of the possible positions.
+
+6. Turns
+Every turn, the virtual dice are rolled to determine which tiles will provide materials that turn. If the number rolled matches the number on the tile, and a player has a settlement on a corner of that tile, the player receives one of the resources the tile produces.
+
+During their turn, the player can build as many roads or settlements they want, as long as they have the resource cards needed to build them.
+
+At the end of the turn, the player can click the End Turn button in the top left corner of the screen below to hide their cards, then the players are given the chance to switch seats. When the next player is ready to begin their turn, they may do so by clicking the Start Turn button.
+
+7. Resources
+The board has 5 different types of resources, which are used to build roads and settlements to gain victory points.
+Resources are obtained by rolling the number displayed on the world tile of which one of your settlements lies.
+
+All players that have access to a tile with the rolled number receive their resources, regardless of it actively being their turn.
+
+Collected resources are shown as cards, which are spent to build roads or settlements.
+ 
+The 5 types of resources are:
+ 1. Clay
+ 2. Wood
+ 3. Wheat
+ 4. Sheep
+ 5. Ore
+
+8. Building
+Players can spend their resource cards to build roads and settlements or upgrade settlements on their turn. Building works similarly to the initial placement described in section 6 (Initial Setup). Players select what they want to build from the build menu, and click inside one of the green boxes to select where to build.
+
+Unlike during setup, there are restrictions on where the player can build. Settlements can only be built on spaces connected to a road owned by the player building it, and settlements cannot be built where another player already has 2 roads connect to that point
+
+Roads can only be placed where they connect to another one of the player’s roads or settlements, and roads cannot extend through the same space as another players’ settlements.
+
+Players can upgrade their existing settlements to get an extra victory point        
+The higher blue settlement cannot be placed there due to the road going through that position
+
+The box in the top right corner of the game window shows what resource cards are required to perform each build action, and how many victory points each type of building is worth
+
+9. Termination
+There are two ways to terminate the game. 
+
+a. Saving
+The first way is to exit while the game is still active and there is no winner yet.
+This can be done by clicking on the “< Save and Exit” button in the bottom left corner of the screen. Doing so brings up a file picker to select where the game is saved.
+
+Not every file format is guaranteed to work. The best option is that of a standard text file with the extension “.txt”.
+
+b. Natural end
+The other way for the game to end is naturally. In this termination a winner of the game has been declared after earning 10 victory points, and a summary message is displayed.
+
+After clicking the okay button the game terminates and returns to the main menu, where the exit button can be clicked to terminate the game.
 
