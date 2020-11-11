@@ -626,6 +626,16 @@ public class GamePanel extends javax.swing.JPanel {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
             saveFile.println("SettlersOfCatanSave"); //write a header to easily identify Settlers of Catan save files for loading
             
+            //add the card data
+            saveFile.println("Cards:");
+            for (int i = 1; i < cards.length; i++) {
+                saveFile.println("Player: " + i);
+                for (int j = 0; j < cards[i].size(); j++) {
+                    saveFile.println(cards[i].get(j));
+                }
+                saveFile.println();
+            }
+            
             //Add the tile data
             saveFile.println("Tiles:");
             for (int i = 0; i < tiles.size() - 1; i++) { //loop thorugh all the tiles and add it to the save file. Ignore the last null tile
