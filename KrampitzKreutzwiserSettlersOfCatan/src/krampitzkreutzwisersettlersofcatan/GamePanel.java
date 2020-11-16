@@ -50,6 +50,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
     private final int playerCount; // The number of players in the game
+    private final boolean giveStartingResources; // If players get startup resources
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final int victoryPoints[];
     private final int totalCardsCollected[];
@@ -108,6 +109,11 @@ public class GamePanel extends javax.swing.JPanel {
      * @param frame ref to the frame
      */
     public GamePanel(GameFrame frame) {
+
+        // Initialize settings variables
+        giveStartingResources = true;        
+        playerCount = 2; // 2 Player game
+
         // Initalize variables
         superFrame = frame; //save refernce
         tiles = new ArrayList(); //init the master tile array list
@@ -115,7 +121,6 @@ public class GamePanel extends javax.swing.JPanel {
         roadNodes = new ArrayList(); // Init the road node array list
         inSetup = true;
         inbetweenTurns = false;
-        playerCount = 2; // 2 Player game
         currentPlayer = 1; // Player 1 starts
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
@@ -460,7 +465,13 @@ public class GamePanel extends javax.swing.JPanel {
             if (currentPlayer > playerCount) {
                 currentPlayer = 1;
                 // If the game was in setup, all of the turns have ended now and the normal game can begin
-                inSetup = false;
+                if (inSetup) {
+                    inSetup = false;
+                    // If enabled. give everyone their starting resources
+                    if (giveStartingResources) {
+                    collectMaterials(0); // 0 makes it collect everything possible
+                    }
+                }
             }
 
             // If the game is still in setup, give the next player roads to place
@@ -1031,7 +1042,8 @@ public class GamePanel extends javax.swing.JPanel {
      * the collected resources to the owner of the settlements collecting them
      *
      * @param harvestNumber The harvesting roll that selects which tiles to
-     * harvest from
+     * harvest from. A value of 0 will collect from every tile regardless of the
+     * tiles' harvest numbers.
      */
     private void collectMaterials(int harvestNumber) {
         NodeSettlement settlement; // Hold the settlement being searched
@@ -1052,8 +1064,10 @@ public class GamePanel extends javax.swing.JPanel {
                     if (settlement.getTile(j) != null) {
                         // If the tile has the same harvest number
                         // And doesnt have the thief on it
-                        if (settlement.getTile(j).getHarvestRollNum() == harvestNumber
-                                && settlement.getTile(j).hasThief() == false) {
+                        if ((settlement.getTile(j).getHarvestRollNum() == harvestNumber
+                                && settlement.getTile(j).hasThief() == false)
+                                // Or if every tile is to be harvested from (passed harvest number is 0)
+                                || harvestNumber == 0) {
                             // Give the player the tile's resource
                             cards[player].add(settlement.getTile(j).getType());
                             // Add the collected card to the card counter
