@@ -69,21 +69,19 @@ public class GamePanel extends javax.swing.JPanel {
     //images for the roads
     private final static Image RED_ROAD_H = new ImageIcon(ImageRef.class.getResource("redRoadH.png")).getImage(); //horizontal road
     private final static Image BLUE_ROAD_H = new ImageIcon(ImageRef.class.getResource("blueRoadH.png")).getImage();
-    private final static Image BLANK_ROAD_H = new ImageIcon(ImageRef.class.getResource("blankRoadH.png")).getImage();
     private final static Image RED_ROAD_R = new ImageIcon(ImageRef.class.getResource("redRoadR.png")).getImage(); //diagonal to the right (refernce point is the top of the road)
     private final static Image BLUE_ROAD_R = new ImageIcon(ImageRef.class.getResource("blueRoadR.png")).getImage();
-    private final static Image BLANK_ROAD_R = new ImageIcon(ImageRef.class.getResource("blankRoadR.png")).getImage();
     private final static Image RED_ROAD_L = new ImageIcon(ImageRef.class.getResource("redRoadL.png")).getImage(); //diagonal to the left
     private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage();
-    private final static Image BLANK_ROAD_L = new ImageIcon(ImageRef.class.getResource("blankRoadL.png")).getImage();
+    private final static Image BLANK_ROAD_H = new ImageIcon(ImageRef.class.getResource("blankRoadH.png")).getImage(); // Blank images for horizontal
+    private final static Image BLANK_ROAD_V = new ImageIcon(ImageRef.class.getResource("blankRoadV.png")).getImage(); // and non horizontal roads
 
     //images for the settlements
     private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage();
     private final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("redHouseL.png")).getImage();
-    private final static Image BLANK_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blankHouseL.png")).getImage();
     private final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blueHouseS.png")).getImage();
     private final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("redHouseS.png")).getImage();
-    private final static Image BLANK_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blankHouseS.png")).getImage();
+    private final static Image BLANK_HOUSE = new ImageIcon(ImageRef.class.getResource("blankHouse.png")).getImage(); // Blank image for unowned settlement nodes 
 
     //image for the thief
     private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
@@ -1222,7 +1220,7 @@ public class GamePanel extends javax.swing.JPanel {
                 case 1: // Road pointing to the top left ( \ ) 
                     // Store the road image for the player's color
                     if (road.getPlayer() == 0) {
-                        image = BLANK_ROAD_L;
+                        image = BLANK_ROAD_V;
                     } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_L;
                     } else {
@@ -1232,7 +1230,7 @@ public class GamePanel extends javax.swing.JPanel {
                 case 2: // Road pointing to the top right ( / ) 
                     // Store the road image for the player's color
                     if (road.getPlayer() == 0) {
-                        image = BLANK_ROAD_R;
+                        image = BLANK_ROAD_V;
                     } else if (road.getPlayer() == 1 || road.getPlayer() == 0) {
                         image = RED_ROAD_R;
                     } else {
@@ -1263,12 +1261,13 @@ public class GamePanel extends javax.swing.JPanel {
             // Get the settlement node from the ArrayList
             settlement = settlementNodes.get(i);
 
-            // Check the size of the settlement to see which image to use
-            if (settlement.isLarge() == false) { // Small settlement
+            // If the settlement is unowned use the blank image
+            if (settlement.getPlayer() == 0) {
+                image = BLANK_HOUSE;
+            } // Otherwise, check the size of the settlement to see which image to use
+            else if (settlement.isLarge() == false) { // Small settlement
                 // Store the small settlement image for the player's color
-                if (settlement.getPlayer() == 0) {
-                    image = BLANK_HOUSE_S;
-                } else if (settlement.getPlayer() == 1) {
+                if (settlement.getPlayer() == 1) {
                     image = RED_HOUSE_S;
                 } // Player 1: Red
                 else {
@@ -1276,9 +1275,7 @@ public class GamePanel extends javax.swing.JPanel {
                 } // Player 2: Blue
             } else { // Large settlement
                 // Store the large settlement image for the player's color
-                if (settlement.getPlayer() == 0) {
-                    image = BLANK_HOUSE_L;
-                } else if (settlement.getPlayer() == 1) {
+                if (settlement.getPlayer() == 1) {
                     image = RED_HOUSE_L;
                 } // Player 1: Red
                 else {
