@@ -1195,7 +1195,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
-            g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
+            g2d.drawImage(tiles.get(i).getImage(), (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()), (int) (tiles.get(i).getYPos() / 1080.0 * superFrame.getHeight()), getImgWidth(tiles.get(i).getImage()), getImgHeight(tiles.get(i).getImage()), null);
 
             //draw the resource harvest number only if it is not a desert
             if (tiles.get(i).getType() != 0) {

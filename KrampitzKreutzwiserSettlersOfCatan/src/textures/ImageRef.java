@@ -7,7 +7,6 @@ package textures;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
-import krampitzkreutzwisersettlersofcatan.GameFrame;
 
 /**
  *
