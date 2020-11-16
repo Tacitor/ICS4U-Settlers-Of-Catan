@@ -193,6 +193,7 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl = new javax.swing.JLabel();
         diceRollLbl = new javax.swing.JLabel();
         diceRollPromptLbl1 = new javax.swing.JLabel();
+        backNoSaveBtn = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -249,6 +250,13 @@ public class GamePanel extends javax.swing.JPanel {
         diceRollPromptLbl1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         diceRollPromptLbl1.setText("You rolled a: ");
 
+        backNoSaveBtn.setText("< Exit without saving");
+        backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backNoSaveBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -265,7 +273,6 @@ public class GamePanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(buildSettlementSRBtn)
-                            .addComponent(backBtn)
                             .addComponent(turnSwitchBtn)
                             .addComponent(buildMenuLbl)
                             .addComponent(buildRoadRbtn)
@@ -278,7 +285,12 @@ public class GamePanel extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap(1163, Short.MAX_VALUE))))
+                        .addContainerGap(1167, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -305,7 +317,9 @@ public class GamePanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(diceRollPromptLbl1)
                     .addComponent(diceRollLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 676, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 651, Short.MAX_VALUE)
+                .addComponent(backNoSaveBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -401,7 +415,7 @@ public class GamePanel extends javax.swing.JPanel {
                     showSettlementHitbox = true;
                     repaint();
                 }
-                
+
             } else {
                 buildingObject = -1;
                 System.out.println("An error has occoured while building");
@@ -499,6 +513,17 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
     }//GEN-LAST:event_turnSwitchBtnActionPerformed
+
+    private void backNoSaveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backNoSaveBtnActionPerformed
+        int overwrite;
+        overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
+        //If the user really want to leave let them
+        if (overwrite == 0) {
+            // Hide this window and show the main menu
+            superFrame.getMainMenu().setVisible(true); //show the main menu
+            superFrame.setVisible(false); //hide the parent frame 
+        }
+    }//GEN-LAST:event_backNoSaveBtnActionPerformed
 
     /**
      * Handles mouse input, based on the state of the game
@@ -606,7 +631,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     cards[currentPlayer].remove(new Integer(2));
                                     cards[currentPlayer].remove(new Integer(3));
                                     cards[currentPlayer].remove(new Integer(4));
-                                
+
                                     // Set the settlement's player to the current player
                                     settlementNodes.get(i).setPlayer(currentPlayer);
 
@@ -618,12 +643,11 @@ public class GamePanel extends javax.swing.JPanel {
                                     instructionLbl.setText("Sorry but you can't build a settlement there.");
                                     subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
                                 }
-                            }
-                            else { // If the user does not have the card they need
+                            } else { // If the user does not have the card they need
                                 instructionLbl.setText("Sorry but you don't have the right cards.");
                                 subInstructionLbl.setText("The cards needed are shown on the top right");
                             }
-                            
+
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
                             subInstructionLbl.setText("Try building where there isn't already another settlements");
@@ -640,7 +664,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else if (buildingObject == 3) { //large house
-                
+
                 //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
                 for (int i = 0; i < settlementNodes.size(); i++) {
 
@@ -649,13 +673,13 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getX() < settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2 + RED_HOUSE_S.getWidth(null)
                             && event.getY() > settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2
                             && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
-                     
+
                         // Check that the current player owns settlement
                         if (settlementNodes.get(i).getPlayer() == currentPlayer) {
 
                             // Check that the settlement isn't already large
                             if (settlementNodes.get(i).isLarge() == false) {
-                                
+
                                 // Make sure the player has the right materials
                                 if (findCards(3, 2) && findCards(5, 3)) {
                                     // Remove the cards from the player's deck
@@ -665,18 +689,17 @@ public class GamePanel extends javax.swing.JPanel {
                                     cards[currentPlayer].remove(new Integer(5));
                                     cards[currentPlayer].remove(new Integer(5));
                                     cards[currentPlayer].remove(new Integer(5));
-                                
+
                                     // Make the settlement large
                                     settlementNodes.get(i).setLarge(true);
-                                    
+
                                     // Increment the player's victory point counter
                                     victoryPoints[currentPlayer]++;
-                                }
-                                else { // If the user does not have the card they need
+                                } else { // If the user does not have the card they need
                                     instructionLbl.setText("Sorry but you don't have the right cards.");
                                     subInstructionLbl.setText("The cards needed are shown on the top right");
                                 }
-                                
+
                             } else {  // If the settlement is already large
                                 instructionLbl.setText("Sorry but settlement is already large.");
                                 subInstructionLbl.setText("Try upgrading a small settlement");
@@ -685,7 +708,7 @@ public class GamePanel extends javax.swing.JPanel {
                             instructionLbl.setText("Sorry but you can't upgrade someone elses settlements.");
                             subInstructionLbl.setText("Try upgrading your own settlement");
                         }
-                        
+
                         // Stop building and hide the hitboxes
                         buildingObject = 0;
                         showSettlementHitbox = false;
@@ -750,21 +773,21 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(thiefMoveCounter);
             saveFile.println("victoryPointsToWin:");
             saveFile.println(victoryPointsToWin);
-            
+
             saveFile.println("Total cards collected:");
-            for (int i = 0; i < totalCardsCollected.length; i++) { 
+            for (int i = 0; i < totalCardsCollected.length; i++) {
                 saveFile.println(totalCardsCollected[i]);
             }
 
             saveFile.println();
-            
+
             saveFile.println("victoryPoints:");
-            for (int i = 1; i < victoryPoints.length; i++) { 
+            for (int i = 1; i < victoryPoints.length; i++) {
                 saveFile.println(victoryPoints[i]);
             }
-            
+
             saveFile.println();
-            
+
             //add the card data
             saveFile.println("Cards:");
             for (int i = 1; i < cards.length; i++) {
@@ -853,48 +876,55 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Sort a player's list of cards using a recursive quick sort algorithm
+     *
      * @param player The player who's cards will be sorted
-     * @param left The left bounds of the segment to sort (used to recursion, set to 0)
-     * @param right The right bounds of the segment to sort (used to recursion, set to length of array - 1)
-     * @return 
+     * @param left The left bounds of the segment to sort (used to recursion,
+     * set to 0)
+     * @param right The right bounds of the segment to sort (used to recursion,
+     * set to length of array - 1)
+     * @return
      */
     private void quickSortCards(int player, int left, int right) {
-    
+
         Integer temp; // For swapping values
         // Get the player's ArrayList of cards
         ArrayList<Integer> array = cards[player];
-        
+
         // If the list bounds overlap 
         if (left >= right) {
             // Stop sorting this branch
             return;
         }
-    
+
         // Initially set the pointers to the bounds of the array to sort
         int i = left;
         int j = right;
         // Get the value in the middle of the array as the pivot point
-        int pivotValue = array.get((left+right) / 2);
-        
+        int pivotValue = array.get((left + right) / 2);
+
         // Repeat until all of the numbers are on the correct side
-        while (i<j) {
+        while (i < j) {
             // Skip over numbers that are already on the correct side
             // Move the pointers until they are on a value that's on the wrong side
-            while (array.get(i) < pivotValue) {i++;}
-            while (array.get(j) > pivotValue) {j--;}
-           
+            while (array.get(i) < pivotValue) {
+                i++;
+            }
+            while (array.get(j) > pivotValue) {
+                j--;
+            }
+
             // If the pointers are still on the correct side
             if (i <= j) {
                 // Swap the values on each side of the pivot point
                 temp = array.get(i);
                 array.set(i, array.get(j));
-                array.set(j ,temp);
+                array.set(j, temp);
                 // Move both pointers
                 i++;
                 j--;
             }
         }
-        
+
         // Recursively call the algorithm on the left side of the pivot point
         quickSortCards(player, left, j);
         // Recursively call the algorithm on the right side of the pivot point
@@ -1067,7 +1097,7 @@ public class GamePanel extends javax.swing.JPanel {
         // Sort every player's cards
         for (int i = 1; i < cards.length; i++) {
             // Sort the player's cards using a quick sort algorithm
-            quickSortCards(i, 0, cards[i].size()-1);
+            quickSortCards(i, 0, cards[i].size() - 1);
         }
 
     }
@@ -1124,7 +1154,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Display the output in a JOptionPane
         JOptionPane.showMessageDialog(this, msg, "Game Over", JOptionPane.PLAIN_MESSAGE);
-      
+
         // Close the game panel
         // Hide this window and show the main menu
         superFrame.getMainMenu().setVisible(true); //show the main menu
@@ -1501,6 +1531,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
+    private javax.swing.JButton backNoSaveBtn;
     private javax.swing.JButton buildBtn;
     private javax.swing.JLabel buildMenuLbl;
     private javax.swing.JRadioButton buildRoadRbtn;

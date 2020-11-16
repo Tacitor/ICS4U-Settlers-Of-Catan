@@ -44,7 +44,6 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="buildSettlementSRBtn" min="-2" max="-2" attributes="0"/>
-                          <Component id="backBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="turnSwitchBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="buildMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="buildRoadRbtn" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -61,7 +60,14 @@
                               <Component id="buildSettlementLRBtn" alignment="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="1163" max="32767" attributes="0"/>
+                      <EmptySpace pref="1167" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="backBtn" alignment="0" max="32767" attributes="0"/>
+                          <Component id="backNoSaveBtn" alignment="0" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -94,7 +100,9 @@
                   <Component id="diceRollPromptLbl1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="diceRollLbl" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="676" max="32767" attributes="0"/>
+              <EmptySpace pref="651" max="32767" attributes="0"/>
+              <Component id="backNoSaveBtn" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="backBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -204,6 +212,14 @@
         </Property>
         <Property name="text" type="java.lang.String" value="You rolled a: "/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="backNoSaveBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&lt; Exit without saving"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backNoSaveBtnActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
