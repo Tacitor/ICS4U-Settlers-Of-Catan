@@ -88,9 +88,6 @@ public class GamePanel extends javax.swing.JPanel {
     //image for the thief
     private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
 
-    //the image for the water ring
-    private final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();
-
     //the image for the building materials
     private final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
 
@@ -1192,9 +1189,9 @@ public class GamePanel extends javax.swing.JPanel {
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
         g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
-
+        
         //draw the ring of water
-        g2d.drawImage(WATER_RING, 1920 / 2 - WATER_RING.getWidth(null) / 2, 1080 / 2 - WATER_RING.getHeight(null) / 2, null);
+        g2d.drawImage(ImageRef.WATER_RING, superFrame.getWidth() / 2 - ImageRef.getImgWidth(superFrame, ImageRef.WATER_RING) / 2, superFrame.getHeight() / 2 - ImageRef.getImgHeight(superFrame, ImageRef.WATER_RING) / 2, ImageRef.getImgWidth(superFrame, ImageRef.WATER_RING), ImageRef.getImgHeight(superFrame, ImageRef.WATER_RING), null);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
@@ -1363,8 +1360,8 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
         // Add alignment lines
-        // g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
-        // g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
+        g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
+        g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
     }
 
     /**
