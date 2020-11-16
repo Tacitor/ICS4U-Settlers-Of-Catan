@@ -727,7 +727,7 @@ public class GamePanel extends javax.swing.JPanel {
     /**
      * Save game data to a file
      */
-    public boolean save() {
+    private boolean save() {
         boolean success = false;
 
         //try and create the save file
@@ -765,7 +765,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param writeAdress
      * @throws FileNotFoundException
      */
-    public boolean writeToFile(String writeAdress) throws FileNotFoundException {
+    private boolean writeToFile(String writeAdress) throws FileNotFoundException {
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
             saveFile.println("SettlersOfCatanSave"); //write a header to easily identify Settlers of Catan save files for loading
@@ -1396,7 +1396,7 @@ public class GamePanel extends javax.swing.JPanel {
      * Create the board's node network of settlements and roads. All of the node
      * data is read from files
      */
-    public final void loadNodes() {
+    private final void loadNodes() {
 
         // Declare node attribute arrays
         // Settlement attribute arrayLists
@@ -1500,7 +1500,7 @@ public class GamePanel extends javax.swing.JPanel {
     /**
      * read in the tile positions
      */
-    public final void loadTilePos() {
+    private final void loadTilePos() {
 
         // Declare variables
         Scanner fileReader;
