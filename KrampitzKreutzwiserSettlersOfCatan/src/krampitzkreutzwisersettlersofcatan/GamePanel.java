@@ -1191,7 +1191,7 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
         
         //draw the ring of water
-        g2d.drawImage(ImageRef.WATER_RING, superFrame.getWidth() / 2 - ImageRef.getImgWidth(superFrame, ImageRef.WATER_RING) / 2, superFrame.getHeight() / 2 - ImageRef.getImgHeight(superFrame, ImageRef.WATER_RING) / 2, ImageRef.getImgWidth(superFrame, ImageRef.WATER_RING), ImageRef.getImgHeight(superFrame, ImageRef.WATER_RING), null);
+        g2d.drawImage(ImageRef.WATER_RING, superFrame.getWidth() / 2 - getImgWidth(ImageRef.WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(ImageRef.WATER_RING) / 2, getImgWidth(ImageRef.WATER_RING), getImgHeight(ImageRef.WATER_RING), null);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
@@ -1362,6 +1362,14 @@ public class GamePanel extends javax.swing.JPanel {
         // Add alignment lines
         g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
+    }
+    
+    public int getImgWidth(Image image) {
+        return (int) (image.getWidth(null) / 1920.0 * superFrame.getWidth());
+    }
+    
+    public int getImgHeight(Image image) {
+        return (int) (image.getHeight(null) / 1080.0 * superFrame.getHeight());
     }
 
     /**

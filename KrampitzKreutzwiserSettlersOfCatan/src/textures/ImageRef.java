@@ -21,12 +21,4 @@ public class ImageRef {
     public ImageRef() {
     }
     
-    public static int getImgWidth(GameFrame frame, Image image) {
-        return (int) (image.getWidth(null) / 1920.0 * frame.getWidth());
-    }
-    
-    public static int getImgHeight(GameFrame frame, Image image) {
-        return (int) (image.getHeight(null) / 1080.0 * frame.getHeight());
-    }
-    
 }
