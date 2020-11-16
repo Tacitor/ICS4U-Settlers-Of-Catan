@@ -61,6 +61,9 @@ public class UserManualUI extends javax.swing.JFrame {
         
         // Display the file's contents from the string
         userManualTxtAr.setText(fileContents);
+        
+        // Move the invisble caret to the begining of the text to scroll to the top
+        userManualTxtAr.setCaretPosition(0);
     }
     
     /**
