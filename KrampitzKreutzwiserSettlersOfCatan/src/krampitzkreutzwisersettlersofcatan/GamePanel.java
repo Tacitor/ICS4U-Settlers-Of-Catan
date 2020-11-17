@@ -1189,14 +1189,18 @@ public class GamePanel extends javax.swing.JPanel {
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
         g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
-        
+
         //draw the ring of water
         g2d.drawImage(ImageRef.WATER_RING, superFrame.getWidth() / 2 - getImgWidth(ImageRef.WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(ImageRef.WATER_RING) / 2, getImgWidth(ImageRef.WATER_RING), getImgHeight(ImageRef.WATER_RING), null);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
-            g2d.drawImage(tiles.get(i).getImage(), (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()), (int) (tiles.get(i).getYPos() / 1080.0 * superFrame.getHeight()), getImgWidth(tiles.get(i).getImage()), getImgHeight(tiles.get(i).getImage()), null);
-
+            if (superFrame.getWidth() > superFrame.getHeight()) {
+                g2d.drawImage(tiles.get(i).getImage(), (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()), (int) (tiles.get(i).getYPos() / 1080.0 * superFrame.getHeight()), getImgWidth(tiles.get(i).getImage()), getImgHeight(tiles.get(i).getImage()), null);
+            } else {
+                g2d.drawImage(tiles.get(i).getImage(), (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()), (int) (tiles.get(i).getYPos() / 1080.0 * superFrame.getHeight()), getImgWidth(tiles.get(i).getImage()), getImgHeight(tiles.get(i).getImage()), null);
+            }
+            
             //draw the resource harvest number only if it is not a desert
             if (tiles.get(i).getType() != 0) {
                 g2d.setColor(Color.DARK_GRAY);
@@ -1363,13 +1367,23 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
     }
-    
+
     public int getImgWidth(Image image) {
-        return (int) (image.getWidth(null) / 1920.0 * superFrame.getWidth());
+
+        if (superFrame.getWidth() > superFrame.getHeight()) {
+            return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
+        } else {
+            return (int) (image.getWidth(null) / 1920.0 * superFrame.getWidth());
+        }
+
     }
-    
+
     public int getImgHeight(Image image) {
-        return (int) (image.getHeight(null) / 1080.0 * superFrame.getHeight());
+        if (superFrame.getWidth() > superFrame.getHeight()) {
+            return (int) (image.getHeight(null) / 1080.0 * superFrame.getHeight());
+        } else {
+            return (int) (getImgWidth(image) / ((float) image.getWidth(null) / image.getHeight(null)));
+        }
     }
 
     /**
@@ -1519,10 +1533,10 @@ public class GamePanel extends javax.swing.JPanel {
             // Read the entire file into an array
             for (int i = 0; i < 19; i++) {
                 for (int j = 0; j < 2; j++) {
-                    // Read the line of the file into the next index
-                    tilePos[i][j] = Integer.parseInt(fileReader.nextLine());
+                // Read the line of the file into the next index
+                tilePos[i][j] = Integer.parseInt(fileReader.nextLine());
                 }
-
+                    
                 //skip the next blank line but only if the scanner is not at the end
                 if (i < 18) {
                     fileReader.nextLine();
