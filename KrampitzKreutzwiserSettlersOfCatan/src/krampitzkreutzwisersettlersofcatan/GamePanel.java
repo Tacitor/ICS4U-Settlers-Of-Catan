@@ -167,6 +167,9 @@ public class GamePanel extends javax.swing.JPanel {
                 mouseClick(evt);
             }
         });
+
+        // Set the state of the builds buttons for the first player
+        updateBuildButtons();
     }
 
     /**
@@ -178,7 +181,7 @@ public class GamePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        buildBtnGroup = new javax.swing.ButtonGroup();
         backBtn = new javax.swing.JButton();
         turnSwitchBtn = new javax.swing.JButton();
         instructionPromptLbl = new javax.swing.JLabel();
@@ -186,7 +189,7 @@ public class GamePanel extends javax.swing.JPanel {
         buildMenuLbl = new javax.swing.JLabel();
         buildSettlementSRBtn = new javax.swing.JRadioButton();
         buildSettlementLRBtn = new javax.swing.JRadioButton();
-        buildRoadRbtn = new javax.swing.JRadioButton();
+        buildRoadRBtn = new javax.swing.JRadioButton();
         buildBtn = new javax.swing.JButton();
         subInstructionLbl = new javax.swing.JLabel();
         diceRollLbl = new javax.swing.JLabel();
@@ -220,15 +223,15 @@ public class GamePanel extends javax.swing.JPanel {
         buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         buildMenuLbl.setText("Build Menu:");
 
-        buttonGroup1.add(buildSettlementSRBtn);
+        buildBtnGroup.add(buildSettlementSRBtn);
         buildSettlementSRBtn.setText("Small Settlement");
 
-        buttonGroup1.add(buildSettlementLRBtn);
+        buildBtnGroup.add(buildSettlementLRBtn);
         buildSettlementLRBtn.setText("Large Settlement");
 
-        buttonGroup1.add(buildRoadRbtn);
-        buildRoadRbtn.setSelected(true);
-        buildRoadRbtn.setText("Road");
+        buildBtnGroup.add(buildRoadRBtn);
+        buildRoadRBtn.setSelected(true);
+        buildRoadRBtn.setText("Road");
 
         buildBtn.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
         buildBtn.setText("Build");
@@ -266,7 +269,7 @@ public class GamePanel extends javax.swing.JPanel {
                             .addComponent(backBtn)
                             .addComponent(turnSwitchBtn)
                             .addComponent(buildMenuLbl)
-                            .addComponent(buildRoadRbtn)
+                            .addComponent(buildRoadRBtn)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(instructionPromptLbl)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -292,7 +295,7 @@ public class GamePanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(buildMenuLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(buildRoadRbtn)
+                .addComponent(buildRoadRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buildSettlementSRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -346,7 +349,7 @@ public class GamePanel extends javax.swing.JPanel {
                 return;
             }
             //Update the vars
-            if (buildRoadRbtn.isSelected()) {
+            if (buildRoadRBtn.isSelected()) {
                 buildingObject = 1;
 
                 //check what mode it's in
@@ -434,7 +437,16 @@ public class GamePanel extends javax.swing.JPanel {
                 diceRoll();
                 // The dice roll function calls the material collection method to
                 // Ensure that all players get the materials they earned from the roll
+
+                // Set the instruction labels to tell the user they can build
+                instructionLbl.setText("Use your cards to build roads or settlements");
+                subInstructionLbl.setText("Or end your turn to continue the game");
+
             }
+
+            // Update the build buttons to reflect the current player's cards
+            // (Or remaining setup buildings)
+            updateBuildButtons();
 
             // Redraw the board to the next player can see their cards
             repaint();
@@ -477,6 +489,12 @@ public class GamePanel extends javax.swing.JPanel {
                 buildBtn.setText("Build");
             }
 
+            // Disable all of the building buttons
+            buildBtn.setEnabled(false);
+            buildRoadRBtn.setEnabled(false);
+            buildSettlementSRBtn.setEnabled(false);
+            buildSettlementLRBtn.setEnabled(false);
+            
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
 
@@ -538,26 +556,27 @@ public class GamePanel extends javax.swing.JPanel {
                             if (inSetup && playerSetupRoadsLeft > 0) {
                                 roadNodes.get(i).setPlayer(currentPlayer);
                                 playerSetupRoadsLeft--;
+                                // Update thwe build buttons to relfect the remaining setup buildings
+                                updateBuildButtons();
+                            } // If the real game is in progress and the player can build there
+                            else if (canBuildRoad(roadNodes.get(i))) {
+                                // The card check has already been made, and the user has the right cards
 
-                            } // If the real game is in progress and the user has the cards needed
-                            else if (findCards(1, 1) && findCards(2, 1)) {
-                                if (canBuildRoad(roadNodes.get(i))) {
-                                    // Remove the cards from the player's deck
-                                    // Remove 1 clay and 1 wood
-                                    cards[currentPlayer].remove(new Integer(1));
-                                    cards[currentPlayer].remove(new Integer(2));
+                                // Remove the cards from the player's deck
+                                // Remove 1 clay and 1 wood
+                                cards[currentPlayer].remove(new Integer(1));
+                                cards[currentPlayer].remove(new Integer(2));
 
-                                    // Set the road's player to the current player
-                                    roadNodes.get(i).setPlayer(currentPlayer);
-                                } // If the player could not build there
-                                else {
-                                    // Print out why the player could not build there
-                                    instructionLbl.setText("Sorry but you can't build a road there.");
-                                    subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
-                                }
-                            } else { // If the user does not have the card they need
-                                instructionLbl.setText("Sorry but you don't have the right cards.");
-                                subInstructionLbl.setText("The cards needed are shown on the top right");
+                                // Set the road's player to the current player
+                                roadNodes.get(i).setPlayer(currentPlayer);
+
+                                // Update the building buttons to reflect the player's new list of cards
+                                updateBuildButtons();
+                            } // If the player could not build there
+                            else {
+                                // Print out why the player could not build there
+                                instructionLbl.setText("Sorry but you can't build a road there.");
+                                subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
                             }
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses road.");
@@ -595,33 +614,33 @@ public class GamePanel extends javax.swing.JPanel {
                                 playerSetupSettlementLeft--;
                                 // Increment the player's victory point counter
                                 victoryPoints[currentPlayer]++;
-                            } // If the main game is in progress and the user has the needed cards
-                            else if (findCards(1, 1) && findCards(2, 1) && findCards(3, 1) && findCards(4, 1)) {
-                                if (canBuildSettlement(settlementNodes.get(i))) {
-                                    // Remove the cards from the player's deck
-                                    // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
-                                    cards[currentPlayer].remove(new Integer(1));
-                                    cards[currentPlayer].remove(new Integer(2));
-                                    cards[currentPlayer].remove(new Integer(3));
-                                    cards[currentPlayer].remove(new Integer(4));
+                                // Update thwe build buttons to relfect the remaining setup buildings
+                                updateBuildButtons();
+                            } // If the main game is in progress and the player can build the settlement there
+                            else if (canBuildSettlement(settlementNodes.get(i))) {
+                                // The card check has already been made, and the user has the right cards
                                 
-                                    // Set the settlement's player to the current player
-                                    settlementNodes.get(i).setPlayer(currentPlayer);
+                                // Remove the cards from the player's deck
+                                // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
+                                cards[currentPlayer].remove(new Integer(1));
+                                cards[currentPlayer].remove(new Integer(2));
+                                cards[currentPlayer].remove(new Integer(3));
+                                cards[currentPlayer].remove(new Integer(4));
 
-                                    // Increment the player's victory point counter
-                                    victoryPoints[currentPlayer]++;
-                                } // If the player could not build there
-                                else {
-                                    // Print out why the player could not build there
-                                    instructionLbl.setText("Sorry but you can't build a settlement there.");
-                                    subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
-                                }
+                                // Set the settlement's player to the current player
+                                settlementNodes.get(i).setPlayer(currentPlayer);
+
+                                // Increment the player's victory point counter
+                                victoryPoints[currentPlayer]++;
+
+                                // Update the building buttons to reflect the player's new list of cards
+                                updateBuildButtons();
+                            } // If the player could not build there
+                            else {
+                                // Print out why the player could not build there
+                                instructionLbl.setText("Sorry but you can't build a settlement there.");
+                                subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
                             }
-                            else { // If the user does not have the card they need
-                                instructionLbl.setText("Sorry but you don't have the right cards.");
-                                subInstructionLbl.setText("The cards needed are shown on the top right");
-                            }
-                            
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
                             subInstructionLbl.setText("Try building where there isn't already another settlements");
@@ -653,29 +672,25 @@ public class GamePanel extends javax.swing.JPanel {
 
                             // Check that the settlement isn't already large
                             if (settlementNodes.get(i).isLarge() == false) {
-                                
-                                // Make sure the player has the right materials
-                                if (findCards(3, 2) && findCards(5, 3)) {
-                                    // Remove the cards from the player's deck
-                                    // Remove 2 wheat, and 3 ore
-                                    cards[currentPlayer].remove(new Integer(3));
-                                    cards[currentPlayer].remove(new Integer(3));
-                                    cards[currentPlayer].remove(new Integer(5));
-                                    cards[currentPlayer].remove(new Integer(5));
-                                    cards[currentPlayer].remove(new Integer(5));
-                                
-                                    // Make the settlement large
-                                    settlementNodes.get(i).setLarge(true);
-                                    
-                                    // Increment the player's victory point counter
-                                    victoryPoints[currentPlayer]++;
-                                }
-                                else { // If the user does not have the card they need
-                                    instructionLbl.setText("Sorry but you don't have the right cards.");
-                                    subInstructionLbl.setText("The cards needed are shown on the top right");
-                                }
-                                
-                            } else {  // If the settlement is already large
+                                // The card check has already been made, and the user has the right cards
+
+                                // Remove the cards from the player's deck
+                                // Remove 2 wheat, and 3 ore
+                                cards[currentPlayer].remove(new Integer(3));
+                                cards[currentPlayer].remove(new Integer(3));
+                                cards[currentPlayer].remove(new Integer(5));
+                                cards[currentPlayer].remove(new Integer(5));
+                                cards[currentPlayer].remove(new Integer(5));
+
+                                // Make the settlement large
+                                settlementNodes.get(i).setLarge(true);
+
+                                // Increment the player's victory point counter
+                                victoryPoints[currentPlayer]++;
+
+                                // Update the building buttons to reflect the player's new list of cards
+                                updateBuildButtons();
+                            } else { // If the settlement is already large
                                 instructionLbl.setText("Sorry but settlement is already large.");
                                 subInstructionLbl.setText("Try upgrading a small settlement");
                             }
@@ -818,34 +833,151 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Search for cards of a certain type in the current player's inventory and
-     * return if they are present Uses a linear search to find the type of card,
-     * and how many copies must be found.
-     *
-     * @param type What resource type to look for
-     * @param count How many cards of the type must be found to return true
-     * @return If the user has the given number of the type of cards
+     * Update the state of the build buttons, enabling or disabling them based
+     * on how many cards the current player has, or if the game is in setup, how
+     * many setup buildings they have left to place
      */
-    private boolean findCards(int type, int count) {
+    private void updateBuildButtons() {
+    
+        boolean canBuildRoad; // If the user has enough cards to build these
+        boolean canBuildSettlement;
+        boolean canBuildCity;
+        
+        // If the game is in setup
+        if (inSetup) {
+            canBuildRoad = (playerSetupRoadsLeft > 0);
+            canBuildSettlement = (playerSetupSettlementLeft > 0);
+            canBuildCity = false; // No settlement upgrades during setup
+        } // If the game is NOT in setup
+        else {
+            // Check if the player has enough cards to use the build buttons
+            canBuildRoad =       hasCards(0); // Roads
+            canBuildSettlement = hasCards(1); // Settlements
+            canBuildCity =       hasCards(2); // Cities
+        }
+        
+        // Select the first enabled button on the list
+        if (canBuildRoad) {
+            // Select the road button
+            buildBtnGroup.setSelected(buildRoadRBtn.getModel(), true); 
+        } else if (canBuildSettlement) {
+            // Select the settlement button
+            buildBtnGroup.setSelected(buildSettlementSRBtn.getModel(), true); 
+        } else if (canBuildCity) {
+            // Select the city button
+            buildBtnGroup.setSelected(buildSettlementLRBtn.getModel(), true); 
+        } // If no buttons are selected and the game is not in setup
+        else if (inSetup == false) {
+            // If no buttons are enabled clear the selection
+            buildBtnGroup.clearSelection();
+            // Set the instruction labels to tell the player they dont have enough cards
+            instructionLbl.setText("Sorry, you don't have enough cards to build anything");
+            subInstructionLbl.setText("End your turn and collect more resources");
+        } // If no buttons are selected and the game IS in setup 
+        else {
+            // If no buttons are enabled clear the selection
+            buildBtnGroup.clearSelection();
+            // Set the instruction labels to tell the player they are out of setup buildings
+            instructionLbl.setText("You have placed all of your setup buildiongs");
+            subInstructionLbl.setText("End your turn to continue the game");
+        }
 
-        int amountFound = 0; // How many cards of the target type have been found
+        // Change the enabled/disabled state of the buttons based on whether or 
+        // not they can build the corresponding buildings
+        buildRoadRBtn.setEnabled(canBuildRoad);              // Roads
+        buildSettlementSRBtn.setEnabled(canBuildSettlement); // Settlements
+        buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
 
-        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+        // If any of the buttons are enabled, enable the build button
+        // Otherwise disable it
+        buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
+        
+        System.out.println("Player can build: " + canBuildRoad + " " + canBuildSettlement + " " + canBuildCity);
+    }
+    
+    /**
+     * Determines if the current player has enough 
+     * cards to build a type of building
+     * This replaces the old findCards method, and is more efficient
+     * @param buildingType The building type represented as an integer 
+     * (0 = road, 1 = settlement, 2 = city / upgrade settlement, 3 = development cards)
+     * @return If the current player has enough cards
+     */
+    private boolean hasCards(int buildingType) {
+
+        int listSize; // The number of cards the player has. Used to reduce calls to the size method
+        int typeToFind; // What type of card is currently being searched for
+        int amountFound;
+
+        int findCards[] = new int[6]; // How many cards of each type must be found
+        // Index 0 is unused. Numbers are stored in 1-5 to correspond to type IDs
+            
+        // Set how many of each card the user needs based on the building type
+        switch (buildingType) {
+            case 0: // Road
+                // Roads require 1 clay and 1 wood
+                findCards[1] = 1;
+                findCards[2] = 1;
+                break;
+            case 1: // Settlement
+                // Settlements require 1 clay, 1 wood, 1 wheat, and 1 sheep
+                findCards[1] = 1;
+                findCards[2] = 1;
+                findCards[3] = 1;
+                findCards[4] = 1;
+                break;
+            case 2: // City
+                // Upgrading to a city requires 2 wheat and 3 ore
+                findCards[3] = 2;
+                findCards[5] = 3;
+                break;
+            case 3: // Development card
+                // Making a development card requires 1 wheat, 1 sheep, and 1 ore
+                findCards[2] = 1;
+                findCards[3] = 1;
+                findCards[5] = 1;
+                break;
+        }
+
+        // Setup variables to begin searching
+        typeToFind = 1;
+        amountFound = 0;
+        listSize = cards[currentPlayer].size(); // Get the number of cards the player has
+
+        // Search for the cards
+        for (int i = 0; i <= listSize; i++) {
+            // If enough cards of this type have been found
+            // (Repeat until the next type to search for is reached)
+            while (findCards[typeToFind] <= amountFound) {
+                System.out.println("Found all of type " + typeToFind + "(" + findCards[typeToFind] + ") for building " + buildingType);
+                // If the loop was searching for ore, then this means all of the 
+                // required cards have been found
+                if (typeToFind == 5) {
+                    return true; // The player can build
+                }
+                // Move on to the type
+                typeToFind++;
+                // Reset the card counter
+                amountFound = 0;
+            }
+            // If the end of the list has been passed and the player didnt have 
+            // all the cards needed
+            if (i == listSize) {
+                // The player cannot build
+                return false;
+            }
+
             // If the card type matches
-            if (cards[currentPlayer].get(i) == type) {
+            if (cards[currentPlayer].get(i) == typeToFind) {
                 // Increment the counter
                 amountFound++;
-                // If the target number of cards have been found
-                if (amountFound == count) {
-                    return true; // The user has the cards
-                }
             } // The list is sorted by type, so if the type ID is greater than the target, stop searching
-            else if (cards[currentPlayer].get(i) == type) {
+            else if (cards[currentPlayer].get(i) > typeToFind) {
                 return false; // The user does not have the cards
             }
         }
-
-        // If the user does not have the cards
+        
+        // If the cards have not been found, the player cannot build
         return false;
     }
 
@@ -1499,11 +1631,11 @@ public class GamePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.JButton buildBtn;
+    private javax.swing.ButtonGroup buildBtnGroup;
     private javax.swing.JLabel buildMenuLbl;
-    private javax.swing.JRadioButton buildRoadRbtn;
+    private javax.swing.JRadioButton buildRoadRBtn;
     private javax.swing.JRadioButton buildSettlementLRBtn;
     private javax.swing.JRadioButton buildSettlementSRBtn;
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel diceRollLbl;
     private javax.swing.JLabel diceRollPromptLbl1;
     private javax.swing.JLabel instructionLbl;

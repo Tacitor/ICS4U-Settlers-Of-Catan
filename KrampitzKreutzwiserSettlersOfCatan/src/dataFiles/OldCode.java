@@ -11,6 +11,40 @@ package dataFiles;
  */
 public class OldCode {
     
+    /*
+    /**
+     * Search for cards of a certain type in the current player's inventory and
+     * return if they are present Uses a linear search to find the type of card,
+     * and how many copies must be found.
+     *
+     * @param type What resource type to look for
+     * @param count How many cards of the type must be found to return true
+     * @return If the user has the given number of the type of cards
+     /
+    private boolean findCards(int type, int count) {
+
+        int amountFound = 0; // How many cards of the target type have been found
+
+        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+            // If the card type matches
+            if (cards[currentPlayer].get(i) == type) {
+                // Increment the counter
+                amountFound++;
+                // If the target number of cards have been found
+                if (amountFound == count) {
+                    return true; // The user has the cards
+                }
+            } // The list is sorted by type, so if the type ID is greater than the target, stop searching
+            else if (cards[currentPlayer].get(i) == type) {
+                return false; // The user does not have the cards
+            }
+        }
+
+        // If the user does not have the cards
+        return false;
+    }
+    */
+    
     /*  
         //the old way to draw the board this is where the coordinates come from for the new way
         
