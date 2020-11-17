@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -853,7 +854,8 @@ public class GamePanel extends javax.swing.JPanel {
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
         boolean canBuildCity;
-        
+        ButtonModel oldSelection; // The button selected before this update began
+
         // If the game is in setup
         if (inSetup) {
             canBuildRoad = (playerSetupRoadsLeft > 0);
@@ -866,7 +868,10 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildSettlement = hasCards(1); // Settlements
             canBuildCity =       hasCards(2); // Cities
         }
-        
+
+        // Save what button was selected before this update began
+        oldSelection = buildBtnGroup.getSelection();
+
         // Select the first enabled button on the list
         if (canBuildRoad) {
             // Select the road button
@@ -899,11 +904,14 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementSRBtn.setEnabled(canBuildSettlement); // Settlements
         buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
 
+        // If the button selected before this update is still enabled, select it
+        // instead of the selection made in the if/else block above
+        if (oldSelection != null && oldSelection.isEnabled()) { // Also make sure the saved button is not null
+            buildBtnGroup.setSelected(oldSelection, true); 
+        }
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
-        
-        System.out.println("Player can build: " + canBuildRoad + " " + canBuildSettlement + " " + canBuildCity);
     }
     
     /**
@@ -960,7 +968,6 @@ public class GamePanel extends javax.swing.JPanel {
             // If enough cards of this type have been found
             // (Repeat until the next type to search for is reached)
             while (findCards[typeToFind] <= amountFound) {
-                System.out.println("Found all of type " + typeToFind + "(" + findCards[typeToFind] + ") for building " + buildingType);
                 // If the loop was searching for ore, then this means all of the 
                 // required cards have been found
                 if (typeToFind == 5) {
