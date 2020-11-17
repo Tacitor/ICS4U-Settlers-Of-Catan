@@ -27,14 +27,14 @@ public class GameFrame extends javax.swing.JFrame {
         setTitle("Settlers of Catan");
         setSize(1920, 1080); //set the size to 1080p
         //setSize(1280, 720);
-        //setSize(720, 1280);
+        setSize(847, 999);
         setDefaultCloseOperation(EXIT_ON_CLOSE); //make sure it closes the thread when the frame closes
         add(new GamePanel(this));
         setLocationRelativeTo(null); //center the frame on screen
         setResizable(false); //do not allow the user to resize the window
         //setExtendedState(JFrame.MAXIMIZED_BOTH); //this would normaly set the size to the display size but I don't want to deal with scaling elemnts nor do I have the time
         setUndecorated(true); //removes the boarders and control buttons, this makes it full screen for 1080p displays and just a really wierd borderless window for anything higher. Most likly broken for anything lower
-        setVisible(false);
+        setVisible(true);
         
     }
     
