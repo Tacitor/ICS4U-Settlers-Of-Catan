@@ -878,7 +878,7 @@ public class GamePanel extends javax.swing.JPanel {
             // If no buttons are enabled clear the selection
             buildBtnGroup.clearSelection();
             // Set the instruction labels to tell the player they are out of setup buildings
-            instructionLbl.setText("You have placed all of your setup buildiongs");
+            instructionLbl.setText("You have placed all of your setup buildings");
             subInstructionLbl.setText("End your turn to continue the game");
         }
 
