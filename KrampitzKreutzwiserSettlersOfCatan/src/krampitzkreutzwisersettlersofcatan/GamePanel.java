@@ -97,10 +97,9 @@ public class GamePanel extends javax.swing.JPanel {
     private int roadHeight;
     private int playerSetupRoadsLeft; //number of roads to place
     private int playerSetupSettlementLeft; //number of settlements to place
-    
+
     //var used for scaling
     private int tileYOffset;
-    
 
     //private Graphics awtGraphics;
     /**
@@ -170,10 +169,11 @@ public class GamePanel extends javax.swing.JPanel {
                 mouseClick(evt);
             }
         });
-        
+
         //set up the scaling vars
-        tileYOffset =  (superFrame.getHeight() / 2 - getImgHeight(ImageRef.WATER_RING)/2 + getImgHeight(tiles.get(7).getImage())) - getTileYPos(tiles.get(7));
-        
+        //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
+        tileYOffset = (superFrame.getHeight() / 2 - getImgHeight(ImageRef.WATER_RING) / 2 + getImgHeight(tiles.get(7).getImage())) - getTileYPos(tiles.get(7));
+
     }
 
     /**
@@ -1199,22 +1199,29 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
 
         //draw the ring of water
+        //also scale it to the current monitor. Coords are to center it relative to the display center
         g2d.drawImage(ImageRef.WATER_RING, superFrame.getWidth() / 2 - getImgWidth(ImageRef.WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(ImageRef.WATER_RING) / 2, getImgWidth(ImageRef.WATER_RING), getImgHeight(ImageRef.WATER_RING), null);
- 
+
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
-            if (superFrame.getWidth() < superFrame.getHeight()) {
-                g2d.drawImage(tiles.get(i).getImage(), 
-                        (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()), 
-                        getTileYPos(tiles.get(i)) + tileYOffset, 
-                        getImgWidth(tiles.get(i).getImage()), 
+
+            //draw the tiles
+            //choose a drawing type. One corrects for width and one corrects for height
+            if (superFrame.getWidth() < superFrame.getHeight()) { //for any aspect ratio where the height is the longer side
+                g2d.drawImage(tiles.get(i).getImage(),
+                        (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()), //x pos can stay the same because the width dictates the size
+
+                        //the y pos however needs to be adjusted because in the mode the size is controled 
+                        //by the width (the smaller one). Just means if a taller image is expected that gets corrected for.
+                        getTileYPos(tiles.get(i)) + tileYOffset,
+                        getImgWidth(tiles.get(i).getImage()),
                         getImgHeight(tiles.get(i).getImage()), null);
             } else {
 
-                g2d.drawImage(tiles.get(i).getImage(), 
-                        (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()), 
-                        (int) (tiles.get(i).getYPos() / 1080.0 * superFrame.getHeight()), 
-                        getImgWidth(tiles.get(i).getImage()), 
+                g2d.drawImage(tiles.get(i).getImage(),
+                        (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()), //same thing as above just the opposite
+                        (int) (tiles.get(i).getYPos() / 1080.0 * superFrame.getHeight()),
+                        getImgWidth(tiles.get(i).getImage()),
                         getImgHeight(tiles.get(i).getImage()), null);
             }
 
@@ -1385,10 +1392,23 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
     }
     
+    /**
+     * Calculates the y position BEFORE realignment of a Tile to account for the spacing add between from aspect ratio locked scaling.
+     * @param tile
+     * @return 
+     */
     public int getTileYPos(Tile tile) {
-       return (int) (tile.getYPos() / 1080.0 * superFrame.getHeight() / (1.7777777777 * ((float) superFrame.getHeight() / (float) superFrame.getWidth())));
+        return (int) (tile.getYPos() / 1080.0 * superFrame.getHeight() / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
+                //find the correct spacing factor based off a linear ration between the new apsect ratio and the internal 1080p one. 
+                //This now leaves the tiles in the incorrect position but that can be later corrected by adding a constant value to all of the tiles
+                (1.7777777777 * ((float) superFrame.getHeight() / (float) superFrame.getWidth()))); 
     }
-
+    
+    /**
+     * Calculates the new scaled width of an image with a locked aspect ratio.
+     * @param image
+     * @return 
+     */
     public int getImgWidth(Image image) {
 
         if (superFrame.getWidth() > superFrame.getHeight()) {
@@ -1398,7 +1418,12 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
     }
-
+    
+    /**
+     * Calculates the new scaled height of an image with a locked aspect ratio.
+     * @param image
+     * @return 
+     */
     public int getImgHeight(Image image) {
         if (superFrame.getWidth() > superFrame.getHeight()) {
             return (int) (image.getHeight(null) / 1080.0 * superFrame.getHeight());

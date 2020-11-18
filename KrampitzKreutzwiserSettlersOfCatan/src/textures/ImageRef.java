@@ -14,6 +14,8 @@ import javax.swing.ImageIcon;
  */
 public class ImageRef {
     
+    //store most of the images to reduce varable clutter in the main class (gamePanel)
+    
     //the image for the water ring
     public final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();
 
