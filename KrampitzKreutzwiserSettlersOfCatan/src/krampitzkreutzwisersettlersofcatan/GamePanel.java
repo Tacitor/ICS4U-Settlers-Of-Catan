@@ -182,7 +182,7 @@ public class GamePanel extends javax.swing.JPanel {
         
         //same as the y offset but now for the x
         tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(ImageRef.WATER_RING) / 2  
-                + (int) ((112.0 / 1920.0) * superFrame.getWidth()) ) 
+                + (int) ( getImgWidth(tiles.get(0).getImage()) - (getImgWidth(tiles.get(0).getImage()) / 4)) ) 
                 - getTileXPos(tiles.get(0));
 
     }
