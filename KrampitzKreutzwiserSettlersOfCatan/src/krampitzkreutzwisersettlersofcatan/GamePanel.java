@@ -1415,6 +1415,11 @@ public class GamePanel extends javax.swing.JPanel {
                 (1.7777777777 * ((float) superFrame.getHeight() / (float) superFrame.getWidth()))); 
     }
     
+    /**
+     * Calculates the x position BEFORE realignment of a Tile to account for the spacing add between from aspect ratio locked scaling.
+     * @param tile
+     * @return 
+     */
     private int getTileXPos(Tile tile) {
         return (int) (tile.getXPos() / 1920.0 * superFrame.getWidth() / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
                 //find the correct spacing factor based off a linear ration between the new apsect ratio and the internal 1080p one. 
