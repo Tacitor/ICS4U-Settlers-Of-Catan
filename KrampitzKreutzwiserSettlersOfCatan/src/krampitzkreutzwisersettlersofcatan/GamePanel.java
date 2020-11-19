@@ -101,6 +101,9 @@ public class GamePanel extends javax.swing.JPanel {
     //var used for scaling
     private int tileYOffset;
     private int tileXOffset;
+    private double scaleFactor;
+    private int newTileWidth;
+    private int newTileHeight;
 
     //private Graphics awtGraphics;
     /**
@@ -170,13 +173,16 @@ public class GamePanel extends javax.swing.JPanel {
                 mouseClick(evt);
             }
         });
+        
+        newTileWidth =  getImgWidth(tiles.get(0).getImage());
+        newTileHeight =  getImgHeight(tiles.get(0).getImage());
 
         //set up the scaling vars
         //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
         //first get a centered frame of reference
         tileYOffset = (int) ((superFrame.getHeight() / 2 - getImgHeight(ImageRef.WATER_RING) / 2 
                 //then account for the tile height
-                + getImgHeight(tiles.get(7).getImage()))
+                + newTileHeight)
                 //then subtract the current position to find the difference
                 - getTileYPos(tiles.get(7).getYPos())
                 //add some fine tuning for smaller resulutions
@@ -184,8 +190,17 @@ public class GamePanel extends javax.swing.JPanel {
         
         //same as the y offset but now for the x
         tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(ImageRef.WATER_RING) / 2  
-                + (int) ( getImgWidth(tiles.get(0).getImage()) - (getImgWidth(tiles.get(0).getImage()) / 4)) ) //get the distance from the left most vertex to the center recangle of the hexagon
+                + (int) ( newTileWidth - (newTileWidth / 4)) ) //get the distance from the left most vertex to the center recangle of the hexagon
                 - getTileXPos(tiles.get(0).getXPos());
+        
+        //set up the circle scaler
+        if (superFrame.getWidth() <= superFrame.getHeight()) {
+            scaleFactor = (1920.0 / superFrame.getWidth());
+        } else {
+            scaleFactor = (1080.0 / superFrame.getHeight());
+        }
+        
+        
         
         //apply the scaling to the tiles
         scaleTilePos();
@@ -1231,7 +1246,10 @@ public class GamePanel extends javax.swing.JPanel {
             //draw the resource harvest number only if it is not a desert
             if (tiles.get(i).getType() != 0) {
                 g2d.setColor(Color.DARK_GRAY);
-                g2d.fillOval(tiles.get(i).getXPos() + 150 / 2 - 15, tiles.get(i).getYPos() + 130 / 2 - 15, 30, 30);
+                g2d.fillOval(tiles.get(i).getXPos() + newTileWidth / 2 - ((int)(30 / scaleFactor) / 2), 
+                        tiles.get(i).getYPos() + newTileHeight / 2 - ((int)(30 / scaleFactor) / 2), 
+                        (int)(30 / scaleFactor), 
+                        (int)(30 / scaleFactor));
 
                 //check if the colour of the number
                 if (tiles.get(i).getHarvestRollNum() == 8 || tiles.get(i).getHarvestRollNum() == 6) {
@@ -1242,14 +1260,16 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //set the offset based on the number of digits
                 if (tiles.get(i).getHarvestRollNum() > 9) {
-                    harvestRollNumOffset = 10;
+                    harvestRollNumOffset = (int)(10 / scaleFactor);
                 } else {
-                    harvestRollNumOffset = 4;
+                    harvestRollNumOffset = (int)(4 / scaleFactor);
                 }
 
                 //draw the harvest roll num
-                g2d.setFont(new Font("Times New Roman", Font.BOLD, 20));
-                g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), tiles.get(i).getXPos() + 150 / 2 - harvestRollNumOffset, tiles.get(i).getYPos() + 130 / 2 + 5);
+                g2d.setFont(new Font("Times New Roman", Font.BOLD, (int)(20 / scaleFactor)));
+                g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), 
+                        tiles.get(i).getXPos() + newTileWidth / 2 - harvestRollNumOffset, 
+                        tiles.get(i).getYPos() + newTileHeight / 2 + 5);
                 g2d.setColor(Color.black);
             }
 
@@ -1257,7 +1277,12 @@ public class GamePanel extends javax.swing.JPanel {
             if (tiles.get(i).hasThief()) {
 
                 //draw the thief
-                g2d.drawImage(THIEF, tiles.get(i).getXPos() + 150 / 2 - 12, tiles.get(i).getYPos() + 130 / 2 - 56 / 2, null);
+                g2d.drawImage(THIEF, 
+                        tiles.get(i).getXPos() + newTileWidth / 2 - (int)(24 / scaleFactor) / 2, 
+                        tiles.get(i).getYPos() + newTileHeight / 2 - (int)(56 / scaleFactor) / 2, 
+                        (int)(24 / scaleFactor),
+                        (int)(56 / scaleFactor),
+                        null);
             }
         }
 
