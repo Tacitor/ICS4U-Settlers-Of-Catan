@@ -5,6 +5,8 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import javax.swing.JFrame;
 
 /**
@@ -14,10 +16,12 @@ import javax.swing.JFrame;
 public class GameFrame extends javax.swing.JFrame {
 
     private final MainMenu mainMenuFrame; //ref to the main menu
+    private Dimension screenSize;
     
     public GameFrame(MainMenu m) {
 
         mainMenuFrame = m;
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
         initFrame();
     }
@@ -27,8 +31,9 @@ public class GameFrame extends javax.swing.JFrame {
      */
     private void initFrame() {
         setTitle("Settlers of Catan");
-        setSize(1920, 1080); //set the size to 1080p
-        setSize(1280, 720);
+        //setSize(1920, 1080); //set the size to 1080p
+        //setSize(1280, 720);
+        setSize(screenSize);
         setDefaultCloseOperation(EXIT_ON_CLOSE); //make sure it closes the thread when the frame closes
         add(new GamePanel(this));
         setLocationRelativeTo(null); //center the frame on screen
