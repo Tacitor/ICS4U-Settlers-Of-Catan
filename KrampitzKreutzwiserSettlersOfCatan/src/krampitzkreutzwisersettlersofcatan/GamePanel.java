@@ -552,11 +552,11 @@ public class GamePanel extends javax.swing.JPanel {
 
                     //get the type of road and set the width and height //get this to not be hard coded if there is time
                     if (roadNodes.get(i).getOrientation() == 0) {
-                        roadWidth = 60;
-                        roadHeight = 8;
+                        roadWidth = getImgWidth(RED_ROAD_H);
+                        roadHeight = getImgHeight(RED_ROAD_H);
                     } else {
-                        roadWidth = 38;
-                        roadHeight = 56;
+                        roadWidth = getImgWidth(RED_ROAD_L);
+                        roadHeight = getImgHeight(RED_ROAD_L);
                     }
 
                     //if the player click in a valid hitbox for a road
@@ -614,10 +614,10 @@ public class GamePanel extends javax.swing.JPanel {
                 for (int i = 0; i < settlementNodes.size(); i++) {
 
                     //if the player clicks in a valid hitbox for a settlement
-                    if (event.getX() > settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2
-                            && event.getX() < settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2 + RED_HOUSE_S.getWidth(null)
-                            && event.getY() > settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2
-                            && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
+                    if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                            && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                            && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                            && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
                         //debug settlent build detection
                         //System.out.println("hitbox match");
 
@@ -677,10 +677,10 @@ public class GamePanel extends javax.swing.JPanel {
                 for (int i = 0; i < settlementNodes.size(); i++) {
 
                     //if the player clicks in a valid hitbox for a settlement
-                    if (event.getX() > settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2
-                            && event.getX() < settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2 + RED_HOUSE_S.getWidth(null)
-                            && event.getY() > settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2
-                            && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
+                    if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                            && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                            && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                            && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
 
                         // Check that the current player owns settlement
                         if (settlementNodes.get(i).getPlayer() == currentPlayer) {
