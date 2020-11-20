@@ -733,7 +733,7 @@ public class GamePanel extends javax.swing.JPanel {
     /**
      * Save game data to a file
      */
-    private boolean save() {
+    public boolean save() {
         boolean success = false;
 
         //try and create the save file
