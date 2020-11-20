@@ -173,7 +173,9 @@ public class GamePanel extends javax.swing.JPanel {
         
         
         //apply the scaling to the tiles
-        scaleTilePos();
+        scaleWorldObjectPos(tiles, 1);
+        scaleWorldObjectPos(roadNodes, 1);
+        scaleWorldObjectPos(settlementNodes, 0);
 
     }
 
@@ -1303,13 +1305,17 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             // Draw the road image saved above, at the node's position
-            g2d.drawImage(image, road.getXPos() - image.getWidth(null) / 2,
-                    road.getYPos() - image.getHeight(null) / 2, null);
+            g2d.drawImage(image, 
+                    road.getXPos() - getImgWidth(image) / 2,
+                    road.getYPos() - getImgHeight(image) / 2, 
+                    getImgWidth(image),
+                    getImgHeight(image),
+                    null);
 
             //draw the hit box for the road.
             if (showRoadHitbox) {
                 g2d.setColor(Color.green);
-                g2d.drawRect(road.getXPos() - image.getWidth(null) / 2, road.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+                g2d.drawRect(road.getXPos() - getImgWidth(image) / 2, road.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
                 g2d.setColor(Color.black);
             }
         }
@@ -1345,13 +1351,17 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             // Draw the settlement image saved above, at the node's position
-            g2d.drawImage(image, settlement.getXPos() - image.getWidth(null) / 2,
-                    settlement.getYPos() - image.getHeight(null) / 2, null);
+            g2d.drawImage(image, 
+                    settlement.getXPos() - getImgWidth(image) / 2,
+                    settlement.getYPos() - getImgHeight(image) / 2, 
+                    getImgWidth(image),
+                    getImgHeight(image),
+                    null);
 
             //draw the hit box for the settlements.
             if (showSettlementHitbox) {
                 g2d.setColor(Color.green);
-                g2d.drawRect(settlement.getXPos() - image.getWidth(null) / 2, settlement.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+                g2d.drawRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
                 g2d.setColor(Color.black);
             }
         }
@@ -1402,7 +1412,7 @@ public class GamePanel extends javax.swing.JPanel {
     
     /**
      * Calculates the y position BEFORE realignment of a Tile to account for the spacing add between from aspect ratio locked scaling.
-     * @param tile
+     * @param yPos
      * @return 
      */
     public int getTileYPos(int yPos) {
@@ -1481,7 +1491,7 @@ public class GamePanel extends javax.swing.JPanel {
      * Create the board's node network of settlements and roads. All of the node
      * data is read from files
      */
-    private final void loadNodes() {
+    private void loadNodes() {
 
         // Declare node attribute arrays
         // Settlement attribute arrayLists
@@ -1582,23 +1592,29 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
     
-    private final void scaleTilePos() {
+    /**
+     * Change the position of the WorldObject to match the scaled image
+     * @param arrayList The List of WorldObjects to go through and change the positions
+     * @param arrayCuttoff The number of indexes to ignore from the back. Used to account for List with and without null components at the end.
+     */
+    private void scaleWorldObjectPos(ArrayList<? extends WorldObject> arrayList, int arrayCuttoff) { 
+        System.out.println(arrayList.size() - 1);
         
         // Loop through all the tiles
-        for (int i = 0; i < 19; i++) {
+        for (int i = 0; i < arrayList.size() - arrayCuttoff; i++) {
 
             //pick a way to add the corrdinates for scaling
             //choose a drawing type. One corrects for width and one corrects for height
             if (superFrame.getWidth() <= superFrame.getHeight()) {
                 //set the x
-                tiles.get(i).setXPos( (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()) );
+                arrayList.get(i).setXPos( (int) (arrayList.get(i).getXPos() / 1920.0 * superFrame.getWidth()) );
                 //set the y
-                tiles.get(i).setYPos( (getTileYPos( tiles.get(i).getYPos()) + tileYOffset)  );
+                arrayList.get(i).setYPos( (getTileYPos( arrayList.get(i).getYPos()) + tileYOffset)  );
             } else {
                 //set the x
-                tiles.get(i).setXPos( (getTileXPos( tiles.get(i).getXPos() ) + tileXOffset) );
+                arrayList.get(i).setXPos( (getTileXPos( arrayList.get(i).getXPos() ) + tileXOffset) );
                 //set the y
-                tiles.get(i).setYPos( ((int) (tiles.get(i).getYPos() / 1080.0 * superFrame.getHeight())) );
+                arrayList.get(i).setYPos( ((int) (arrayList.get(i).getYPos() / 1080.0 * superFrame.getHeight())) );
             }
         }
     }
@@ -1606,7 +1622,7 @@ public class GamePanel extends javax.swing.JPanel {
     /**
      * read in the tile positions
      */
-    private final void loadTilePos() {
+    private void loadTilePos() {
 
         // Declare variables
         Scanner fileReader;

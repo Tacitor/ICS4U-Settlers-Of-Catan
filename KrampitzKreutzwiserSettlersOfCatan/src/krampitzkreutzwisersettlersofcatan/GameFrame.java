@@ -46,8 +46,9 @@ public class GameFrame extends javax.swing.JFrame {
         setUndecorated(true); //removes the boarders and control buttons, this makes it full screen for 1080p displays and just a really wierd borderless window for anything higher. Most likly broken for anything lower
         setVisible(false);
         
-        System.out.println("Width: " + this.getWidth());
-        System.out.println("Height: " + this.getHeight());
+        //debug screen size
+        //System.out.println("Width: " + this.getWidth());
+        //System.out.println("Height: " + this.getHeight());
         
     }
     
