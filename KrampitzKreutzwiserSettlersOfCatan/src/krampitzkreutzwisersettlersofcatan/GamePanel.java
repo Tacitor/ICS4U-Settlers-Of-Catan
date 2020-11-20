@@ -20,10 +20,9 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import textures.ImageRef;
+import static textures.ImageRef.*;
 
 /**
  * @author Evan
@@ -58,38 +57,6 @@ public class GamePanel extends javax.swing.JPanel {
     private int tileWithThief; // The index of the tile with the thief
     private int buildingObject; // Indicates if/what the user is building. 
     // 0 when not placing anything, 1 for roads, 2 for settlements, and 3 for upgrading
-
-    //images for the cards
-    private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage();
-    private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage();
-    private final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cardOre.png")).getImage();
-    private final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cardSheep.png")).getImage();
-    private final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cardWood.png")).getImage();
-
-    //images for the roads
-    private final static Image RED_ROAD_H = new ImageIcon(ImageRef.class.getResource("redRoadH.png")).getImage(); //horizontal road
-    private final static Image BLUE_ROAD_H = new ImageIcon(ImageRef.class.getResource("blueRoadH.png")).getImage();
-    private final static Image BLANK_ROAD_H = new ImageIcon(ImageRef.class.getResource("blankRoadH.png")).getImage();
-    private final static Image RED_ROAD_R = new ImageIcon(ImageRef.class.getResource("redRoadR.png")).getImage(); //diagonal to the right (refernce point is the top of the road)
-    private final static Image BLUE_ROAD_R = new ImageIcon(ImageRef.class.getResource("blueRoadR.png")).getImage();
-    private final static Image BLANK_ROAD_R = new ImageIcon(ImageRef.class.getResource("blankRoadR.png")).getImage();
-    private final static Image RED_ROAD_L = new ImageIcon(ImageRef.class.getResource("redRoadL.png")).getImage(); //diagonal to the left
-    private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage();
-    private final static Image BLANK_ROAD_L = new ImageIcon(ImageRef.class.getResource("blankRoadL.png")).getImage();
-
-    //images for the settlements
-    private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage();
-    private final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("redHouseL.png")).getImage();
-    private final static Image BLANK_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blankHouseL.png")).getImage();
-    private final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blueHouseS.png")).getImage();
-    private final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("redHouseS.png")).getImage();
-    private final static Image BLANK_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blankHouseS.png")).getImage();
-
-    //image for the thief
-    private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
-
-    //the image for the building materials
-    private final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
 
     private static int harvestRollNumOffset; //the number of pixels the harvest roll is ofset from. This allows both single and double diget number to be centered
 
@@ -183,7 +150,7 @@ public class GamePanel extends javax.swing.JPanel {
         //set up the scaling vars
         //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
         //first get a centered frame of reference
-        tileYOffset = (int) ((superFrame.getHeight() / 2 - getImgHeight(ImageRef.WATER_RING) / 2 
+        tileYOffset = (int) ((superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2 
                 //then account for the tile height
                 + newTileHeight)
                 //then subtract the current position to find the difference
@@ -192,7 +159,7 @@ public class GamePanel extends javax.swing.JPanel {
                 + (superFrame.getHeight() / (float) superFrame.getWidth()));
         
         //same as the y offset but now for the x
-        tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(ImageRef.WATER_RING) / 2  
+        tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2  
                 + (int) ( newTileWidth - (newTileWidth / 4)) ) //get the distance from the left most vertex to the center recangle of the hexagon
                 - getTileXPos(tiles.get(0).getXPos());
         
@@ -1230,11 +1197,16 @@ public class GamePanel extends javax.swing.JPanel {
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
-        g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
+        g2d.drawImage(MATERIAL_KEY, 
+                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), //put it in the corner with some padding space
+                (int) (10 / scaleFactor), //just a little bit from the top
+                getImgWidth(MATERIAL_KEY), //scale the image
+                getImgHeight(MATERIAL_KEY),
+                null);
 
         //draw the ring of water
         //also scale it to the current monitor. Coords are to center it relative to the display center
-        g2d.drawImage(ImageRef.WATER_RING, superFrame.getWidth() / 2 - getImgWidth(ImageRef.WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(ImageRef.WATER_RING) / 2, getImgWidth(ImageRef.WATER_RING), getImgHeight(ImageRef.WATER_RING), null);
+        g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
