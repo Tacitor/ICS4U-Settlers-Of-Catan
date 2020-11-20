@@ -146,6 +146,9 @@ public class GamePanel extends javax.swing.JPanel {
             cards[i] = new ArrayList(); // Cards ArrayList
             victoryPoints[i] = 0; // Victory point counter
         }
+        
+        cards[1].add(1);
+        cards[1].add(2);
 
         // Intialize the card counter array
         for (int i = 0; i < totalCardsCollected.length; i++) {
@@ -1386,7 +1389,7 @@ public class GamePanel extends javax.swing.JPanel {
             // Get the number of cards the player has
             int listSize = cards[currentPlayer].size();
             // Calculate where the first card must go to center the list
-            int startPosition = 960 - (listSize * CARD_CLAY.getWidth(null) + (listSize - 1) * 10) / 2;
+            int startPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
             // Draw the player's cards
             // Reuse the image variable
             int type;
@@ -1412,7 +1415,12 @@ public class GamePanel extends javax.swing.JPanel {
                         break;
                 }
                 // Draw the card
-                g2d.drawImage(image, startPosition + (CARD_CLAY.getWidth(null) + 10) * i, 930, null);
+                g2d.drawImage(image, 
+                        (startPosition + (getImgWidth(CARD_CLAY) + 10) * i ), 
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                        getImgWidth(image),
+                        getImgHeight(image), 
+                        null);
             }
         }
         // Add alignment lines
