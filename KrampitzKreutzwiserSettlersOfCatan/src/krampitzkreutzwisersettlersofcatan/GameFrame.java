@@ -5,6 +5,10 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import javax.swing.JFrame;
+
 /**
  *
  * @author Tacitor
@@ -12,10 +16,12 @@ package krampitzkreutzwisersettlersofcatan;
 public class GameFrame extends javax.swing.JFrame {
 
     private final MainMenu mainMenuFrame; //ref to the main menu
-
+    private Dimension screenSize; //keeps track of the display the game is being played on
+    
     public GameFrame(MainMenu m) {
 
         mainMenuFrame = m;
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize(); //acctually gets the data for the display
         
         initFrame();
     }
@@ -25,7 +31,14 @@ public class GameFrame extends javax.swing.JFrame {
      */
     private void initFrame() {
         setTitle("Settlers of Catan");
-        setSize(1920, 1080); //set the size to 1080p
+        setSize(1920, 1080); //set the size to 1080p as a back up      
+        //setSize(1080, 1920);
+        //setSize(1280, 720);
+        //setSize(720, 1280);
+        //setSize(800, 600);
+        //setSize(600, 800);
+        //setSize(3840 , 2160);
+        setSize(screenSize); //set the JFrame size to match the display
         setDefaultCloseOperation(EXIT_ON_CLOSE); //make sure it closes the thread when the frame closes
         add(new GamePanel(this));
         setLocationRelativeTo(null); //center the frame on screen
@@ -33,6 +46,10 @@ public class GameFrame extends javax.swing.JFrame {
         //setExtendedState(JFrame.MAXIMIZED_BOTH); //this would normaly set the size to the display size but I don't want to deal with scaling elemnts nor do I have the time
         setUndecorated(true); //removes the boarders and control buttons, this makes it full screen for 1080p displays and just a really wierd borderless window for anything higher. Most likly broken for anything lower
         setVisible(false);
+        
+        //debug screen size
+        //System.out.println("Width: " + this.getWidth());
+        //System.out.println("Height: " + this.getHeight());
         
     }
     

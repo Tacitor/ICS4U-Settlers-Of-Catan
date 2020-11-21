@@ -5,10 +5,18 @@
  */
 package textures;
 
+import java.awt.Image;
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author Tacitor
  */
 public class ImageRef {
+    
+    //store most of the images to reduce varable clutter in the main class (gamePanel)
+
+    public ImageRef() {
+    }
     
 }
