@@ -1,7 +1,7 @@
 /*
  * Lukas Krampitz and Evan Kreutzwiser
  * Nov 8, 2020
- * The JPanel that is the main part of the game. Handels drawing and logic.
+ * The JPanel that is the main part of the game. Handels drawing and logic for the game.
  */
 package krampitzkreutzwisersettlersofcatan;
 
