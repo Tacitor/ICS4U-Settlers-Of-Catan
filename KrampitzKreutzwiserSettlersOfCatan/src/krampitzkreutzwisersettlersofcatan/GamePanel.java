@@ -1316,6 +1316,13 @@ public class GamePanel extends javax.swing.JPanel {
                             cards[player].add(settlement.getTile(j).getType());
                             // Add the collected card to the card counter
                             totalCardsCollected[settlement.getTile(j).getType() - 1]++;
+                            // If the settlement was a large settlement (City), the player earns twice the resources
+                            if (settlement.isLarge()) {
+                                // Give the player a second card from the tile
+                                cards[player].add(settlement.getTile(j).getType());
+                                // Add the second collected card to the card counter
+                                totalCardsCollected[settlement.getTile(j).getType() - 1]++;
+                            }
                         }
                     }
                 }
