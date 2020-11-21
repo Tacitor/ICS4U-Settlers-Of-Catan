@@ -193,6 +193,7 @@ public class GamePanel extends javax.swing.JPanel {
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
         
+        //the dimentions of a hex Tile after scaling. Saves making this calculation over and over again
         newTileWidth =  getImgWidth(tiles.get(0).getImage());
         newTileHeight =  getImgHeight(tiles.get(0).getImage());
 
@@ -218,8 +219,6 @@ public class GamePanel extends javax.swing.JPanel {
         } else {
             scaleFactor = (1080.0 / superFrame.getHeight());
         }
-        
-        
         
         //apply the scaling to the tiles
         scaleWorldObjectPos(tiles, 1);
@@ -609,7 +608,11 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
     }//GEN-LAST:event_turnSwitchBtnActionPerformed
-
+    
+    /**
+     * Exit the gamePanel without saving
+     * @param evt 
+     */
     private void backNoSaveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backNoSaveBtnActionPerformed
         int overwrite;
         overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
@@ -640,7 +643,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                     //get the type of road and set the width and height //get this to not be hard coded if there is time
                     if (roadNodes.get(i).getOrientation() == 0) {
-                        roadWidth = getImgWidth(RED_ROAD_H);
+                        roadWidth = getImgWidth(RED_ROAD_H); //scale the road dimensions
                         roadHeight = getImgHeight(RED_ROAD_H);
                     } else {
                         roadWidth = getImgWidth(RED_ROAD_L);
@@ -1633,8 +1636,8 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
         // Add alignment lines
-        g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
-        g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
+        //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
+        //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
     }
     
     /**
@@ -1862,7 +1865,7 @@ public class GamePanel extends javax.swing.JPanel {
             // Read the entire file into an array
             for (int i = 0; i < 19; i++) {
                 
-                //Old assignment. Not using scaling.
+                //old assignment. Not using scaling. Scaling is added after this coords are loaded in a different method
                 for (int j = 0; j < 2; j++) {
                     // Read the line of the file into the next index
                     tilePos[i][j] = Integer.parseInt(fileReader.nextLine());

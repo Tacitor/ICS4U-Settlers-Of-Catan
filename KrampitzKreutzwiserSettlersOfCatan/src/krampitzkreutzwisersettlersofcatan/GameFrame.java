@@ -16,12 +16,12 @@ import javax.swing.JFrame;
 public class GameFrame extends javax.swing.JFrame {
 
     private final MainMenu mainMenuFrame; //ref to the main menu
-    private Dimension screenSize;
+    private Dimension screenSize; //keeps track of the display the game is being played on
     
     public GameFrame(MainMenu m) {
 
         mainMenuFrame = m;
-        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize(); //acctually gets the data for the display
         
         initFrame();
     }
@@ -38,7 +38,7 @@ public class GameFrame extends javax.swing.JFrame {
         //setSize(800, 600);
         //setSize(600, 800);
         //setSize(3840 , 2160);
-        setSize(screenSize);
+        setSize(screenSize); //set the JFrame size to match the display
         setDefaultCloseOperation(EXIT_ON_CLOSE); //make sure it closes the thread when the frame closes
         add(new GamePanel(this));
         setLocationRelativeTo(null); //center the frame on screen
