@@ -2,7 +2,7 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
-    <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
+    <Component class="javax.swing.ButtonGroup" name="buildBtnGroup">
     </Component>
   </NonVisualComponents>
   <Properties>
@@ -39,7 +39,7 @@
                           <Component id="buildSettlementSRBtn" min="-2" max="-2" attributes="0"/>
                           <Component id="turnSwitchBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="buildMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="buildRoadRbtn" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="buildRoadRBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="instructionPromptLbl" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -86,7 +86,7 @@
               <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
               <Component id="buildMenuLbl" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="buildRoadRbtn" min="-2" max="-2" attributes="0"/>
+              <Component id="buildRoadRBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="buildSettlementSRBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -149,7 +149,7 @@
     <Component class="javax.swing.JRadioButton" name="buildSettlementSRBtn">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
+          <ComponentRef name="buildBtnGroup"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="14" style="0"/>
@@ -160,7 +160,7 @@
     <Component class="javax.swing.JRadioButton" name="buildSettlementLRBtn">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
+          <ComponentRef name="buildBtnGroup"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="14" style="0"/>
@@ -168,10 +168,10 @@
         <Property name="text" type="java.lang.String" value="Large Settlement"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JRadioButton" name="buildRoadRbtn">
+    <Component class="javax.swing.JRadioButton" name="buildRoadRBtn">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
+          <ComponentRef name="buildBtnGroup"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="14" style="0"/>
