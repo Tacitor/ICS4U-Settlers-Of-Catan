@@ -1304,10 +1304,11 @@ public class GamePanel extends javax.swing.JPanel {
                     if (settlement.getTile(j) != null) {
                         // If the tile has the same harvest number
                         // And doesnt have the thief on it
-                        if ((settlement.getTile(j).getHarvestRollNum() == harvestNumber
-                                && settlement.getTile(j).hasThief() == false)
+                        //and isn't the desert tile (because it has no resources)
+                        if ( settlement.getTile(j).getType() != 0 && ((settlement.getTile(j).getHarvestRollNum() == harvestNumber
+                                && settlement.getTile(j).hasThief() == false )
                                 // Or if every tile is to be harvested from (passed harvest number is 0)
-                                || harvestNumber == 0) {
+                                || harvestNumber == 0)) {
                             // Give the player the tile's resource
                             cards[player].add(settlement.getTile(j).getType());
                             // Add the collected card to the card counter
@@ -1615,8 +1616,11 @@ public class GamePanel extends javax.swing.JPanel {
                     case 4: // Sheep card
                         image = CARD_SHEEP;
                         break;
-                    default: // 5: Ore card
+                    case 5: // 5: Ore card
                         image = CARD_ORE;
+                        break;
+                    default: //error "card"
+                        image = WATER_RING; //this is a joke. The ring of water is infact NOT a card
                         break;
                 }
                 // Draw the card

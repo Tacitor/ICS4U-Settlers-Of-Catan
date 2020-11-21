@@ -33,12 +33,12 @@ public class GameFrame extends javax.swing.JFrame {
         setTitle("Settlers of Catan");
         setSize(1920, 1080); //set the size to 1080p as a back up      
         //setSize(1080, 1920);
-        setSize(1280, 720);
+        //setSize(1280, 720);
         //setSize(720, 1280);
         //setSize(800, 600);
         //setSize(600, 800);
         //setSize(3840 , 2160);
-        //setSize(screenSize);
+        setSize(screenSize);
         setDefaultCloseOperation(EXIT_ON_CLOSE); //make sure it closes the thread when the frame closes
         add(new GamePanel(this));
         setLocationRelativeTo(null); //center the frame on screen
