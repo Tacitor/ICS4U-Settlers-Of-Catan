@@ -103,6 +103,26 @@ public class OldCode {
         g2d.drawImage(tiles.get(17).getImage(), 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2), null);
         //draw 2 right of center, 1 below
         g2d.drawImage(tiles.get(18).getImage(), 1920 / 2 - (150 / 2) + (112 * 2), 1080 / 2 - (130 / 2) + (130), null);
-        */
-    
+     */
+            /* //Temp tile scaling code
+            //draw the tiles
+            //choose a drawing type. One corrects for width and one corrects for height
+            if (superFrame.getWidth() <= superFrame.getHeight()) { //for any aspect ratio where the height is the longer side
+                g2d.drawImage(tiles.get(i).getImage(),
+                        (int) (tiles.get(i).getXPos() / 1920.0 * superFrame.getWidth()), //x pos can stay the same because the width dictates the size
+
+                        //the y pos however needs to be adjusted because in the mode the size is controled 
+                        //by the width (the smaller one). Just means if a taller image is expected that gets corrected for.
+                        getTileYPos(tiles.get(i).getYPos()) + tileYOffset,
+                        getImgWidth(tiles.get(i).getImage()),
+                        getImgHeight(tiles.get(i).getImage()), null);
+            } else {
+
+                g2d.drawImage(tiles.get(i).getImage(),
+                        getTileXPos(tiles.get(i).getXPos()) + tileXOffset, //same thing as above just the opposite
+                        (int) (tiles.get(i).getYPos() / 1080.0 * superFrame.getHeight()),
+                        getImgWidth(tiles.get(i).getImage()),
+                        getImgHeight(tiles.get(i).getImage()), null);
+            }
+            */
 }

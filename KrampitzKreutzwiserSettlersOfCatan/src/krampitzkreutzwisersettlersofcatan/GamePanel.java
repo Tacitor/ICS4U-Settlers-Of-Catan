@@ -20,11 +20,9 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.ButtonModel;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import textures.ImageRef;
+import static textures.ImageRef.*;
 
 /**
  * @author Evan
@@ -61,45 +59,27 @@ public class GamePanel extends javax.swing.JPanel {
     private int buildingObject; // Indicates if/what the user is building. 
     // 0 when not placing anything, 1 for roads, 2 for settlements, and 3 for upgrading
 
-    //images for the cards
-    private final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage();
-    private final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage();
-    private final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cardOre.png")).getImage();
-    private final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cardSheep.png")).getImage();
-    private final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cardWood.png")).getImage();
-
-    //images for the roads
-    private final static Image RED_ROAD_H = new ImageIcon(ImageRef.class.getResource("redRoadH.png")).getImage(); //horizontal road
-    private final static Image BLUE_ROAD_H = new ImageIcon(ImageRef.class.getResource("blueRoadH.png")).getImage();
-    private final static Image RED_ROAD_R = new ImageIcon(ImageRef.class.getResource("redRoadR.png")).getImage(); //diagonal to the right (refernce point is the top of the road)
-    private final static Image BLUE_ROAD_R = new ImageIcon(ImageRef.class.getResource("blueRoadR.png")).getImage();
-    private final static Image RED_ROAD_L = new ImageIcon(ImageRef.class.getResource("redRoadL.png")).getImage(); //diagonal to the left
-    private final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("blueRoadL.png")).getImage();
-    private final static Image BLANK_ROAD_H = new ImageIcon(ImageRef.class.getResource("blankRoadH.png")).getImage(); // Blank images for horizontal
-    private final static Image BLANK_ROAD_V = new ImageIcon(ImageRef.class.getResource("blankRoadV.png")).getImage(); // and non horizontal roads
-
-    //images for the settlements
-    private final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("blueHouseL.png")).getImage();
-    private final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("redHouseL.png")).getImage();
-    private final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("blueHouseS.png")).getImage();
-    private final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("redHouseS.png")).getImage();
-    private final static Image BLANK_HOUSE = new ImageIcon(ImageRef.class.getResource("blankHouse.png")).getImage(); // Blank image for unowned settlement nodes 
-
-    //image for the thief
-    private final static Image THIEF = new ImageIcon(ImageRef.class.getResource("thief.png")).getImage();
-
-    //the image for the water ring
-    private final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();
-
-    //the image for the building materials
-    private final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
-
     private static int harvestRollNumOffset; //the number of pixels the harvest roll is ofset from. This allows both single and double diget number to be centered
 
     private int roadWidth; //used in finding the hitbox
     private int roadHeight;
     private int playerSetupRoadsLeft; //number of roads to place
     private int playerSetupSettlementLeft; //number of settlements to place
+
+    //var used for scaling
+    private int tileYOffset;
+    private int tileXOffset;
+    private double scaleFactor;
+    private int newTileWidth;
+    private int newTileHeight;
+    
+    //new dice roll lable
+    private String diceRollVal; 
+    
+    //fonts
+    private Font timesNewRoman;
+    private Font tahoma;
+    private Font dialog;
 
     //private Graphics awtGraphics;
     /**
@@ -146,6 +126,9 @@ public class GamePanel extends javax.swing.JPanel {
             cards[i] = new ArrayList(); // Cards ArrayList
             victoryPoints[i] = 0; // Victory point counter
         }
+        
+        cards[1].add(1);
+        cards[1].add(2);
 
         // Intialize the card counter array
         for (int i = 0; i < totalCardsCollected.length; i++) {
@@ -176,6 +159,65 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
+        
+        newTileWidth =  getImgWidth(tiles.get(0).getImage());
+        newTileHeight =  getImgHeight(tiles.get(0).getImage());
+
+        //set up the scaling vars
+        //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
+        //first get a centered frame of reference
+        tileYOffset = (int) ((superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2 
+                //then account for the tile height
+                + newTileHeight)
+                //then subtract the current position to find the difference
+                - getTileYPos(tiles.get(7).getYPos())
+                //add some fine tuning for smaller resulutions
+                + (superFrame.getHeight() / (float) superFrame.getWidth()));
+        
+        //same as the y offset but now for the x
+        tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2  
+                + (int) ( newTileWidth - (newTileWidth / 4)) ) //get the distance from the left most vertex to the center recangle of the hexagon
+                - getTileXPos(tiles.get(0).getXPos());
+        
+        //set up the circle scaler
+        if (superFrame.getWidth() <= superFrame.getHeight()) {
+            scaleFactor = (1920.0 / superFrame.getWidth());
+        } else {
+            scaleFactor = (1080.0 / superFrame.getHeight());
+        }
+        
+        
+        
+        //apply the scaling to the tiles
+        scaleWorldObjectPos(tiles, 1);
+        scaleWorldObjectPos(roadNodes, 1);
+        scaleWorldObjectPos(settlementNodes, 0);
+        
+        //get the fonts
+        timesNewRoman = instructionLbl.getFont();
+        tahoma = buildRoadRbtn.getFont();
+        dialog = buildBtn.getFont();
+        
+        //scale the Swing elements
+        buildRoadRbtn.setFont( new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor )) );
+        buildSettlementSRBtn.setFont( new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor )) );
+        buildSettlementLRBtn.setFont( new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor )) );
+        
+        buildBtn.setFont( new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor )) );
+        
+        buildMenuLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
+        
+        instructionPromptLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
+        instructionLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
+        subInstructionLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() - 4) / scaleFactor )) );
+        
+        turnSwitchBtn.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
+        
+        titleLbl.setFont( new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor )) );
+        
+        //initialize the dice roll value
+        diceRollVal = "";
+
     }
 
     /**
@@ -198,8 +240,8 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn = new javax.swing.JRadioButton();
         buildBtn = new javax.swing.JButton();
         subInstructionLbl = new javax.swing.JLabel();
-        diceRollLbl = new javax.swing.JLabel();
-        diceRollPromptLbl1 = new javax.swing.JLabel();
+        backNoSaveBtn = new javax.swing.JButton();
+        titleLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -226,20 +268,23 @@ public class GamePanel extends javax.swing.JPanel {
         instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         instructionLbl.setText("Place two roads and two small settlements each to start.");
 
-        buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         buildMenuLbl.setText("Build Menu:");
 
-        buildBtnGroup.add(buildSettlementSRBtn);
+        buttonGroup1.add(buildSettlementSRBtn);
+        buildSettlementSRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         buildSettlementSRBtn.setText("Small Settlement");
 
-        buildBtnGroup.add(buildSettlementLRBtn);
+        buttonGroup1.add(buildSettlementLRBtn);
+        buildSettlementLRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         buildSettlementLRBtn.setText("Large Settlement");
 
-        buildBtnGroup.add(buildRoadRBtn);
-        buildRoadRBtn.setSelected(true);
-        buildRoadRBtn.setText("Road");
+        buttonGroup1.add(buildRoadRbtn);
+        buildRoadRbtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        buildRoadRbtn.setSelected(true);
+        buildRoadRbtn.setText("Road");
 
-        buildBtn.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
+        buildBtn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         buildBtn.setText("Build");
         buildBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -250,11 +295,15 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
-        diceRollLbl.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        diceRollLbl.setText(" ");
+        backNoSaveBtn.setText("< Exit without saving");
+        backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backNoSaveBtnActionPerformed(evt);
+            }
+        });
 
-        diceRollPromptLbl1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        diceRollPromptLbl1.setText("You rolled a: ");
+        titleLbl.setFont(new java.awt.Font("Times New Roman", 1, 40)); // NOI18N
+        titleLbl.setText("Settlers of Catan");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -263,16 +312,9 @@ public class GamePanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(diceRollPromptLbl1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(diceRollLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(142, 142, 142))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(buildSettlementSRBtn)
-                            .addComponent(backBtn)
                             .addComponent(turnSwitchBtn)
                             .addComponent(buildMenuLbl)
                             .addComponent(buildRoadRBtn)
@@ -281,24 +323,33 @@ public class GamePanel extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(instructionLbl)
-                                    .addComponent(subInstructionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(subInstructionLbl)))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap(1163, Short.MAX_VALUE))))
+                        .addContainerGap(1409, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(titleLbl))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(70, 70, 70)
+                .addContainerGap()
+                .addComponent(titleLbl)
+                .addGap(18, 18, 18)
                 .addComponent(turnSwitchBtn)
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instructionPromptLbl)
                     .addComponent(instructionLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(subInstructionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(subInstructionLbl)
+                .addGap(21, 21, 21)
                 .addComponent(buildMenuLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildRoadRBtn)
@@ -306,13 +357,11 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementSRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buildSettlementLRBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buildBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(diceRollPromptLbl1)
-                    .addComponent(diceRollLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 676, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buildBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 666, Short.MAX_VALUE)
+                .addComponent(backNoSaveBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -408,7 +457,7 @@ public class GamePanel extends javax.swing.JPanel {
                     showSettlementHitbox = true;
                     repaint();
                 }
-                
+
             } else {
                 buildingObject = -1;
                 System.out.println("An error has occoured while building");
@@ -528,6 +577,17 @@ public class GamePanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_turnSwitchBtnActionPerformed
 
+    private void backNoSaveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backNoSaveBtnActionPerformed
+        int overwrite;
+        overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
+        //If the user really want to leave let them
+        if (overwrite == 0) {
+            // Hide this window and show the main menu
+            superFrame.getMainMenu().setVisible(true); //show the main menu
+            superFrame.setVisible(false); //hide the parent frame 
+        }
+    }//GEN-LAST:event_backNoSaveBtnActionPerformed
+
     /**
      * Handles mouse input, based on the state of the game
      *
@@ -547,11 +607,11 @@ public class GamePanel extends javax.swing.JPanel {
 
                     //get the type of road and set the width and height //get this to not be hard coded if there is time
                     if (roadNodes.get(i).getOrientation() == 0) {
-                        roadWidth = 60;
-                        roadHeight = 8;
+                        roadWidth = getImgWidth(RED_ROAD_H);
+                        roadHeight = getImgHeight(RED_ROAD_H);
                     } else {
-                        roadWidth = 38;
-                        roadHeight = 56;
+                        roadWidth = getImgWidth(RED_ROAD_L);
+                        roadHeight = getImgHeight(RED_ROAD_L);
                     }
 
                     //if the player click in a valid hitbox for a road
@@ -610,10 +670,10 @@ public class GamePanel extends javax.swing.JPanel {
                 for (int i = 0; i < settlementNodes.size(); i++) {
 
                     //if the player clicks in a valid hitbox for a settlement
-                    if (event.getX() > settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2
-                            && event.getX() < settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2 + RED_HOUSE_S.getWidth(null)
-                            && event.getY() > settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2
-                            && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
+                    if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                            && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                            && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                            && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
                         //debug settlent build detection
                         //System.out.println("hitbox match");
 
@@ -626,6 +686,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 playerSetupSettlementLeft--;
                                 // Increment the player's victory point counter
                                 victoryPoints[currentPlayer]++;
+                              
                                 // Update thwe build buttons to relfect the remaining setup buildings
                                 updateBuildButtons();
                             } // If the main game is in progress and the player can build the settlement there
@@ -653,6 +714,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 instructionLbl.setText("Sorry but you can't build a settlement there.");
                                 subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
                             }
+
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
                             subInstructionLbl.setText("Try building where there isn't already another settlements");
@@ -669,16 +731,16 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else if (buildingObject == 3) { //large house
-                
+
                 //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
                 for (int i = 0; i < settlementNodes.size(); i++) {
 
                     //if the player clicks in a valid hitbox for a settlement
-                    if (event.getX() > settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2
-                            && event.getX() < settlementNodes.get(i).getXPos() - RED_HOUSE_S.getWidth(null) / 2 + RED_HOUSE_S.getWidth(null)
-                            && event.getY() > settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2
-                            && event.getY() < settlementNodes.get(i).getYPos() - RED_HOUSE_S.getHeight(null) / 2 + RED_HOUSE_S.getHeight(null)) {
-                     
+                    if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                            && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                            && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                            && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+
                         // Check that the current player owns settlement
                         if (settlementNodes.get(i).getPlayer() == currentPlayer) {
 
@@ -703,6 +765,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 // Update the building buttons to reflect the player's new list of cards
                                 updateBuildButtons();
                             } else { // If the settlement is already large
+
                                 instructionLbl.setText("Sorry but settlement is already large.");
                                 subInstructionLbl.setText("Try upgrading a small settlement");
                             }
@@ -710,7 +773,7 @@ public class GamePanel extends javax.swing.JPanel {
                             instructionLbl.setText("Sorry but you can't upgrade someone elses settlements.");
                             subInstructionLbl.setText("Try upgrading your own settlement");
                         }
-                        
+
                         // Stop building and hide the hitboxes
                         buildingObject = 0;
                         showSettlementHitbox = false;
@@ -767,7 +830,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param writeAdress
      * @throws FileNotFoundException
      */
-    public boolean writeToFile(String writeAdress) throws FileNotFoundException {
+    private boolean writeToFile(String writeAdress) throws FileNotFoundException {
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
             saveFile.println("SettlersOfCatanSave"); //write a header to easily identify Settlers of Catan save files for loading
@@ -775,21 +838,21 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(thiefMoveCounter);
             saveFile.println("victoryPointsToWin:");
             saveFile.println(victoryPointsToWin);
-            
+
             saveFile.println("Total cards collected:");
-            for (int i = 0; i < totalCardsCollected.length; i++) { 
+            for (int i = 0; i < totalCardsCollected.length; i++) {
                 saveFile.println(totalCardsCollected[i]);
             }
 
             saveFile.println();
-            
+
             saveFile.println("victoryPoints:");
-            for (int i = 1; i < victoryPoints.length; i++) { 
+            for (int i = 1; i < victoryPoints.length; i++) {
                 saveFile.println(victoryPoints[i]);
             }
-            
+
             saveFile.println();
-            
+
             //add the card data
             saveFile.println("Cards:");
             for (int i = 1; i < cards.length; i++) {
@@ -1001,48 +1064,55 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Sort a player's list of cards using a recursive quick sort algorithm
+     *
      * @param player The player who's cards will be sorted
-     * @param left The left bounds of the segment to sort (used to recursion, set to 0)
-     * @param right The right bounds of the segment to sort (used to recursion, set to length of array - 1)
-     * @return 
+     * @param left The left bounds of the segment to sort (used to recursion,
+     * set to 0)
+     * @param right The right bounds of the segment to sort (used to recursion,
+     * set to length of array - 1)
+     * @return
      */
     private void quickSortCards(int player, int left, int right) {
-    
+
         Integer temp; // For swapping values
         // Get the player's ArrayList of cards
         ArrayList<Integer> array = cards[player];
-        
+
         // If the list bounds overlap 
         if (left >= right) {
             // Stop sorting this branch
             return;
         }
-    
+
         // Initially set the pointers to the bounds of the array to sort
         int i = left;
         int j = right;
         // Get the value in the middle of the array as the pivot point
-        int pivotValue = array.get((left+right) / 2);
-        
+        int pivotValue = array.get((left + right) / 2);
+
         // Repeat until all of the numbers are on the correct side
-        while (i<j) {
+        while (i < j) {
             // Skip over numbers that are already on the correct side
             // Move the pointers until they are on a value that's on the wrong side
-            while (array.get(i) < pivotValue) {i++;}
-            while (array.get(j) > pivotValue) {j--;}
-           
+            while (array.get(i) < pivotValue) {
+                i++;
+            }
+            while (array.get(j) > pivotValue) {
+                j--;
+            }
+
             // If the pointers are still on the correct side
             if (i <= j) {
                 // Swap the values on each side of the pivot point
                 temp = array.get(i);
                 array.set(i, array.get(j));
-                array.set(j ,temp);
+                array.set(j, temp);
                 // Move both pointers
                 i++;
                 j--;
             }
         }
-        
+
         // Recursively call the algorithm on the left side of the pivot point
         quickSortCards(player, left, j);
         // Recursively call the algorithm on the right side of the pivot point
@@ -1153,7 +1223,7 @@ public class GamePanel extends javax.swing.JPanel {
         roll += (int) (Math.random() * 6) + 1;
 
         // Display the number rolled to the user
-        diceRollLbl.setText(Integer.toString(roll));
+        diceRollVal = (Integer.toString(roll));
 
         // Act on the dice roll
         if (roll == 7) { // Move the thief on a 7
@@ -1218,7 +1288,7 @@ public class GamePanel extends javax.swing.JPanel {
         // Sort every player's cards
         for (int i = 1; i < cards.length; i++) {
             // Sort the player's cards using a quick sort algorithm
-            quickSortCards(i, 0, cards[i].size()-1);
+            quickSortCards(i, 0, cards[i].size() - 1);
         }
 
     }
@@ -1275,7 +1345,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Display the output in a JOptionPane
         JOptionPane.showMessageDialog(this, msg, "Game Over", JOptionPane.PLAIN_MESSAGE);
-      
+
         // Close the game panel
         // Hide this window and show the main menu
         superFrame.getMainMenu().setVisible(true); //show the main menu
@@ -1306,25 +1376,41 @@ public class GamePanel extends javax.swing.JPanel {
         //must be casted from older Graphics class in order to have access to some newer methods
         Graphics2D g2d = (Graphics2D) g;
         //draw a string on the panel        
-        g2d.setFont(new Font("Times New Roman", Font.BOLD, 40));
-        g2d.drawString("Settlers of Catan", 10, 50); //(text, x, y)        }
-
+        g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor)));
+        //old title. Replaced by JLabel
+        //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
+        
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
-        g2d.drawImage(MATERIAL_KEY, 1920 - 330, 10, null);
+        g2d.drawImage(MATERIAL_KEY, 
+                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), //put it in the corner with some padding space
+                (int) (10 / scaleFactor), //just a little bit from the top
+                getImgWidth(MATERIAL_KEY), //scale the image
+                getImgHeight(MATERIAL_KEY),
+                null);
 
         //draw the ring of water
-        g2d.drawImage(WATER_RING, 1920 / 2 - WATER_RING.getWidth(null) / 2, 1080 / 2 - WATER_RING.getHeight(null) / 2, null);
+        //also scale it to the current monitor. Coords are to center it relative to the display center
+        g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
-            g2d.drawImage(tiles.get(i).getImage(), tiles.get(i).getXPos(), tiles.get(i).getYPos(), null);
+            
+            //draw the tile
+            g2d.drawImage(tiles.get(i).getImage(),
+                        tiles.get(i).getXPos(), 
+                        tiles.get(i).getYPos(),
+                        getImgWidth(tiles.get(i).getImage()),
+                        getImgHeight(tiles.get(i).getImage()), null);
 
             //draw the resource harvest number only if it is not a desert
             if (tiles.get(i).getType() != 0) {
                 g2d.setColor(Color.DARK_GRAY);
-                g2d.fillOval(tiles.get(i).getXPos() + 150 / 2 - 15, tiles.get(i).getYPos() + 130 / 2 - 15, 30, 30);
+                g2d.fillOval(tiles.get(i).getXPos() + newTileWidth / 2 - ((int)(30 / scaleFactor) / 2), 
+                        tiles.get(i).getYPos() + newTileHeight / 2 - ((int)(30 / scaleFactor) / 2), 
+                        (int)(30 / scaleFactor), 
+                        (int)(30 / scaleFactor));
 
                 //check if the colour of the number
                 if (tiles.get(i).getHarvestRollNum() == 8 || tiles.get(i).getHarvestRollNum() == 6) {
@@ -1335,14 +1421,16 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //set the offset based on the number of digits
                 if (tiles.get(i).getHarvestRollNum() > 9) {
-                    harvestRollNumOffset = 10;
+                    harvestRollNumOffset = (int)(10 / scaleFactor);
                 } else {
-                    harvestRollNumOffset = 4;
+                    harvestRollNumOffset = (int)(4 / scaleFactor);
                 }
 
                 //draw the harvest roll num
-                g2d.setFont(new Font("Times New Roman", Font.BOLD, 20));
-                g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), tiles.get(i).getXPos() + 150 / 2 - harvestRollNumOffset, tiles.get(i).getYPos() + 130 / 2 + 5);
+                g2d.setFont(new Font("Times New Roman", Font.BOLD, (int)(20 / scaleFactor)));
+                g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), 
+                        tiles.get(i).getXPos() + newTileWidth / 2 - harvestRollNumOffset, 
+                        tiles.get(i).getYPos() + newTileHeight / 2 + 5);
                 g2d.setColor(Color.black);
             }
 
@@ -1350,9 +1438,21 @@ public class GamePanel extends javax.swing.JPanel {
             if (tiles.get(i).hasThief()) {
 
                 //draw the thief
-                g2d.drawImage(THIEF, tiles.get(i).getXPos() + 150 / 2 - 12, tiles.get(i).getYPos() + 130 / 2 - 56 / 2, null);
+                g2d.drawImage(THIEF, 
+                        tiles.get(i).getXPos() + newTileWidth / 2 - (int)(24 / scaleFactor) / 2, 
+                        tiles.get(i).getYPos() + newTileHeight / 2 - (int)(56 / scaleFactor) / 2, 
+                        (int)(24 / scaleFactor),
+                        (int)(56 / scaleFactor),
+                        null);
             }
         }
+        
+        //set the font for the dice roll indecator
+        g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
+        //show what number the user rolled
+        g2d.drawString("You rolled a: " + diceRollVal, 
+                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), 
+                (int) (500 / scaleFactor));
 
         // Draw the 72 road nodes
         NodeRoad road;
@@ -1396,13 +1496,17 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             // Draw the road image saved above, at the node's position
-            g2d.drawImage(image, road.getXPos() - image.getWidth(null) / 2,
-                    road.getYPos() - image.getHeight(null) / 2, null);
+            g2d.drawImage(image, 
+                    road.getXPos() - getImgWidth(image) / 2,
+                    road.getYPos() - getImgHeight(image) / 2, 
+                    getImgWidth(image),
+                    getImgHeight(image),
+                    null);
 
             //draw the hit box for the road.
             if (showRoadHitbox) {
                 g2d.setColor(Color.green);
-                g2d.drawRect(road.getXPos() - image.getWidth(null) / 2, road.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+                g2d.drawRect(road.getXPos() - getImgWidth(image) / 2, road.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
                 g2d.setColor(Color.black);
             }
         }
@@ -1437,13 +1541,17 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             // Draw the settlement image saved above, at the node's position
-            g2d.drawImage(image, settlement.getXPos() - image.getWidth(null) / 2,
-                    settlement.getYPos() - image.getHeight(null) / 2, null);
+            g2d.drawImage(image, 
+                    settlement.getXPos() - getImgWidth(image) / 2,
+                    settlement.getYPos() - getImgHeight(image) / 2, 
+                    getImgWidth(image),
+                    getImgHeight(image),
+                    null);
 
             //draw the hit box for the settlements.
             if (showSettlementHitbox) {
                 g2d.setColor(Color.green);
-                g2d.drawRect(settlement.getXPos() - image.getWidth(null) / 2, settlement.getYPos() - image.getHeight(null) / 2, image.getWidth(null), image.getHeight(null));
+                g2d.drawRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
                 g2d.setColor(Color.black);
             }
         }
@@ -1453,7 +1561,7 @@ public class GamePanel extends javax.swing.JPanel {
             // Get the number of cards the player has
             int listSize = cards[currentPlayer].size();
             // Calculate where the first card must go to center the list
-            int startPosition = 960 - (listSize * CARD_CLAY.getWidth(null) + (listSize - 1) * 10) / 2;
+            int startPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
             // Draw the player's cards
             // Reuse the image variable
             int type;
@@ -1479,12 +1587,69 @@ public class GamePanel extends javax.swing.JPanel {
                         break;
                 }
                 // Draw the card
-                g2d.drawImage(image, startPosition + (CARD_CLAY.getWidth(null) + 10) * i, 930, null);
+                g2d.drawImage(image, 
+                        (startPosition + (getImgWidth(CARD_CLAY) + 10) * i ), 
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                        getImgWidth(image),
+                        getImgHeight(image), 
+                        null);
             }
         }
         // Add alignment lines
-        // g2d.drawLine(1920 / 2, 0, 1920 / 2, 1080);
-        // g2d.drawLine(0, 1080 / 2, 1920, 1080 / 2);
+        g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
+        g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
+    }
+    
+    /**
+     * Calculates the y position BEFORE realignment of a Tile to account for the spacing add between from aspect ratio locked scaling.
+     * @param yPos
+     * @return 
+     */
+    public int getTileYPos(int yPos) {
+        return (int) (yPos / 1080.0 * superFrame.getHeight() / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
+                //find the correct spacing factor based off a linear ration between the new apsect ratio and the internal 1080p one. 
+                //This now leaves the tiles in the incorrect position but that can be later corrected by adding a constant value to all of the tiles
+                (1.8 * ((float) superFrame.getHeight() / (float) superFrame.getWidth()))); 
+    }
+    
+    /**
+     * Calculates the x position BEFORE realignment of a Tile to account for the spacing add between from aspect ratio locked scaling.
+     * @param tile
+     * @return 
+     */
+    private int getTileXPos(int xPos) {
+        return (int) (xPos / 1920.0 * superFrame.getWidth() / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
+                //find the correct spacing factor based off a linear ration between the new apsect ratio and the internal 1080p one. 
+                //This now leaves the tiles in the incorrect position but that can be later corrected by adding a constant value to all of the tiles
+                (0.5625 * ((float) superFrame.getWidth() / (float) superFrame.getHeight()))); 
+    }
+    
+    /**
+     * Calculates the new scaled width of an image with a locked aspect ratio.
+     * @param image
+     * @return 
+     */
+    public int getImgWidth(Image image) {
+
+        if (superFrame.getWidth() > superFrame.getHeight()) {
+            return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
+        } else {
+            return (int) (image.getWidth(null) / 1920.0 * superFrame.getWidth());
+        }
+
+    }
+    
+    /**
+     * Calculates the new scaled height of an image with a locked aspect ratio.
+     * @param image
+     * @return 
+     */
+    public int getImgHeight(Image image) {
+        if (superFrame.getWidth() > superFrame.getHeight()) {
+            return (int) (image.getHeight(null) / 1080.0 * superFrame.getHeight());
+        } else {
+            return (int) (getImgWidth(image) / ((float) image.getWidth(null) / image.getHeight(null)));
+        }
     }
 
     /**
@@ -1516,7 +1681,7 @@ public class GamePanel extends javax.swing.JPanel {
      * Create the board's node network of settlements and roads. All of the node
      * data is read from files
      */
-    public final void loadNodes() {
+    private void loadNodes() {
 
         // Declare node attribute arrays
         // Settlement attribute arrayLists
@@ -1616,11 +1781,37 @@ public class GamePanel extends javax.swing.JPanel {
 
         }
     }
+    
+    /**
+     * Change the position of the WorldObject to match the scaled image
+     * @param arrayList The List of WorldObjects to go through and change the positions
+     * @param arrayCuttoff The number of indexes to ignore from the back. Used to account for List with and without null components at the end.
+     */
+    private void scaleWorldObjectPos(ArrayList<? extends WorldObject> arrayList, int arrayCuttoff) { 
+        
+        // Loop through all the tiles
+        for (int i = 0; i < arrayList.size() - arrayCuttoff; i++) {
+
+            //pick a way to add the corrdinates for scaling
+            //choose a drawing type. One corrects for width and one corrects for height
+            if (superFrame.getWidth() <= superFrame.getHeight()) {
+                //set the x
+                arrayList.get(i).setXPos( (int) (arrayList.get(i).getXPos() / 1920.0 * superFrame.getWidth()) );
+                //set the y
+                arrayList.get(i).setYPos( (getTileYPos( arrayList.get(i).getYPos()) + tileYOffset)  );
+            } else {
+                //set the x
+                arrayList.get(i).setXPos( (getTileXPos( arrayList.get(i).getXPos() ) + tileXOffset) );
+                //set the y
+                arrayList.get(i).setYPos( ((int) (arrayList.get(i).getYPos() / 1080.0 * superFrame.getHeight())) );
+            }
+        }
+    }
 
     /**
      * read in the tile positions
      */
-    public final void loadTilePos() {
+    private void loadTilePos() {
 
         // Declare variables
         Scanner fileReader;
@@ -1633,6 +1824,8 @@ public class GamePanel extends javax.swing.JPanel {
 
             // Read the entire file into an array
             for (int i = 0; i < 19; i++) {
+                
+                //Old assignment. Not using scaling.
                 for (int j = 0; j < 2; j++) {
                     // Read the line of the file into the next index
                     tilePos[i][j] = Integer.parseInt(fileReader.nextLine());
@@ -1651,6 +1844,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
+    private javax.swing.JButton backNoSaveBtn;
     private javax.swing.JButton buildBtn;
     private javax.swing.ButtonGroup buildBtnGroup;
     private javax.swing.JLabel buildMenuLbl;
@@ -1662,6 +1856,7 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel instructionLbl;
     private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JLabel subInstructionLbl;
+    private javax.swing.JLabel titleLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 }
