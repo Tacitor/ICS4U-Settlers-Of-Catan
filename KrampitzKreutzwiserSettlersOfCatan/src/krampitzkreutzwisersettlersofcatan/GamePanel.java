@@ -71,6 +71,14 @@ public class GamePanel extends javax.swing.JPanel {
     private double scaleFactor;
     private int newTileWidth;
     private int newTileHeight;
+    
+    //new dice roll lable
+    private String diceRollVal; 
+    
+    //fonts
+    private Font timesNewRoman;
+    private Font tahoma;
+    private Font dialog;
 
     //private Graphics awtGraphics;
     /**
@@ -176,6 +184,31 @@ public class GamePanel extends javax.swing.JPanel {
         scaleWorldObjectPos(tiles, 1);
         scaleWorldObjectPos(roadNodes, 1);
         scaleWorldObjectPos(settlementNodes, 0);
+        
+        //get the fonts
+        timesNewRoman = instructionLbl.getFont();
+        tahoma = buildRoadRbtn.getFont();
+        dialog = buildBtn.getFont();
+        
+        //scale the Swing elements
+        buildRoadRbtn.setFont( new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor )) );
+        buildSettlementSRBtn.setFont( new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor )) );
+        buildSettlementLRBtn.setFont( new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor )) );
+        
+        buildBtn.setFont( new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor )) );
+        
+        buildMenuLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
+        
+        instructionPromptLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
+        instructionLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
+        subInstructionLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() - 4) / scaleFactor )) );
+        
+        turnSwitchBtn.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
+        
+        titleLbl.setFont( new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor )) );
+        
+        //initialize the dice roll value
+        diceRollVal = "";
 
     }
 
@@ -199,9 +232,8 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRbtn = new javax.swing.JRadioButton();
         buildBtn = new javax.swing.JButton();
         subInstructionLbl = new javax.swing.JLabel();
-        diceRollLbl = new javax.swing.JLabel();
-        diceRollPromptLbl1 = new javax.swing.JLabel();
         backNoSaveBtn = new javax.swing.JButton();
+        titleLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -228,20 +260,23 @@ public class GamePanel extends javax.swing.JPanel {
         instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         instructionLbl.setText("Place two roads and two small settlements each to start.");
 
-        buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         buildMenuLbl.setText("Build Menu:");
 
         buttonGroup1.add(buildSettlementSRBtn);
+        buildSettlementSRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         buildSettlementSRBtn.setText("Small Settlement");
 
         buttonGroup1.add(buildSettlementLRBtn);
+        buildSettlementLRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         buildSettlementLRBtn.setText("Large Settlement");
 
         buttonGroup1.add(buildRoadRbtn);
+        buildRoadRbtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         buildRoadRbtn.setSelected(true);
         buildRoadRbtn.setText("Road");
 
-        buildBtn.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
+        buildBtn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         buildBtn.setText("Build");
         buildBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -252,18 +287,15 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
-        diceRollLbl.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        diceRollLbl.setText(" ");
-
-        diceRollPromptLbl1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        diceRollPromptLbl1.setText("You rolled a: ");
-
         backNoSaveBtn.setText("< Exit without saving");
         backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backNoSaveBtnActionPerformed(evt);
             }
         });
+
+        titleLbl.setFont(new java.awt.Font("Times New Roman", 1, 40)); // NOI18N
+        titleLbl.setText("Settlers of Catan");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -272,12 +304,6 @@ public class GamePanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(diceRollPromptLbl1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(diceRollLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(142, 142, 142))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(buildSettlementSRBtn)
@@ -289,29 +315,33 @@ public class GamePanel extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(instructionLbl)
-                                    .addComponent(subInstructionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(subInstructionLbl)))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap(1167, Short.MAX_VALUE))
+                        .addContainerGap(1409, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(titleLbl))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(70, 70, 70)
+                .addContainerGap()
+                .addComponent(titleLbl)
+                .addGap(18, 18, 18)
                 .addComponent(turnSwitchBtn)
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instructionPromptLbl)
                     .addComponent(instructionLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(subInstructionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(subInstructionLbl)
+                .addGap(21, 21, 21)
                 .addComponent(buildMenuLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildRoadRbtn)
@@ -319,13 +349,9 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementSRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buildSettlementLRBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buildBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(diceRollPromptLbl1)
-                    .addComponent(diceRollLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 651, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buildBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 666, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -1043,7 +1069,7 @@ public class GamePanel extends javax.swing.JPanel {
         roll += (int) (Math.random() * 6) + 1;
 
         // Display the number rolled to the user
-        diceRollLbl.setText(Integer.toString(roll));
+        diceRollVal = (Integer.toString(roll));
 
         // Act on the dice roll
         if (roll == 7) { // Move the thief on a 7
@@ -1193,9 +1219,10 @@ public class GamePanel extends javax.swing.JPanel {
         //must be casted from older Graphics class in order to have access to some newer methods
         Graphics2D g2d = (Graphics2D) g;
         //draw a string on the panel        
-        g2d.setFont(new Font("Times New Roman", Font.BOLD, 40));
-        g2d.drawString("Settlers of Catan", 10, 50); //(text, x, y)        }
-
+        g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor)));
+        //old title. Replaced by JLabel
+        //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
+        
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
@@ -1262,6 +1289,13 @@ public class GamePanel extends javax.swing.JPanel {
                         null);
             }
         }
+        
+        //set the font for the dice roll indecator
+        g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
+        //show what number the user rolled
+        g2d.drawString("You rolled a: " + diceRollVal, 
+                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), 
+                (int) (500 / scaleFactor));
 
         // Draw the 72 road nodes
         NodeRoad road;
@@ -1598,7 +1632,6 @@ public class GamePanel extends javax.swing.JPanel {
      * @param arrayCuttoff The number of indexes to ignore from the back. Used to account for List with and without null components at the end.
      */
     private void scaleWorldObjectPos(ArrayList<? extends WorldObject> arrayList, int arrayCuttoff) { 
-        System.out.println(arrayList.size() - 1);
         
         // Loop through all the tiles
         for (int i = 0; i < arrayList.size() - arrayCuttoff; i++) {
@@ -1662,11 +1695,10 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton buildSettlementLRBtn;
     private javax.swing.JRadioButton buildSettlementSRBtn;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JLabel diceRollLbl;
-    private javax.swing.JLabel diceRollPromptLbl1;
     private javax.swing.JLabel instructionLbl;
     private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JLabel subInstructionLbl;
+    private javax.swing.JLabel titleLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 }
