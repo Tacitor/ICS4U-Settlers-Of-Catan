@@ -47,6 +47,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
     private boolean inbetweenTurns; // true during the period where the game is waiting for the next player to start their turn
     private boolean thiefIsStealing; //true when any player has more than the threshold of allowed cards and must select cards to remove
+    private boolean thiefJustFinished; //true if the theif had just finished stealing
     private boolean showRoadHitbox;
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
@@ -104,6 +105,7 @@ public class GamePanel extends javax.swing.JPanel {
         inSetup = true;
         inbetweenTurns = false;
         thiefIsStealing = false;
+        thiefJustFinished = false;
         currentPlayer = 1; // Player 1 starts
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
@@ -491,6 +493,7 @@ public class GamePanel extends javax.swing.JPanel {
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
                 if (stealCardNum[currentPlayer] > 0) {
+                    instructionLbl.setForeground(Color.red);
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the ones you want to give them");
                 }
@@ -504,9 +507,18 @@ public class GamePanel extends javax.swing.JPanel {
                     repaint();
                 }
                 
+                int theifLeftToRob = 0; //how many players need to get robbed still
+                
+                for (int i = 0; i < stealCardNum.length; i++) {
+                    if (stealCardNum[i] > 0) {
+                        theifLeftToRob++;
+                    }
+                }
+                
                 //check if the thief is done stealing
-                if (stealCardNum[playerCount] <= 0) {
+                if (theifLeftToRob == 0) {
                     thiefIsStealing = false;
+                    thiefJustFinished = true;
                     instructionLbl.setText("The theif is done stealing");
                     subInstructionLbl.setText("You may resume regular play");
                 }
@@ -529,7 +541,13 @@ public class GamePanel extends javax.swing.JPanel {
 
             // Redraw the board to the next player can see their cards
             repaint();
+            
+            //if the thief had just finished set ti false, they are done now
+            thiefJustFinished = false;
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
+            //reset the colour
+            instructionLbl.setForeground(Color.black);
+            
             // And the user is done placing setup buildinga
 
             // Check if the player has enough points to win
@@ -941,6 +959,9 @@ public class GamePanel extends javax.swing.JPanel {
      * many setup buildings they have left to place
      */
     private void updateBuildButtons() {
+        
+        //reset the colour
+        instructionLbl.setForeground(Color.black);
     
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
@@ -953,7 +974,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
         } //if the theif is stealing player's cards
-        else if (thiefIsStealing) {
+        else if (thiefIsStealing || thiefJustFinished) {
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
@@ -986,8 +1007,13 @@ public class GamePanel extends javax.swing.JPanel {
             //set the instructions 
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
+                instructionLbl.setForeground(Color.red);
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
-                subInstructionLbl.setText("If you have too many cards, select the ones the thief will take");
+                subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
+            } else if (thiefJustFinished) {
+                // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
+                instructionLbl.setText("The thief is done stealing");
+                subInstructionLbl.setText("You can play normaly again next round");
             } else {            
                 // Set the instruction labels to tell the player they dont have enough cards
                 instructionLbl.setText("Sorry, you don't have enough cards to build anything");
@@ -1525,6 +1551,22 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("You rolled a: " + diceRollVal, 
                 superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), 
                 (int) (500 / scaleFactor));
+        //basic turn indecator
+        String currentPlayerString;
+        
+        if (inbetweenTurns) {
+            currentPlayerString = "none";
+        } else if (this.currentPlayer == 1) {
+            currentPlayerString = "1, Red";
+        } else if (this.currentPlayer == 2) {
+            currentPlayerString = "2, Blue";
+        } else {
+            currentPlayerString = "0, Error";
+        }
+        
+        g2d.drawString("Current player: " + currentPlayerString, 
+                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), 
+                (int) (550 / scaleFactor));
 
         // Draw the 72 road nodes
         NodeRoad road;
@@ -1937,8 +1979,6 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton buildRoadRBtn;
     private javax.swing.JRadioButton buildSettlementLRBtn;
     private javax.swing.JRadioButton buildSettlementSRBtn;
-    private javax.swing.JLabel diceRollLbl;
-    private javax.swing.JLabel diceRollPromptLbl1;
     private javax.swing.JLabel instructionLbl;
     private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JLabel subInstructionLbl;
