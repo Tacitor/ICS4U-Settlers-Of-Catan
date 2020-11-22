@@ -60,6 +60,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final int victoryPoints[];
     private final int totalCardsCollected[];
     private int[] stealCardNum; //the number of cards to steal from each player
+    private int cardStartPosition;
     private final int victoryPointsToWin;
     private int thiefMoveCounter;
     private int tileWithThief; // The index of the tile with the thief
@@ -849,6 +850,22 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
+        } else if (thiefIsStealing) { //check if the user clicked to select a card
+            //check if the user clicked on any card
+            for (int i = 0; i < cards[currentPlayer].size(); i++) {
+                //get the x and y positions for that card
+                int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i );
+                int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
+                
+                //check if there was a click on a card
+                if (event.getX() > cardXPos && 
+                        event.getY() > cardYPos &&
+                        event.getX() < (cardXPos + getImgWidth(CARD_CLAY)) &&
+                        event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                    System.out.println("Card Clicked!");
+                }
+            }
+            
         }
     }
 
@@ -1692,7 +1709,7 @@ public class GamePanel extends javax.swing.JPanel {
             // Get the number of cards the player has
             int listSize = cards[currentPlayer].size();
             // Calculate where the first card must go to center the list
-            int startPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
+            cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
             // Draw the player's cards
             // Reuse the image variable
             int type;
@@ -1722,7 +1739,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
                 // Draw the card
                 g2d.drawImage(image, 
-                        (startPosition + (getImgWidth(CARD_CLAY) + 10) * i ), 
+                        (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i ), 
                         (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
                         getImgWidth(image),
                         getImgHeight(image), 
@@ -1733,7 +1750,7 @@ public class GamePanel extends javax.swing.JPanel {
                     g2d.setColor(Color.green);
                     Stroke tempStroke = g2d.getStroke();
                     g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                    g2d.drawRect((startPosition + (getImgWidth(CARD_CLAY) + 10) * i ), 
+                    g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i ), 
                             (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)), 
                             getImgWidth(image), 
                             getImgHeight(image));
