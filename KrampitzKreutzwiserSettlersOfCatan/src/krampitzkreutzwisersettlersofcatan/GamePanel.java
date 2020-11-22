@@ -46,6 +46,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
     private boolean inbetweenTurns; // true during the period where the game is waiting for the next player to start their turn
+    private boolean thiefIsStealing; //true when any player has more than the threshold of allowed cards and must select cards to remove
     private boolean showRoadHitbox;
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
@@ -54,6 +55,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final int victoryPoints[];
     private final int totalCardsCollected[];
+    private int[] stealCardNum; //the number of cards to steal from each player
     private final int victoryPointsToWin;
     private int thiefMoveCounter;
     private int tileWithThief; // The index of the tile with the thief
@@ -101,11 +103,14 @@ public class GamePanel extends javax.swing.JPanel {
         roadNodes = new ArrayList(); // Init the road node array list
         inSetup = true;
         inbetweenTurns = false;
+        thiefIsStealing = false;
         currentPlayer = 1; // Player 1 starts
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
         victoryPoints = new int[playerCount + 1]; // Create the array of player's victory points
         // the +1 allows methods to use player IDs directly without subtracting 1
+        stealCardNum = new int[playerCount + 1]; //create the array of how many cards need to be stolen
+        //the +1 allows methods to use player IDs directly without subtracting 1
         totalCardsCollected = new int[5];
         buildingObject = 0;
         showRoadHitbox = false;
@@ -115,7 +120,7 @@ public class GamePanel extends javax.swing.JPanel {
         victoryPointsToWin = 10;
         thiefMoveCounter = 0;
 
-        //set a deflaut save path
+        //set a default save path
         saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.save";
         //initialize the filechooser
         saveFileChooser = new JFileChooser();
@@ -484,6 +489,28 @@ public class GamePanel extends javax.swing.JPanel {
             if (inSetup) {
                 instructionLbl.setText("Place two roads and two small settlements each to start.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
+            } else if (thiefIsStealing) { //check if the current mode is stealing cards
+                if (stealCardNum[currentPlayer] > 0) {
+                    instructionLbl.setText("The thief is stealing half your cards");
+                    subInstructionLbl.setText("Select the ones you want to give them");
+                }
+                
+                repaint();
+                
+                while (stealCardNum[currentPlayer] > 0) {
+                    int removeIndex = Integer.parseInt(JOptionPane.showInputDialog("Select which card index to remove (" + stealCardNum[currentPlayer] + " left): "));
+                    cards[currentPlayer].remove(removeIndex);
+                    stealCardNum[currentPlayer]--;
+                    repaint();
+                }
+                
+                //check if the thief is done stealing
+                if (stealCardNum[playerCount] <= 0) {
+                    thiefIsStealing = false;
+                    instructionLbl.setText("The theif is done stealing");
+                    subInstructionLbl.setText("You may resume regular play");
+                }
+                
             } else { // If a turn of the real game is starting (not setup)
                 // Roll the dice and display the rolled number to the user
                 diceRoll();
@@ -533,8 +560,8 @@ public class GamePanel extends javax.swing.JPanel {
 
             // If the game is still in setup, give the next player roads to place
             if (inSetup) {
-                playerSetupRoadsLeft = 2;
-                playerSetupSettlementLeft = 2;
+                playerSetupRoadsLeft = 0;
+                playerSetupSettlementLeft = 0;
             }
 
             // If the game was waiting for the user to build
@@ -925,6 +952,11 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildRoad = (playerSetupRoadsLeft > 0);
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
+        } //if the theif is stealing player's cards
+        else if (thiefIsStealing) {
+            canBuildRoad = false;
+            canBuildSettlement = false;
+            canBuildCity = false;
         } // If the game is NOT in setup
         else {
             // Check if the player has enough cards to use the build buttons
@@ -950,9 +982,17 @@ public class GamePanel extends javax.swing.JPanel {
         else if (inSetup == false) {
             // If no buttons are enabled clear the selection
             buildBtnGroup.clearSelection();
-            // Set the instruction labels to tell the player they dont have enough cards
-            instructionLbl.setText("Sorry, you don't have enough cards to build anything");
-            subInstructionLbl.setText("End your turn and collect more resources");
+            
+            //set the instructions 
+            if (thiefIsStealing) { //tell the player the theif is stealing
+                // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
+                instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
+                subInstructionLbl.setText("If you have too many cards, select the ones the thief will take");
+            } else {            
+                // Set the instruction labels to tell the player they dont have enough cards
+                instructionLbl.setText("Sorry, you don't have enough cards to build anything");
+                subInstructionLbl.setText("End your turn and collect more resources");
+            }
         } // If no buttons are selected and the game IS in setup 
         else {
             // If no buttons are enabled clear the selection
@@ -1239,19 +1279,23 @@ public class GamePanel extends javax.swing.JPanel {
             // Increment the thief movement counter
             thiefMoveCounter++;
             
-            //remove half of each players cards if they have ofver seven
+            //steal the cards and allow the lables to update
+            thiefIsStealing = true;
+            
+            //remove half of each players cards if they have over seven
             //loop through the players
             for (int i = 0; i < cards.length; i++) {
                 //check if the player has more than the allowed seven
                 if (cards[i].size() > 7) {
                     //get the number of cards that need to be stolen
-                    int stealCardNum = (int) Math.floor(cards[i].size() / 2.0);
-                    //System.out.println("I will steal " + stealCardNum + " cards.");
+                    stealCardNum[i] = (int) Math.floor(cards[i].size() / 2.0);
+                    System.out.println("I will steal " + stealCardNum[i] + " cards from player " + i);
                     
-                    //steal the cards
-                    for (int j = stealCardNum; j > 0; j--) {
+                    /*
+                    for (int j = stealCardNum[i]; j > 0; j--) {
                         cards[i].remove( (int) (Math.random()*cards[i].size()) );
                     }
+                    */
                     
                     
                 }
@@ -1811,6 +1855,17 @@ public class GamePanel extends javax.swing.JPanel {
             settlementNodes.get(i).setTile(3, tiles.get(settlementLinkToHex3[i]));
 
         }
+        
+        settlementNodes.get(9).setPlayer(1);
+        settlementNodes.get(12).setPlayer(1);
+        settlementNodes.get(23).setPlayer(2);
+        settlementNodes.get(34).setPlayer(2);
+        roadNodes.get(10).setPlayer(1);
+        roadNodes.get(11).setPlayer(1);
+        roadNodes.get(22).setPlayer(2);
+        roadNodes.get(23).setPlayer(2);
+        playerSetupRoadsLeft = 0;
+        playerSetupSettlementLeft = 0;
     }
     
     /**
