@@ -6,11 +6,13 @@
 package krampitzkreutzwisersettlersofcatan;
 
 import dataFiles.OldCode;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -49,6 +51,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean thiefIsStealing; //true when any player has more than the threshold of allowed cards and must select cards to remove
     private boolean thiefJustFinished; //true if the theif had just finished stealing
     private boolean showRoadHitbox;
+    private boolean showCardHitbox; //used for picking which cards the thief steals
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
     private final int playerCount; // The number of players in the game
@@ -117,6 +120,7 @@ public class GamePanel extends javax.swing.JPanel {
         buildingObject = 0;
         showRoadHitbox = false;
         showSettlementHitbox = false;
+        showCardHitbox = false;
         playerSetupRoadsLeft = 2;
         playerSetupSettlementLeft = 2;
         victoryPointsToWin = 10;
@@ -492,23 +496,34 @@ public class GamePanel extends javax.swing.JPanel {
                 instructionLbl.setText("Place two roads and two small settlements each to start.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
+                //update the lables for the player if the thief is stealing their cards specifically
                 if (stealCardNum[currentPlayer] > 0) {
                     instructionLbl.setForeground(Color.red);
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the ones you want to give them");
                 }
                 
+                repaint(); //update the lables and draw the cards
+                
+                //hilight the cards so the player know they can click there
+                showCardHitbox = true;
                 repaint();
                 
-                while (stealCardNum[currentPlayer] > 0) {
+                //go through and steal the pleayers cards until the correct amout has been taken
+                while (stealCardNum[currentPlayer] > 0) {                    
                     int removeIndex = Integer.parseInt(JOptionPane.showInputDialog("Select which card index to remove (" + stealCardNum[currentPlayer] + " left): "));
                     cards[currentPlayer].remove(removeIndex);
                     stealCardNum[currentPlayer]--;
                     repaint();
                 }
                 
+                //hide the hit boxes again
+                showCardHitbox = false;
+                repaint();
+                
                 int theifLeftToRob = 0; //how many players need to get robbed still
                 
+                //count how many still need to get robed
                 for (int i = 0; i < stealCardNum.length; i++) {
                     if (stealCardNum[i] > 0) {
                         theifLeftToRob++;
@@ -517,8 +532,10 @@ public class GamePanel extends javax.swing.JPanel {
                 
                 //check if the thief is done stealing
                 if (theifLeftToRob == 0) {
+                    //set the vars
                     thiefIsStealing = false;
                     thiefJustFinished = true;
+                    //update the instructions
                     instructionLbl.setText("The theif is done stealing");
                     subInstructionLbl.setText("You may resume regular play");
                 }
@@ -1710,6 +1727,19 @@ public class GamePanel extends javax.swing.JPanel {
                         getImgWidth(image),
                         getImgHeight(image), 
                         null);
+                
+                //draw the hitbox
+                if (showCardHitbox) {
+                    g2d.setColor(Color.green);
+                    Stroke tempStroke = g2d.getStroke();
+                    g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                    g2d.drawRect((startPosition + (getImgWidth(CARD_CLAY) + 10) * i ), 
+                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)), 
+                            getImgWidth(image), 
+                            getImgHeight(image));
+                    g2d.setStroke(tempStroke);
+                    g2d.setColor(Color.black);
+                }
             }
         }
         // Add alignment lines
