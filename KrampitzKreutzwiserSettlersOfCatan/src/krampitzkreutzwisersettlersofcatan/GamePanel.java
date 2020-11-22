@@ -1238,6 +1238,25 @@ public class GamePanel extends javax.swing.JPanel {
             tileWithThief = random;
             // Increment the thief movement counter
             thiefMoveCounter++;
+            
+            //remove half of each players cards if they have ofver seven
+            //loop through the players
+            for (int i = 0; i < cards.length; i++) {
+                //check if the player has more than the allowed seven
+                if (cards[i].size() > 7) {
+                    //get the number of cards that need to be stolen
+                    int stealCardNum = (int) Math.floor(cards[i].size() / 2.0);
+                    //System.out.println("I will steal " + stealCardNum + " cards.");
+                    
+                    //steal the cards
+                    for (int j = stealCardNum; j > 0; j--) {
+                        cards[i].remove( (int) (Math.random()*cards[i].size()) );
+                    }
+                    
+                    
+                }
+            }
+            
         } else { // Otherwise collect materials
             // Search for tiles with the number rolled as their harvest number,
             // And give players the materials
