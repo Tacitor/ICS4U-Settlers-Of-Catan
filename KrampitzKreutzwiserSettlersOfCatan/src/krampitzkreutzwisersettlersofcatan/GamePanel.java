@@ -55,6 +55,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showCardHitbox; //used for picking which cards the thief steals
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
+    private int playerRolled7; //the player who most recently rolled a seven
     private final int playerCount; // The number of players in the game
     private final boolean giveStartingResources; // If players get startup resources
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
@@ -113,6 +114,7 @@ public class GamePanel extends javax.swing.JPanel {
         thiefJustFinished = false;
         thiefJustStarted = false;
         currentPlayer = 1; // Player 1 starts
+        playerRolled7 = 0; //no player has rolled a 7 yet
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
         victoryPoints = new int[playerCount + 1]; // Create the array of player's victory points
@@ -509,25 +511,11 @@ public class GamePanel extends javax.swing.JPanel {
                     //hilight the cards so the player know they can click there
                     showCardHitbox = true;
                     repaint();
-
-                    System.out.println("testing");
                     
                     turnSwitchBtn.setEnabled(false);
-                    
-                    /*
-                    //go through and steal the pleayers cards until the correct amout has been taken
-                    while (stealCardNum[currentPlayer] > 0) {                    
-                        int removeIndex = Integer.parseInt(JOptionPane.showInputDialog("Select which card index to remove (" + stealCardNum[currentPlayer] + " left): "));
-                        cards[currentPlayer].remove(removeIndex);
-                        stealCardNum[currentPlayer]--;
-                        repaint();
-                    }
-                    */
                 
                 }
                 
-                //hide the hit boxes again
-                //showCardHitbox = false;
                 repaint();
                 
                 int theifLeftToRob = 0; //how many players need to get robbed still
@@ -544,6 +532,9 @@ public class GamePanel extends javax.swing.JPanel {
                     //set the vars
                     thiefIsStealing = false;
                     thiefJustFinished = true;
+                    //set the player to the correct one
+                    currentPlayer = playerRolled7;
+                    
                     //update the instructions
                     instructionLbl.setText("The theif is done stealing");
                     subInstructionLbl.setText("You may resume regular play");
@@ -587,20 +578,7 @@ public class GamePanel extends javax.swing.JPanel {
             inbetweenTurns = true;
 
             // Select the next player
-            currentPlayer++;
-
-            // And go back to player 1 if the number exceeds the total number of players
-            if (currentPlayer > playerCount) {
-                currentPlayer = 1;
-                // If the game was in setup, all of the turns have ended now and the normal game can begin
-                if (inSetup) {
-                    inSetup = false;
-                    // If enabled. give everyone their starting resources
-                    if (giveStartingResources) {
-                    collectMaterials(0); // 0 makes it collect everything possible
-                    }
-                }
-            }
+            nextPlayer();
 
             // If the game is still in setup, give the next player roads to place
             if (inSetup) {
@@ -870,7 +848,8 @@ public class GamePanel extends javax.swing.JPanel {
                         event.getY() > cardYPos &&
                         event.getX() < (cardXPos + getImgWidth(CARD_CLAY)) &&
                         event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
-                    System.out.println("Card Clicked!");
+                    //debug click detection
+                    //System.out.println("Card Clicked!");
                     cards[currentPlayer].remove(i); //remove the card
                     stealCardNum[currentPlayer]--; //count the removal
                     
@@ -1376,6 +1355,9 @@ public class GamePanel extends javax.swing.JPanel {
             thiefIsStealing = true;
             thiefJustStarted = true;
             
+            //save the player who just rolled a 7
+            playerRolled7 = currentPlayer;
+            
             //remove half of each players cards if they have over seven
             //loop through the players
             for (int i = 0; i < cards.length; i++) {
@@ -1383,7 +1365,8 @@ public class GamePanel extends javax.swing.JPanel {
                 if (cards[i].size() > 7) {
                     //get the number of cards that need to be stolen
                     stealCardNum[i] = (int) Math.floor(cards[i].size() / 2.0);
-                    System.out.println("I will steal " + stealCardNum[i] + " cards from player " + i);
+                    //debug card stealing
+                    //System.out.println("I will steal " + stealCardNum[i] + " cards from player " + i);
                     
                     /*
                     for (int j = stealCardNum[i]; j > 0; j--) {
@@ -2066,4 +2049,21 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel titleLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
+
+    private void nextPlayer() {
+        currentPlayer++;
+
+            // And go back to player 1 if the number exceeds the total number of players
+            if (currentPlayer > playerCount) {
+                currentPlayer = 1;
+                // If the game was in setup, all of the turns have ended now and the normal game can begin
+                if (inSetup) {
+                    inSetup = false;
+                    // If enabled. give everyone their starting resources
+                    if (giveStartingResources) {
+                    collectMaterials(0); // 0 makes it collect everything possible
+                    }
+                }
+            }
+    }
 }
