@@ -50,6 +50,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean inbetweenTurns; // true during the period where the game is waiting for the next player to start their turn
     private boolean thiefIsStealing; //true when any player has more than the threshold of allowed cards and must select cards to remove
     private boolean thiefJustFinished; //true if the theif had just finished stealing
+    private boolean thiefJustStarted; //true if the thief was just rolled
     private boolean showRoadHitbox;
     private boolean showCardHitbox; //used for picking which cards the thief steals
     private boolean showSettlementHitbox;
@@ -110,6 +111,7 @@ public class GamePanel extends javax.swing.JPanel {
         inbetweenTurns = false;
         thiefIsStealing = false;
         thiefJustFinished = false;
+        thiefJustStarted = false;
         currentPlayer = 1; // Player 1 starts
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
@@ -483,6 +485,9 @@ public class GamePanel extends javax.swing.JPanel {
      */
     private void turnSwitchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_turnSwitchBtnActionPerformed
 
+        updateBuildButtons();
+        repaint();
+        
         // If the game is waiting to start the next player's turn
         if (inbetweenTurns) {
 
@@ -497,12 +502,6 @@ public class GamePanel extends javax.swing.JPanel {
                 instructionLbl.setText("Place two roads and two small settlements each to start.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
-                //update the lables for the player if the thief is stealing their cards specifically
-                if (stealCardNum[currentPlayer] > 0) {
-                    instructionLbl.setForeground(Color.red);
-                    instructionLbl.setText("The thief is stealing half your cards");
-                    subInstructionLbl.setText("Select the ones you want to give them");
-                }
                 
                 repaint(); //update the lables and draw the cards
                 
@@ -1044,6 +1043,18 @@ public class GamePanel extends javax.swing.JPanel {
                 instructionLbl.setForeground(Color.red);
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
+                
+                //update the lables for the player if the thief is stealing their cards specifically
+                if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
+                    instructionLbl.setForeground(Color.red);
+                    instructionLbl.setText("The thief is stealing half your cards");
+                    subInstructionLbl.setText("Select the ones you want to give them");
+                }
+                
+                if (thiefJustStarted) {
+                    thiefJustStarted = false;
+                }
+                
             } else if (thiefJustFinished) {
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
                 instructionLbl.setText("The thief is done stealing");
@@ -1324,6 +1335,7 @@ public class GamePanel extends javax.swing.JPanel {
         roll += (int) (Math.random() * 6) + 1;
 
         // Display the number rolled to the user
+        //updates the var that displays the roll. updates every time the draw() method is run
         diceRollVal = (Integer.toString(roll));
 
         // Act on the dice roll
@@ -1341,6 +1353,7 @@ public class GamePanel extends javax.swing.JPanel {
             
             //steal the cards and allow the lables to update
             thiefIsStealing = true;
+            thiefJustStarted = true;
             
             //remove half of each players cards if they have over seven
             //loop through the players
