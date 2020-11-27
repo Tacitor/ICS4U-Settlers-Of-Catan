@@ -503,22 +503,31 @@ public class GamePanel extends javax.swing.JPanel {
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
                 
-                repaint(); //update the lables and draw the cards
+                //check if the current player needs to be stolen from
+                if (stealCardNum[currentPlayer] > 0) {
                 
-                //hilight the cards so the player know they can click there
-                showCardHitbox = true;
-                repaint();
-                
-                //go through and steal the pleayers cards until the correct amout has been taken
-                while (stealCardNum[currentPlayer] > 0) {                    
-                    int removeIndex = Integer.parseInt(JOptionPane.showInputDialog("Select which card index to remove (" + stealCardNum[currentPlayer] + " left): "));
-                    cards[currentPlayer].remove(removeIndex);
-                    stealCardNum[currentPlayer]--;
+                    //hilight the cards so the player know they can click there
+                    showCardHitbox = true;
                     repaint();
+
+                    System.out.println("testing");
+                    
+                    turnSwitchBtn.setEnabled(false);
+                    
+                    /*
+                    //go through and steal the pleayers cards until the correct amout has been taken
+                    while (stealCardNum[currentPlayer] > 0) {                    
+                        int removeIndex = Integer.parseInt(JOptionPane.showInputDialog("Select which card index to remove (" + stealCardNum[currentPlayer] + " left): "));
+                        cards[currentPlayer].remove(removeIndex);
+                        stealCardNum[currentPlayer]--;
+                        repaint();
+                    }
+                    */
+                
                 }
                 
                 //hide the hit boxes again
-                showCardHitbox = false;
+                //showCardHitbox = false;
                 repaint();
                 
                 int theifLeftToRob = 0; //how many players need to get robbed still
@@ -849,7 +858,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
-        } else if (thiefIsStealing) { //check if the user clicked to select a card
+        } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0) { //check if the user clicked to select a card
             //check if the user clicked on any card
             for (int i = 0; i < cards[currentPlayer].size(); i++) {
                 //get the x and y positions for that card
@@ -862,6 +871,18 @@ public class GamePanel extends javax.swing.JPanel {
                         event.getX() < (cardXPos + getImgWidth(CARD_CLAY)) &&
                         event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
                     System.out.println("Card Clicked!");
+                    cards[currentPlayer].remove(i); //remove the card
+                    stealCardNum[currentPlayer]--; //count the removal
+                    
+                    //check if the player is done now
+                    if (stealCardNum[currentPlayer] <= 0) {
+                        turnSwitchBtn.setEnabled(true);
+                        showCardHitbox = false;
+                    }
+                    
+                    updateBuildButtons();
+                    repaint();
+                    
                 }
             }
             
@@ -1048,7 +1069,7 @@ public class GamePanel extends javax.swing.JPanel {
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
                     instructionLbl.setForeground(Color.red);
                     instructionLbl.setText("The thief is stealing half your cards");
-                    subInstructionLbl.setText("Select the ones you want to give them");
+                    subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
                 }
                 
                 if (thiefJustStarted) {
