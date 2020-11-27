@@ -50,10 +50,12 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean inbetweenTurns; // true during the period where the game is waiting for the next player to start their turn
     private boolean thiefIsStealing; //true when any player has more than the threshold of allowed cards and must select cards to remove
     private boolean thiefJustFinished; //true if the theif had just finished stealing
+    private boolean thiefJustStarted; //true if the thief was just rolled
     private boolean showRoadHitbox;
     private boolean showCardHitbox; //used for picking which cards the thief steals
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
+    private int playerRolled7; //the player who most recently rolled a seven
     private final int playerCount; // The number of players in the game
     private final boolean giveStartingResources; // If players get startup resources
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
@@ -110,7 +112,9 @@ public class GamePanel extends javax.swing.JPanel {
         inbetweenTurns = false;
         thiefIsStealing = false;
         thiefJustFinished = false;
+        thiefJustStarted = false;
         currentPlayer = 1; // Player 1 starts
+        playerRolled7 = 0; //no player has rolled a 7 yet
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
         victoryPoints = new int[playerCount + 1]; // Create the array of player's victory points
@@ -483,6 +487,9 @@ public class GamePanel extends javax.swing.JPanel {
      */
     private void turnSwitchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_turnSwitchBtnActionPerformed
 
+        updateBuildButtons();
+        repaint();
+        
         // If the game is waiting to start the next player's turn
         if (inbetweenTurns) {
 
@@ -497,29 +504,18 @@ public class GamePanel extends javax.swing.JPanel {
                 instructionLbl.setText("Place two roads and two small settlements each to start.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
-                //update the lables for the player if the thief is stealing their cards specifically
+                
+                //check if the current player needs to be stolen from
                 if (stealCardNum[currentPlayer] > 0) {
-                    instructionLbl.setForeground(Color.red);
-                    instructionLbl.setText("The thief is stealing half your cards");
-                    subInstructionLbl.setText("Select the ones you want to give them");
-                }
                 
-                repaint(); //update the lables and draw the cards
-                
-                //hilight the cards so the player know they can click there
-                showCardHitbox = true;
-                repaint();
-                
-                //go through and steal the pleayers cards until the correct amout has been taken
-                while (stealCardNum[currentPlayer] > 0) {                    
-                    int removeIndex = Integer.parseInt(JOptionPane.showInputDialog("Select which card index to remove (" + stealCardNum[currentPlayer] + " left): "));
-                    cards[currentPlayer].remove(removeIndex);
-                    stealCardNum[currentPlayer]--;
+                    //hilight the cards so the player know they can click there
+                    showCardHitbox = true;
                     repaint();
+                    
+                    turnSwitchBtn.setEnabled(false);
+                
                 }
                 
-                //hide the hit boxes again
-                showCardHitbox = false;
                 repaint();
                 
                 int theifLeftToRob = 0; //how many players need to get robbed still
@@ -536,6 +532,10 @@ public class GamePanel extends javax.swing.JPanel {
                     //set the vars
                     thiefIsStealing = false;
                     thiefJustFinished = true;
+                    //set the player to the one that rolled the seven. That way when the turn end button 
+                    //is clicked next time the player to roll the dice is the correct one (an not the one that did last (but only sometimes))
+                    currentPlayer = playerRolled7;
+                    
                     //update the instructions
                     instructionLbl.setText("The theif is done stealing");
                     subInstructionLbl.setText("You may resume regular play");
@@ -579,20 +579,7 @@ public class GamePanel extends javax.swing.JPanel {
             inbetweenTurns = true;
 
             // Select the next player
-            currentPlayer++;
-
-            // And go back to player 1 if the number exceeds the total number of players
-            if (currentPlayer > playerCount) {
-                currentPlayer = 1;
-                // If the game was in setup, all of the turns have ended now and the normal game can begin
-                if (inSetup) {
-                    inSetup = false;
-                    // If enabled. give everyone their starting resources
-                    if (giveStartingResources) {
-                    collectMaterials(0); // 0 makes it collect everything possible
-                    }
-                }
-            }
+            nextPlayer();
 
             // If the game is still in setup, give the next player roads to place
             if (inSetup) {
@@ -850,7 +837,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
-        } else if (thiefIsStealing) { //check if the user clicked to select a card
+        } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0) { //check if the user clicked to select a card
             //check if the user clicked on any card
             for (int i = 0; i < cards[currentPlayer].size(); i++) {
                 //get the x and y positions for that card
@@ -862,7 +849,20 @@ public class GamePanel extends javax.swing.JPanel {
                         event.getY() > cardYPos &&
                         event.getX() < (cardXPos + getImgWidth(CARD_CLAY)) &&
                         event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
-                    System.out.println("Card Clicked!");
+                    //debug click detection
+                    //System.out.println("Card Clicked!");
+                    cards[currentPlayer].remove(i); //remove the card
+                    stealCardNum[currentPlayer]--; //count the removal
+                    
+                    //check if the player is done now
+                    if (stealCardNum[currentPlayer] <= 0) {
+                        turnSwitchBtn.setEnabled(true);
+                        showCardHitbox = false;
+                    }
+                    
+                    updateBuildButtons();
+                    repaint();
+                    
                 }
             }
             
@@ -1044,6 +1044,19 @@ public class GamePanel extends javax.swing.JPanel {
                 instructionLbl.setForeground(Color.red);
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
+                
+                //update the lables for the player if the thief is stealing their cards specifically
+                if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
+                    instructionLbl.setForeground(Color.red);
+                    instructionLbl.setText("The thief is stealing half your cards");
+                    subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
+                }
+                
+                //no longer in steal start mode because the lable above just updated
+                if (thiefJustStarted) {
+                    thiefJustStarted = false;
+                }
+                
             } else if (thiefJustFinished) {
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
                 instructionLbl.setText("The thief is done stealing");
@@ -1324,6 +1337,7 @@ public class GamePanel extends javax.swing.JPanel {
         roll += (int) (Math.random() * 6) + 1;
 
         // Display the number rolled to the user
+        //updates the var that displays the roll. updates every time the draw() method is run
         diceRollVal = (Integer.toString(roll));
 
         // Act on the dice roll
@@ -1341,6 +1355,10 @@ public class GamePanel extends javax.swing.JPanel {
             
             //steal the cards and allow the lables to update
             thiefIsStealing = true;
+            thiefJustStarted = true;
+            
+            //save the player who just rolled a 7
+            playerRolled7 = currentPlayer;
             
             //remove half of each players cards if they have over seven
             //loop through the players
@@ -1349,7 +1367,8 @@ public class GamePanel extends javax.swing.JPanel {
                 if (cards[i].size() > 7) {
                     //get the number of cards that need to be stolen
                     stealCardNum[i] = (int) Math.floor(cards[i].size() / 2.0);
-                    System.out.println("I will steal " + stealCardNum[i] + " cards from player " + i);
+                    //debug card stealing
+                    //System.out.println("I will steal " + stealCardNum[i] + " cards from player " + i);
                     
                     /*
                     for (int j = stealCardNum[i]; j > 0; j--) {
@@ -2032,4 +2051,24 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel titleLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
+    
+    /**
+     * Go the the next player for their turn. Also make sure to loop back to the first player
+     */
+    private void nextPlayer() {
+        currentPlayer++;
+
+        // And go back to player 1 if the number exceeds the total number of players
+        if (currentPlayer > playerCount) {
+            currentPlayer = 1;
+            // If the game was in setup, all of the turns have ended now and the normal game can begin
+            if (inSetup) {
+                inSetup = false;
+                // If enabled. give everyone their starting resources
+                if (giveStartingResources) {
+                collectMaterials(0); // 0 makes it collect everything possible
+                }
+            }
+        }
+    }
 }
