@@ -532,7 +532,8 @@ public class GamePanel extends javax.swing.JPanel {
                     //set the vars
                     thiefIsStealing = false;
                     thiefJustFinished = true;
-                    //set the player to the correct one
+                    //set the player to the one that rolled the seven. That way when the turn end button 
+                    //is clicked next time the player to roll the dice is the correct one (an not the one that did last (but only sometimes))
                     currentPlayer = playerRolled7;
                     
                     //update the instructions
@@ -1051,6 +1052,7 @@ public class GamePanel extends javax.swing.JPanel {
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
                 }
                 
+                //no longer in steal start mode because the lable above just updated
                 if (thiefJustStarted) {
                     thiefJustStarted = false;
                 }
@@ -2049,21 +2051,24 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel titleLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
-
+    
+    /**
+     * Go the the next player for their turn. Also make sure to loop back to the first player
+     */
     private void nextPlayer() {
         currentPlayer++;
 
-            // And go back to player 1 if the number exceeds the total number of players
-            if (currentPlayer > playerCount) {
-                currentPlayer = 1;
-                // If the game was in setup, all of the turns have ended now and the normal game can begin
-                if (inSetup) {
-                    inSetup = false;
-                    // If enabled. give everyone their starting resources
-                    if (giveStartingResources) {
-                    collectMaterials(0); // 0 makes it collect everything possible
-                    }
+        // And go back to player 1 if the number exceeds the total number of players
+        if (currentPlayer > playerCount) {
+            currentPlayer = 1;
+            // If the game was in setup, all of the turns have ended now and the normal game can begin
+            if (inSetup) {
+                inSetup = false;
+                // If enabled. give everyone their starting resources
+                if (giveStartingResources) {
+                collectMaterials(0); // 0 makes it collect everything possible
                 }
             }
+        }
     }
 }
