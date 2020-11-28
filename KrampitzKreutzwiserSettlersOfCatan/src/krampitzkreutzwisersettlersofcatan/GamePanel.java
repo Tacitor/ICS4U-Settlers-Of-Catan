@@ -62,7 +62,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final int victoryPoints[];
     private final int totalCardsCollected[];
     private int[] stealCardNum; //the number of cards to steal from each player
-    private int cardStartPosition;
+    private int cardStartPosition; //the xPos to start drawing cards at 
     private final int victoryPointsToWin;
     private int thiefMoveCounter;
     private int tileWithThief; // The index of the tile with the thief
@@ -114,7 +114,7 @@ public class GamePanel extends javax.swing.JPanel {
         thiefJustFinished = false;
         thiefJustStarted = false;
         currentPlayer = 1; // Player 1 starts
-        playerRolled7 = 0; //no player has rolled a 7 yet
+        playerRolled7 = 0; //no player has rolled a 7 yet. So set the null player 0 to start
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
         victoryPoints = new int[playerCount + 1]; // Create the array of player's victory points
@@ -512,6 +512,7 @@ public class GamePanel extends javax.swing.JPanel {
                     showCardHitbox = true;
                     repaint();
                     
+                    //disable the turn switch button so that players must give away cards until the quota is met
                     turnSwitchBtn.setEnabled(false);
                 
                 }
@@ -537,6 +538,7 @@ public class GamePanel extends javax.swing.JPanel {
                     currentPlayer = playerRolled7;
                     
                     //update the instructions
+                    //like 80% sure this is never actually shown so I think this can be removed if at soem point we clean up code.
                     instructionLbl.setText("The theif is done stealing");
                     subInstructionLbl.setText("You may resume regular play");
                 }
@@ -560,7 +562,7 @@ public class GamePanel extends javax.swing.JPanel {
             // Redraw the board to the next player can see their cards
             repaint();
             
-            //if the thief had just finished set ti false, they are done now
+            //if the thief had just finished set it false, they are done now
             thiefJustFinished = false;
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             //reset the colour
@@ -583,8 +585,8 @@ public class GamePanel extends javax.swing.JPanel {
 
             // If the game is still in setup, give the next player roads to place
             if (inSetup) {
-                playerSetupRoadsLeft = 0;
-                playerSetupSettlementLeft = 0;
+                playerSetupRoadsLeft = 2;
+                playerSetupSettlementLeft = 2;
             }
 
             // If the game was waiting for the user to build
@@ -1045,7 +1047,7 @@ public class GamePanel extends javax.swing.JPanel {
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
                 
-                //update the lables for the player if the thief is stealing their cards specifically
+                //update the lables for the player if the thief is stealing their cards specifically. Do not show this if a 7 was JUST rolled
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
                     instructionLbl.setForeground(Color.red);
                     instructionLbl.setText("The thief is stealing half your cards");
@@ -1360,7 +1362,7 @@ public class GamePanel extends javax.swing.JPanel {
             //save the player who just rolled a 7
             playerRolled7 = currentPlayer;
             
-            //remove half of each players cards if they have over seven
+            //get the number of cards each players has over seven
             //loop through the players
             for (int i = 0; i < cards.length; i++) {
                 //check if the player has more than the allowed seven
@@ -1964,16 +1966,6 @@ public class GamePanel extends javax.swing.JPanel {
 
         }
         
-        settlementNodes.get(9).setPlayer(1);
-        settlementNodes.get(12).setPlayer(1);
-        settlementNodes.get(23).setPlayer(2);
-        settlementNodes.get(34).setPlayer(2);
-        roadNodes.get(10).setPlayer(1);
-        roadNodes.get(11).setPlayer(1);
-        roadNodes.get(22).setPlayer(2);
-        roadNodes.get(23).setPlayer(2);
-        playerSetupRoadsLeft = 0;
-        playerSetupSettlementLeft = 0;
     }
     
     /**
