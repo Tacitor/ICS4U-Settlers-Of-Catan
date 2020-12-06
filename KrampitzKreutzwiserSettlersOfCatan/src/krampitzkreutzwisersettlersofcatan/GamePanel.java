@@ -1555,7 +1555,7 @@ public class GamePanel extends javax.swing.JPanel {
                 //draw the tile
                 g2d.drawImage(tiles.get(i).getImage(),
                             tiles.get(i).getXPos(), 
-                            tiles.get(i).getYPos() - 20,
+                            (int) (tiles.get(i).getYPos() - (20 / scaleFactor)),
                             getImgWidth(tiles.get(i).getImage()),
                             getImgHeight(tiles.get(i).getImage()), null);
             } else {
@@ -1600,13 +1600,16 @@ public class GamePanel extends javax.swing.JPanel {
 
             //check where the thief is and draw it there
             if (tiles.get(i).hasThief()) {
+                
+                int imageWidth = getImgWidth(THIEF);
+                int imageHeight = getImgHeight(THIEF);
 
                 //draw the thief
                 g2d.drawImage(THIEF, 
-                        tiles.get(i).getXPos() + newTileWidth / 2 - (int)(24 / scaleFactor) / 2, 
-                        tiles.get(i).getYPos() + newTileHeight / 2 - (int)(56 / scaleFactor) / 2, 
-                        (int)(24 / scaleFactor),
-                        (int)(56 / scaleFactor),
+                        tiles.get(i).getXPos() + newTileWidth / 2 - (int)(imageWidth / scaleFactor) / 2, 
+                        tiles.get(i).getYPos() + newTileHeight / 2 - (int)(imageHeight / scaleFactor) / 2, 
+                        (int)(imageWidth / scaleFactor),
+                        (int)(imageHeight / scaleFactor),
                         null);
             }
         }
