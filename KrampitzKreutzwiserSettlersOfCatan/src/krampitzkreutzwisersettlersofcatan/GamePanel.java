@@ -1542,6 +1542,14 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(MATERIAL_KEY), //scale the image
                 getImgHeight(MATERIAL_KEY),
                 null);
+        
+        //draw the current player icon
+        g2d.drawImage(PLAYER_RED, 
+                superFrame.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
+                (int) (800 / scaleFactor), //just a little bit from the top
+                getImgWidth(PLAYER_RED), //scale the image
+                getImgHeight(PLAYER_RED),
+                null);
 
         //draw the ring of water
         //also scale it to the current monitor. Coords are to center it relative to the display center

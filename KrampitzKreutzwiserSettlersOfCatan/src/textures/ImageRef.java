@@ -47,6 +47,9 @@ public class ImageRef {
     //the image for the building materials
     public final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
     
+    //current player indecator
+    public final static Image PLAYER_RED = new ImageIcon(ImageRef.class.getResource("playerRed.png")).getImage();
+    
     //store most of the images to reduce varable clutter in the main class (gamePanel)
 
     public ImageRef() {
