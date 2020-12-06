@@ -82,6 +82,7 @@ public class GamePanel extends javax.swing.JPanel {
     private double scaleFactor;
     private int newTileWidth;
     private int newTileHeight;
+    private int threeDTileOffset;
     
     //new dice roll lable
     private String diceRollVal; 
@@ -230,6 +231,9 @@ public class GamePanel extends javax.swing.JPanel {
         
         //initialize the dice roll value
         diceRollVal = "";
+        
+        //init the offset for the "3d" overlap tiles
+        threeDTileOffset = (int) (-20 / scaleFactor);
 
     }
 
@@ -1580,7 +1584,7 @@ public class GamePanel extends javax.swing.JPanel {
             if (tiles.get(i).getType() != 0) {
                 g2d.setColor(Color.DARK_GRAY);
                 g2d.fillOval(tiles.get(i).getXPos() + newTileWidth / 2 - ((int)(30 / scaleFactor) / 2), 
-                        tiles.get(i).getYPos() + newTileHeight / 2 - ((int)(30 / scaleFactor) / 2), 
+                        (int)(tiles.get(i).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset), 
                         (int)(30 / scaleFactor), 
                         (int)(30 / scaleFactor));
 
@@ -1602,7 +1606,7 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setFont(new Font("Times New Roman", Font.BOLD, (int)(20 / scaleFactor)));
                 g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), 
                         tiles.get(i).getXPos() + newTileWidth / 2 - harvestRollNumOffset, 
-                        tiles.get(i).getYPos() + newTileHeight / 2 + 5);
+                        tiles.get(i).getYPos() + newTileHeight / 2 + 5 + threeDTileOffset);
                 g2d.setColor(Color.black);
             }
 
@@ -1615,7 +1619,7 @@ public class GamePanel extends javax.swing.JPanel {
                 //draw the thief
                 g2d.drawImage(THIEF, 
                         tiles.get(i).getXPos() + newTileWidth / 2 - (int)(imageWidth / scaleFactor) / 2, 
-                        tiles.get(i).getYPos() + newTileHeight / 2 - (int)(imageHeight / scaleFactor) / 2, 
+                        tiles.get(i).getYPos() + newTileHeight / 2 - (int)(imageHeight / scaleFactor) / 2 + threeDTileOffset, 
                         (int)(imageWidth / scaleFactor),
                         (int)(imageHeight / scaleFactor),
                         null);
