@@ -1550,7 +1550,7 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the current player icon
         g2d.drawImage(PLAYER_RED, 
                 superFrame.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
-                (int) (800 / scaleFactor), //just a little bit from the top
+                superFrame.getHeight()- getImgHeight(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
                 getImgWidth(PLAYER_RED), //scale the image
                 getImgHeight(PLAYER_RED),
                 null);
