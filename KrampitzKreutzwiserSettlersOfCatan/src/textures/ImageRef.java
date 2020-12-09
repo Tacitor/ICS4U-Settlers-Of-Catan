@@ -49,6 +49,8 @@ public class ImageRef {
     
     //current player indecator
     public final static Image PLAYER_RED = new ImageIcon(ImageRef.class.getResource("playerRed.png")).getImage();
+    public final static Image PLAYER_BLUE = new ImageIcon(ImageRef.class.getResource("playerBlue.png")).getImage();
+    public final static Image PLAYER_NONE = new ImageIcon(ImageRef.class.getResource("playerNone.png")).getImage();
     
     //store most of the images to reduce varable clutter in the main class (gamePanel)
 
