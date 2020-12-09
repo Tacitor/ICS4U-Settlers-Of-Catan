@@ -736,27 +736,26 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //check that the settlement is unowned
                         if (settlementNodes.get(i).getPlayer() == 0) {
-                            //check what mode the game is in 
-                            if (inSetup && playerSetupSettlementLeft > 0) { // In Setup
-                                // Place one of the player's setup settlements
-                                settlementNodes.get(i).setPlayer(currentPlayer);
-                                playerSetupSettlementLeft--;
-                                // Increment the player's victory point counter
-                                victoryPoints[currentPlayer]++;
-                              
-                                // Update thwe build buttons to relfect the remaining setup buildings
-                                updateBuildButtons();
-                            } // If the main game is in progress and the player can build the settlement there
-                            else if (canBuildSettlement(settlementNodes.get(i))) {
-                                // The card check has already been made, and the user has the right cards
-                                
-                                // Remove the cards from the player's deck
-                                // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
-                                cards[currentPlayer].remove(new Integer(1));
-                                cards[currentPlayer].remove(new Integer(2));
-                                cards[currentPlayer].remove(new Integer(3));
-                                cards[currentPlayer].remove(new Integer(4));
 
+                            // Check that the player can build there and update the instruction labels accordingly if hey cannot
+                            if (canBuildSettlement(settlementNodes.get(i))) {
+
+                                // If the game is in setup
+                                if (inSetup) { // In Setup
+                                    // Decremeent the number of setup settlements since one is placed
+                                    playerSetupSettlementLeft--;
+                                } // If the main game is in progress
+                                else {
+                                    // The card check has already been made, and the user has the right cards
+
+                                    // Remove the required cards from the player's deck
+                                    // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
+                                    cards[currentPlayer].remove(new Integer(1));
+                                    cards[currentPlayer].remove(new Integer(2));
+                                    cards[currentPlayer].remove(new Integer(3));
+                                    cards[currentPlayer].remove(new Integer(4));
+                                }
+                                
                                 // Set the settlement's player to the current player
                                 settlementNodes.get(i).setPlayer(currentPlayer);
 
@@ -764,13 +763,9 @@ public class GamePanel extends javax.swing.JPanel {
                                 victoryPoints[currentPlayer]++;
 
                                 // Update the building buttons to reflect the player's new list of cards
+                                // or number of setup buildings
                                 updateBuildButtons();
-                            } // If the player could not build there
-                            else {
-                                // Print out why the player could not build there
-                                instructionLbl.setText("Sorry but you can't build a settlement there.");
-                                subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
-                            }
+                            } 
 
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
@@ -1287,7 +1282,8 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Check if the player can build a settlement on the given node
+     * Check if the player can build a settlement on the given node.
+     * During setup, will not check for connect to roads
      *
      * @param settlement The settlement node to check if the user can build on
      * @return If the player can build on it
@@ -1298,35 +1294,60 @@ public class GamePanel extends javax.swing.JPanel {
         // And if one of the connected roads belong to the current player
         int otherPlayerNumber = 0;
         boolean currentPlayerHasRoad = false; // If the current player has a road connected to this node
+        NodeRoad road; // Stores the road currently being checked by the loop
+
         for (int i = 1; i <= 3; i++) {
+            // Save a reference to the road
+            road = settlement.getRoad(i);
+
             // If the road exists
-            if (settlement.getRoad(i) != null) {
-                // If the road belongs to the player
-                if (settlement.getRoad(i).getPlayer() == currentPlayer) {
+            if (road != null) {
+                // If the road belongs to the player, or the game is in setup (where road connections dont mater here)
+                if (road.getPlayer() == currentPlayer || inSetup) {
                     // Then store that the user has a road connecting to this place
                     currentPlayerHasRoad = true;
                 } // If the road belongs to a different player (and is owned)
-                else if (settlement.getRoad(i).getPlayer() > 0) {
+                else if (road.getPlayer() > 0) {
                     // Check if this is the second time the same other player's road was found
-                    if (settlement.getRoad(i).getPlayer() == otherPlayerNumber) {
+                    if (road.getPlayer() == otherPlayerNumber) {
                         // Then the other player has a road going through and past this point,
                         // Blocking any other player from building a settlement there
+
+                        // Set the labels to show why the player could not build there
+                        instructionLbl.setText("Sorry but you can't build a settlement there.");
+                        subInstructionLbl.setText("That position is blocked by another player");
+
                         return false; // Node is blocked, cannot build here
                     }
-                    // Record the number
-                    otherPlayerNumber = settlement.getRoad(i).getPlayer();
+                    // Record the road's user ID
+                    otherPlayerNumber = road.getPlayer();
                 }
+
+                // Check that neither of the connected roads' settlement nodes are taken
+                // Settlements cannot be built next to other settlements, even if there is no road between them
+                // (Follow the distance rule)
+                if (road.getSettlement(1).getPlayer() != 0 || road.getSettlement(2).getPlayer() != 0) {
+                    // The settlement is too close to another
+
+                    // Print out why the player could not build there
+                    instructionLbl.setText("Sorry but you can't build a settlement there.");
+                    subInstructionLbl.setText("Try building farther away from exsisting buildings");
+
+                    return false; // Cannot build here
+                }
+
             }
         }
 
-        // If the current player owns a connected road, and the code didnt return above,
-        if (currentPlayerHasRoad) {
-            // Then the player can build here
-            return true;
+        // Let the user know if they could not build due to no roads being connected
+        if (!currentPlayerHasRoad) {
+            instructionLbl.setText("Sorry but you can't build a settlement there.");
+            subInstructionLbl.setText("Try building on one of your exsisting roads");                
         }
-
-        // If the user cannot build here
-        return false;
+        
+        // If the code above didnt find any issues, then the user can build here 
+        // as long as they have a connecting road. (Or are in setup)
+        return currentPlayerHasRoad;
     }
 
     /**
@@ -1358,14 +1379,14 @@ public class GamePanel extends javax.swing.JPanel {
             tileWithThief = random;
             // Increment the thief movement counter
             thiefMoveCounter++;
-            
+
             //steal the cards and allow the lables to update
             thiefIsStealing = true;
             thiefJustStarted = true;
-            
+
             //save the player who just rolled a 7
             playerRolled7 = currentPlayer;
-            
+
             //get the number of cards each players has over seven
             //loop through the players
             for (int i = 0; i < cards.length; i++) {
@@ -1375,14 +1396,13 @@ public class GamePanel extends javax.swing.JPanel {
                     stealCardNum[i] = (int) Math.floor(cards[i].size() / 2.0);
                     //debug card stealing
                     //System.out.println("I will steal " + stealCardNum[i] + " cards from player " + i);
-                    
+
                     /*
                     for (int j = stealCardNum[i]; j > 0; j--) {
                         cards[i].remove( (int) (Math.random()*cards[i].size()) );
                     }
                     */
-                    
-                    
+
                 }
             }
             
@@ -2081,7 +2101,7 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel titleLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * Go the the next player for their turn. Also make sure to loop back to the first player
      */
