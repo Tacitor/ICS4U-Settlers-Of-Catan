@@ -2065,6 +2065,22 @@ public class GamePanel extends javax.swing.JPanel {
             System.out.println("Error reading Tile Position file: " + e);
         }
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backBtn;
+    private javax.swing.JButton backNoSaveBtn;
+    private javax.swing.JButton buildBtn;
+    private javax.swing.ButtonGroup buildBtnGroup;
+    private javax.swing.JLabel buildMenuLbl;
+    private javax.swing.JRadioButton buildRoadRBtn;
+    private javax.swing.JRadioButton buildSettlementLRBtn;
+    private javax.swing.JRadioButton buildSettlementSRBtn;
+    private javax.swing.JLabel instructionLbl;
+    private javax.swing.JLabel instructionPromptLbl;
+    private javax.swing.JLabel subInstructionLbl;
+    private javax.swing.JLabel titleLbl;
+    private javax.swing.JButton turnSwitchBtn;
+    // End of variables declaration//GEN-END:variables
     
     /**
      * Go the the next player for their turn. Also make sure to loop back to the first player
@@ -2085,28 +2101,4 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
     }
-    
-    /**
-     * Reset the game variables to a clear board state
-     */
-    public void resetGame() {
-        
-    }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton backBtn;
-    private javax.swing.JButton backNoSaveBtn;
-    private javax.swing.JButton buildBtn;
-    private javax.swing.ButtonGroup buildBtnGroup;
-    private javax.swing.JLabel buildMenuLbl;
-    private javax.swing.JRadioButton buildRoadRBtn;
-    private javax.swing.JRadioButton buildSettlementLRBtn;
-    private javax.swing.JRadioButton buildSettlementSRBtn;
-    private javax.swing.JLabel instructionLbl;
-    private javax.swing.JLabel instructionPromptLbl;
-    private javax.swing.JLabel subInstructionLbl;
-    private javax.swing.JLabel titleLbl;
-    private javax.swing.JButton turnSwitchBtn;
-    // End of variables declaration//GEN-END:variables
-
 }
