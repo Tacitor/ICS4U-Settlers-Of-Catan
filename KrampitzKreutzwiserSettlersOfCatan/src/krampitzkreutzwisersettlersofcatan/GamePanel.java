@@ -1547,8 +1547,20 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgHeight(MATERIAL_KEY),
                 null);
         
+        Image currentPlayerImage;
+        
+        if (inbetweenTurns) {
+            currentPlayerImage = PLAYER_NONE;
+        } else if (currentPlayer == 1) {
+            currentPlayerImage = PLAYER_RED;
+        } else if (currentPlayer == 2) {
+            currentPlayerImage = PLAYER_BLUE;
+        } else {
+            currentPlayerImage = PLAYER_NONE;
+        }
+        
         //draw the current player icon
-        g2d.drawImage(PLAYER_RED, 
+        g2d.drawImage(currentPlayerImage, 
                 superFrame.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
                 superFrame.getHeight()- getImgHeight(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
                 getImgWidth(PLAYER_RED), //scale the image
