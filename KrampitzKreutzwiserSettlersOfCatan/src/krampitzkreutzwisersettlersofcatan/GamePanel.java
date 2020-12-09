@@ -63,7 +63,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final int totalCardsCollected[];
     private int[] stealCardNum; //the number of cards to steal from each player
     private int cardStartPosition; //the xPos to start drawing cards at 
-    private final int victoryPointsToWin;
+    private int victoryPointsToWin;
     private int thiefMoveCounter;
     private int tileWithThief; // The index of the tile with the thief
     private int buildingObject; // Indicates if/what the user is building. 
@@ -897,8 +897,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
         } catch (IOException e) {
-            System.out.println("An error occurred while trying to save the game.");
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occurred while trying to save the game.", "Saving Error", JOptionPane.ERROR_MESSAGE);
             success = false;
         }
 
@@ -914,11 +913,13 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean writeToFile(String writeAdress) throws FileNotFoundException {
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSave"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV2"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("thiefMoveCounter:");
             saveFile.println(thiefMoveCounter);
             saveFile.println("victoryPointsToWin:");
             saveFile.println(victoryPointsToWin);
+            saveFile.println("currentPlayer:");
+            saveFile.println(currentPlayer);
 
             saveFile.println("Total cards collected:");
             for (int i = 0; i < totalCardsCollected.length; i++) {
@@ -947,7 +948,7 @@ public class GamePanel extends javax.swing.JPanel {
             //Add the tile data
             saveFile.println("Tiles:");
             for (int i = 0; i < tiles.size() - 1; i++) { //loop thorugh all the tiles and add it to the save file. Ignore the last null tile
-                saveFile.println("Tile number");
+                saveFile.println("Tile number:");
                 saveFile.println(i);
                 saveFile.println("Type:");
                 saveFile.println(tiles.get(i).getType());
@@ -986,6 +987,41 @@ public class GamePanel extends javax.swing.JPanel {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    public void load(JFileChooser loadFileChooser) {
+        System.out.println("Yupp");
+        
+        //load the save file 
+        try {
+            File savefile = new File(loadFileChooser.getSelectedFile().getPath());
+            Scanner scanner = new Scanner(savefile);
+            
+            //check if it is valid (again)
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV2")) {
+                System.out.println("Yuppers");
+            }
+            
+            if (scanner.nextLine().equals("thiefMoveCounter:")) {
+                thiefMoveCounter = Integer.parseInt(scanner.nextLine());
+                System.out.println("Yuppers2");
+            }
+            
+            if (scanner.nextLine().equals("victoryPointsToWin:")) {
+                victoryPointsToWin = Integer.parseInt(scanner.nextLine());
+                System.out.println("Yuppers3");
+            }
+            
+            if (scanner.nextLine().equals("currentPlayer:")) {
+                currentPlayer = Integer.parseInt(scanner.nextLine());
+                System.out.println("Yuppers4");
+            }
+
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        repaint();
     }
 
     /**
