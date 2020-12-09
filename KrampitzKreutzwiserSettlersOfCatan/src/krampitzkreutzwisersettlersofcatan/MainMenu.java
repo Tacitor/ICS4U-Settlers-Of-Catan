@@ -136,6 +136,7 @@ public class MainMenu extends javax.swing.JFrame {
     private void newGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameBtnActionPerformed
         // Hide this window and show the game
         this.setVisible(false);
+        gameJFrame.resetGamePanel();
         gameJFrame.setVisible(true);
     }//GEN-LAST:event_newGameBtnActionPerformed
 
