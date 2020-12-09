@@ -7,6 +7,7 @@ package krampitzkreutzwisersettlersofcatan;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 /**
@@ -67,6 +68,14 @@ public class GameFrame extends javax.swing.JFrame {
         remove(theGamePanel);
         theGamePanel = new GamePanel(this);
         add(theGamePanel);
+    }
+    
+    /**
+     * Passes the load address on to the GamePanel
+     * @param loadFileChooser 
+     */
+    public void loadFromFile(JFileChooser loadFileChooser) {
+        theGamePanel.load(loadFileChooser);
     }
 
 }
