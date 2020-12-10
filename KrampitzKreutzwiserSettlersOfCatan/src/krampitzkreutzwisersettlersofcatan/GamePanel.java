@@ -1010,8 +1010,6 @@ public class GamePanel extends javax.swing.JPanel {
 
     public void load(JFileChooser loadFileChooser) {
         System.out.println("Yupp");
-        
-        System.out.println(inSetup);
 
         int tempScannerVal;
 
@@ -1154,7 +1152,6 @@ public class GamePanel extends javax.swing.JPanel {
 
         repaint();
         updateBuildButtons();
-        System.out.println(inSetup);
     }
 
     /**
