@@ -925,6 +925,10 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(currentPlayer);
             saveFile.println("inSetup:");
             saveFile.println(inSetup);
+            saveFile.println("playerSetupRoadsLeft:");
+            saveFile.println(playerSetupRoadsLeft);
+            saveFile.println("playerSetupSettlementLeft:");
+            saveFile.println(playerSetupSettlementLeft);
 
             saveFile.println("Total cards collected:");
             for (int i = 0; i < totalCardsCollected.length; i++) {
@@ -1006,6 +1010,8 @@ public class GamePanel extends javax.swing.JPanel {
 
     public void load(JFileChooser loadFileChooser) {
         System.out.println("Yupp");
+        
+        System.out.println(inSetup);
 
         int tempScannerVal;
 
@@ -1055,6 +1061,20 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
+            
+            if (scanner.nextLine().equals("playerSetupRoadsLeft:")) {
+                playerSetupRoadsLeft = Integer.parseInt(scanner.nextLine());
+                System.out.println("Yuppers6");
+            } else {
+                throwLoadError();
+            }
+            
+            if (scanner.nextLine().equals("playerSetupSettlementLeft:")) {
+                playerSetupSettlementLeft = Integer.parseInt(scanner.nextLine());
+                System.out.println("Yuppers7");
+            } else {
+                throwLoadError();
+            }
 
             //get the total cards collected
             if (scanner.nextLine().equals("Total cards collected:")) {
@@ -1063,7 +1083,7 @@ public class GamePanel extends javax.swing.JPanel {
                     totalCardsCollected[i] = Integer.parseInt(scanner.nextLine());
                 }
 
-                System.out.println("Yuppers6");
+                System.out.println("Yuppers8");
 
             } else {
                 throwLoadError();
@@ -1078,7 +1098,7 @@ public class GamePanel extends javax.swing.JPanel {
                     victoryPoints[i] = Integer.parseInt(scanner.nextLine());
                 }
 
-                System.out.println("Yuppers7");
+                System.out.println("Yuppers8");
 
             } else {
                 throwLoadError();
@@ -1089,18 +1109,18 @@ public class GamePanel extends javax.swing.JPanel {
             scanner.nextLine();
             if (scanner.nextLine().equals("Cards:")) {
 
-                System.out.println("Yuppers8");
+                System.out.println("Yuppers10");
 
                 for (int i = 1; i < playerCount + 1; i++) {
                     if (scanner.nextLine().equals("Player: " + (i))) {
-                        System.out.println("Yuppers8.1");
+                        System.out.println("Yuppers10.1");
                     } else {
                         throwLoadError();
                     }
 
                     if (scanner.nextLine().equals("size:")) {
                         tempScannerVal = Integer.parseInt(scanner.nextLine());
-                        System.out.println("Yuppers8.2");
+                        System.out.println("Yuppers10.2");
 
                         if (scanner.nextLine().equals("cards:")) {
 
@@ -1111,7 +1131,7 @@ public class GamePanel extends javax.swing.JPanel {
                             //skip a line
                             scanner.nextLine();
 
-                            System.out.println("Yuppers8.3");
+                            System.out.println("Yuppers10.3");
                         } else {
                             throwLoadError();
                             System.out.println("Its me");
@@ -1133,6 +1153,8 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         repaint();
+        updateBuildButtons();
+        System.out.println(inSetup);
     }
 
     /**
