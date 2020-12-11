@@ -183,7 +183,7 @@ public class GamePanel extends javax.swing.JPanel {
         //set up the scaling vars
         //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
         //first get a centered frame of reference
-        tileYOffset = (int) ((superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2
+        tileYOffset = (int) ((superFrame.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2
                 //then account for the tile height
                 + newTileHeight)
                 //then subtract the current position to find the difference
@@ -192,7 +192,7 @@ public class GamePanel extends javax.swing.JPanel {
                 + (superFrame.getHeight() / (float) superFrame.getWidth()));
 
         //same as the y offset but now for the x
-        tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2
+        tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2
                 + (int) (newTileWidth - (newTileWidth / 4))) //get the distance from the left most vertex to the center recangle of the hexagon
                 - getTileXPos(tiles.get(0).getXPos());
 
@@ -266,6 +266,7 @@ public class GamePanel extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(1920, 1080));
 
         backBtn.setText("< Save and Exit");
+        backBtn.setFocusable(false);
         backBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backBtnActionPerformed(evt);
@@ -314,6 +315,7 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
         backNoSaveBtn.setText("< Exit without saving");
+        backNoSaveBtn.setFocusable(false);
         backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backNoSaveBtnActionPerformed(evt);
@@ -1722,7 +1724,11 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor)));
         //old title. Replaced by JLabel
         //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
-
+        
+        //draw the ring of water
+        //also scale it to the current monitor. Coords are to center it relative to the display center
+        g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);
+        
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
@@ -1752,11 +1758,7 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(PLAYER_RED), //scale the image
                 getImgHeight(PLAYER_RED),
                 null);
-
-        //draw the ring of water
-        //also scale it to the current monitor. Coords are to center it relative to the display center
-        g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);
-
+        
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
 
@@ -2007,6 +2009,16 @@ public class GamePanel extends javax.swing.JPanel {
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
+        
+        /*
+        //draw the boarder overlay
+        g2d.drawImage(WATER_RING_OVERLAY, 
+                superFrame.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2,
+                superFrame.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2, 
+                getImgWidth(WATER_RING_OVERLAY), 
+                getImgHeight(WATER_RING_OVERLAY), null);
+        */
+
     }
 
     /**
