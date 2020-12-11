@@ -1061,14 +1061,14 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("playerSetupRoadsLeft:")) {
                 playerSetupRoadsLeft = Integer.parseInt(scanner.nextLine());
                 System.out.println("Yuppers6");
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("playerSetupSettlementLeft:")) {
                 playerSetupSettlementLeft = Integer.parseInt(scanner.nextLine());
                 System.out.println("Yuppers7");
@@ -1127,7 +1127,7 @@ public class GamePanel extends javax.swing.JPanel {
                             for (int j = 0; j < tempScannerVal; j++) {
                                 cards[i].add(Integer.parseInt(scanner.nextLine()));
                             }
-                            
+
                             //skip a line
                             scanner.nextLine();
 
@@ -1142,6 +1142,45 @@ public class GamePanel extends javax.swing.JPanel {
                         System.out.println("no me");
                     }
 
+                }
+
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("Tiles:")) {
+                System.out.println("Yuppers11");
+                
+                int tileNum = 0;
+
+                //loop through all the tiles
+                for (int i = 0; i < 19; i++) {
+                    if (scanner.nextLine().equals("Tile number:")) {
+                        tileNum = Integer.parseInt(scanner.nextLine());
+                    } else {
+                        throwLoadError();
+                    }
+                    
+                    if (scanner.nextLine().equals("Type:")) {
+                        tiles.get(tileNum).setType(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+                    
+                    if (scanner.nextLine().equals("Has Thief:")) {
+                        tiles.get(tileNum).setThief(Boolean.parseBoolean(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+                    
+                    if (scanner.nextLine().equals("Harvesting Dice Roll:")) {
+                        tiles.get(tileNum).setHarvestRollNum(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+                    
+                    //skip a line
+                    scanner.nextLine();
                 }
 
             } else {
@@ -1724,11 +1763,11 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor)));
         //old title. Replaced by JLabel
         //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
-        
+
         //draw the ring of water
         //also scale it to the current monitor. Coords are to center it relative to the display center
         g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);
-        
+
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
@@ -1758,7 +1797,7 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(PLAYER_RED), //scale the image
                 getImgHeight(PLAYER_RED),
                 null);
-        
+
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
 
@@ -2009,7 +2048,7 @@ public class GamePanel extends javax.swing.JPanel {
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
-        
+
         /*
         //draw the boarder overlay
         g2d.drawImage(WATER_RING_OVERLAY, 
@@ -2017,8 +2056,7 @@ public class GamePanel extends javax.swing.JPanel {
                 superFrame.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2, 
                 getImgWidth(WATER_RING_OVERLAY), 
                 getImgHeight(WATER_RING_OVERLAY), null);
-        */
-
+         */
     }
 
     /**
