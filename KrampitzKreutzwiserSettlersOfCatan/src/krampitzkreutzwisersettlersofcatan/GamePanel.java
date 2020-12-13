@@ -985,7 +985,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //Add the settlement node data
             saveFile.println("NodeSettlements:");
-            for (int i = 0; i < settlementNodes.size() - 1; i++) {
+            for (int i = 0; i < settlementNodes.size(); i++) {
                 saveFile.println("Settlement node number:");
                 saveFile.println(i);
                 saveFile.println("Player ID:");
@@ -1001,13 +1001,6 @@ public class GamePanel extends javax.swing.JPanel {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    /**
-     * Displays an error to the user about loading a bad file
-     */
-    private void throwLoadError() {
-        JOptionPane.showMessageDialog(null, "Error loading the save file.\nThere may be file corruptions.", "Bad File", JOptionPane.ERROR_MESSAGE);
     }
 
     public void load(JFileChooser loadFileChooser) {
@@ -1088,6 +1081,8 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
+            
+            System.out.println(Arrays.toString(victoryPoints));
 
             //get the VP collected
             //but first skip a line
@@ -1095,7 +1090,7 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("victoryPoints:")) {
 
                 for (int i = 0; i < playerCount; i++) {
-                    victoryPoints[i] = Integer.parseInt(scanner.nextLine());
+                    victoryPoints[i+1] = Integer.parseInt(scanner.nextLine());
                 }
 
                 System.out.println("Yuppers8");
@@ -1103,6 +1098,8 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
+            
+            System.out.println(Arrays.toString(victoryPoints));
 
             //get the resource cards collected
             //but first skip a line
@@ -1186,6 +1183,66 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
+            
+            if (scanner.nextLine().equals("NodeRoads:")) {
+                System.out.println("Yuppers12");
+                
+                int roadNodeNum = 0;
+
+                //loop through all the tiles
+                for (int i = 0; i < 72; i++) {
+                    if (scanner.nextLine().equals("Road node number:")) {
+                        roadNodeNum = Integer.parseInt(scanner.nextLine());
+                    } else {
+                        throwLoadError();
+                    }
+                    
+                    if (scanner.nextLine().equals("Player ID:")) {
+                        roadNodes.get(roadNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+                    
+                    //skip a line
+                    scanner.nextLine();
+                }
+
+            } else {
+                throwLoadError();
+            }
+            
+            if (scanner.nextLine().equals("NodeSettlements:")) {
+                System.out.println("Yuppers13");
+                
+                int settlementNodeNum = 0;
+
+                //loop through all the tiles
+                for (int i = 0; i < 54; i++) {
+                    if (scanner.nextLine().equals("Settlement node number:")) {
+                        settlementNodeNum = Integer.parseInt(scanner.nextLine());
+                    } else {
+                        throwLoadError();
+                    }
+                    
+                    if (scanner.nextLine().equals("Player ID:")) {
+                        settlementNodes.get(settlementNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+                    
+                    if (scanner.nextLine().equals("Is Large:")) {
+                        settlementNodes.get(settlementNodeNum).setLarge(Boolean.parseBoolean(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+                    
+                    //skip a line
+                    scanner.nextLine();
+                }
+
+            } else {
+                throwLoadError();
+            }
 
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
@@ -1193,6 +1250,13 @@ public class GamePanel extends javax.swing.JPanel {
 
         repaint();
         updateBuildButtons();
+    }
+
+    /**
+     * Displays an error to the user about loading a bad file
+     */
+    private void throwLoadError() {
+        JOptionPane.showMessageDialog(null, "Error loading the save file.\nThere may be file corruptions.", "Bad File", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
