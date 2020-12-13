@@ -1077,7 +1077,6 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
                 //System.out.println("Yuppers8");
-
             } else {
                 throwLoadError();
             }
@@ -1088,11 +1087,10 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("victoryPoints:")) {
 
                 for (int i = 0; i < playerCount; i++) {
-                    victoryPoints[i+1] = Integer.parseInt(scanner.nextLine());
+                    victoryPoints[i + 1] = Integer.parseInt(scanner.nextLine());
                 }
 
                 //System.out.println("Yuppers8");
-
             } else {
                 throwLoadError();
             }
@@ -1103,7 +1101,6 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("Cards:")) {
 
                 //System.out.println("Yuppers10");
-
                 for (int i = 1; i < playerCount + 1; i++) {
                     if (scanner.nextLine().equals("Player: " + (i))) {
                         //System.out.println("Yuppers10.1");
@@ -1143,7 +1140,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             if (scanner.nextLine().equals("Tiles:")) {
                 //System.out.println("Yuppers11");
-                
+
                 int tileNum = 0;
 
                 //loop through all the tiles
@@ -1153,25 +1150,25 @@ public class GamePanel extends javax.swing.JPanel {
                     } else {
                         throwLoadError();
                     }
-                    
+
                     if (scanner.nextLine().equals("Type:")) {
                         tiles.get(tileNum).setType(Integer.parseInt(scanner.nextLine()));
                     } else {
                         throwLoadError();
                     }
-                    
+
                     if (scanner.nextLine().equals("Has Thief:")) {
                         tiles.get(tileNum).setThief(Boolean.parseBoolean(scanner.nextLine()));
                     } else {
                         throwLoadError();
                     }
-                    
+
                     if (scanner.nextLine().equals("Harvesting Dice Roll:")) {
                         tiles.get(tileNum).setHarvestRollNum(Integer.parseInt(scanner.nextLine()));
                     } else {
                         throwLoadError();
                     }
-                    
+
                     //skip a line
                     scanner.nextLine();
                 }
@@ -1179,10 +1176,10 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("NodeRoads:")) {
                 //System.out.println("Yuppers12");
-                
+
                 int roadNodeNum = 0;
 
                 //loop through all the tiles
@@ -1192,13 +1189,13 @@ public class GamePanel extends javax.swing.JPanel {
                     } else {
                         throwLoadError();
                     }
-                    
+
                     if (scanner.nextLine().equals("Player ID:")) {
                         roadNodes.get(roadNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
                     } else {
                         throwLoadError();
                     }
-                    
+
                     //skip a line
                     scanner.nextLine();
                 }
@@ -1206,10 +1203,10 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("NodeSettlements:")) {
                 //System.out.println("Yuppers13");
-                
+
                 int settlementNodeNum = 0;
 
                 //loop through all the tiles
@@ -1219,19 +1216,19 @@ public class GamePanel extends javax.swing.JPanel {
                     } else {
                         throwLoadError();
                     }
-                    
+
                     if (scanner.nextLine().equals("Player ID:")) {
                         settlementNodes.get(settlementNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
                     } else {
                         throwLoadError();
                     }
-                    
+
                     if (scanner.nextLine().equals("Is Large:")) {
                         settlementNodes.get(settlementNodeNum).setLarge(Boolean.parseBoolean(scanner.nextLine()));
                     } else {
                         throwLoadError();
                     }
-                    
+
                     //skip a line
                     scanner.nextLine();
                 }
@@ -1243,7 +1240,7 @@ public class GamePanel extends javax.swing.JPanel {
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
-        
+
         //update the instructions
         if (!inSetup) {
             // Set the instruction labels to tell the user they can build
