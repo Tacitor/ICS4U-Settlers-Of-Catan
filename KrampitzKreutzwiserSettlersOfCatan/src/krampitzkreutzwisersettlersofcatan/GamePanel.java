@@ -1004,7 +1004,7 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     public void load(JFileChooser loadFileChooser) {
-        System.out.println("Yupp");
+        //System.out.println("Yupp");
 
         int tempScannerVal;
 
@@ -1015,56 +1015,56 @@ public class GamePanel extends javax.swing.JPanel {
 
             //check if it is valid (again)
             if (scanner.nextLine().equals("SettlersOfCatanSaveV2")) {
-                System.out.println("Yuppers");
+                //System.out.println("Yuppers");
             } else {
                 throwLoadError();
             }
 
             if (scanner.nextLine().equals("playerCount:")) {
                 playerCount = Integer.parseInt(scanner.nextLine());
-                System.out.println("Yuppers1");
+                //System.out.println("Yuppers1");
             } else {
                 throwLoadError();
             }
 
             if (scanner.nextLine().equals("thiefMoveCounter:")) {
                 thiefMoveCounter = Integer.parseInt(scanner.nextLine());
-                System.out.println("Yuppers2");
+                //System.out.println("Yuppers2");
             } else {
                 throwLoadError();
             }
 
             if (scanner.nextLine().equals("victoryPointsToWin:")) {
                 victoryPointsToWin = Integer.parseInt(scanner.nextLine());
-                System.out.println("Yuppers3");
+                //System.out.println("Yuppers3");
             } else {
                 throwLoadError();
             }
 
             if (scanner.nextLine().equals("currentPlayer:")) {
                 currentPlayer = Integer.parseInt(scanner.nextLine());
-                System.out.println("Yuppers4");
+                //System.out.println("Yuppers4");
             } else {
                 throwLoadError();
             }
 
             if (scanner.nextLine().equals("inSetup:")) {
                 inSetup = Boolean.parseBoolean(scanner.nextLine());
-                System.out.println("Yuppers5");
+                //System.out.println("Yuppers5");
             } else {
                 throwLoadError();
             }
 
             if (scanner.nextLine().equals("playerSetupRoadsLeft:")) {
                 playerSetupRoadsLeft = Integer.parseInt(scanner.nextLine());
-                System.out.println("Yuppers6");
+                //System.out.println("Yuppers6");
             } else {
                 throwLoadError();
             }
 
             if (scanner.nextLine().equals("playerSetupSettlementLeft:")) {
                 playerSetupSettlementLeft = Integer.parseInt(scanner.nextLine());
-                System.out.println("Yuppers7");
+                //System.out.println("Yuppers7");
             } else {
                 throwLoadError();
             }
@@ -1076,13 +1076,11 @@ public class GamePanel extends javax.swing.JPanel {
                     totalCardsCollected[i] = Integer.parseInt(scanner.nextLine());
                 }
 
-                System.out.println("Yuppers8");
+                //System.out.println("Yuppers8");
 
             } else {
                 throwLoadError();
             }
-            
-            System.out.println(Arrays.toString(victoryPoints));
 
             //get the VP collected
             //but first skip a line
@@ -1093,31 +1091,29 @@ public class GamePanel extends javax.swing.JPanel {
                     victoryPoints[i+1] = Integer.parseInt(scanner.nextLine());
                 }
 
-                System.out.println("Yuppers8");
+                //System.out.println("Yuppers8");
 
             } else {
                 throwLoadError();
             }
-            
-            System.out.println(Arrays.toString(victoryPoints));
 
             //get the resource cards collected
             //but first skip a line
             scanner.nextLine();
             if (scanner.nextLine().equals("Cards:")) {
 
-                System.out.println("Yuppers10");
+                //System.out.println("Yuppers10");
 
                 for (int i = 1; i < playerCount + 1; i++) {
                     if (scanner.nextLine().equals("Player: " + (i))) {
-                        System.out.println("Yuppers10.1");
+                        //System.out.println("Yuppers10.1");
                     } else {
                         throwLoadError();
                     }
 
                     if (scanner.nextLine().equals("size:")) {
                         tempScannerVal = Integer.parseInt(scanner.nextLine());
-                        System.out.println("Yuppers10.2");
+                        //System.out.println("Yuppers10.2");
 
                         if (scanner.nextLine().equals("cards:")) {
 
@@ -1128,7 +1124,7 @@ public class GamePanel extends javax.swing.JPanel {
                             //skip a line
                             scanner.nextLine();
 
-                            System.out.println("Yuppers10.3");
+                            //System.out.println("Yuppers10.3");
                         } else {
                             throwLoadError();
                             System.out.println("Its me");
@@ -1146,7 +1142,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             if (scanner.nextLine().equals("Tiles:")) {
-                System.out.println("Yuppers11");
+                //System.out.println("Yuppers11");
                 
                 int tileNum = 0;
 
@@ -1185,7 +1181,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
             
             if (scanner.nextLine().equals("NodeRoads:")) {
-                System.out.println("Yuppers12");
+                //System.out.println("Yuppers12");
                 
                 int roadNodeNum = 0;
 
@@ -1212,7 +1208,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
             
             if (scanner.nextLine().equals("NodeSettlements:")) {
-                System.out.println("Yuppers13");
+                //System.out.println("Yuppers13");
                 
                 int settlementNodeNum = 0;
 
@@ -1246,6 +1242,13 @@ public class GamePanel extends javax.swing.JPanel {
 
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        //update the instructions
+        if (!inSetup) {
+            // Set the instruction labels to tell the user they can build
+            instructionLbl.setText("Use your cards to build roads or settlements");
+            subInstructionLbl.setText("Or end your turn to continue the game");
         }
 
         repaint();
