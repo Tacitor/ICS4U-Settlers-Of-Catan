@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import javax.swing.ButtonModel;
 import javax.swing.JFileChooser;
@@ -56,14 +57,14 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
-    private final int playerCount; // The number of players in the game
+    private int playerCount; // The number of players in the game
     private final boolean giveStartingResources; // If players get startup resources
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final int victoryPoints[];
     private final int totalCardsCollected[];
     private int[] stealCardNum; //the number of cards to steal from each player
     private int cardStartPosition; //the xPos to start drawing cards at 
-    private final int victoryPointsToWin;
+    private int victoryPointsToWin;
     private int thiefMoveCounter;
     private int tileWithThief; // The index of the tile with the thief
     private int buildingObject; // Indicates if/what the user is building. 
@@ -82,10 +83,11 @@ public class GamePanel extends javax.swing.JPanel {
     private double scaleFactor;
     private int newTileWidth;
     private int newTileHeight;
-    
+    private int threeDTileOffset;
+
     //new dice roll lable
-    private String diceRollVal; 
-    
+    private String diceRollVal;
+
     //fonts
     private Font timesNewRoman;
     private Font tahoma;
@@ -100,7 +102,7 @@ public class GamePanel extends javax.swing.JPanel {
     public GamePanel(GameFrame frame) {
 
         // Initialize settings variables
-        giveStartingResources = true;        
+        giveStartingResources = true;
         playerCount = 2; // 2 Player game
 
         // Initalize variables
@@ -173,63 +175,66 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
-        
+
         //the dimentions of a hex Tile after scaling. Saves making this calculation over and over again
-        newTileWidth =  getImgWidth(tiles.get(0).getImage());
-        newTileHeight =  getImgHeight(tiles.get(0).getImage());
+        newTileWidth = getImgWidth(tiles.get(0).getImage());
+        newTileHeight = getImgHeight(tiles.get(0).getImage());
 
         //set up the scaling vars
         //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
         //first get a centered frame of reference
-        tileYOffset = (int) ((superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2 
+        tileYOffset = (int) ((superFrame.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2
                 //then account for the tile height
                 + newTileHeight)
                 //then subtract the current position to find the difference
                 - getTileYPos(tiles.get(7).getYPos())
                 //add some fine tuning for smaller resulutions
                 + (superFrame.getHeight() / (float) superFrame.getWidth()));
-        
+
         //same as the y offset but now for the x
-        tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2  
-                + (int) ( newTileWidth - (newTileWidth / 4)) ) //get the distance from the left most vertex to the center recangle of the hexagon
+        tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2
+                + (int) (newTileWidth - (newTileWidth / 4))) //get the distance from the left most vertex to the center recangle of the hexagon
                 - getTileXPos(tiles.get(0).getXPos());
-        
+
         //set up the circle scaler
         if (superFrame.getWidth() <= superFrame.getHeight()) {
             scaleFactor = (1920.0 / superFrame.getWidth());
         } else {
             scaleFactor = (1080.0 / superFrame.getHeight());
         }
-        
+
         //apply the scaling to the tiles
         scaleWorldObjectPos(tiles, 1);
         scaleWorldObjectPos(roadNodes, 1);
         scaleWorldObjectPos(settlementNodes, 0);
-        
+
         //get the fonts
         timesNewRoman = instructionLbl.getFont();
         tahoma = buildRoadRBtn.getFont();
         dialog = buildBtn.getFont();
-        
+
         //scale the Swing elements
-        buildRoadRBtn.setFont( new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor )) );
-        buildSettlementSRBtn.setFont( new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor )) );
-        buildSettlementLRBtn.setFont( new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor )) );
-        
-        buildBtn.setFont( new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor )) );
-        
-        buildMenuLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
-        
-        instructionPromptLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
-        instructionLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
-        subInstructionLbl.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() - 4) / scaleFactor )) );
-        
-        turnSwitchBtn.setFont( new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor )) );
-        
-        titleLbl.setFont( new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor )) );
-        
+        buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
+        buildSettlementSRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
+        buildSettlementLRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
+
+        buildBtn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
+
+        buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+
+        instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() - 4) / scaleFactor)));
+
+        turnSwitchBtn.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+
+        titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
+
         //initialize the dice roll value
         diceRollVal = "";
+
+        //init the offset for the "3d" overlap tiles
+        threeDTileOffset = (int) (-20 / scaleFactor);
 
     }
 
@@ -261,6 +266,7 @@ public class GamePanel extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(1920, 1080));
 
         backBtn.setText("< Save and Exit");
+        backBtn.setFocusable(false);
         backBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backBtnActionPerformed(evt);
@@ -309,6 +315,7 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
         backNoSaveBtn.setText("< Exit without saving");
+        backNoSaveBtn.setFocusable(false);
         backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backNoSaveBtnActionPerformed(evt);
@@ -489,7 +496,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         updateBuildButtons();
         repaint();
-        
+
         // If the game is waiting to start the next player's turn
         if (inbetweenTurns) {
 
@@ -504,30 +511,30 @@ public class GamePanel extends javax.swing.JPanel {
                 instructionLbl.setText("Place two roads and two small settlements each to start.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
-                
+
                 //check if the current player needs to be stolen from
                 if (stealCardNum[currentPlayer] > 0) {
-                
+
                     //hilight the cards so the player know they can click there
                     showCardHitbox = true;
                     repaint();
-                    
+
                     //disable the turn switch button so that players must give away cards until the quota is met
                     turnSwitchBtn.setEnabled(false);
-                
+
                 }
-                
+
                 repaint();
-                
+
                 int theifLeftToRob = 0; //how many players need to get robbed still
-                
+
                 //count how many still need to get robed
                 for (int i = 0; i < stealCardNum.length; i++) {
                     if (stealCardNum[i] > 0) {
                         theifLeftToRob++;
                     }
                 }
-                
+
                 //check if the thief is done stealing
                 if (theifLeftToRob == 0) {
                     //set the vars
@@ -536,13 +543,13 @@ public class GamePanel extends javax.swing.JPanel {
                     //set the player to the one that rolled the seven. That way when the turn end button 
                     //is clicked next time the player to roll the dice is the correct one (an not the one that did last (but only sometimes))
                     currentPlayer = playerRolled7;
-                    
+
                     //update the instructions
                     //like 80% sure this is never actually shown so I think this can be removed if at soem point we clean up code.
                     instructionLbl.setText("The theif is done stealing");
                     subInstructionLbl.setText("You may resume regular play");
                 }
-                
+
             } else { // If a turn of the real game is starting (not setup)
                 // Roll the dice and display the rolled number to the user
                 diceRoll();
@@ -561,15 +568,14 @@ public class GamePanel extends javax.swing.JPanel {
 
             // Redraw the board to the next player can see their cards
             repaint();
-            
+
             //if the thief had just finished set it false, they are done now
             thiefJustFinished = false;
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             //reset the colour
             instructionLbl.setForeground(Color.black);
-            
-            // And the user is done placing setup buildinga
 
+            // And the user is done placing setup buildinga
             // Check if the player has enough points to win
             if (victoryPoints[currentPlayer] >= victoryPointsToWin) {
                 // If they have a winning amount of points end the game
@@ -604,7 +610,7 @@ public class GamePanel extends javax.swing.JPanel {
             buildRoadRBtn.setEnabled(false);
             buildSettlementSRBtn.setEnabled(false);
             buildSettlementLRBtn.setEnabled(false);
-            
+
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
 
@@ -625,10 +631,11 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
     }//GEN-LAST:event_turnSwitchBtnActionPerformed
-    
+
     /**
      * Exit the gamePanel without saving
-     * @param evt 
+     *
+     * @param evt
      */
     private void backNoSaveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backNoSaveBtnActionPerformed
         int overwrite;
@@ -751,7 +758,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     cards[currentPlayer].remove(new Integer(3));
                                     cards[currentPlayer].remove(new Integer(4));
                                 }
-                                
+
                                 // Set the settlement's player to the current player
                                 settlementNodes.get(i).setPlayer(currentPlayer);
 
@@ -761,7 +768,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 // Update the building buttons to reflect the player's new list of cards
                                 // or number of setup buildings
                                 updateBuildButtons();
-                            } 
+                            }
 
                         } else {
                             instructionLbl.setText("Sorry but you can't take someone elses settlements.");
@@ -838,31 +845,31 @@ public class GamePanel extends javax.swing.JPanel {
             //check if the user clicked on any card
             for (int i = 0; i < cards[currentPlayer].size(); i++) {
                 //get the x and y positions for that card
-                int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i );
+                int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
                 int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
-                
+
                 //check if there was a click on a card
-                if (event.getX() > cardXPos && 
-                        event.getY() > cardYPos &&
-                        event.getX() < (cardXPos + getImgWidth(CARD_CLAY)) &&
-                        event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                if (event.getX() > cardXPos
+                        && event.getY() > cardYPos
+                        && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
+                        && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
                     //debug click detection
                     //System.out.println("Card Clicked!");
                     cards[currentPlayer].remove(i); //remove the card
                     stealCardNum[currentPlayer]--; //count the removal
-                    
+
                     //check if the player is done now
                     if (stealCardNum[currentPlayer] <= 0) {
                         turnSwitchBtn.setEnabled(true);
                         showCardHitbox = false;
                     }
-                    
+
                     updateBuildButtons();
                     repaint();
-                    
+
                 }
             }
-            
+
         }
     }
 
@@ -893,8 +900,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
         } catch (IOException e) {
-            System.out.println("An error occurred while trying to save the game.");
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "An error occurred while trying to save the game.", "Saving Error", JOptionPane.ERROR_MESSAGE);
             success = false;
         }
 
@@ -910,11 +916,21 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean writeToFile(String writeAdress) throws FileNotFoundException {
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSave"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV2"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("playerCount:");
+            saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
             saveFile.println(thiefMoveCounter);
             saveFile.println("victoryPointsToWin:");
             saveFile.println(victoryPointsToWin);
+            saveFile.println("currentPlayer:");
+            saveFile.println(currentPlayer);
+            saveFile.println("inSetup:");
+            saveFile.println(inSetup);
+            saveFile.println("playerSetupRoadsLeft:");
+            saveFile.println(playerSetupRoadsLeft);
+            saveFile.println("playerSetupSettlementLeft:");
+            saveFile.println(playerSetupSettlementLeft);
 
             saveFile.println("Total cards collected:");
             for (int i = 0; i < totalCardsCollected.length; i++) {
@@ -934,6 +950,9 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println("Cards:");
             for (int i = 1; i < cards.length; i++) {
                 saveFile.println("Player: " + i);
+                saveFile.println("size:");
+                saveFile.println(cards[i].size());
+                saveFile.println("cards:");
                 for (int j = 0; j < cards[i].size(); j++) {
                     saveFile.println(cards[i].get(j));
                 }
@@ -943,7 +962,7 @@ public class GamePanel extends javax.swing.JPanel {
             //Add the tile data
             saveFile.println("Tiles:");
             for (int i = 0; i < tiles.size() - 1; i++) { //loop thorugh all the tiles and add it to the save file. Ignore the last null tile
-                saveFile.println("Tile number");
+                saveFile.println("Tile number:");
                 saveFile.println(i);
                 saveFile.println("Type:");
                 saveFile.println(tiles.get(i).getType());
@@ -966,7 +985,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //Add the settlement node data
             saveFile.println("NodeSettlements:");
-            for (int i = 0; i < settlementNodes.size() - 1; i++) {
+            for (int i = 0; i < settlementNodes.size(); i++) {
                 saveFile.println("Settlement node number:");
                 saveFile.println(i);
                 saveFile.println("Player ID:");
@@ -984,16 +1003,272 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
+    public void load(JFileChooser loadFileChooser) {
+        //System.out.println("Yupp");
+
+        int tempScannerVal;
+
+        //load the save file 
+        try {
+            File savefile = new File(loadFileChooser.getSelectedFile().getPath());
+            Scanner scanner = new Scanner(savefile);
+
+            //check if it is valid (again)
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV2")) {
+                //System.out.println("Yuppers");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("playerCount:")) {
+                playerCount = Integer.parseInt(scanner.nextLine());
+                //System.out.println("Yuppers1");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("thiefMoveCounter:")) {
+                thiefMoveCounter = Integer.parseInt(scanner.nextLine());
+                //System.out.println("Yuppers2");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("victoryPointsToWin:")) {
+                victoryPointsToWin = Integer.parseInt(scanner.nextLine());
+                //System.out.println("Yuppers3");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("currentPlayer:")) {
+                currentPlayer = Integer.parseInt(scanner.nextLine());
+                //System.out.println("Yuppers4");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("inSetup:")) {
+                inSetup = Boolean.parseBoolean(scanner.nextLine());
+                //System.out.println("Yuppers5");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("playerSetupRoadsLeft:")) {
+                playerSetupRoadsLeft = Integer.parseInt(scanner.nextLine());
+                //System.out.println("Yuppers6");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("playerSetupSettlementLeft:")) {
+                playerSetupSettlementLeft = Integer.parseInt(scanner.nextLine());
+                //System.out.println("Yuppers7");
+            } else {
+                throwLoadError();
+            }
+
+            //get the total cards collected
+            if (scanner.nextLine().equals("Total cards collected:")) {
+
+                for (int i = 0; i < 5; i++) {
+                    totalCardsCollected[i] = Integer.parseInt(scanner.nextLine());
+                }
+
+                //System.out.println("Yuppers8");
+            } else {
+                throwLoadError();
+            }
+
+            //get the VP collected
+            //but first skip a line
+            scanner.nextLine();
+            if (scanner.nextLine().equals("victoryPoints:")) {
+
+                for (int i = 0; i < playerCount; i++) {
+                    victoryPoints[i + 1] = Integer.parseInt(scanner.nextLine());
+                }
+
+                //System.out.println("Yuppers8");
+            } else {
+                throwLoadError();
+            }
+
+            //get the resource cards collected
+            //but first skip a line
+            scanner.nextLine();
+            if (scanner.nextLine().equals("Cards:")) {
+
+                //System.out.println("Yuppers10");
+                for (int i = 1; i < playerCount + 1; i++) {
+                    if (scanner.nextLine().equals("Player: " + (i))) {
+                        //System.out.println("Yuppers10.1");
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("size:")) {
+                        tempScannerVal = Integer.parseInt(scanner.nextLine());
+                        //System.out.println("Yuppers10.2");
+
+                        if (scanner.nextLine().equals("cards:")) {
+
+                            for (int j = 0; j < tempScannerVal; j++) {
+                                cards[i].add(Integer.parseInt(scanner.nextLine()));
+                            }
+
+                            //skip a line
+                            scanner.nextLine();
+
+                            //System.out.println("Yuppers10.3");
+                        } else {
+                            throwLoadError();
+                            System.out.println("Its me");
+                        }
+
+                    } else {
+                        throwLoadError();
+                        System.out.println("no me");
+                    }
+
+                }
+
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("Tiles:")) {
+                //System.out.println("Yuppers11");
+
+                int tileNum = 0;
+
+                //loop through all the tiles
+                for (int i = 0; i < 19; i++) {
+                    if (scanner.nextLine().equals("Tile number:")) {
+                        tileNum = Integer.parseInt(scanner.nextLine());
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Type:")) {
+                        tiles.get(tileNum).setType(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Has Thief:")) {
+                        tiles.get(tileNum).setThief(Boolean.parseBoolean(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Harvesting Dice Roll:")) {
+                        tiles.get(tileNum).setHarvestRollNum(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    //skip a line
+                    scanner.nextLine();
+                }
+
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("NodeRoads:")) {
+                //System.out.println("Yuppers12");
+
+                int roadNodeNum = 0;
+
+                //loop through all the tiles
+                for (int i = 0; i < 72; i++) {
+                    if (scanner.nextLine().equals("Road node number:")) {
+                        roadNodeNum = Integer.parseInt(scanner.nextLine());
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Player ID:")) {
+                        roadNodes.get(roadNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    //skip a line
+                    scanner.nextLine();
+                }
+
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("NodeSettlements:")) {
+                //System.out.println("Yuppers13");
+
+                int settlementNodeNum = 0;
+
+                //loop through all the tiles
+                for (int i = 0; i < 54; i++) {
+                    if (scanner.nextLine().equals("Settlement node number:")) {
+                        settlementNodeNum = Integer.parseInt(scanner.nextLine());
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Player ID:")) {
+                        settlementNodes.get(settlementNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Is Large:")) {
+                        settlementNodes.get(settlementNodeNum).setLarge(Boolean.parseBoolean(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    //skip a line
+                    scanner.nextLine();
+                }
+
+            } else {
+                throwLoadError();
+            }
+
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        //update the instructions
+        if (!inSetup) {
+            // Set the instruction labels to tell the user they can build
+            instructionLbl.setText("Use your cards to build roads or settlements");
+            subInstructionLbl.setText("Or end your turn to continue the game");
+        }
+
+        repaint();
+        updateBuildButtons();
+    }
+
+    /**
+     * Displays an error to the user about loading a bad file
+     */
+    private void throwLoadError() {
+        JOptionPane.showMessageDialog(null, "Error loading the save file.\nThere may be file corruptions.", "Bad File", JOptionPane.ERROR_MESSAGE);
+    }
+
     /**
      * Update the state of the build buttons, enabling or disabling them based
      * on how many cards the current player has, or if the game is in setup, how
      * many setup buildings they have left to place
      */
     private void updateBuildButtons() {
-        
+
         //reset the colour
         instructionLbl.setForeground(Color.black);
-    
+
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
         boolean canBuildCity;
@@ -1012,9 +1287,9 @@ public class GamePanel extends javax.swing.JPanel {
         } // If the game is NOT in setup
         else {
             // Check if the player has enough cards to use the build buttons
-            canBuildRoad =       hasCards(0); // Roads
+            canBuildRoad = hasCards(0); // Roads
             canBuildSettlement = hasCards(1); // Settlements
-            canBuildCity =       hasCards(2); // Cities
+            canBuildCity = hasCards(2); // Cities
         }
 
         // Save what button was selected before this update began
@@ -1023,42 +1298,42 @@ public class GamePanel extends javax.swing.JPanel {
         // Select the first enabled button on the list
         if (canBuildRoad) {
             // Select the road button
-            buildBtnGroup.setSelected(buildRoadRBtn.getModel(), true); 
+            buildBtnGroup.setSelected(buildRoadRBtn.getModel(), true);
         } else if (canBuildSettlement) {
             // Select the settlement button
-            buildBtnGroup.setSelected(buildSettlementSRBtn.getModel(), true); 
+            buildBtnGroup.setSelected(buildSettlementSRBtn.getModel(), true);
         } else if (canBuildCity) {
             // Select the city button
-            buildBtnGroup.setSelected(buildSettlementLRBtn.getModel(), true); 
+            buildBtnGroup.setSelected(buildSettlementLRBtn.getModel(), true);
         } // If no buttons are selected and the game is not in setup
         else if (inSetup == false) {
             // If no buttons are enabled clear the selection
             buildBtnGroup.clearSelection();
-            
+
             //set the instructions 
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
                 instructionLbl.setForeground(Color.red);
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
-                
+
                 //update the lables for the player if the thief is stealing their cards specifically. Do not show this if a 7 was JUST rolled
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
                     instructionLbl.setForeground(Color.red);
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
                 }
-                
+
                 //no longer in steal start mode because the lable above just updated
                 if (thiefJustStarted) {
                     thiefJustStarted = false;
                 }
-                
+
             } else if (thiefJustFinished) {
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
                 instructionLbl.setText("The thief is done stealing");
                 subInstructionLbl.setText("You can play normaly again next round");
-            } else {            
+            } else {
                 // Set the instruction labels to tell the player they dont have enough cards
                 instructionLbl.setText("Sorry, you don't have enough cards to build anything");
                 subInstructionLbl.setText("End your turn and collect more resources");
@@ -1081,19 +1356,20 @@ public class GamePanel extends javax.swing.JPanel {
         // If the button selected before this update is still enabled, select it
         // instead of the selection made in the if/else block above
         if (oldSelection != null && oldSelection.isEnabled()) { // Also make sure the saved button is not null
-            buildBtnGroup.setSelected(oldSelection, true); 
+            buildBtnGroup.setSelected(oldSelection, true);
         }
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
     }
-    
+
     /**
-     * Determines if the current player has enough 
-     * cards to build a type of building
-     * This replaces the old findCards method, and is more efficient
-     * @param buildingType The building type represented as an integer 
-     * (0 = road, 1 = settlement, 2 = city / upgrade settlement, 3 = development cards)
+     * Determines if the current player has enough cards to build a type of
+     * building This replaces the old findCards method, and is more efficient
+     *
+     * @param buildingType The building type represented as an integer (0 =
+     * road, 1 = settlement, 2 = city / upgrade settlement, 3 = development
+     * cards)
      * @return If the current player has enough cards
      */
     private boolean hasCards(int buildingType) {
@@ -1104,7 +1380,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         int findCards[] = new int[6]; // How many cards of each type must be found
         // Index 0 is unused. Numbers are stored in 1-5 to correspond to type IDs
-            
+
         // Set how many of each card the user needs based on the building type
         switch (buildingType) {
             case 0: // Road
@@ -1168,7 +1444,7 @@ public class GamePanel extends javax.swing.JPanel {
                 return false; // The user does not have the cards
             }
         }
-        
+
         // If the cards have not been found, the player cannot build
         return false;
     }
@@ -1278,8 +1554,8 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Check if the player can build a settlement on the given node.
-     * During setup, will not check for connect to roads
+     * Check if the player can build a settlement on the given node. During
+     * setup, will not check for connect to roads
      *
      * @param settlement The settlement node to check if the user can build on
      * @return If the player can build on it
@@ -1338,9 +1614,9 @@ public class GamePanel extends javax.swing.JPanel {
         // Let the user know if they could not build due to no roads being connected
         if (!currentPlayerHasRoad) {
             instructionLbl.setText("Sorry but you can't build a settlement there.");
-            subInstructionLbl.setText("Try building on one of your exsisting roads");                
+            subInstructionLbl.setText("Try building on one of your exsisting roads");
         }
-        
+
         // If the code above didnt find any issues, then the user can build here 
         // as long as they have a connecting road. (Or are in setup)
         return currentPlayerHasRoad;
@@ -1397,11 +1673,10 @@ public class GamePanel extends javax.swing.JPanel {
                     for (int j = stealCardNum[i]; j > 0; j--) {
                         cards[i].remove( (int) (Math.random()*cards[i].size()) );
                     }
-                    */
-
+                     */
                 }
             }
-            
+
         } else { // Otherwise collect materials
             // Search for tiles with the number rolled as their harvest number,
             // And give players the materials
@@ -1437,8 +1712,8 @@ public class GamePanel extends javax.swing.JPanel {
                         // If the tile has the same harvest number
                         // And doesnt have the thief on it
                         //and isn't the desert tile (because it has no resources)
-                        if ( settlement.getTile(j).getType() != 0 && ((settlement.getTile(j).getHarvestRollNum() == harvestNumber
-                                && settlement.getTile(j).hasThief() == false )
+                        if (settlement.getTile(j).getType() != 0 && ((settlement.getTile(j).getHarvestRollNum() == harvestNumber
+                                && settlement.getTile(j).hasThief() == false)
                                 // Or if every tile is to be harvested from (passed harvest number is 0)
                                 || harvestNumber == 0)) {
                             // Give the player the tile's resource
@@ -1552,38 +1827,69 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor)));
         //old title. Replaced by JLabel
         //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
-        
+
+        //draw the ring of water
+        //also scale it to the current monitor. Coords are to center it relative to the display center
+        g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);
+
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
-        g2d.drawImage(MATERIAL_KEY, 
+        g2d.drawImage(MATERIAL_KEY,
                 superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), //put it in the corner with some padding space
                 (int) (10 / scaleFactor), //just a little bit from the top
                 getImgWidth(MATERIAL_KEY), //scale the image
                 getImgHeight(MATERIAL_KEY),
                 null);
 
-        //draw the ring of water
-        //also scale it to the current monitor. Coords are to center it relative to the display center
-        g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);
+        Image currentPlayerImage;
+
+        if (inbetweenTurns) {
+            currentPlayerImage = PLAYER_NONE;
+        } else if (currentPlayer == 1) {
+            currentPlayerImage = PLAYER_RED;
+        } else if (currentPlayer == 2) {
+            currentPlayerImage = PLAYER_BLUE;
+        } else {
+            currentPlayerImage = PLAYER_NONE;
+        }
+
+        //draw the current player icon
+        g2d.drawImage(currentPlayerImage,
+                superFrame.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
+                superFrame.getHeight() - getImgHeight(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
+                getImgWidth(PLAYER_RED), //scale the image
+                getImgHeight(PLAYER_RED),
+                null);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         for (int i = 0; i < 19; i++) {
-            
-            //draw the tile
-            g2d.drawImage(tiles.get(i).getImage(),
-                        tiles.get(i).getXPos(), 
+
+            //check if it is the new type or old size
+            if (tiles.get(i).getImage().getHeight(null) == 150) {
+                //draw the tile
+                g2d.drawImage(tiles.get(i).getImage(),
+                        tiles.get(i).getXPos(),
+                        (int) (tiles.get(i).getYPos() - (20 / scaleFactor)),
+                        getImgWidth(tiles.get(i).getImage()),
+                        getImgHeight(tiles.get(i).getImage()), null);
+            } else {
+
+                //draw the tile
+                g2d.drawImage(tiles.get(i).getImage(),
+                        tiles.get(i).getXPos(),
                         tiles.get(i).getYPos(),
                         getImgWidth(tiles.get(i).getImage()),
                         getImgHeight(tiles.get(i).getImage()), null);
+            }
 
             //draw the resource harvest number only if it is not a desert
             if (tiles.get(i).getType() != 0) {
                 g2d.setColor(Color.DARK_GRAY);
-                g2d.fillOval(tiles.get(i).getXPos() + newTileWidth / 2 - ((int)(30 / scaleFactor) / 2), 
-                        tiles.get(i).getYPos() + newTileHeight / 2 - ((int)(30 / scaleFactor) / 2), 
-                        (int)(30 / scaleFactor), 
-                        (int)(30 / scaleFactor));
+                g2d.fillOval(tiles.get(i).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2),
+                        (int) (tiles.get(i).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
+                        (int) (30 / scaleFactor),
+                        (int) (30 / scaleFactor));
 
                 //check if the colour of the number
                 if (tiles.get(i).getHarvestRollNum() == 8 || tiles.get(i).getHarvestRollNum() == 6) {
@@ -1594,41 +1900,44 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //set the offset based on the number of digits
                 if (tiles.get(i).getHarvestRollNum() > 9) {
-                    harvestRollNumOffset = (int)(10 / scaleFactor);
+                    harvestRollNumOffset = (int) (10 / scaleFactor);
                 } else {
-                    harvestRollNumOffset = (int)(4 / scaleFactor);
+                    harvestRollNumOffset = (int) (4 / scaleFactor);
                 }
 
                 //draw the harvest roll num
-                g2d.setFont(new Font("Times New Roman", Font.BOLD, (int)(20 / scaleFactor)));
-                g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()), 
-                        tiles.get(i).getXPos() + newTileWidth / 2 - harvestRollNumOffset, 
-                        tiles.get(i).getYPos() + newTileHeight / 2 + 5);
+                g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
+                g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()),
+                        tiles.get(i).getXPos() + newTileWidth / 2 - harvestRollNumOffset,
+                        tiles.get(i).getYPos() + newTileHeight / 2 + 5 + threeDTileOffset);
                 g2d.setColor(Color.black);
             }
 
             //check where the thief is and draw it there
             if (tiles.get(i).hasThief()) {
 
+                int imageWidth = getImgWidth(THIEF);
+                int imageHeight = getImgHeight(THIEF);
+
                 //draw the thief
-                g2d.drawImage(THIEF, 
-                        tiles.get(i).getXPos() + newTileWidth / 2 - (int)(24 / scaleFactor) / 2, 
-                        tiles.get(i).getYPos() + newTileHeight / 2 - (int)(56 / scaleFactor) / 2, 
-                        (int)(24 / scaleFactor),
-                        (int)(56 / scaleFactor),
+                g2d.drawImage(THIEF,
+                        tiles.get(i).getXPos() + newTileWidth / 2 - (int) (imageWidth / scaleFactor) / 2,
+                        tiles.get(i).getYPos() + newTileHeight / 2 - (int) (imageHeight / scaleFactor) / 2 + threeDTileOffset,
+                        (int) (imageWidth / scaleFactor),
+                        (int) (imageHeight / scaleFactor),
                         null);
             }
         }
-        
+
         //set the font for the dice roll indecator
         g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
         //show what number the user rolled
-        g2d.drawString("You rolled a: " + diceRollVal, 
-                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), 
+        g2d.drawString("You rolled a: " + diceRollVal,
+                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor),
                 (int) (500 / scaleFactor));
         //basic turn indecator
         String currentPlayerString;
-        
+
         if (inbetweenTurns) {
             currentPlayerString = "none";
         } else if (this.currentPlayer == 1) {
@@ -1638,9 +1947,9 @@ public class GamePanel extends javax.swing.JPanel {
         } else {
             currentPlayerString = "0, Error";
         }
-        
-        g2d.drawString("Current player: " + currentPlayerString, 
-                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), 
+
+        g2d.drawString("Current player: " + currentPlayerString,
+                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor),
                 (int) (550 / scaleFactor));
 
         // Draw the 72 road nodes
@@ -1685,9 +1994,9 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             // Draw the road image saved above, at the node's position
-            g2d.drawImage(image, 
+            g2d.drawImage(image,
                     road.getXPos() - getImgWidth(image) / 2,
-                    road.getYPos() - getImgHeight(image) / 2, 
+                    road.getYPos() - getImgHeight(image) / 2,
                     getImgWidth(image),
                     getImgHeight(image),
                     null);
@@ -1730,9 +2039,9 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             // Draw the settlement image saved above, at the node's position
-            g2d.drawImage(image, 
+            g2d.drawImage(image,
                     settlement.getXPos() - getImgWidth(image) / 2,
-                    settlement.getYPos() - getImgHeight(image) / 2, 
+                    settlement.getYPos() - getImgHeight(image) / 2,
                     getImgWidth(image),
                     getImgHeight(image),
                     null);
@@ -1779,21 +2088,21 @@ public class GamePanel extends javax.swing.JPanel {
                         break;
                 }
                 // Draw the card
-                g2d.drawImage(image, 
-                        (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i ), 
+                g2d.drawImage(image,
+                        (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
                         (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
                         getImgWidth(image),
-                        getImgHeight(image), 
+                        getImgHeight(image),
                         null);
-                
+
                 //draw the hitbox
                 if (showCardHitbox) {
                     g2d.setColor(Color.green);
                     Stroke tempStroke = g2d.getStroke();
                     g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                    g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i ), 
-                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)), 
-                            getImgWidth(image), 
+                    g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                            getImgWidth(image),
                             getImgHeight(image));
                     g2d.setStroke(tempStroke);
                     g2d.setColor(Color.black);
@@ -1803,36 +2112,52 @@ public class GamePanel extends javax.swing.JPanel {
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
+
+        /*
+        //draw the boarder overlay
+        g2d.drawImage(WATER_RING_OVERLAY, 
+                superFrame.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2,
+                superFrame.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2, 
+                getImgWidth(WATER_RING_OVERLAY), 
+                getImgHeight(WATER_RING_OVERLAY), null);
+         */
     }
-    
+
     /**
-     * Calculates the y position BEFORE realignment of a Tile to account for the spacing add between from aspect ratio locked scaling.
+     * Calculates the y position BEFORE realignment of a Tile to account for the
+     * spacing add between from aspect ratio locked scaling.
+     *
      * @param yPos
-     * @return 
+     * @return
      */
     public int getTileYPos(int yPos) {
-        return (int) (yPos / 1080.0 * superFrame.getHeight() / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
+        return (int) (yPos / 1080.0 * superFrame.getHeight()
+                / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
                 //find the correct spacing factor based off a linear ration between the new apsect ratio and the internal 1080p one. 
                 //This now leaves the tiles in the incorrect position but that can be later corrected by adding a constant value to all of the tiles
-                (1.8 * ((float) superFrame.getHeight() / (float) superFrame.getWidth()))); 
+                (1.8 * ((float) superFrame.getHeight() / (float) superFrame.getWidth())));
     }
-    
+
     /**
-     * Calculates the x position BEFORE realignment of a Tile to account for the spacing add between from aspect ratio locked scaling.
+     * Calculates the x position BEFORE realignment of a Tile to account for the
+     * spacing add between from aspect ratio locked scaling.
+     *
      * @param tile
-     * @return 
+     * @return
      */
     private int getTileXPos(int xPos) {
-        return (int) (xPos / 1920.0 * superFrame.getWidth() / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
+        return (int) (xPos / 1920.0 * superFrame.getWidth()
+                / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
                 //find the correct spacing factor based off a linear ration between the new apsect ratio and the internal 1080p one. 
                 //This now leaves the tiles in the incorrect position but that can be later corrected by adding a constant value to all of the tiles
-                (0.5625 * ((float) superFrame.getWidth() / (float) superFrame.getHeight()))); 
+                (0.5625 * ((float) superFrame.getWidth() / (float) superFrame.getHeight())));
     }
-    
+
     /**
      * Calculates the new scaled width of an image with a locked aspect ratio.
+     *
      * @param image
-     * @return 
+     * @return
      */
     public int getImgWidth(Image image) {
 
@@ -1843,11 +2168,12 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
     }
-    
+
     /**
      * Calculates the new scaled height of an image with a locked aspect ratio.
+     *
      * @param image
-     * @return 
+     * @return
      */
     public int getImgHeight(Image image) {
         if (superFrame.getWidth() > superFrame.getHeight()) {
@@ -1985,16 +2311,19 @@ public class GamePanel extends javax.swing.JPanel {
             settlementNodes.get(i).setTile(3, tiles.get(settlementLinkToHex3[i]));
 
         }
-        
+
     }
-    
+
     /**
      * Change the position of the WorldObject to match the scaled image
-     * @param arrayList The List of WorldObjects to go through and change the positions
-     * @param arrayCuttoff The number of indexes to ignore from the back. Used to account for List with and without null components at the end.
+     *
+     * @param arrayList The List of WorldObjects to go through and change the
+     * positions
+     * @param arrayCuttoff The number of indexes to ignore from the back. Used
+     * to account for List with and without null components at the end.
      */
-    private void scaleWorldObjectPos(ArrayList<? extends WorldObject> arrayList, int arrayCuttoff) { 
-        
+    private void scaleWorldObjectPos(ArrayList<? extends WorldObject> arrayList, int arrayCuttoff) {
+
         // Loop through all the tiles
         for (int i = 0; i < arrayList.size() - arrayCuttoff; i++) {
 
@@ -2002,14 +2331,14 @@ public class GamePanel extends javax.swing.JPanel {
             //choose a drawing type. One corrects for width and one corrects for height
             if (superFrame.getWidth() <= superFrame.getHeight()) {
                 //set the x
-                arrayList.get(i).setXPos( (int) (arrayList.get(i).getXPos() / 1920.0 * superFrame.getWidth()) );
+                arrayList.get(i).setXPos((int) (arrayList.get(i).getXPos() / 1920.0 * superFrame.getWidth()));
                 //set the y
-                arrayList.get(i).setYPos( (getTileYPos( arrayList.get(i).getYPos()) + tileYOffset)  );
+                arrayList.get(i).setYPos((getTileYPos(arrayList.get(i).getYPos()) + tileYOffset));
             } else {
                 //set the x
-                arrayList.get(i).setXPos( (getTileXPos( arrayList.get(i).getXPos() ) + tileXOffset) );
+                arrayList.get(i).setXPos((getTileXPos(arrayList.get(i).getXPos()) + tileXOffset));
                 //set the y
-                arrayList.get(i).setYPos( ((int) (arrayList.get(i).getYPos() / 1080.0 * superFrame.getHeight())) );
+                arrayList.get(i).setYPos(((int) (arrayList.get(i).getYPos() / 1080.0 * superFrame.getHeight())));
             }
         }
     }
@@ -2030,7 +2359,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             // Read the entire file into an array
             for (int i = 0; i < 19; i++) {
-                
+
                 //old assignment. Not using scaling. Scaling is added after this coords are loaded in a different method
                 for (int j = 0; j < 2; j++) {
                     // Read the line of the file into the next index
@@ -2045,6 +2374,27 @@ public class GamePanel extends javax.swing.JPanel {
         } catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading Tile Position file: " + e);
+        }
+    }
+
+    /**
+     * Go the the next player for their turn. Also make sure to loop back to the
+     * first player
+     */
+    private void nextPlayer() {
+        currentPlayer++;
+
+        // And go back to player 1 if the number exceeds the total number of players
+        if (currentPlayer > playerCount) {
+            currentPlayer = 1;
+            // If the game was in setup, all of the turns have ended now and the normal game can begin
+            if (inSetup) {
+                inSetup = false;
+                // If enabled. give everyone their starting resources
+                if (giveStartingResources) {
+                    collectMaterials(0); // 0 makes it collect everything possible
+                }
+            }
         }
     }
 
@@ -2064,23 +2414,4 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * Go the the next player for their turn. Also make sure to loop back to the first player
-     */
-    private void nextPlayer() {
-        currentPlayer++;
-
-        // And go back to player 1 if the number exceeds the total number of players
-        if (currentPlayer > playerCount) {
-            currentPlayer = 1;
-            // If the game was in setup, all of the turns have ended now and the normal game can begin
-            if (inSetup) {
-                inSetup = false;
-                // If enabled. give everyone their starting resources
-                if (giveStartingResources) {
-                collectMaterials(0); // 0 makes it collect everything possible
-                }
-            }
-        }
-    }
 }

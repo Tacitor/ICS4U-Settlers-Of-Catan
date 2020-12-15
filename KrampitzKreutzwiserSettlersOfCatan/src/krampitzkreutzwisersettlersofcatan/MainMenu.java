@@ -5,6 +5,12 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Tacitor
@@ -70,7 +76,6 @@ public class MainMenu extends javax.swing.JFrame {
 
         loadGameBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
         loadGameBtn.setText("Load Game");
-        loadGameBtn.setEnabled(false);
         loadGameBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadGameBtnActionPerformed(evt);
@@ -136,11 +141,46 @@ public class MainMenu extends javax.swing.JFrame {
     private void newGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameBtnActionPerformed
         // Hide this window and show the game
         this.setVisible(false);
+        gameJFrame.resetGamePanel();
         gameJFrame.setVisible(true);
     }//GEN-LAST:event_newGameBtnActionPerformed
 
     private void loadGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGameBtnActionPerformed
+        JFileChooser saveFileLoader = new JFileChooser(); //make a new file chooser
         
+        //set up the file choose and call it
+        saveFileLoader.setDialogTitle("Select a Save File to Open:");
+        int userLoadSelection = saveFileLoader.showOpenDialog(this);
+        
+        //check if the user selected a file
+        if (userLoadSelection == JFileChooser.APPROVE_OPTION) {
+            
+            //test if it is a vailid save file
+            try {
+                File savefile = new File(saveFileLoader.getSelectedFile().getPath());
+                Scanner scanner = new Scanner(savefile);
+                
+                // Hide this window and reset the game
+                this.setVisible(false);
+                gameJFrame.resetGamePanel();
+                
+                //check if it is a vailid game save
+                if (!scanner.nextLine().equals("SettlersOfCatanSaveV2")) {
+                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V2 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                } else { //if it is a real save file
+                    gameJFrame.loadFromFile(saveFileLoader);
+                }
+                
+                //show the game                
+                gameJFrame.setVisible(true);
+                
+            } catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        } else { //if there was so file selected
+            JOptionPane.showMessageDialog(null, "There was no file selected.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_loadGameBtnActionPerformed
 
     private void creditsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditsBtnActionPerformed

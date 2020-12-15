@@ -43,9 +43,15 @@ public class ImageRef {
 
     //the image for the water ring
     public final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();
+    public final static Image WATER_RING_OVERLAY = new ImageIcon(ImageRef.class.getResource("waterRingOverlay.png")).getImage();
 
     //the image for the building materials
     public final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
+    
+    //current player indecator
+    public final static Image PLAYER_RED = new ImageIcon(ImageRef.class.getResource("playerRed.png")).getImage();
+    public final static Image PLAYER_BLUE = new ImageIcon(ImageRef.class.getResource("playerBlue.png")).getImage();
+    public final static Image PLAYER_NONE = new ImageIcon(ImageRef.class.getResource("playerNone.png")).getImage();
     
     //store most of the images to reduce varable clutter in the main class (gamePanel)
 

@@ -1,7 +1,13 @@
 Credits:
 
-Lead Programmer - Krampitz, Lukas
+Co-Lead Developer - Krampitz, Lukas
 
-Lead Programmer - Kreutzwiser, Evan
+Creative Art Director - Krampitz, Lukas
+
+Co-Lead Developer - Kreutzwiser, Evan
+
+Git Repository Manager - Kreutzwiser, Evan
+
+Senior Artist - Alex Eckardt
 
 Client - Mr. Brad Cutten

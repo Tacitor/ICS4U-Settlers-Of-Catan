@@ -106,6 +106,7 @@
     <Component class="javax.swing.JButton" name="backBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="&lt; Save and Exit"/>
+        <Property name="focusable" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backBtnActionPerformed"/>
@@ -202,6 +203,7 @@
     <Component class="javax.swing.JButton" name="backNoSaveBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="&lt; Exit without saving"/>
+        <Property name="focusable" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backNoSaveBtnActionPerformed"/>

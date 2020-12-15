@@ -7,6 +7,7 @@ package krampitzkreutzwisersettlersofcatan;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 /**
@@ -17,6 +18,7 @@ public class GameFrame extends javax.swing.JFrame {
 
     private final MainMenu mainMenuFrame; //ref to the main menu
     private Dimension screenSize; //keeps track of the display the game is being played on
+    private GamePanel theGamePanel; //referance to *a* GamePanel
     
     public GameFrame(MainMenu m) {
 
@@ -40,7 +42,8 @@ public class GameFrame extends javax.swing.JFrame {
         //setSize(3840 , 2160);
         setSize(screenSize); //set the JFrame size to match the display
         setDefaultCloseOperation(EXIT_ON_CLOSE); //make sure it closes the thread when the frame closes
-        add(new GamePanel(this));
+        theGamePanel = new GamePanel(this); //creates a new blank game
+        add(theGamePanel); //adds it to the JFrame
         setLocationRelativeTo(null); //center the frame on screen
         setResizable(false); //do not allow the user to resize the window
         //setExtendedState(JFrame.MAXIMIZED_BOTH); //this would normaly set the size to the display size but I don't want to deal with scaling elemnts nor do I have the time
@@ -59,6 +62,23 @@ public class GameFrame extends javax.swing.JFrame {
      */
     protected MainMenu getMainMenu() {
         return mainMenuFrame;
+    }
+    
+    /**
+     * Removes the old game and replaces it with a new one
+     */
+    public void resetGamePanel() {
+        remove(theGamePanel);
+        theGamePanel = new GamePanel(this);
+        add(theGamePanel);
+    }
+    
+    /**
+     * Passes the load address on to the GamePanel
+     * @param loadFileChooser 
+     */
+    public void loadFromFile(JFileChooser loadFileChooser) {
+        theGamePanel.load(loadFileChooser);
     }
 
 }
