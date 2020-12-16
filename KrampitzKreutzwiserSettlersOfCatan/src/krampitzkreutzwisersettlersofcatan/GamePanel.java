@@ -1827,7 +1827,14 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor)));
         //old title. Replaced by JLabel
         //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
-
+        
+        //draw the backgrund
+        g2d.drawImage(WOOD_BACKGROUND, 
+                0,
+                0, 
+                getImgWidth(WOOD_BACKGROUND), 
+                getImgHeight(WOOD_BACKGROUND), null);
+        
         //draw the ring of water
         //also scale it to the current monitor. Coords are to center it relative to the display center
         g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);

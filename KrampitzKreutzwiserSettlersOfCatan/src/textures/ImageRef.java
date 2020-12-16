@@ -44,6 +44,9 @@ public class ImageRef {
     //the image for the water ring
     public final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("waterRing.png")).getImage();
     public final static Image WATER_RING_OVERLAY = new ImageIcon(ImageRef.class.getResource("waterRingOverlay.png")).getImage();
+    
+    //image for the background
+    public final static Image WOOD_BACKGROUND = new ImageIcon(ImageRef.class.getResource("background.png")).getImage();
 
     //the image for the building materials
     public final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("buildKey.png")).getImage();
