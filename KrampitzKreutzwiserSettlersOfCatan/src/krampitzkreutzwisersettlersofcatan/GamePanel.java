@@ -26,6 +26,7 @@ import java.util.Scanner;
 import javax.swing.ButtonModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import static textures.ImageRef.*;
 
 /**
@@ -265,6 +266,7 @@ public class GamePanel extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1920, 1080));
 
+        backBtn.setBackground(new java.awt.Color(102, 62, 38));
         backBtn.setText("< Save and Exit");
         backBtn.setFocusable(false);
         backBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -273,6 +275,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
         });
 
+        turnSwitchBtn.setBackground(new java.awt.Color(102, 62, 38));
         turnSwitchBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         turnSwitchBtn.setText("End Current Player's Turn");
         turnSwitchBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -282,29 +285,40 @@ public class GamePanel extends javax.swing.JPanel {
         });
 
         instructionPromptLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        instructionPromptLbl.setForeground(new java.awt.Color(255, 255, 225));
         instructionPromptLbl.setText("Instructions:");
 
         instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         instructionLbl.setText("Place two roads and two small settlements each to start.");
 
         buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        buildMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
         buildMenuLbl.setText("Build Menu:");
 
         buildBtnGroup.add(buildSettlementSRBtn);
         buildSettlementSRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        buildSettlementSRBtn.setForeground(new java.awt.Color(255, 255, 225));
         buildSettlementSRBtn.setText("Small Settlement");
+        buildSettlementSRBtn.setOpaque(false);
 
         buildBtnGroup.add(buildSettlementLRBtn);
         buildSettlementLRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        buildSettlementLRBtn.setForeground(new java.awt.Color(255, 255, 225));
         buildSettlementLRBtn.setText("Large Settlement");
+        buildSettlementLRBtn.setOpaque(false);
 
         buildBtnGroup.add(buildRoadRBtn);
         buildRoadRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
         buildRoadRBtn.setSelected(true);
         buildRoadRBtn.setText("Road");
+        buildRoadRBtn.setOpaque(false);
 
+        buildBtn.setBackground(new java.awt.Color(102, 62, 38));
         buildBtn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         buildBtn.setText("Build");
+        buildBtn.setToolTipText("");
         buildBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buildBtnActionPerformed(evt);
@@ -312,8 +326,10 @@ public class GamePanel extends javax.swing.JPanel {
         });
 
         subInstructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        subInstructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
+        backNoSaveBtn.setBackground(new java.awt.Color(102, 62, 38));
         backNoSaveBtn.setText("< Exit without saving");
         backNoSaveBtn.setFocusable(false);
         backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -323,6 +339,7 @@ public class GamePanel extends javax.swing.JPanel {
         });
 
         titleLbl.setFont(new java.awt.Font("Times New Roman", 1, 40)); // NOI18N
+        titleLbl.setForeground(new java.awt.Color(255, 255, 225));
         titleLbl.setText("Settlers of Catan");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -573,7 +590,7 @@ public class GamePanel extends javax.swing.JPanel {
             thiefJustFinished = false;
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             //reset the colour
-            instructionLbl.setForeground(Color.black);
+            instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
@@ -1267,7 +1284,7 @@ public class GamePanel extends javax.swing.JPanel {
     private void updateBuildButtons() {
 
         //reset the colour
-        instructionLbl.setForeground(Color.black);
+        instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
 
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
@@ -1352,6 +1369,25 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(canBuildRoad);              // Roads
         buildSettlementSRBtn.setEnabled(canBuildSettlement); // Settlements
         buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
+        
+        //update the colours
+        if (canBuildRoad) {
+            buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
+        } else {
+            buildRoadRBtn.setForeground(new java.awt.Color(30, 30, 30));
+        }
+        
+        if (canBuildSettlement) {
+            buildSettlementSRBtn.setForeground(new java.awt.Color(255, 255, 225));
+        } else {
+            buildSettlementSRBtn.setForeground(new java.awt.Color(30, 30, 30));
+        }
+        
+        if (canBuildCity) {
+            buildSettlementLRBtn.setForeground(new java.awt.Color(255, 255, 225));
+        } else {
+            buildSettlementLRBtn.setForeground(new java.awt.Color(30, 30, 30));
+        }
 
         // If the button selected before this update is still enabled, select it
         // instead of the selection made in the if/else block above
@@ -1938,6 +1974,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //set the font for the dice roll indecator
         g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
+        g2d.setColor(new java.awt.Color(255, 255, 225));
         //show what number the user rolled
         g2d.drawString("You rolled a: " + diceRollVal,
                 superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor),
