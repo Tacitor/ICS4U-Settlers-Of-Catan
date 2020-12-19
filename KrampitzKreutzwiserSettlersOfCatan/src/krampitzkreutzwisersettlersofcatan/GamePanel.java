@@ -1689,8 +1689,8 @@ public class GamePanel extends javax.swing.JPanel {
             thiefMoveCounter++;
 
             //steal the cards and allow the lables to update
-            thiefIsStealing = true;
-            thiefJustStarted = true;
+            //thiefIsStealing = true;
+            //thiefJustStarted = true;
 
             //save the player who just rolled a 7
             playerRolled7 = currentPlayer;
@@ -2104,6 +2104,12 @@ public class GamePanel extends javax.swing.JPanel {
             int listSize = cards[currentPlayer].size();
             // Calculate where the first card must go to center the list
             cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
+            
+            //check if the cards would go off the screen
+            if ((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(CARD_CLAY)))) {
+                cardStartPosition = superFrame.getWidth() / 2;
+            }
+            
             // Draw the player's cards
             // Reuse the image variable
             int type;
@@ -2131,6 +2137,7 @@ public class GamePanel extends javax.swing.JPanel {
                         image = WATER_RING; //this is a joke. The ring of water is infact NOT a card
                         break;
                 }
+                
                 // Draw the card
                 g2d.drawImage(image,
                         (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
