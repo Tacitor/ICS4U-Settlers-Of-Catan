@@ -1693,8 +1693,9 @@ public class GamePanel extends javax.swing.JPanel {
             thiefMoveCounter++;
 
             //steal the cards and allow the lables to update
-            //thiefIsStealing = true;
-            //thiefJustStarted = true;
+            thiefIsStealing = true;
+            thiefJustStarted = true;
+            
             //save the player who just rolled a 7
             playerRolled7 = currentPlayer;
 
