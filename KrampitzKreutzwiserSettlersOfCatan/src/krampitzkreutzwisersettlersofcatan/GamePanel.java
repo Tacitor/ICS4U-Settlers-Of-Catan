@@ -26,7 +26,6 @@ import java.util.Scanner;
 import javax.swing.ButtonModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 import static textures.ImageRef.*;
 
 /**
@@ -55,6 +54,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean thiefJustStarted; //true if the thief was just rolled
     private boolean showRoadHitbox;
     private boolean showCardHitbox; //used for picking which cards the thief steals
+    private boolean[] drawCardStacks; //controls the mode cards are drown in. Stacked or fully layout
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
@@ -124,6 +124,8 @@ public class GamePanel extends javax.swing.JPanel {
         // the +1 allows methods to use player IDs directly without subtracting 1
         stealCardNum = new int[playerCount + 1]; //create the array of how many cards need to be stolen
         //the +1 allows methods to use player IDs directly without subtracting 1
+        drawCardStacks = new boolean[playerCount + 1];//create the array of how to draw the cards for each player
+        //the +1 allows methods to use player IDs directly without subtracting 1
         totalCardsCollected = new int[5];
         buildingObject = 0;
         showRoadHitbox = false;
@@ -142,9 +144,11 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Fill the list of card ArrayLists with new ArrayLists and intialize
         // the victory point array (Both are the same size and can share a loop)
+        // and drawCardStacks to set up all to draw the full layout
         for (int i = 0; i < cards.length; i++) {
             cards[i] = new ArrayList(); // Cards ArrayList
             victoryPoints[i] = 0; // Victory point counter
+            drawCardStacks[i] = false;
         }
 
         // Intialize the card counter array
@@ -1369,20 +1373,20 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(canBuildRoad);              // Roads
         buildSettlementSRBtn.setEnabled(canBuildSettlement); // Settlements
         buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
-        
+
         //update the colours
         if (canBuildRoad) {
             buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
         } else {
             buildRoadRBtn.setForeground(new java.awt.Color(30, 30, 30));
         }
-        
+
         if (canBuildSettlement) {
             buildSettlementSRBtn.setForeground(new java.awt.Color(255, 255, 225));
         } else {
             buildSettlementSRBtn.setForeground(new java.awt.Color(30, 30, 30));
         }
-        
+
         if (canBuildCity) {
             buildSettlementLRBtn.setForeground(new java.awt.Color(255, 255, 225));
         } else {
@@ -1691,7 +1695,6 @@ public class GamePanel extends javax.swing.JPanel {
             //steal the cards and allow the lables to update
             //thiefIsStealing = true;
             //thiefJustStarted = true;
-
             //save the player who just rolled a 7
             playerRolled7 = currentPlayer;
 
@@ -1863,17 +1866,21 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor)));
         //old title. Replaced by JLabel
         //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
-        
+
         //draw the backgrund
-        g2d.drawImage(WOOD_BACKGROUND, 
+        g2d.drawImage(WOOD_BACKGROUND,
                 0,
-                0, 
-                getImgWidth(WOOD_BACKGROUND), 
+                0,
+                getImgWidth(WOOD_BACKGROUND),
                 getImgHeight(WOOD_BACKGROUND), null);
-        
+
         //draw the ring of water
         //also scale it to the current monitor. Coords are to center it relative to the display center
-        g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);
+        g2d.drawImage(WATER_RING,
+                superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
+                superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2,
+                getImgWidth(WATER_RING),
+                getImgHeight(WATER_RING), null);
 
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
@@ -2104,59 +2111,154 @@ public class GamePanel extends javax.swing.JPanel {
             int listSize = cards[currentPlayer].size();
             // Calculate where the first card must go to center the list
             cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
-            
+
             //check if the cards would go off the screen
             if ((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(CARD_CLAY)))) {
-                cardStartPosition = superFrame.getWidth() / 2;
-            }
-            
-            // Draw the player's cards
-            // Reuse the image variable
-            int type;
-            for (int i = 0; i < listSize; i++) {
-                // Get the card type
-                type = cards[currentPlayer].get(i);
-                // Get the image for that card
-                switch (type) {
-                    case 1: // Clay card
-                        image = CARD_CLAY;
-                        break;
-                    case 2: // Word card
-                        image = CARD_WOOD;
-                        break;
-                    case 3: // Wheat card
-                        image = CARD_WHEAT;
-                        break;
-                    case 4: // Sheep card
-                        image = CARD_SHEEP;
-                        break;
-                    case 5: // 5: Ore card
-                        image = CARD_ORE;
-                        break;
-                    default: //error "card"
-                        image = WATER_RING; //this is a joke. The ring of water is infact NOT a card
-                        break;
-                }
+                drawCardStacks[currentPlayer] = true;
                 
-                // Draw the card
+                //get the number of each card type the player has
+                //setup an array to hold the results
+                int[] cardTypeCount = new int[5];
+
+                //loop thorugh and populate the array
+                for (int i = 0; i < listSize; i++) {
+                    cardTypeCount[cards[currentPlayer].get(i) - 1]++;
+                }
+
+                //draw the number of cards the payer has of each type
+                //change the font
+                Font tempFont = g2d.getFont(); //save the current stroke
+                g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor))); //overwrite it      
+                g2d.setColor(new java.awt.Color(255, 255, 225));
+
+                //set the image
+                image = CARD_CLAY;
+
+                //draw one each of the 5 card types
+                //draw clay
                 g2d.drawImage(image,
-                        (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                        superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(image) / 2, //align the card to the left edge of the water ring
                         (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
                         getImgWidth(image),
                         getImgHeight(image),
                         null);
+                
+                //draw clay num
+                g2d.drawString("x" + cardTypeCount[0],
+                        superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 + getImgWidth(image) / 2, //align the number to the right edge of the card
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
 
-                //draw the hitbox
-                if (showCardHitbox) {
-                    g2d.setColor(Color.green);
-                    Stroke tempStroke = g2d.getStroke();
-                    g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                    g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                //draw wood
+                image = CARD_WOOD;
+                g2d.drawImage(image,
+                        superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(image) / 2,
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                        getImgWidth(image),
+                        getImgHeight(image),
+                        null);
+                
+                //draw wood num
+                g2d.drawString("x" + cardTypeCount[1],
+                        superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 + getImgWidth(image) / 2, //align the number to the right edge of the card
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
+
+                //draw wheat
+                image = CARD_WHEAT;
+                g2d.drawImage(image,
+                        superFrame.getWidth() / 2 - getImgWidth(image) / 2, //align the card with the middle of the board
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                        getImgWidth(image),
+                        getImgHeight(image),
+                        null);
+                
+                //draw wheat num
+                g2d.drawString("x" + cardTypeCount[2],
+                        superFrame.getWidth() / 2 + getImgWidth(image) / 2, //align the number to the right edge of the card
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
+
+                //draw sheep
+                image = CARD_SHEEP;
+                g2d.drawImage(image,
+                        superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(image) / 2,
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                        getImgWidth(image),
+                        getImgHeight(image),
+                        null);
+                
+                //draw sheep num
+                g2d.drawString("x" + cardTypeCount[3],
+                        superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 + getImgWidth(image) / 2, //align the number to the right edge of the card
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
+
+                //draw ore
+                image = CARD_ORE;
+                g2d.drawImage(image,
+                        superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(image) + getImgWidth(image) / 2, //align the card to the right edge of the water ring,
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                        getImgWidth(image),
+                        getImgHeight(image),
+                        null);
+                
+                //draw ore num
+                g2d.drawString("x" + cardTypeCount[4], 
+                        (int) (superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(image) + getImgWidth(image) * 1.5), //align the number to the right edge of the card
+                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
+                
+                //restore the old font
+                g2d.setFont(tempFont);
+
+            } else {
+                drawCardStacks[currentPlayer] = false;
+
+                // Draw the player's cards
+                // Reuse the image variable
+                int type;
+                for (int i = 0; i < listSize; i++) {
+                    // Get the card type
+                    type = cards[currentPlayer].get(i);
+                    // Get the image for that card
+                    switch (type) {
+                        case 1: // Clay card
+                            image = CARD_CLAY;
+                            break;
+                        case 2: // Word card
+                            image = CARD_WOOD;
+                            break;
+                        case 3: // Wheat card
+                            image = CARD_WHEAT;
+                            break;
+                        case 4: // Sheep card
+                            image = CARD_SHEEP;
+                            break;
+                        case 5: // 5: Ore card
+                            image = CARD_ORE;
+                            break;
+                        default: //error "card"
+                            image = WATER_RING; //this is a joke. The ring of water is infact NOT a card
+                            break;
+                    }
+
+                    // Draw the card
+                    g2d.drawImage(image,
+                            (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
                             (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
                             getImgWidth(image),
-                            getImgHeight(image));
-                    g2d.setStroke(tempStroke);
-                    g2d.setColor(Color.black);
+                            getImgHeight(image),
+                            null);
+
+                    //draw the hitbox
+                    if (showCardHitbox) {
+                        g2d.setColor(Color.green);
+                        Stroke tempStroke = g2d.getStroke();
+                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                        g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                getImgWidth(image),
+                                getImgHeight(image));
+                        g2d.setStroke(tempStroke);
+                        g2d.setColor(Color.black);
+                    }
+
                 }
             }
         }
