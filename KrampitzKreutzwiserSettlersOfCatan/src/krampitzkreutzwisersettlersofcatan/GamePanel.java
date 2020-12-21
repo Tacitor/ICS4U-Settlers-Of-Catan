@@ -869,32 +869,65 @@ public class GamePanel extends javax.swing.JPanel {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
         } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0) { //check if the user clicked to select a card
-            //check if the user clicked on any card
-            for (int i = 0; i < cards[currentPlayer].size(); i++) {
-                //get the x and y positions for that card
-                int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
-                int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
 
-                //check if there was a click on a card
-                if (event.getX() > cardXPos
-                        && event.getY() > cardYPos
-                        && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
-                        && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
-                    //debug click detection
-                    //System.out.println("Card Clicked!");
-                    cards[currentPlayer].remove(i); //remove the card
-                    stealCardNum[currentPlayer]--; //count the removal
+            //get the y position for the cards
+            int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
 
-                    //check if the player is done now
-                    if (stealCardNum[currentPlayer] <= 0) {
-                        turnSwitchBtn.setEnabled(true);
-                        showCardHitbox = false;
+            //check what mode the card drawing is in
+            if (drawCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
+
+                //loop though the 5 stacks
+                for (int i = 0; i < 5; i++) {
+                    //check for a click
+                    if (event.getX() > cardStackXPositions[i]
+                            && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
+                            && event.getY() > cardYPos
+                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                        //debug click detection
+                        //System.out.println("Card Clicked!");
+                        cards[currentPlayer].remove(new Integer(i + 1)); //remove the card
+                        stealCardNum[currentPlayer]--; //count the removal
+
+                        //check if the player is done now
+                        if (stealCardNum[currentPlayer] <= 0) {
+                            turnSwitchBtn.setEnabled(true);
+                            showCardHitbox = false;
+                        }
+
+                        updateBuildButtons();
+                        repaint();
                     }
-
-                    updateBuildButtons();
-                    repaint();
-
                 }
+
+            } else { //check for a click on a card in the full layout mode
+
+                //check if the user clicked on any card
+                for (int i = 0; i < cards[currentPlayer].size(); i++) {
+                    //get the x position for that card
+                    int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
+
+                    //check if there was a click on a card
+                    if (event.getX() > cardXPos
+                            && event.getY() > cardYPos
+                            && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
+                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                        //debug click detection
+                        //System.out.println("Card Clicked!");
+                        cards[currentPlayer].remove(i); //remove the card
+                        stealCardNum[currentPlayer]--; //count the removal
+
+                        //check if the player is done now
+                        if (stealCardNum[currentPlayer] <= 0) {
+                            turnSwitchBtn.setEnabled(true);
+                            showCardHitbox = false;
+                        }
+
+                        updateBuildButtons();
+                        repaint();
+
+                    }
+                }
+
             }
 
         }
@@ -2140,7 +2173,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //loop through and draw the stacked cards
                 for (int i = 0; i < 5; i++) {
-                    
+
                     //get the image for that card
                     switch (i) {
                         case 0: // Clay card
