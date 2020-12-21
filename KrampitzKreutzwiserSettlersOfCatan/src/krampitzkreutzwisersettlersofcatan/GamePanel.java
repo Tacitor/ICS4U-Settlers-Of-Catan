@@ -885,13 +885,18 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
                         //debug click detection
                         //System.out.println("Card Clicked!");
-                        cards[currentPlayer].remove(new Integer(i + 1)); //remove the card
-                        stealCardNum[currentPlayer]--; //count the removal
+                        boolean removeSuccess; //crate var to save if the removal was succesful
+                        removeSuccess = cards[currentPlayer].remove(new Integer(i + 1)); //remove the card
 
-                        //check if the player is done now
-                        if (stealCardNum[currentPlayer] <= 0) {
-                            turnSwitchBtn.setEnabled(true);
-                            showCardHitbox = false;
+                        //check if that was a valid card removal
+                        if (removeSuccess) {
+                            stealCardNum[currentPlayer]--; //count the removal
+
+                            //check if the player is done now
+                            if (stealCardNum[currentPlayer] <= 0) {
+                                turnSwitchBtn.setEnabled(true);
+                                showCardHitbox = false;
+                            }
                         }
 
                         updateBuildButtons();
@@ -2197,7 +2202,7 @@ public class GamePanel extends javax.swing.JPanel {
                     }
 
                     //draw one each of the 5 card types
-                    //draw clay
+                    //draw the card image
                     g2d.drawImage(image,
                             cardStackXPositions[i], //align the card to the left edge of the water ring 
                             (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
@@ -2205,17 +2210,30 @@ public class GamePanel extends javax.swing.JPanel {
                             getImgHeight(image),
                             null);
 
-                    //draw clay num
+                    //draw the number of cards of that type
                     g2d.drawString("x" + cardTypeCount[i],
                             cardStackXPositions[i] + getImgWidth(image), //align the number to the right edge of the card
                             (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
+
+                    //draw the hitbox
+                    if (showCardHitbox && cardTypeCount[i] > 0) {
+                        g2d.setColor(Color.green);
+                        Stroke tempStroke = g2d.getStroke();
+                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                        g2d.drawRect(cardStackXPositions[i],
+                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                getImgWidth(image),
+                                getImgHeight(image));
+                        g2d.setStroke(tempStroke);
+                        g2d.setColor(new java.awt.Color(255, 255, 225));
+                    }
 
                 }
 
                 //restore the old font
                 g2d.setFont(tempFont);
 
-            } else {
+            } else { //if the cards would NOT go off the screen
                 drawCardStacks[currentPlayer] = false;
 
                 // Draw the player's cards
