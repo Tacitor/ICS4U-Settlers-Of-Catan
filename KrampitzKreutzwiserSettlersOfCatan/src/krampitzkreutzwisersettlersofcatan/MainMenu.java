@@ -165,7 +165,7 @@ public class MainMenu extends javax.swing.JFrame {
                 gameJFrame.resetGamePanel();
                 
                 //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSaveV2")) {
+                if (!scanner.nextLine().equals("SettlersOfCatanSaveV3")) {
                     JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V2 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
                 } else { //if it is a real save file
                     gameJFrame.loadFromFile(saveFileLoader);

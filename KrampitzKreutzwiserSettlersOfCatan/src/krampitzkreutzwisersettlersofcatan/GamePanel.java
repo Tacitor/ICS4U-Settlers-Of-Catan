@@ -426,7 +426,7 @@ public class GamePanel extends javax.swing.JPanel {
         //set the selected address
         if (userSaveSelection == JFileChooser.APPROVE_OPTION) {
             saveAddress = saveFileChooser.getSelectedFile().getPath();
-            System.out.println(saveAddress);
+            //System.out.println(saveAddress);
             //save the game and only close if it is successful
             if (save()) {
 
@@ -1007,7 +1007,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean writeToFile(String writeAdress) throws FileNotFoundException {
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV2"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV3"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1018,6 +1018,10 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(currentPlayer);
             saveFile.println("inSetup:");
             saveFile.println(inSetup);
+            saveFile.println("setupRoundsLeft:");
+            saveFile.println(setupRoundsLeft);
+            saveFile.println("newestSetupSettlmentRefNum:");
+            saveFile.println(newestSetupSettlment.getRefNum());
             saveFile.println("playerSetupRoadsLeft:");
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
@@ -1105,7 +1109,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV2")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV3")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1142,6 +1146,20 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("inSetup:")) {
                 inSetup = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
+            } else {
+                throwLoadError();
+            }
+            
+            if (scanner.nextLine().equals("setupRoundsLeft:")) {
+                setupRoundsLeft = Integer.parseInt(scanner.nextLine());
+                //System.out.println("YuppersSetupRounds");
+            } else {
+                throwLoadError();
+            }
+            
+            if (scanner.nextLine().equals("newestSetupSettlmentRefNum:")) {
+                newestSetupSettlment = settlementNodes.get(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("YuppersNewestSetupSettlment");
             } else {
                 throwLoadError();
             }
@@ -2461,7 +2479,7 @@ public class GamePanel extends javax.swing.JPanel {
                 settlementLinkToHex3[i] = fileReader.nextInt();
 
                 // Add an unlinked settlement
-                settlementNodes.add(new NodeSettlement(settlementX, settlementY));
+                settlementNodes.add(new NodeSettlement(settlementX, settlementY, i));
 
                 // Blank line is skipped by int reader
             }

@@ -12,6 +12,7 @@ public class NodeSettlement extends WorldObject {
     // Attributes
     private int player;
     private boolean large;
+    private int refNum; //the index number this will have in the ArrayList
     // References to the connected roads
     private NodeRoad road1;
     private NodeRoad road2;
@@ -42,14 +43,16 @@ public class NodeSettlement extends WorldObject {
      * Constructor to create a new settlement node at a specific position
      * @param xPos The new node's X position
      * @param yPos The new node's Y position
+     * @param refNum
      */
-    public NodeSettlement(int xPos, int yPos) {
+    public NodeSettlement(int xPos, int yPos, int refNum) {
         // Initialize the node
         this(); // With constructor chaining
         
         // Set the position to the passed values
         this.xPos = xPos;
         this.yPos = yPos;
+        this.refNum = refNum;
     }
     
     /**
@@ -59,10 +62,11 @@ public class NodeSettlement extends WorldObject {
      * @param road1 One of the connected roads
      * @param road2 Another connected road
      * @param road3 A third connected road
+     * @param refNum
      */
-    public NodeSettlement(int xPos, int yPos, NodeRoad road1, NodeRoad road2, NodeRoad road3) {
+    public NodeSettlement(int xPos, int yPos, NodeRoad road1, NodeRoad road2, NodeRoad road3, int refNum) {
         // Initialize the node
-        this(xPos, yPos); // With constructor chaining
+        this(xPos, yPos, refNum); // With constructor chaining
         
         // Set the road references
         this.road1 = road1;
@@ -77,10 +81,11 @@ public class NodeSettlement extends WorldObject {
      * @param hex1 One of the adjacent tiles
      * @param hex2 Another tiles
      * @param hex3 A third tiles
+     * @param refNum
      */
-    public NodeSettlement(int xPos, int yPos, Tile hex1, Tile hex2, Tile hex3) {
+    public NodeSettlement(int xPos, int yPos, Tile hex1, Tile hex2, Tile hex3, int refNum) {
         // Initialize the node
-        this(xPos, yPos); // With constructor chaining
+        this(xPos, yPos, refNum); // With constructor chaining
         
         // Set the tile references
         this.hex1 = hex1;
@@ -98,11 +103,12 @@ public class NodeSettlement extends WorldObject {
      * @param hex1 One of the adjacent tiles
      * @param hex2 Another tiles
      * @param hex3 A third tiles
+     * @param refNum
      */
     public NodeSettlement(int xPos, int yPos, NodeRoad road1, NodeRoad road2, 
-            NodeRoad road3, Tile hex1, Tile hex2, Tile hex3) {
+            NodeRoad road3, Tile hex1, Tile hex2, Tile hex3, int refNum) {
         // Initialize the node and set road references
-        this(xPos, yPos, road1, road2, road3); // With constructor chaining
+        this(xPos, yPos, road1, road2, road3, refNum); // With constructor chaining
         
         // Set the tile references
         this.hex1 = hex1;
@@ -142,6 +148,22 @@ public class NodeSettlement extends WorldObject {
      */
     public void setLarge(boolean isLarge) {
         this.large = isLarge;
+    }
+    
+    /**
+     * Get the reference number of the settlement. This is the spot in the ArrayList it will occupy
+     * @return 
+     */
+    public int getRefNum() {
+        return refNum;
+    }
+    
+    /**
+     * Set the reference number of the settlement. This is the spot in the ArrayList it will occupy
+     * @param refNum 
+     */
+    public void setRefNum(int refNum) {
+        this.refNum = refNum;
     }
     
     /**
@@ -258,7 +280,7 @@ public class NodeSettlement extends WorldObject {
     @Override
     public NodeSettlement clone() {    
         // Create a copy of the settlement with the same attributes
-        NodeSettlement copy = new NodeSettlement(xPos, yPos, road1, road2, road3, hex1, hex2, hex3);
+        NodeSettlement copy = new NodeSettlement(xPos, yPos, road1, road2, road3, hex1, hex2, hex3, refNum);
         // Set the player id
         copy.player = player;
         // Set the size
