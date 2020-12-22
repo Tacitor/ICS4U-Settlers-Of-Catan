@@ -48,6 +48,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
 
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
+    private int setupRoundsLeft; //the number of setup rounds left. A normal game will start with 2
     private boolean inbetweenTurns; // true during the period where the game is waiting for the next player to start their turn
     private boolean thiefIsStealing; //true when any player has more than the threshold of allowed cards and must select cards to remove
     private boolean thiefJustFinished; //true if the theif had just finished stealing
@@ -113,6 +114,7 @@ public class GamePanel extends javax.swing.JPanel {
         settlementNodes = new ArrayList(); // Init the settlement node array list
         roadNodes = new ArrayList(); // Init the road node array list
         inSetup = true;
+        setupRoundsLeft = 2; //start up with two setup rounds
         inbetweenTurns = false;
         thiefIsStealing = false;
         thiefJustFinished = false;
@@ -137,8 +139,8 @@ public class GamePanel extends javax.swing.JPanel {
         showRoadHitbox = false;
         showSettlementHitbox = false;
         showCardHitbox = false;
-        playerSetupRoadsLeft = 2;
-        playerSetupSettlementLeft = 2;
+        playerSetupRoadsLeft = 1;
+        playerSetupSettlementLeft = 1;
         victoryPointsToWin = 10;
         thiefMoveCounter = 0;
 
@@ -300,7 +302,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
-        instructionLbl.setText("Place two roads and two small settlements each to start.");
+        instructionLbl.setText("Place two roads and two small settlements each to start. Only one of each per setup round.");
 
         buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         buildMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
@@ -374,7 +376,7 @@ public class GamePanel extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap(1409, Short.MAX_VALUE))
+                        .addContainerGap(1157, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -535,7 +537,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //update the instructions
             if (inSetup) {
-                instructionLbl.setText("Place two roads and two small settlements each to start.");
+                instructionLbl.setText("Place two roads and two small settlements each to start. Only one of each per setup round.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
 
@@ -617,9 +619,10 @@ public class GamePanel extends javax.swing.JPanel {
             nextPlayer();
 
             // If the game is still in setup, give the next player roads to place
+            //set them to 1 to limit the amount they can build in each setup round
             if (inSetup) {
-                playerSetupRoadsLeft = 2;
-                playerSetupSettlementLeft = 2;
+                playerSetupRoadsLeft = 1;
+                playerSetupSettlementLeft = 1;
             }
 
             // If the game was waiting for the user to build
@@ -2567,11 +2570,18 @@ public class GamePanel extends javax.swing.JPanel {
         if (currentPlayer > playerCount) {
             currentPlayer = 1;
             // If the game was in setup, all of the turns have ended now and the normal game can begin
+            //therefore count down a setup round to get closer to that normal game
             if (inSetup) {
-                inSetup = false;
-                // If enabled. give everyone their starting resources
-                if (giveStartingResources) {
-                    collectMaterials(0); // 0 makes it collect everything possible
+                //count the completion of a setup round
+                setupRoundsLeft--;
+                
+                //check if all setup rounds have been played
+                if (setupRoundsLeft < 1) {
+                    inSetup = false;
+                    // If enabled. give everyone their starting resources
+                    if (giveStartingResources) {
+                        collectMaterials(0); // 0 makes it collect everything possible
+                    }
                 }
             }
         }
