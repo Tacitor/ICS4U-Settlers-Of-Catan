@@ -49,6 +49,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
     private int setupRoundsLeft; //the number of setup rounds left. A normal game will start with 2
+    private NodeSettlement newestSetupSettlment; //the most recent settlement to be build. Used to check is road placement is valid in setup and next to the just placed house.
     private boolean inbetweenTurns; // true during the period where the game is waiting for the next player to start their turn
     private boolean thiefIsStealing; //true when any player has more than the threshold of allowed cards and must select cards to remove
     private boolean thiefJustFinished; //true if the theif had just finished stealing
@@ -115,6 +116,7 @@ public class GamePanel extends javax.swing.JPanel {
         roadNodes = new ArrayList(); // Init the road node array list
         inSetup = true;
         setupRoundsLeft = 2; //start up with two setup rounds
+        newestSetupSettlment = null; //there has not been a settlement build yet
         inbetweenTurns = false;
         thiefIsStealing = false;
         thiefJustFinished = false;
@@ -716,10 +718,28 @@ public class GamePanel extends javax.swing.JPanel {
                         if (roadNodes.get(i).getPlayer() == 0) {
                             //check what mode the game is in 
                             if (inSetup && playerSetupRoadsLeft > 0) {
-                                roadNodes.get(i).setPlayer(currentPlayer);
-                                playerSetupRoadsLeft--;
-                                // Update thwe build buttons to relfect the remaining setup buildings
-                                updateBuildButtons();
+
+                                //check if the player has placed a settlement yet
+                                if (newestSetupSettlment != null) {
+
+                                    //check that the road is next to the just build settlement
+                                    if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
+                                            || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
+                                            || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
+
+                                        roadNodes.get(i).setPlayer(currentPlayer);
+                                        playerSetupRoadsLeft--;
+                                        // Update thwe build buttons to relfect the remaining setup buildings
+                                        updateBuildButtons();
+                                    } else { //display the error to the user
+                                        instructionLbl.setText("Sorry but that is not a valid location.");
+                                        subInstructionLbl.setText("Try building next to the settlement just built.");
+                                    }
+                                } else { //display the error to the user
+                                    instructionLbl.setText("Sorry but you must build a new settlement first.");
+                                        subInstructionLbl.setText("Try building the road after.");
+                                }
+
                             } // If the real game is in progress and the player can build there
                             else if (canBuildRoad(roadNodes.get(i))) {
                                 // The card check has already been made, and the user has the right cards
@@ -791,6 +811,9 @@ public class GamePanel extends javax.swing.JPanel {
 
                                 // Set the settlement's player to the current player
                                 settlementNodes.get(i).setPlayer(currentPlayer);
+
+                                //save the settelment just built
+                                newestSetupSettlment = settlementNodes.get(i);
 
                                 // Increment the player's victory point counter
                                 victoryPoints[currentPlayer]++;
@@ -2564,7 +2587,8 @@ public class GamePanel extends javax.swing.JPanel {
      * first player
      */
     private void nextPlayer() {
-        currentPlayer++;
+        currentPlayer++; //switch to the next player
+        newestSetupSettlment = null; //remove the most recent built house as the turn just changed
 
         // And go back to player 1 if the number exceeds the total number of players
         if (currentPlayer > playerCount) {
@@ -2574,7 +2598,7 @@ public class GamePanel extends javax.swing.JPanel {
             if (inSetup) {
                 //count the completion of a setup round
                 setupRoundsLeft--;
-                
+
                 //check if all setup rounds have been played
                 if (setupRoundsLeft < 1) {
                     inSetup = false;
