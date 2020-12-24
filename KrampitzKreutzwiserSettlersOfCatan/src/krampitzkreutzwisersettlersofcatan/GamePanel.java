@@ -132,6 +132,7 @@ public class GamePanel extends javax.swing.JPanel {
         drawCardStacks = new boolean[playerCount + 1];//create the array of how to draw the cards for each player
         //the +1 allows methods to use player IDs directly without subtracting 1
         totalCardsCollected = new int[5];
+        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
         cardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
@@ -737,7 +738,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     }
                                 } else { //display the error to the user
                                     instructionLbl.setText("Sorry but you must build a new settlement first.");
-                                        subInstructionLbl.setText("Try building the road after.");
+                                    subInstructionLbl.setText("Try building the road after.");
                                 }
 
                             } // If the real game is in progress and the player can build there
@@ -1149,14 +1150,14 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("setupRoundsLeft:")) {
                 setupRoundsLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("YuppersSetupRounds");
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("newestSetupSettlmentRefNum:")) {
                 newestSetupSettlment = settlementNodes.get(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("YuppersNewestSetupSettlment");
@@ -1462,7 +1463,7 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementSRBtn.setEnabled(canBuildSettlement); // Settlements
         buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
 
-        //update the colours
+        //update the colours of the radio buttons to reflect weather or not they are enabled. The stoped being done automatically when the default forground colour was changed.
         if (canBuildRoad) {
             buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
         } else {
@@ -1956,7 +1957,7 @@ public class GamePanel extends javax.swing.JPanel {
         //old title. Replaced by JLabel
         //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
 
-        //draw the backgrund
+        //draw the background
         g2d.drawImage(WOOD_BACKGROUND,
                 0,
                 0,
@@ -2259,7 +2260,7 @@ public class GamePanel extends javax.swing.JPanel {
                             cardStackXPositions[i] + getImgWidth(image), //align the number to the right edge of the card
                             (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
 
-                    //draw the hitbox
+                    //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
                     if (showCardHitbox && cardTypeCount[i] > 0) {
                         g2d.setColor(Color.green);
                         Stroke tempStroke = g2d.getStroke();
