@@ -48,12 +48,15 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
 
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
+    private int setupRoundsLeft; //the number of setup rounds left. A normal game will start with 2
+    private NodeSettlement newestSetupSettlment; //the most recent settlement to be build. Used to check is road placement is valid in setup and next to the just placed house.
     private boolean inbetweenTurns; // true during the period where the game is waiting for the next player to start their turn
     private boolean thiefIsStealing; //true when any player has more than the threshold of allowed cards and must select cards to remove
     private boolean thiefJustFinished; //true if the theif had just finished stealing
     private boolean thiefJustStarted; //true if the thief was just rolled
     private boolean showRoadHitbox;
     private boolean showCardHitbox; //used for picking which cards the thief steals
+    private boolean[] drawCardStacks; //controls the mode cards are drown in. Stacked or fully layout
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
@@ -62,6 +65,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final int victoryPoints[];
     private final int totalCardsCollected[];
+    private final int[] cardStackXPositions; //the x positions to draw cardss when in stacked mode
     private int[] stealCardNum; //the number of cards to steal from each player
     private int cardStartPosition; //the xPos to start drawing cards at 
     private int victoryPointsToWin;
@@ -78,20 +82,20 @@ public class GamePanel extends javax.swing.JPanel {
     private int playerSetupSettlementLeft; //number of settlements to place
 
     //var used for scaling
-    private int tileYOffset;
-    private int tileXOffset;
-    private double scaleFactor;
-    private int newTileWidth;
-    private int newTileHeight;
-    private int threeDTileOffset;
+    private final int tileYOffset;
+    private final int tileXOffset;
+    private final double scaleFactor;
+    private final int newTileWidth;
+    private final int newTileHeight;
+    private final int threeDTileOffset;
 
     //new dice roll lable
     private String diceRollVal;
 
     //fonts
-    private Font timesNewRoman;
-    private Font tahoma;
-    private Font dialog;
+    private final Font timesNewRoman;
+    private final Font tahoma;
+    private final Font dialog;
 
     //private Graphics awtGraphics;
     /**
@@ -111,6 +115,8 @@ public class GamePanel extends javax.swing.JPanel {
         settlementNodes = new ArrayList(); // Init the settlement node array list
         roadNodes = new ArrayList(); // Init the road node array list
         inSetup = true;
+        setupRoundsLeft = 2; //start up with two setup rounds
+        newestSetupSettlment = null; //there has not been a settlement build yet
         inbetweenTurns = false;
         thiefIsStealing = false;
         thiefJustFinished = false;
@@ -123,13 +129,21 @@ public class GamePanel extends javax.swing.JPanel {
         // the +1 allows methods to use player IDs directly without subtracting 1
         stealCardNum = new int[playerCount + 1]; //create the array of how many cards need to be stolen
         //the +1 allows methods to use player IDs directly without subtracting 1
+        drawCardStacks = new boolean[playerCount + 1];//create the array of how to draw the cards for each player
+        //the +1 allows methods to use player IDs directly without subtracting 1
         totalCardsCollected = new int[5];
+        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
+        cardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
+            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
+            superFrame.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
+            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
+            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
         buildingObject = 0;
         showRoadHitbox = false;
         showSettlementHitbox = false;
         showCardHitbox = false;
-        playerSetupRoadsLeft = 2;
-        playerSetupSettlementLeft = 2;
+        playerSetupRoadsLeft = 1;
+        playerSetupSettlementLeft = 1;
         victoryPointsToWin = 10;
         thiefMoveCounter = 0;
 
@@ -141,9 +155,11 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Fill the list of card ArrayLists with new ArrayLists and intialize
         // the victory point array (Both are the same size and can share a loop)
+        // and drawCardStacks to set up all to draw the full layout
         for (int i = 0; i < cards.length; i++) {
             cards[i] = new ArrayList(); // Cards ArrayList
             victoryPoints[i] = 0; // Victory point counter
+            drawCardStacks[i] = false;
         }
 
         // Intialize the card counter array
@@ -265,6 +281,7 @@ public class GamePanel extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1920, 1080));
 
+        backBtn.setBackground(new java.awt.Color(102, 62, 38));
         backBtn.setText("< Save and Exit");
         backBtn.setFocusable(false);
         backBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -273,6 +290,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
         });
 
+        turnSwitchBtn.setBackground(new java.awt.Color(102, 62, 38));
         turnSwitchBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         turnSwitchBtn.setText("End Current Player's Turn");
         turnSwitchBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -282,29 +300,40 @@ public class GamePanel extends javax.swing.JPanel {
         });
 
         instructionPromptLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        instructionPromptLbl.setForeground(new java.awt.Color(255, 255, 225));
         instructionPromptLbl.setText("Instructions:");
 
         instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        instructionLbl.setText("Place two roads and two small settlements each to start.");
+        instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
+        instructionLbl.setText("Place two roads and two small settlements each to start. Only one of each per setup round.");
 
         buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        buildMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
         buildMenuLbl.setText("Build Menu:");
 
         buildBtnGroup.add(buildSettlementSRBtn);
         buildSettlementSRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        buildSettlementSRBtn.setForeground(new java.awt.Color(255, 255, 225));
         buildSettlementSRBtn.setText("Small Settlement");
+        buildSettlementSRBtn.setOpaque(false);
 
         buildBtnGroup.add(buildSettlementLRBtn);
         buildSettlementLRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        buildSettlementLRBtn.setForeground(new java.awt.Color(255, 255, 225));
         buildSettlementLRBtn.setText("Large Settlement");
+        buildSettlementLRBtn.setOpaque(false);
 
         buildBtnGroup.add(buildRoadRBtn);
         buildRoadRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
         buildRoadRBtn.setSelected(true);
         buildRoadRBtn.setText("Road");
+        buildRoadRBtn.setOpaque(false);
 
+        buildBtn.setBackground(new java.awt.Color(102, 62, 38));
         buildBtn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         buildBtn.setText("Build");
+        buildBtn.setToolTipText("");
         buildBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buildBtnActionPerformed(evt);
@@ -312,8 +341,10 @@ public class GamePanel extends javax.swing.JPanel {
         });
 
         subInstructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        subInstructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
+        backNoSaveBtn.setBackground(new java.awt.Color(102, 62, 38));
         backNoSaveBtn.setText("< Exit without saving");
         backNoSaveBtn.setFocusable(false);
         backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -323,6 +354,7 @@ public class GamePanel extends javax.swing.JPanel {
         });
 
         titleLbl.setFont(new java.awt.Font("Times New Roman", 1, 40)); // NOI18N
+        titleLbl.setForeground(new java.awt.Color(255, 255, 225));
         titleLbl.setText("Settlers of Catan");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -347,7 +379,7 @@ public class GamePanel extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap(1409, Short.MAX_VALUE))
+                        .addContainerGap(1157, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -395,7 +427,7 @@ public class GamePanel extends javax.swing.JPanel {
         //set the selected address
         if (userSaveSelection == JFileChooser.APPROVE_OPTION) {
             saveAddress = saveFileChooser.getSelectedFile().getPath();
-            System.out.println(saveAddress);
+            //System.out.println(saveAddress);
             //save the game and only close if it is successful
             if (save()) {
 
@@ -508,7 +540,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //update the instructions
             if (inSetup) {
-                instructionLbl.setText("Place two roads and two small settlements each to start.");
+                instructionLbl.setText("Place two roads and two small settlements each to start. Only one of each per setup round.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
 
@@ -573,7 +605,7 @@ public class GamePanel extends javax.swing.JPanel {
             thiefJustFinished = false;
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             //reset the colour
-            instructionLbl.setForeground(Color.black);
+            instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
@@ -590,9 +622,10 @@ public class GamePanel extends javax.swing.JPanel {
             nextPlayer();
 
             // If the game is still in setup, give the next player roads to place
+            //set them to 1 to limit the amount they can build in each setup round
             if (inSetup) {
-                playerSetupRoadsLeft = 2;
-                playerSetupSettlementLeft = 2;
+                playerSetupRoadsLeft = 1;
+                playerSetupSettlementLeft = 1;
             }
 
             // If the game was waiting for the user to build
@@ -686,10 +719,28 @@ public class GamePanel extends javax.swing.JPanel {
                         if (roadNodes.get(i).getPlayer() == 0) {
                             //check what mode the game is in 
                             if (inSetup && playerSetupRoadsLeft > 0) {
-                                roadNodes.get(i).setPlayer(currentPlayer);
-                                playerSetupRoadsLeft--;
-                                // Update thwe build buttons to relfect the remaining setup buildings
-                                updateBuildButtons();
+
+                                //check if the player has placed a settlement yet
+                                if (newestSetupSettlment != null) {
+
+                                    //check that the road is next to the just build settlement
+                                    if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
+                                            || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
+                                            || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
+
+                                        roadNodes.get(i).setPlayer(currentPlayer);
+                                        playerSetupRoadsLeft--;
+                                        // Update thwe build buttons to relfect the remaining setup buildings
+                                        updateBuildButtons();
+                                    } else { //display the error to the user
+                                        instructionLbl.setText("Sorry but that is not a valid location.");
+                                        subInstructionLbl.setText("Try building next to the settlement just built.");
+                                    }
+                                } else { //display the error to the user
+                                    instructionLbl.setText("Sorry but you must build a new settlement first.");
+                                    subInstructionLbl.setText("Try building the road after.");
+                                }
+
                             } // If the real game is in progress and the player can build there
                             else if (canBuildRoad(roadNodes.get(i))) {
                                 // The card check has already been made, and the user has the right cards
@@ -761,6 +812,9 @@ public class GamePanel extends javax.swing.JPanel {
 
                                 // Set the settlement's player to the current player
                                 settlementNodes.get(i).setPlayer(currentPlayer);
+
+                                //save the settelment just built
+                                newestSetupSettlment = settlementNodes.get(i);
 
                                 // Increment the player's victory point counter
                                 victoryPoints[currentPlayer]++;
@@ -842,32 +896,70 @@ public class GamePanel extends javax.swing.JPanel {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
         } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0) { //check if the user clicked to select a card
-            //check if the user clicked on any card
-            for (int i = 0; i < cards[currentPlayer].size(); i++) {
-                //get the x and y positions for that card
-                int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
-                int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
 
-                //check if there was a click on a card
-                if (event.getX() > cardXPos
-                        && event.getY() > cardYPos
-                        && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
-                        && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
-                    //debug click detection
-                    //System.out.println("Card Clicked!");
-                    cards[currentPlayer].remove(i); //remove the card
-                    stealCardNum[currentPlayer]--; //count the removal
+            //get the y position for the cards
+            int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
 
-                    //check if the player is done now
-                    if (stealCardNum[currentPlayer] <= 0) {
-                        turnSwitchBtn.setEnabled(true);
-                        showCardHitbox = false;
+            //check what mode the card drawing is in
+            if (drawCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
+
+                //loop though the 5 stacks
+                for (int i = 0; i < 5; i++) {
+                    //check for a click
+                    if (event.getX() > cardStackXPositions[i]
+                            && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
+                            && event.getY() > cardYPos
+                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                        //debug click detection
+                        //System.out.println("Card Clicked!");
+                        boolean removeSuccess; //crate var to save if the removal was succesful
+                        removeSuccess = cards[currentPlayer].remove(new Integer(i + 1)); //remove the card
+
+                        //check if that was a valid card removal
+                        if (removeSuccess) {
+                            stealCardNum[currentPlayer]--; //count the removal
+
+                            //check if the player is done now
+                            if (stealCardNum[currentPlayer] <= 0) {
+                                turnSwitchBtn.setEnabled(true);
+                                showCardHitbox = false;
+                            }
+                        }
+
+                        updateBuildButtons();
+                        repaint();
                     }
-
-                    updateBuildButtons();
-                    repaint();
-
                 }
+
+            } else { //check for a click on a card in the full layout mode
+
+                //check if the user clicked on any card
+                for (int i = 0; i < cards[currentPlayer].size(); i++) {
+                    //get the x position for that card
+                    int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
+
+                    //check if there was a click on a card
+                    if (event.getX() > cardXPos
+                            && event.getY() > cardYPos
+                            && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
+                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                        //debug click detection
+                        //System.out.println("Card Clicked!");
+                        cards[currentPlayer].remove(i); //remove the card
+                        stealCardNum[currentPlayer]--; //count the removal
+
+                        //check if the player is done now
+                        if (stealCardNum[currentPlayer] <= 0) {
+                            turnSwitchBtn.setEnabled(true);
+                            showCardHitbox = false;
+                        }
+
+                        updateBuildButtons();
+                        repaint();
+
+                    }
+                }
+
             }
 
         }
@@ -916,7 +1008,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean writeToFile(String writeAdress) throws FileNotFoundException {
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV2"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV3"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -927,6 +1019,10 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(currentPlayer);
             saveFile.println("inSetup:");
             saveFile.println(inSetup);
+            saveFile.println("setupRoundsLeft:");
+            saveFile.println(setupRoundsLeft);
+            saveFile.println("newestSetupSettlmentRefNum:");
+            saveFile.println(newestSetupSettlment.getRefNum());
             saveFile.println("playerSetupRoadsLeft:");
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
@@ -1014,7 +1110,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV2")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV3")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1051,6 +1147,20 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("inSetup:")) {
                 inSetup = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("setupRoundsLeft:")) {
+                setupRoundsLeft = Integer.parseInt(scanner.nextLine());
+                //System.out.println("YuppersSetupRounds");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("newestSetupSettlmentRefNum:")) {
+                newestSetupSettlment = settlementNodes.get(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("YuppersNewestSetupSettlment");
             } else {
                 throwLoadError();
             }
@@ -1267,7 +1377,7 @@ public class GamePanel extends javax.swing.JPanel {
     private void updateBuildButtons() {
 
         //reset the colour
-        instructionLbl.setForeground(Color.black);
+        instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
 
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
@@ -1352,6 +1462,25 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(canBuildRoad);              // Roads
         buildSettlementSRBtn.setEnabled(canBuildSettlement); // Settlements
         buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
+
+        //update the colours of the radio buttons to reflect weather or not they are enabled. The stoped being done automatically when the default forground colour was changed.
+        if (canBuildRoad) {
+            buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
+        } else {
+            buildRoadRBtn.setForeground(new java.awt.Color(30, 30, 30));
+        }
+
+        if (canBuildSettlement) {
+            buildSettlementSRBtn.setForeground(new java.awt.Color(255, 255, 225));
+        } else {
+            buildSettlementSRBtn.setForeground(new java.awt.Color(30, 30, 30));
+        }
+
+        if (canBuildCity) {
+            buildSettlementLRBtn.setForeground(new java.awt.Color(255, 255, 225));
+        } else {
+            buildSettlementLRBtn.setForeground(new java.awt.Color(30, 30, 30));
+        }
 
         // If the button selected before this update is still enabled, select it
         // instead of the selection made in the if/else block above
@@ -1828,9 +1957,20 @@ public class GamePanel extends javax.swing.JPanel {
         //old title. Replaced by JLabel
         //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
 
+        //draw the background
+        g2d.drawImage(WOOD_BACKGROUND,
+                0,
+                0,
+                getImgWidth(WOOD_BACKGROUND),
+                getImgHeight(WOOD_BACKGROUND), null);
+
         //draw the ring of water
         //also scale it to the current monitor. Coords are to center it relative to the display center
-        g2d.drawImage(WATER_RING, superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2, superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2, getImgWidth(WATER_RING), getImgHeight(WATER_RING), null);
+        g2d.drawImage(WATER_RING,
+                superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
+                superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2,
+                getImgWidth(WATER_RING),
+                getImgHeight(WATER_RING), null);
 
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
@@ -1931,6 +2071,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //set the font for the dice roll indecator
         g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
+        g2d.setColor(new java.awt.Color(255, 255, 225));
         //show what number the user rolled
         g2d.drawString("You rolled a: " + diceRollVal,
                 superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor),
@@ -2060,52 +2201,135 @@ public class GamePanel extends javax.swing.JPanel {
             int listSize = cards[currentPlayer].size();
             // Calculate where the first card must go to center the list
             cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
-            // Draw the player's cards
-            // Reuse the image variable
-            int type;
-            for (int i = 0; i < listSize; i++) {
-                // Get the card type
-                type = cards[currentPlayer].get(i);
-                // Get the image for that card
-                switch (type) {
-                    case 1: // Clay card
-                        image = CARD_CLAY;
-                        break;
-                    case 2: // Word card
-                        image = CARD_WOOD;
-                        break;
-                    case 3: // Wheat card
-                        image = CARD_WHEAT;
-                        break;
-                    case 4: // Sheep card
-                        image = CARD_SHEEP;
-                        break;
-                    case 5: // 5: Ore card
-                        image = CARD_ORE;
-                        break;
-                    default: //error "card"
-                        image = WATER_RING; //this is a joke. The ring of water is infact NOT a card
-                        break;
-                }
-                // Draw the card
-                g2d.drawImage(image,
-                        (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
-                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
-                        getImgWidth(image),
-                        getImgHeight(image),
-                        null);
 
-                //draw the hitbox
-                if (showCardHitbox) {
-                    g2d.setColor(Color.green);
-                    Stroke tempStroke = g2d.getStroke();
-                    g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                    g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+            //check if the cards would go off the screen
+            if ((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(CARD_CLAY)))) {
+                drawCardStacks[currentPlayer] = true;
+
+                //get the number of each card type the player has
+                //setup an array to hold the results
+                int[] cardTypeCount = new int[5];
+
+                //loop thorugh and populate the array
+                for (int i = 0; i < listSize; i++) {
+                    cardTypeCount[cards[currentPlayer].get(i) - 1]++;
+                }
+
+                //draw the number of cards the payer has of each type
+                //change the font
+                Font tempFont = g2d.getFont(); //save the current stroke
+                g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor))); //overwrite it      
+                g2d.setColor(new java.awt.Color(255, 255, 225));
+
+                //loop through and draw the stacked cards
+                for (int i = 0; i < 5; i++) {
+
+                    //get the image for that card
+                    switch (i) {
+                        case 0: // Clay card
+                            image = CARD_CLAY;
+                            break;
+                        case 1: // Word card
+                            image = CARD_WOOD;
+                            break;
+                        case 2: // Wheat card
+                            image = CARD_WHEAT;
+                            break;
+                        case 3: // Sheep card
+                            image = CARD_SHEEP;
+                            break;
+                        case 4: // 5: Ore card
+                            image = CARD_ORE;
+                            break;
+                        default: //error "card"
+                            image = WATER_RING; //this is a joke. The ring of water is infact NOT a card
+                            break;
+                    }
+
+                    //draw one each of the 5 card types
+                    //draw the card image
+                    g2d.drawImage(image,
+                            cardStackXPositions[i], //align the card to the left edge of the water ring 
                             (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
                             getImgWidth(image),
-                            getImgHeight(image));
-                    g2d.setStroke(tempStroke);
-                    g2d.setColor(Color.black);
+                            getImgHeight(image),
+                            null);
+
+                    //draw the number of cards of that type
+                    g2d.drawString("x" + cardTypeCount[i],
+                            cardStackXPositions[i] + getImgWidth(image), //align the number to the right edge of the card
+                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
+
+                    //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
+                    if (showCardHitbox && cardTypeCount[i] > 0) {
+                        g2d.setColor(Color.green);
+                        Stroke tempStroke = g2d.getStroke();
+                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                        g2d.drawRect(cardStackXPositions[i],
+                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                getImgWidth(image),
+                                getImgHeight(image));
+                        g2d.setStroke(tempStroke);
+                        g2d.setColor(new java.awt.Color(255, 255, 225));
+                    }
+
+                }
+
+                //restore the old font
+                g2d.setFont(tempFont);
+
+            } else { //if the cards would NOT go off the screen
+                drawCardStacks[currentPlayer] = false;
+
+                // Draw the player's cards
+                // Reuse the image variable
+                int type;
+                for (int i = 0; i < listSize; i++) {
+                    // Get the card type
+                    type = cards[currentPlayer].get(i);
+                    // Get the image for that card
+                    switch (type) {
+                        case 1: // Clay card
+                            image = CARD_CLAY;
+                            break;
+                        case 2: // Word card
+                            image = CARD_WOOD;
+                            break;
+                        case 3: // Wheat card
+                            image = CARD_WHEAT;
+                            break;
+                        case 4: // Sheep card
+                            image = CARD_SHEEP;
+                            break;
+                        case 5: // 5: Ore card
+                            image = CARD_ORE;
+                            break;
+                        default: //error "card"
+                            image = WATER_RING; //this is a joke. The ring of water is infact NOT a card
+                            break;
+                    }
+
+                    // Draw the card
+                    g2d.drawImage(image,
+                            (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                            getImgWidth(image),
+                            getImgHeight(image),
+                            null);
+
+                    //draw the hitbox
+                    if (showCardHitbox) {
+                        g2d.setColor(Color.green);
+                        Stroke tempStroke = g2d.getStroke();
+                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                        g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                getImgWidth(image),
+                                getImgHeight(image));
+                        g2d.setStroke(tempStroke);
+                        g2d.setColor(Color.black);
+                    }
+
                 }
             }
         }
@@ -2159,7 +2383,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param image
      * @return
      */
-    public int getImgWidth(Image image) {
+    public final int getImgWidth(Image image) {
 
         if (superFrame.getWidth() > superFrame.getHeight()) {
             return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
@@ -2256,7 +2480,7 @@ public class GamePanel extends javax.swing.JPanel {
                 settlementLinkToHex3[i] = fileReader.nextInt();
 
                 // Add an unlinked settlement
-                settlementNodes.add(new NodeSettlement(settlementX, settlementY));
+                settlementNodes.add(new NodeSettlement(settlementX, settlementY, i));
 
                 // Blank line is skipped by int reader
             }
@@ -2382,17 +2606,25 @@ public class GamePanel extends javax.swing.JPanel {
      * first player
      */
     private void nextPlayer() {
-        currentPlayer++;
+        currentPlayer++; //switch to the next player
+        newestSetupSettlment = null; //remove the most recent built house as the turn just changed
 
         // And go back to player 1 if the number exceeds the total number of players
         if (currentPlayer > playerCount) {
             currentPlayer = 1;
             // If the game was in setup, all of the turns have ended now and the normal game can begin
+            //therefore count down a setup round to get closer to that normal game
             if (inSetup) {
-                inSetup = false;
-                // If enabled. give everyone their starting resources
-                if (giveStartingResources) {
-                    collectMaterials(0); // 0 makes it collect everything possible
+                //count the completion of a setup round
+                setupRoundsLeft--;
+
+                //check if all setup rounds have been played
+                if (setupRoundsLeft < 1) {
+                    inSetup = false;
+                    // If enabled. give everyone their starting resources
+                    if (giveStartingResources) {
+                        collectMaterials(0); // 0 makes it collect everything possible
+                    }
                 }
             }
         }
