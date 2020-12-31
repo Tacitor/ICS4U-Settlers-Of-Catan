@@ -455,7 +455,7 @@ public class GamePanel extends javax.swing.JPanel {
             //append .catan if the user forgot to
             //first get where the .catan can be found in the String
             int catanExt = saveAddress.indexOf(".catan");
-            System.out.println(catanExt);
+            
             //check if it is there at all
             if (catanExt == -1) {
                 //since it is no where in the string at all append .catan
