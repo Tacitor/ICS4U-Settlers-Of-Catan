@@ -1047,9 +1047,9 @@ public class GamePanel extends javax.swing.JPanel {
      * @throws FileNotFoundException
      */
     private boolean writeToFile(String writeAdress) throws FileNotFoundException {
-        PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
+        
         try {
-
+            PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
             saveFile.println("SettlersOfCatanSaveV4"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
@@ -1143,7 +1143,6 @@ public class GamePanel extends javax.swing.JPanel {
             return true;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "The game is not able to save at this time. Invalid state\n", "Saving Error", JOptionPane.ERROR_MESSAGE);
-            saveFile.close();
             return false;
         }
     }
