@@ -27,7 +27,6 @@ import java.util.Scanner;
 import javax.swing.ButtonModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import static textures.ImageRef.*;
 
 /**
