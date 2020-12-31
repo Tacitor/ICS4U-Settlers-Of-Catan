@@ -16,6 +16,7 @@ import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import javax.swing.filechooser.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +27,7 @@ import java.util.Scanner;
 import javax.swing.ButtonModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import static textures.ImageRef.*;
 
 /**
@@ -151,6 +153,28 @@ public class GamePanel extends javax.swing.JPanel {
         saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.save";
         //initialize the filechooser
         saveFileChooser = new JFileChooser();
+        //create a filter for catan save files
+        FileFilter catanSaveFile = new FileFilter() { 
+            //add the description
+            public String getDescription() {
+                return "Catan Save File (*.catan)";
+            }
+            
+            //add the logic for the filter
+            public boolean accept(File f) {
+                //if it's a directory ignor it
+                if (f.isDirectory()) {
+                    return true;
+                } else { //if it's a file only show it if it's a .catan file
+                    return f.getName().toLowerCase().endsWith(".catan");
+                }
+            }
+        };
+        //add the filter
+        saveFileChooser.addChoosableFileFilter(catanSaveFile);
+        //set the new filter as the default
+        saveFileChooser.setFileFilter(catanSaveFile);
+        //set the name of the window
         saveFileChooser.setDialogTitle("Select a file to save Settlers of Catan to:");
 
         // Fill the list of card ArrayLists with new ArrayLists and intialize
@@ -426,7 +450,25 @@ public class GamePanel extends javax.swing.JPanel {
 
         //set the selected address
         if (userSaveSelection == JFileChooser.APPROVE_OPTION) {
+            //store the file path the user selected            
             saveAddress = saveFileChooser.getSelectedFile().getPath();
+            
+            //append .catan if the user forgot to
+            //first get where the .catan can be found in the String
+            int catanExt = saveAddress.indexOf(".catan");
+            System.out.println(catanExt);
+            //check if it is there at all
+            if (catanExt == -1) {
+                //since it is no where in the string at all append .catan
+                saveAddress += ".catan";
+            } else { //if there if .catan ANYwhere in the path check to see if it the actual extension
+                //if it is not
+                if ( !(saveAddress.substring(saveAddress.length() - 6).equals(".catan")) ) {
+                    saveAddress += ".catan"; //add the file type
+                }
+            }
+            
+            
             //System.out.println(saveAddress);
             //save the game and only close if it is successful
             if (save()) {
