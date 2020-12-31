@@ -1171,7 +1171,7 @@ public class GamePanel extends javax.swing.JPanel {
                 String newestSetupSettlmentRefNum = scanner.nextLine();
                 //check if it is null of an int
                 if (!newestSetupSettlmentRefNum.equals("null")) {
-                    newestSetupSettlment = settlementNodes.get(Integer.parseInt(scanner.nextLine()));
+                    newestSetupSettlment = settlementNodes.get(Integer.parseInt(newestSetupSettlmentRefNum));
                     //System.out.println("YuppersNewestSetupSettlment");
                 } else {
                     newestSetupSettlment = null;
