@@ -1006,9 +1006,10 @@ public class GamePanel extends javax.swing.JPanel {
      * @throws FileNotFoundException
      */
     private boolean writeToFile(String writeAdress) throws FileNotFoundException {
+        PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
         try {
-            PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV3"); //write a header to easily identify Settlers of Catan save files for loading
+
+            saveFile.println("SettlersOfCatanSaveV4"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1022,7 +1023,12 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println("setupRoundsLeft:");
             saveFile.println(setupRoundsLeft);
             saveFile.println("newestSetupSettlmentRefNum:");
-            saveFile.println(newestSetupSettlment.getRefNum());
+            //check if there is a newest settelment
+            if (newestSetupSettlment != null) {
+                saveFile.println(newestSetupSettlment.getRefNum());
+            } else {
+                saveFile.println("null");
+            }
             saveFile.println("playerSetupRoadsLeft:");
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
@@ -1095,6 +1101,8 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.close();
             return true;
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "The game is not able to save at this time. Invalid state\n", "Saving Error", JOptionPane.ERROR_MESSAGE);
+            saveFile.close();
             return false;
         }
     }
@@ -1110,7 +1118,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV3")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV4")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1159,8 +1167,15 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             if (scanner.nextLine().equals("newestSetupSettlmentRefNum:")) {
-                newestSetupSettlment = settlementNodes.get(Integer.parseInt(scanner.nextLine()));
-                //System.out.println("YuppersNewestSetupSettlment");
+                //read in the line
+                String newestSetupSettlmentRefNum = scanner.nextLine();
+                //check if it is null of an int
+                if (!newestSetupSettlmentRefNum.equals("null")) {
+                    newestSetupSettlment = settlementNodes.get(Integer.parseInt(scanner.nextLine()));
+                    //System.out.println("YuppersNewestSetupSettlment");
+                } else {
+                    newestSetupSettlment = null;
+                }
             } else {
                 throwLoadError();
             }
