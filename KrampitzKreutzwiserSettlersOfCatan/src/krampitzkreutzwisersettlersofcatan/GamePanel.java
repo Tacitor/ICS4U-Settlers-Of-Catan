@@ -16,6 +16,7 @@ import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import javax.swing.filechooser.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -151,6 +152,28 @@ public class GamePanel extends javax.swing.JPanel {
         saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.save";
         //initialize the filechooser
         saveFileChooser = new JFileChooser();
+        //create a filter for catan save files
+        FileFilter catanSaveFile = new FileFilter() { 
+            //add the description
+            public String getDescription() {
+                return "Catan Save File (*.catan)";
+            }
+            
+            //add the logic for the filter
+            public boolean accept(File f) {
+                //if it's a directory ignor it
+                if (f.isDirectory()) {
+                    return true;
+                } else { //if it's a file only show it if it's a .catan file
+                    return f.getName().toLowerCase().endsWith(".catan");
+                }
+            }
+        };
+        //add the filter
+        saveFileChooser.addChoosableFileFilter(catanSaveFile);
+        //set the new filter as the default
+        saveFileChooser.setFileFilter(catanSaveFile);
+        //set the name of the window
         saveFileChooser.setDialogTitle("Select a file to save Settlers of Catan to:");
 
         // Fill the list of card ArrayLists with new ArrayLists and intialize
@@ -426,7 +449,25 @@ public class GamePanel extends javax.swing.JPanel {
 
         //set the selected address
         if (userSaveSelection == JFileChooser.APPROVE_OPTION) {
+            //store the file path the user selected            
             saveAddress = saveFileChooser.getSelectedFile().getPath();
+            
+            //append .catan if the user forgot to
+            //first get where the .catan can be found in the String
+            int catanExt = saveAddress.indexOf(".catan");
+            
+            //check if it is there at all
+            if (catanExt == -1) {
+                //since it is no where in the string at all append .catan
+                saveAddress += ".catan";
+            } else { //if there if .catan ANYwhere in the path check to see if it the actual extension
+                //if it is not
+                if ( !(saveAddress.substring(saveAddress.length() - 6).equals(".catan")) ) {
+                    saveAddress += ".catan"; //add the file type
+                }
+            }
+            
+            
             //System.out.println(saveAddress);
             //save the game and only close if it is successful
             if (save()) {
@@ -1006,9 +1047,10 @@ public class GamePanel extends javax.swing.JPanel {
      * @throws FileNotFoundException
      */
     private boolean writeToFile(String writeAdress) throws FileNotFoundException {
+        
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV3"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV4"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1022,7 +1064,12 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println("setupRoundsLeft:");
             saveFile.println(setupRoundsLeft);
             saveFile.println("newestSetupSettlmentRefNum:");
-            saveFile.println(newestSetupSettlment.getRefNum());
+            //check if there is a newest settelment
+            if (newestSetupSettlment != null) {
+                saveFile.println(newestSetupSettlment.getRefNum());
+            } else {
+                saveFile.println("null");
+            }
             saveFile.println("playerSetupRoadsLeft:");
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
@@ -1095,6 +1142,7 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.close();
             return true;
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "The game is not able to save at this time. Invalid state\n", "Saving Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
@@ -1110,7 +1158,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV3")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV4")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1159,8 +1207,15 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             if (scanner.nextLine().equals("newestSetupSettlmentRefNum:")) {
-                newestSetupSettlment = settlementNodes.get(Integer.parseInt(scanner.nextLine()));
-                //System.out.println("YuppersNewestSetupSettlment");
+                //read in the line
+                String newestSetupSettlmentRefNum = scanner.nextLine();
+                //check if it is null of an int
+                if (!newestSetupSettlmentRefNum.equals("null")) {
+                    newestSetupSettlment = settlementNodes.get(Integer.parseInt(newestSetupSettlmentRefNum));
+                    //System.out.println("YuppersNewestSetupSettlment");
+                } else {
+                    newestSetupSettlment = null;
+                }
             } else {
                 throwLoadError();
             }

@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 /**
  *
@@ -148,8 +149,28 @@ public class MainMenu extends javax.swing.JFrame {
     private void loadGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGameBtnActionPerformed
         JFileChooser saveFileLoader = new JFileChooser(); //make a new file chooser
         
+        //create a filter for catan save files
+        FileFilter catanSaveFile = new FileFilter() { 
+            //add the description
+            public String getDescription() {
+                return "Catan Save File (*.catan)";
+            }
+            
+            //add the logic for the filter
+            public boolean accept(File f) {
+                //if it's a directory ignor it
+                if (f.isDirectory()) {
+                    return true;
+                } else { //if it's a file only show it if it's a .catan file
+                    return f.getName().toLowerCase().endsWith(".catan");
+                }
+            }
+        };
+        
         //set up the file choose and call it
         saveFileLoader.setDialogTitle("Select a Save File to Open:");
+        saveFileLoader.addChoosableFileFilter(catanSaveFile);
+        saveFileLoader.setFileFilter(catanSaveFile);
         int userLoadSelection = saveFileLoader.showOpenDialog(this);
         
         //check if the user selected a file
@@ -165,8 +186,8 @@ public class MainMenu extends javax.swing.JFrame {
                 gameJFrame.resetGamePanel();
                 
                 //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSaveV3")) {
-                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V2 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                if (!scanner.nextLine().equals("SettlersOfCatanSaveV4")) {
+                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V4 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
                 } else { //if it is a real save file
                     gameJFrame.loadFromFile(saveFileLoader);
                 }
