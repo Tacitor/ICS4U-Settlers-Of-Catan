@@ -2004,6 +2004,11 @@ public class GamePanel extends javax.swing.JPanel {
      * @param g
      */
     private void draw(Graphics g) {
+        //start local vars
+        int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
+        
+        //end local vars
+        
         //the Graphics2D class is the class that handles all the drawing
         //must be casted from older Graphics class in order to have access to some newer methods
         Graphics2D g2d = (Graphics2D) g;
@@ -2031,7 +2036,7 @@ public class GamePanel extends javax.swing.JPanel {
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
         g2d.drawImage(MATERIAL_KEY,
-                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor), //put it in the corner with some padding space
+                rightDrawMargin, //put it in the corner with some padding space
                 (int) (10 / scaleFactor), //just a little bit from the top
                 getImgWidth(MATERIAL_KEY), //scale the image
                 getImgHeight(MATERIAL_KEY),
@@ -2129,8 +2134,8 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.setColor(new java.awt.Color(255, 255, 225));
         //show what number the user rolled
         g2d.drawString("You rolled a: " + diceRollVal,
-                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor),
-                (int) (500 / scaleFactor));
+                rightDrawMargin,
+                (int) (400 / scaleFactor));
         //basic turn indecator
         String currentPlayerString;
 
@@ -2145,8 +2150,37 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         g2d.drawString("Current player: " + currentPlayerString,
-                superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor),
+                rightDrawMargin,
+                (int) (450 / scaleFactor));
+        
+        //draw the VP and resource card start table
+        //draw the player header
+        g2d.drawString("Player:",
+                rightDrawMargin,
                 (int) (550 / scaleFactor));
+        //draw the victory points header
+        g2d.drawString("VP:",
+                rightDrawMargin + (int) (100 / scaleFactor),
+                (int) (550 / scaleFactor));
+        //draw the Resource Cards header
+        g2d.drawString("Resource Cards:",
+                rightDrawMargin + (int) (180 / scaleFactor),
+                (int) (550 / scaleFactor));
+        //loop in all the data for the players
+        for (int i = 1; i < playerCount + 1; i++ ) {
+            //draw the player number
+            g2d.drawString("" + i,
+                rightDrawMargin,
+                (int) ((550 + (30 * i)) / scaleFactor));
+            //draw the players VPs
+            g2d.drawString("" + victoryPoints[i],
+                rightDrawMargin + (int) (100 / scaleFactor),
+                (int) ((550 + (30 * i)) / scaleFactor));
+            //draw the players number of resource cards
+            g2d.drawString("" + cards[i].size(),
+                rightDrawMargin + (int) (180 / scaleFactor),
+                (int) ((550 + (30 * i)) / scaleFactor));
+        }
 
         // Draw the 72 road nodes
         NodeRoad road;
