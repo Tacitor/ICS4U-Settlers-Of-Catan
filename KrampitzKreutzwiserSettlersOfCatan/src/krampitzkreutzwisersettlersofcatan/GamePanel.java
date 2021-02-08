@@ -337,6 +337,7 @@ public class GamePanel extends javax.swing.JPanel {
         buildBtnGroup.add(buildSettlementSRBtn);
         buildSettlementSRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         buildSettlementSRBtn.setForeground(new java.awt.Color(255, 255, 225));
+        buildSettlementSRBtn.setSelected(true);
         buildSettlementSRBtn.setText("Small Settlement");
         buildSettlementSRBtn.setOpaque(false);
 
@@ -349,8 +350,8 @@ public class GamePanel extends javax.swing.JPanel {
         buildBtnGroup.add(buildRoadRBtn);
         buildRoadRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
-        buildRoadRBtn.setSelected(true);
         buildRoadRBtn.setText("Road");
+        buildRoadRBtn.setEnabled(false);
         buildRoadRBtn.setOpaque(false);
 
         buildBtn.setBackground(new java.awt.Color(102, 62, 38));
@@ -1441,7 +1442,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         // If the game is in setup
         if (inSetup) {
-            canBuildRoad = (playerSetupRoadsLeft > 0);
+            canBuildRoad = (playerSetupRoadsLeft > 0) && newestSetupSettlment != null;
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
         } //if the theif is stealing player's cards
@@ -1544,7 +1545,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
-        buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
+        buildBtn.setEnabled((canBuildRoad) || canBuildSettlement || canBuildCity);
     }
 
     /**
@@ -1696,23 +1697,49 @@ public class GamePanel extends javax.swing.JPanel {
      * @param road The road node to check if the user can build on
      * @return If the player can build on it
      */
-    private boolean canBuildRoad(NodeRoad road) {
+    private boolean canBuildRoad(NodeRoad road) {      
+        
+        /*
+        //check if the game is in setup mode
+        if (inSetup) {
+            //if yes the player can only build on the newest settlement
+            if (road.getSettlement(1) != newestSetupSettlment && road.getSettlement(2) != newestSetupSettlment) {
+                return false;
+            }
+        }
+        */
+        
+        
+        
+        
+        
+        
+        
+        //fix bug with some valid road building positions being detected as invalid
+        
+        
+        
+        
+        
+        
 
         // If the current player owns either of the settlements connected to this
         if (road.getSettlement(1).getPlayer() == currentPlayer
                 || road.getSettlement(2).getPlayer() == currentPlayer) {
             // Then the player can build here
+            System.out.println("It's me");
             return true;
         }
 
         // If the first settlement is not owned by another player
-        if (road.getSettlement(1).getPlayer() == currentPlayer || road.getSettlement(1).getPlayer() == 0) {
+        else if (road.getSettlement(1).getPlayer() == currentPlayer || road.getSettlement(1).getPlayer() == 0) {
             // Check the first settlement node for a road owned by the current player
             for (int i = 1; i <= 3; i++) {
                 // Make sure the road exists
                 if (road.getSettlement(1).getRoad(i) != null) {
                     // If one of the roads is owned by the player 
                     if (road.getSettlement(1).getRoad(i).getPlayer() == currentPlayer) {
+                        System.out.println("no me");
                         return true;
                     }
                 }
@@ -1720,13 +1747,14 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // If the second settlement is not owned by another player
-        if (road.getSettlement(2).getPlayer() == currentPlayer || road.getSettlement(2).getPlayer() == 0) {
+        else if (road.getSettlement(2).getPlayer() == currentPlayer || road.getSettlement(2).getPlayer() == 0) {
             // Check the second settlement node for a road owned by the current player
             for (int i = 1; i <= 3; i++) {
                 // Make sure the road exists
                 if (road.getSettlement(2).getRoad(i) != null) {
                     // If one of the roads is owned by the player 
                     if (road.getSettlement(2).getRoad(i).getPlayer() == currentPlayer) {
+                        System.out.println("sike me");
                         return true;
                     }
                 }
@@ -2232,7 +2260,7 @@ public class GamePanel extends javax.swing.JPanel {
                     null);
 
             //draw the hit box for the road.
-            if (showRoadHitbox) {
+            if (showRoadHitbox && canBuildRoad(road)) {
                 g2d.setColor(Color.green);
                 g2d.drawRect(road.getXPos() - getImgWidth(image) / 2, road.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
                 g2d.setColor(Color.black);
@@ -2277,7 +2305,7 @@ public class GamePanel extends javax.swing.JPanel {
                     null);
 
             //draw the hit box for the settlements.
-            if (showSettlementHitbox) {
+            if (showSettlementHitbox && canBuildSettlement(settlement)) {
                 g2d.setColor(Color.green);
                 g2d.drawRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
                 g2d.setColor(Color.black);
