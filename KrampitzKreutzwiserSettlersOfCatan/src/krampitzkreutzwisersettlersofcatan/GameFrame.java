@@ -13,8 +13,9 @@ import javax.swing.JFileChooser;
  *
  * @author Tacitor
  */
-public class GameFrame extends javax.swing.JFrame {
 
+public class GameFrame extends javax.swing.JFrame {
+  
     private final MainMenu mainMenuFrame; //ref to the main menu
     private Dimension screenSize; //keeps track of the display the game is being played on
     private GamePanel theGamePanel; //referance to *a* GamePanel
