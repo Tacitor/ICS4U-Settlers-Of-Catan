@@ -14,7 +14,6 @@ import javax.swing.JFileChooser;
  * @author Tacitor
  */
 
-//Start
 public class GameFrame extends javax.swing.JFrame {
   
     private final MainMenu mainMenuFrame; //ref to the main menu
