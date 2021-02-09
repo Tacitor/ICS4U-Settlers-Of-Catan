@@ -2285,10 +2285,32 @@ public class GamePanel extends javax.swing.JPanel {
                     null);
 
             //draw the hit box for the settlements.
-            if (showSettlementHitbox && canBuildSettlement(settlement)) {
-                g2d.setColor(Color.green);
-                g2d.drawRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
-                g2d.setColor(Color.black);
+            if (showSettlementHitbox) {
+                //new var for daring the hitbox for that settlemnt
+                boolean drawHitBox = false;
+                
+                //check what build mode is active
+                if (buildingObject == 2) { //check for new settlment
+                    //check if a new settlment can go there
+                    drawHitBox = canBuildSettlement(settlement);
+                    
+                } else if (buildingObject == 3) { //check for upgrading to city
+                    //check if an upgrade can be made
+                    if ((!settlement.isLarge()) && settlement.getPlayer() == currentPlayer) {
+                        drawHitBox = true;                        
+                    }
+                    
+                } else { //error
+                    instructionLbl.setText("Error drawing settlment hitboxes");
+                    subInstructionLbl.setText("Please contact the developer");
+                }
+                
+                //draw the hitbox
+                if (drawHitBox) {
+                    g2d.setColor(Color.green);
+                    g2d.drawRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
+                    g2d.setColor(Color.black);
+                }
             }
         }
 
