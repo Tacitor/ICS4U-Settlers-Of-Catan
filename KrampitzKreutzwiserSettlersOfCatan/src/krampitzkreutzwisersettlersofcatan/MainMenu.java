@@ -52,7 +52,8 @@ public class MainMenu extends javax.swing.JFrame {
         rulesBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Software Development Life Cycle");
+        setTitle("Settlers of Catan - ICS4U Edition");
+        setAlwaysOnTop(true);
         setResizable(false);
 
         titleLbl.setFont(new java.awt.Font("MV Boli", 0, 24)); // NOI18N
@@ -186,8 +187,8 @@ public class MainMenu extends javax.swing.JFrame {
                 gameJFrame.resetGamePanel();
                 
                 //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSaveV4")) {
-                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V4 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                if (!scanner.nextLine().equals("SettlersOfCatanSaveV5")) {
+                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V5 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
                 } else { //if it is a real save file
                     gameJFrame.loadFromFile(saveFileLoader);
                 }

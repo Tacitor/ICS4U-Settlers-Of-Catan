@@ -1051,11 +1051,13 @@ public class GamePanel extends javax.swing.JPanel {
         
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV4"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV5"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
             saveFile.println(thiefMoveCounter);
+            saveFile.println("tileWithThief:");
+            saveFile.println(tileWithThief);
             saveFile.println("victoryPointsToWin:");
             saveFile.println(victoryPointsToWin);
             saveFile.println("currentPlayer:");
@@ -1159,7 +1161,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV4")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV5")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1175,6 +1177,13 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("thiefMoveCounter:")) {
                 thiefMoveCounter = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers2");
+            } else {
+                throwLoadError();
+            }
+            
+            if (scanner.nextLine().equals("tileWithThief:")) {
+                tileWithThief = Integer.parseInt(scanner.nextLine());
+                //System.out.println("Yuppers2.5");
             } else {
                 throwLoadError();
             }
@@ -2240,7 +2249,8 @@ public class GamePanel extends javax.swing.JPanel {
                     null);
 
             //draw the hit box for the road.
-            if (showRoadHitbox && canBuildRoad(road)) {
+            //check if it meets the can build criteria and that it is also currently not owned
+            if (showRoadHitbox && canBuildRoad(road) && road.getPlayer() == 0) {
                 g2d.setColor(Color.green);
                 g2d.drawRect(road.getXPos() - getImgWidth(image) / 2, road.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
                 g2d.setColor(Color.black);
