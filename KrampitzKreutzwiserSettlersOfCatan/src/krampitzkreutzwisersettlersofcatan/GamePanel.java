@@ -1697,9 +1697,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param road The road node to check if the user can build on
      * @return If the player can build on it
      */
-    private boolean canBuildRoad(NodeRoad road) {      
-        
-        /*
+    private boolean canBuildRoad(NodeRoad road) {
         //check if the game is in setup mode
         if (inSetup) {
             //if yes the player can only build on the newest settlement
@@ -1707,21 +1705,6 @@ public class GamePanel extends javax.swing.JPanel {
                 return false;
             }
         }
-        */
-        
-        
-        
-        
-        
-        
-        
-        //fix bug with some valid road building positions being detected as invalid
-        
-        
-        
-        
-        
-        
 
         // If the current player owns either of the settlements connected to this
         if (road.getSettlement(1).getPlayer() == currentPlayer
@@ -1732,7 +1715,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // If the first settlement is not owned by another player
-        else if (road.getSettlement(1).getPlayer() == currentPlayer || road.getSettlement(1).getPlayer() == 0) {
+        if (road.getSettlement(1).getPlayer() == currentPlayer || road.getSettlement(1).getPlayer() == 0) {
             // Check the first settlement node for a road owned by the current player
             for (int i = 1; i <= 3; i++) {
                 // Make sure the road exists
@@ -1747,7 +1730,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // If the second settlement is not owned by another player
-        else if (road.getSettlement(2).getPlayer() == currentPlayer || road.getSettlement(2).getPlayer() == 0) {
+        if (road.getSettlement(2).getPlayer() == currentPlayer || road.getSettlement(2).getPlayer() == 0) {
             // Check the second settlement node for a road owned by the current player
             for (int i = 1; i <= 3; i++) {
                 // Make sure the road exists
