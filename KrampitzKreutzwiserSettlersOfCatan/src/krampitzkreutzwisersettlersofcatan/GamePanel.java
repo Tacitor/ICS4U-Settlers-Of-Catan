@@ -1710,7 +1710,6 @@ public class GamePanel extends javax.swing.JPanel {
         if (road.getSettlement(1).getPlayer() == currentPlayer
                 || road.getSettlement(2).getPlayer() == currentPlayer) {
             // Then the player can build here
-            System.out.println("It's me");
             return true;
         }
 
@@ -1722,7 +1721,6 @@ public class GamePanel extends javax.swing.JPanel {
                 if (road.getSettlement(1).getRoad(i) != null) {
                     // If one of the roads is owned by the player 
                     if (road.getSettlement(1).getRoad(i).getPlayer() == currentPlayer) {
-                        System.out.println("no me");
                         return true;
                     }
                 }
@@ -1737,7 +1735,6 @@ public class GamePanel extends javax.swing.JPanel {
                 if (road.getSettlement(2).getRoad(i) != null) {
                     // If one of the roads is owned by the player 
                     if (road.getSettlement(2).getRoad(i).getPlayer() == currentPlayer) {
-                        System.out.println("sike me");
                         return true;
                     }
                 }
