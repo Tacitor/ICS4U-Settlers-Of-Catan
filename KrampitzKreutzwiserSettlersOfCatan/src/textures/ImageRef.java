@@ -56,6 +56,18 @@ public class ImageRef {
     public final static Image PLAYER_BLUE = new ImageIcon(ImageRef.class.getResource("playerBlue.png")).getImage();
     public final static Image PLAYER_NONE = new ImageIcon(ImageRef.class.getResource("playerNone.png")).getImage();
     
+    //dice images
+    public final static Image DIE_IMAGE_1 = new ImageIcon(ImageRef.class.getResource("die1.png")).getImage();
+    public final static Image DIE_IMAGE_2 = new ImageIcon(ImageRef.class.getResource("die2.png")).getImage();
+    public final static Image DIE_IMAGE_3 = new ImageIcon(ImageRef.class.getResource("die3.png")).getImage();
+    public final static Image DIE_IMAGE_4 = new ImageIcon(ImageRef.class.getResource("die4.png")).getImage();
+    public final static Image DIE_IMAGE_5 = new ImageIcon(ImageRef.class.getResource("die5.png")).getImage();
+    public final static Image DIE_IMAGE_6 = new ImageIcon(ImageRef.class.getResource("die6.png")).getImage();
+    public final static Image DICE_GRAY = new ImageIcon(ImageRef.class.getResource("diceGray.png")).getImage();
+    
+    public final static Image[] DICE_IMAGES = new Image[]{
+        DICE_GRAY, DIE_IMAGE_1, DIE_IMAGE_2, DIE_IMAGE_3, DIE_IMAGE_4, DIE_IMAGE_5, DIE_IMAGE_6};
+    
     //store most of the images to reduce varable clutter in the main class (gamePanel)
 
     public ImageRef() {

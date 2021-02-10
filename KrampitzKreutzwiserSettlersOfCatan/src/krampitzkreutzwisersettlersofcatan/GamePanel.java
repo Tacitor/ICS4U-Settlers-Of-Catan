@@ -91,7 +91,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final int threeDTileOffset;
 
     //new dice roll lable
-    private String diceRollVal;
+    private String[] diceRollVal;
 
     //fonts
     private final Font timesNewRoman;
@@ -153,12 +153,12 @@ public class GamePanel extends javax.swing.JPanel {
         //initialize the filechooser
         saveFileChooser = new JFileChooser();
         //create a filter for catan save files
-        FileFilter catanSaveFile = new FileFilter() { 
+        FileFilter catanSaveFile = new FileFilter() {
             //add the description
             public String getDescription() {
                 return "Catan Save File (*.catan)";
             }
-            
+
             //add the logic for the filter
             public boolean accept(File f) {
                 //if it's a directory ignor it
@@ -270,7 +270,7 @@ public class GamePanel extends javax.swing.JPanel {
         titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
 
         //initialize the dice roll value
-        diceRollVal = "";
+        diceRollVal = new String[]{"0", "0", ""}; //the first two indexies are the rollecd values and the third is the sum
 
         //init the offset for the "3d" overlap tiles
         threeDTileOffset = (int) (-20 / scaleFactor);
@@ -452,23 +452,22 @@ public class GamePanel extends javax.swing.JPanel {
         if (userSaveSelection == JFileChooser.APPROVE_OPTION) {
             //store the file path the user selected            
             saveAddress = saveFileChooser.getSelectedFile().getPath();
-            
+
             //append .catan if the user forgot to
             //first get where the .catan can be found in the String
             int catanExt = saveAddress.indexOf(".catan");
-            
+
             //check if it is there at all
             if (catanExt == -1) {
                 //since it is no where in the string at all append .catan
                 saveAddress += ".catan";
             } else { //if there if .catan ANYwhere in the path check to see if it the actual extension
                 //if it is not
-                if ( !(saveAddress.substring(saveAddress.length() - 6).equals(".catan")) ) {
+                if (!(saveAddress.substring(saveAddress.length() - 6).equals(".catan"))) {
                     saveAddress += ".catan"; //add the file type
                 }
             }
-            
-            
+
             //System.out.println(saveAddress);
             //save the game and only close if it is successful
             if (save()) {
@@ -646,6 +645,9 @@ public class GamePanel extends javax.swing.JPanel {
             //if the thief had just finished set it false, they are done now
             thiefJustFinished = false;
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
+            //set the roll sum to 0. This is for the dice images. When the sum is "" then the blank dice are shown
+            diceRollVal[2] = "";
+            
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
 
@@ -1048,7 +1050,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @throws FileNotFoundException
      */
     private boolean writeToFile(String writeAdress) throws FileNotFoundException {
-        
+
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
             saveFile.println("SettlersOfCatanSaveV5"); //write a header to easily identify Settlers of Catan save files for loading
@@ -1180,7 +1182,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("tileWithThief:")) {
                 tileWithThief = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers2.5");
@@ -1833,12 +1835,29 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Roll the first dice
         roll = (int) (Math.random() * 6) + 1;
+
+        // Display the number rolled to the user
+        //updates the var that displays the roll. updates every time the draw() method is run
+        //save the first roll
+        diceRollVal[0] = (Integer.toString(roll));
+
         // Roll the second dice and add to the total
         roll += (int) (Math.random() * 6) + 1;
 
         // Display the number rolled to the user
         //updates the var that displays the roll. updates every time the draw() method is run
-        diceRollVal = (Integer.toString(roll));
+        //save the second roll. Subtract the first roll from the sum to get the specific value of the second roll
+        diceRollVal[1] = (Integer.toString(roll - Integer.parseInt(diceRollVal[0])));
+
+        //combine into a sum
+        diceRollVal[2] = (Integer.toString(roll));
+
+        //This code might not ever run. There may be no senario where this test is true
+        //check what the value is
+        if (Integer.parseInt(diceRollVal[2]) == 0) { //if the sum is 0 replace it with an empty String
+            diceRollVal[2] = "zero";
+
+        }
 
         // Act on the dice roll
         if (roll == 7) { // Move the thief on a 7
@@ -2023,9 +2042,8 @@ public class GamePanel extends javax.swing.JPanel {
     private void draw(Graphics g) {
         //start local vars
         int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
-        
+
         //end local vars
-        
         //the Graphics2D class is the class that handles all the drawing
         //must be casted from older Graphics class in order to have access to some newer methods
         Graphics2D g2d = (Graphics2D) g;
@@ -2150,9 +2168,33 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
         g2d.setColor(new java.awt.Color(255, 255, 225));
         //show what number the user rolled
-        g2d.drawString("You rolled a: " + diceRollVal,
+        g2d.drawString("You rolled a: " + diceRollVal[2],
                 rightDrawMargin,
                 (int) (400 / scaleFactor));
+        //draw the dice
+        //but only if not in setup
+        if (!inSetup) {
+            //draw the non rolled dice if there is no roll
+            if (diceRollVal[2].equals("")) {
+
+                g2d.drawImage(DICE_IMAGES[0],
+                        rightDrawMargin,
+                        (int) (400 / scaleFactor),
+                        null);
+            } else { //else draw the dice that go with the roll
+                g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[0])],
+                        rightDrawMargin,
+                        (int) (400 / scaleFactor),
+                        null);
+                
+                g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
+                        rightDrawMargin + (int) (100 / scaleFactor),
+                        (int) (400 / scaleFactor),
+                        null);
+                
+            }
+        }
+
         //basic turn indecator
         String currentPlayerString;
 
@@ -2168,35 +2210,35 @@ public class GamePanel extends javax.swing.JPanel {
 
         g2d.drawString("Current player: " + currentPlayerString,
                 rightDrawMargin,
-                (int) (450 / scaleFactor));
-        
+                (int) (550 / scaleFactor));
+
         //draw the VP and resource card start table
         //draw the player header
         g2d.drawString("Player:",
                 rightDrawMargin,
-                (int) (550 / scaleFactor));
+                (int) (600 / scaleFactor));
         //draw the victory points header
         g2d.drawString("VP:",
                 rightDrawMargin + (int) (100 / scaleFactor),
-                (int) (550 / scaleFactor));
+                (int) (600 / scaleFactor));
         //draw the Resource Cards header
         g2d.drawString("Resource Cards:",
                 rightDrawMargin + (int) (180 / scaleFactor),
-                (int) (550 / scaleFactor));
+                (int) (600 / scaleFactor));
         //loop in all the data for the players
-        for (int i = 1; i < playerCount + 1; i++ ) {
+        for (int i = 1; i < playerCount + 1; i++) {
             //draw the player number
             g2d.drawString("" + i,
-                rightDrawMargin,
-                (int) ((550 + (30 * i)) / scaleFactor));
+                    rightDrawMargin,
+                    (int) ((600 + (30 * i)) / scaleFactor));
             //draw the players VPs
             g2d.drawString("" + victoryPoints[i],
-                rightDrawMargin + (int) (100 / scaleFactor),
-                (int) ((550 + (30 * i)) / scaleFactor));
+                    rightDrawMargin + (int) (100 / scaleFactor),
+                    (int) ((600 + (30 * i)) / scaleFactor));
             //draw the players number of resource cards
             g2d.drawString("" + cards[i].size(),
-                rightDrawMargin + (int) (180 / scaleFactor),
-                (int) ((550 + (30 * i)) / scaleFactor));
+                    rightDrawMargin + (int) (180 / scaleFactor),
+                    (int) ((600 + (30 * i)) / scaleFactor));
         }
 
         // Draw the 72 road nodes
@@ -2298,23 +2340,23 @@ public class GamePanel extends javax.swing.JPanel {
             if (showSettlementHitbox) {
                 //new var for daring the hitbox for that settlemnt
                 boolean drawHitBox = false;
-                
+
                 //check what build mode is active
                 if (buildingObject == 2) { //check for new settlment
                     //check if a new settlment can go there
                     drawHitBox = canBuildSettlement(settlement);
-                    
+
                 } else if (buildingObject == 3) { //check for upgrading to city
                     //check if an upgrade can be made
                     if ((!settlement.isLarge()) && settlement.getPlayer() == currentPlayer) {
-                        drawHitBox = true;                        
+                        drawHitBox = true;
                     }
-                    
+
                 } else { //error
                     instructionLbl.setText("Error drawing settlment hitboxes");
                     subInstructionLbl.setText("Please contact the developer");
                 }
-                
+
                 //draw the hitbox
                 if (drawHitBox) {
                     g2d.setColor(Color.green);
