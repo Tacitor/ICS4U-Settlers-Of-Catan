@@ -193,7 +193,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
-        
+
         //randomize the board
         randomizeTiles();
 
@@ -1566,7 +1566,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
-        buildBtn.setEnabled((canBuildRoad) || canBuildSettlement || canBuildCity);
+        buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
     }
 
     /**
@@ -2516,7 +2516,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
         }
-        
+
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
@@ -2813,7 +2813,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     private void randomizeTiles() {
         //randomly select a number of times to shuffle the board
         int numShuffle = (int) (Math.random() * 15) + 25;
@@ -2821,39 +2821,39 @@ public class GamePanel extends javax.swing.JPanel {
         int tempNumHold; //the value that is being swapped
         int numSlot1; //the index being swaped from
         int numSlot2; //the index being swapped to
-        
+
         //shuffle the board types
         for (int i = 0; i < numShuffle; i++) {
             //select the first slot
             numSlot1 = (int) (Math.random() * tileTypes.length);
-            
+
             //save its value for the tile type
             tempNumHold = tileTypes[numSlot1];
-            
+
             //select the second slot
             numSlot2 = (int) (Math.random() * tileTypes.length);
-            
+
             //overwrite the first value with the second
             tileTypes[numSlot1] = tileTypes[numSlot2];
-            
+
             //now overwrite the second with what used to be in the first
             tileTypes[numSlot2] = tempNumHold;
         }
-        
+
         //shuffle the board harvest numbers
         for (int i = 0; i < numShuffle; i++) {
             //select the first slot
             numSlot1 = (int) (Math.random() * tileHarvestRollNums.length);
-            
+
             //save its value for the tile type
             tempNumHold = tileHarvestRollNums[numSlot1];
-            
+
             //select the second slot
             numSlot2 = (int) (Math.random() * tileHarvestRollNums.length);
-            
+
             //overwrite the first value with the second
             tileHarvestRollNums[numSlot1] = tileHarvestRollNums[numSlot2];
-            
+
             //now overwrite the second with what used to be in the first
             tileHarvestRollNums[numSlot2] = tempNumHold;
         }

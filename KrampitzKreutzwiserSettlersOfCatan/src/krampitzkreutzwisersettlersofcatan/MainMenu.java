@@ -53,7 +53,6 @@ public class MainMenu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Settlers of Catan - ICS4U Edition");
-        setAlwaysOnTop(true);
         setResizable(false);
 
         titleLbl.setFont(new java.awt.Font("MV Boli", 0, 24)); // NOI18N
