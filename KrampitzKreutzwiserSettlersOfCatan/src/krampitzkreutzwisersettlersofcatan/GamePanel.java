@@ -2857,8 +2857,6 @@ public class GamePanel extends javax.swing.JPanel {
             //now overwrite the second with what used to be in the first
             tileHarvestRollNums[numSlot2] = tempNumHold;
         }
-        
-        System.out.println(Arrays.toString(tileHarvestRollNums));
         //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
