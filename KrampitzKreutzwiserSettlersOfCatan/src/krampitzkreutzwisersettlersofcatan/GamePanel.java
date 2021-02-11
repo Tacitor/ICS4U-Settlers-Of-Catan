@@ -44,8 +44,9 @@ public class GamePanel extends javax.swing.JPanel {
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
     private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
-    private final int[] tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}; //the type of tile from left to right, and top to bottom
-    private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 0, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom
+    private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
+    //the old deflaut order                  {1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}
+    private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 2, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
 
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
@@ -192,6 +193,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
+        
+        //randomize the board
+        randomizeTiles();
 
         loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
         loadTiles(); //load the ArrayList of tiles with position and type data
@@ -2512,6 +2516,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
         }
+        
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
@@ -2807,6 +2812,35 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
         }
+    }
+    
+    private void randomizeTiles() {
+        //randomly select a number of times to shuffle the board
+        int numShuffle = (int) (Math.random() * 15) + 25;
+        numShuffle = 1000;
+        int tempNumHold; //the value that is being swapped
+        int numSlot1; //the index being swaped from
+        int numSlot2; //the index being swapped to
+        
+        //shuffle the board
+        for (int i = 0; i < numShuffle; i++) {
+            //select the first slot
+            numSlot1 = (int) (Math.random() * tileTypes.length);
+            
+            //save its value for the tile type
+            tempNumHold = tileTypes[numSlot1];
+            
+            //select the second slot
+            numSlot2 = (int) (Math.random() * tileTypes.length);
+            
+            //overwrite the first value with the second
+            tileTypes[numSlot1] = tileTypes[numSlot2];
+            
+            //now overwrite the second with what used to be in the first
+            tileTypes[numSlot2] = tempNumHold;
+        }
+        //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
+        //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
