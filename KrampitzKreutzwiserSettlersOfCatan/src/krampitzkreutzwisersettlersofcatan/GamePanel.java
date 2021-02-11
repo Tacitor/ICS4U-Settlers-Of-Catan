@@ -2822,7 +2822,7 @@ public class GamePanel extends javax.swing.JPanel {
         int numSlot1; //the index being swaped from
         int numSlot2; //the index being swapped to
         
-        //shuffle the board
+        //shuffle the board types
         for (int i = 0; i < numShuffle; i++) {
             //select the first slot
             numSlot1 = (int) (Math.random() * tileTypes.length);
@@ -2839,6 +2839,26 @@ public class GamePanel extends javax.swing.JPanel {
             //now overwrite the second with what used to be in the first
             tileTypes[numSlot2] = tempNumHold;
         }
+        
+        //shuffle the board harvest numbers
+        for (int i = 0; i < numShuffle; i++) {
+            //select the first slot
+            numSlot1 = (int) (Math.random() * tileHarvestRollNums.length);
+            
+            //save its value for the tile type
+            tempNumHold = tileHarvestRollNums[numSlot1];
+            
+            //select the second slot
+            numSlot2 = (int) (Math.random() * tileHarvestRollNums.length);
+            
+            //overwrite the first value with the second
+            tileHarvestRollNums[numSlot1] = tileHarvestRollNums[numSlot2];
+            
+            //now overwrite the second with what used to be in the first
+            tileHarvestRollNums[numSlot2] = tempNumHold;
+        }
+        
+        System.out.println(Arrays.toString(tileHarvestRollNums));
         //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
