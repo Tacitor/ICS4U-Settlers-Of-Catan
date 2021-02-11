@@ -647,7 +647,7 @@ public class GamePanel extends javax.swing.JPanel {
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             //set the roll sum to 0. This is for the dice images. When the sum is "" then the blank dice are shown
             diceRollVal[2] = "";
-            
+
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
 
@@ -806,7 +806,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
                             }
                         } else {
-                            instructionLbl.setText("Sorry but you can't take someone elses road.");
+                            instructionLbl.setText("Sorry but you can't take a claimed road.");
                             subInstructionLbl.setText("Try building where there isn't already another road");
                         }
 
@@ -836,7 +836,7 @@ public class GamePanel extends javax.swing.JPanel {
                         if (settlementNodes.get(i).getPlayer() == 0) {
 
                             // Check that the player can build there and update the instruction labels accordingly if hey cannot
-                            if (canBuildSettlement(settlementNodes.get(i))) {
+                            if (canBuildSettlement(settlementNodes.get(i), false)) {
 
                                 // If the game is in setup
                                 if (inSetup) { // In Setup
@@ -869,7 +869,7 @@ public class GamePanel extends javax.swing.JPanel {
                             }
 
                         } else {
-                            instructionLbl.setText("Sorry but you can't take someone elses settlements.");
+                            instructionLbl.setText("Sorry but you can't take a claimed settlements.");
                             subInstructionLbl.setText("Try building where there isn't already another settlements");
                         }
 
@@ -923,8 +923,14 @@ public class GamePanel extends javax.swing.JPanel {
                                 subInstructionLbl.setText("Try upgrading a small settlement");
                             }
                         } else { // If the settlement belongs to another player
-                            instructionLbl.setText("Sorry but you can't upgrade someone elses settlements.");
-                            subInstructionLbl.setText("Try upgrading your own settlement");
+                            //check what player it is
+                            if (settlementNodes.get(i).getPlayer() == 0) {
+                                instructionLbl.setText("Sorry but you can't upgrade an unowned settlement.");
+                                subInstructionLbl.setText("Try upgrading your own settlement");
+                            } else {
+                                instructionLbl.setText("Sorry but you can't upgrade someone elses settlement.");
+                                subInstructionLbl.setText("Try upgrading your own settlement");
+                            }
                         }
 
                         // Stop building and hide the hitboxes
@@ -1763,7 +1769,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param settlement The settlement node to check if the user can build on
      * @return If the player can build on it
      */
-    private boolean canBuildSettlement(NodeSettlement settlement) {
+    private boolean canBuildSettlement(NodeSettlement settlement, boolean quietMode) {
 
         // Record how many of the 3 nodes are owned by other players
         // And if one of the connected roads belong to the current player
@@ -1804,9 +1810,11 @@ public class GamePanel extends javax.swing.JPanel {
                 if (road.getSettlement(1).getPlayer() != 0 || road.getSettlement(2).getPlayer() != 0) {
                     // The settlement is too close to another
 
-                    // Print out why the player could not build there
-                    instructionLbl.setText("Sorry but you can't build a settlement there.");
-                    subInstructionLbl.setText("Try building farther away from exsisting buildings");
+                    if (!quietMode) {
+                        // Print out why the player could not build there
+                        instructionLbl.setText("Sorry but you can't build a settlement there.");
+                        subInstructionLbl.setText("Try building farther away from exsisting buildings");
+                    }
 
                     return false; // Cannot build here
                 }
@@ -2186,12 +2194,12 @@ public class GamePanel extends javax.swing.JPanel {
                         rightDrawMargin,
                         (int) (400 / scaleFactor),
                         null);
-                
+
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
                         rightDrawMargin + (int) (100 / scaleFactor),
                         (int) (400 / scaleFactor),
                         null);
-                
+
             }
         }
 
@@ -2344,7 +2352,7 @@ public class GamePanel extends javax.swing.JPanel {
                 //check what build mode is active
                 if (buildingObject == 2) { //check for new settlment
                     //check if a new settlment can go there
-                    drawHitBox = canBuildSettlement(settlement);
+                    drawHitBox = canBuildSettlement(settlement, true);
 
                 } else if (buildingObject == 3) { //check for upgrading to city
                     //check if an upgrade can be made
