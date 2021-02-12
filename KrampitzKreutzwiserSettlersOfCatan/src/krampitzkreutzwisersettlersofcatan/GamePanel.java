@@ -47,6 +47,7 @@ public class GamePanel extends javax.swing.JPanel {
     private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
     //the old deflaut order                  {1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}
     private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 2, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom
+    private final int[] tileDrawOrder = new int[]{7, 3, 0, 12, 8, 4, 1, 16, 13, 9, 5, 2, 17, 14, 10, 6, 18, 15, 11}; //the order tiles are drawin in, in 3d tile mode to account fot the over lap
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
 
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
@@ -2110,43 +2111,46 @@ public class GamePanel extends javax.swing.JPanel {
                 null);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
+        int tileID;
         for (int i = 0; i < 19; i++) {
+            tileID = tileDrawOrder[i];
+            //tileID = i;
 
             //check if it is the new type or old size
-            if (tiles.get(i).getImage().getHeight(null) == 150) {
+            if (tiles.get(tileID).getImage().getHeight(null) == 150) {
                 //draw the tile
-                g2d.drawImage(tiles.get(i).getImage(),
-                        tiles.get(i).getXPos(),
-                        (int) (tiles.get(i).getYPos() - (20 / scaleFactor)),
-                        getImgWidth(tiles.get(i).getImage()),
-                        getImgHeight(tiles.get(i).getImage()), null);
+                g2d.drawImage(tiles.get(tileID).getImage(),
+                        tiles.get(tileID).getXPos(),
+                        (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
+                        getImgWidth(tiles.get(tileID).getImage()),
+                        getImgHeight(tiles.get(tileID).getImage()), null);
             } else {
 
                 //draw the tile
-                g2d.drawImage(tiles.get(i).getImage(),
-                        tiles.get(i).getXPos(),
-                        tiles.get(i).getYPos(),
-                        getImgWidth(tiles.get(i).getImage()),
-                        getImgHeight(tiles.get(i).getImage()), null);
+                g2d.drawImage(tiles.get(tileID).getImage(),
+                        tiles.get(tileID).getXPos(),
+                        tiles.get(tileID).getYPos(),
+                        getImgWidth(tiles.get(tileID).getImage()),
+                        getImgHeight(tiles.get(tileID).getImage()), null);
             }
 
             //draw the resource harvest number only if it is not a desert
-            if (tiles.get(i).getType() != 0) {
+            if (tiles.get(tileID).getType() != 0) {
                 g2d.setColor(Color.DARK_GRAY);
-                g2d.fillOval(tiles.get(i).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2),
-                        (int) (tiles.get(i).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
+                g2d.fillOval(tiles.get(tileID).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2),
+                        (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
                         (int) (30 / scaleFactor),
                         (int) (30 / scaleFactor));
 
                 //check if the colour of the number
-                if (tiles.get(i).getHarvestRollNum() == 8 || tiles.get(i).getHarvestRollNum() == 6) {
+                if (tiles.get(tileID).getHarvestRollNum() == 8 || tiles.get(tileID).getHarvestRollNum() == 6) {
                     g2d.setColor(Color.red);
                 } else {
                     g2d.setColor(Color.white);
                 }
 
                 //set the offset based on the number of digits
-                if (tiles.get(i).getHarvestRollNum() > 9) {
+                if (tiles.get(tileID).getHarvestRollNum() > 9) {
                     harvestRollNumOffset = (int) (10 / scaleFactor);
                 } else {
                     harvestRollNumOffset = (int) (4 / scaleFactor);
@@ -2154,27 +2158,27 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //draw the harvest roll num
                 g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
-                g2d.drawString(Integer.toString(tiles.get(i).getHarvestRollNum()),
-                        tiles.get(i).getXPos() + newTileWidth / 2 - harvestRollNumOffset,
-                        tiles.get(i).getYPos() + newTileHeight / 2 + 5 + threeDTileOffset);
+                g2d.drawString(Integer.toString(tiles.get(tileID).getHarvestRollNum()),
+                        tiles.get(tileID).getXPos() + newTileWidth / 2 - harvestRollNumOffset,
+                        tiles.get(tileID).getYPos() + newTileHeight / 2 + 5 + threeDTileOffset);
                 g2d.setColor(Color.black);
             }
 
             //check where the thief is and draw it there
-            if (tiles.get(i).hasThief()) {
+            if (tiles.get(tileID).hasThief()) {
 
                 int imageWidth = getImgWidth(THIEF);
                 int imageHeight = getImgHeight(THIEF);
 
                 //draw the thief
                 g2d.drawImage(THIEF,
-                        tiles.get(i).getXPos() + newTileWidth / 2 - (int) (imageWidth / scaleFactor) / 2,
-                        tiles.get(i).getYPos() + newTileHeight / 2 - (int) (imageHeight / scaleFactor) / 2 + threeDTileOffset,
+                        tiles.get(tileID).getXPos() + newTileWidth / 2 - (int) (imageWidth / scaleFactor) / 2,
+                        tiles.get(tileID).getYPos() + newTileHeight / 2 - (int) (imageHeight / scaleFactor) / 2 + threeDTileOffset,
                         (int) (imageWidth / scaleFactor),
                         (int) (imageHeight / scaleFactor),
                         null);
             }
-        }
+        } //end tile drawing loop
 
         //set the font for the dice roll indecator
         g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
