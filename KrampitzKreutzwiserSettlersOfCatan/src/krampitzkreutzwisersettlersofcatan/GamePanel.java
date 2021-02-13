@@ -2098,6 +2098,10 @@ public class GamePanel extends javax.swing.JPanel {
             currentPlayerImage = PLAYER_RED;
         } else if (currentPlayer == 2) {
             currentPlayerImage = PLAYER_BLUE;
+        } else if (currentPlayer == 3) {
+            currentPlayerImage = PLAYER_ORANGE;
+        } else if (currentPlayer == 4) {
+            currentPlayerImage = PLAYER_WHITE;
         } else {
             currentPlayerImage = PLAYER_NONE;
         }
@@ -2220,6 +2224,10 @@ public class GamePanel extends javax.swing.JPanel {
             currentPlayerString = "1, Red";
         } else if (this.currentPlayer == 2) {
             currentPlayerString = "2, Blue";
+        } else if (this.currentPlayer == 3) {
+            currentPlayerString = "3, Orange";
+        } else if (this.currentPlayer == 4) {
+            currentPlayerString = "4, White";
         } else {
             currentPlayerString = "0, Error";
         }
@@ -2269,8 +2277,14 @@ public class GamePanel extends javax.swing.JPanel {
                         image = BLANK_ROAD_H;
                     } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_H;
-                    } else {
+                    } else if (road.getPlayer() == 2) {
                         image = BLUE_ROAD_H;
+                    } else if (road.getPlayer() == 3) {
+                        image = ORANGE_ROAD_H;
+                    } else if (road.getPlayer() == 4) {
+                        image = WHITE_ROAD_H;
+                    } else {
+                        image = RED_ROAD_L;
                     }
                     break;
                 case 1: // Road pointing to the top left ( \ ) 
@@ -2279,18 +2293,30 @@ public class GamePanel extends javax.swing.JPanel {
                         image = BLANK_ROAD_V;
                     } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_L;
-                    } else {
+                    } else if (road.getPlayer() == 2) {
                         image = BLUE_ROAD_L;
+                    } else if (road.getPlayer() == 3) {
+                        image = ORANGE_ROAD_L;
+                    } else if (road.getPlayer() == 4) {
+                        image = WHITE_ROAD_L;
+                    } else {
+                        image = RED_ROAD_H;
                     }
                     break;
                 case 2: // Road pointing to the top right ( / ) 
                     // Store the road image for the player's color
                     if (road.getPlayer() == 0) {
                         image = BLANK_ROAD_V;
-                    } else if (road.getPlayer() == 1 || road.getPlayer() == 0) {
+                    } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_R;
-                    } else {
+                    } else if (road.getPlayer() == 2){
                         image = BLUE_ROAD_R;
+                    } else if (road.getPlayer() == 3){
+                        image = ORANGE_ROAD_R;
+                    } else if (road.getPlayer() == 4){
+                        image = WHITE_ROAD_R;
+                    } else {
+                        image = RED_ROAD_H;
                     }
                     break;
                 default: // Make the compiler happy and error handling
@@ -2331,17 +2357,35 @@ public class GamePanel extends javax.swing.JPanel {
                 if (settlement.getPlayer() == 1) {
                     image = RED_HOUSE_S;
                 } // Player 1: Red
-                else {
+                else if (settlement.getPlayer() == 2) {
                     image = BLUE_HOUSE_S;
                 } // Player 2: Blue
+                else if (settlement.getPlayer() == 3) {
+                    image = ORANGE_HOUSE_S;
+                } // Player 3: Orange
+                else if (settlement.getPlayer() == 4) {
+                    image = WHITE_HOUSE_S;
+                } // Player 4: White
+                else {
+                    image = RED_HOUSE_L;
+                }
             } else { // Large settlement
                 // Store the large settlement image for the player's color
                 if (settlement.getPlayer() == 1) {
                     image = RED_HOUSE_L;
                 } // Player 1: Red
-                else {
+                else if (settlement.getPlayer() == 2) {
                     image = BLUE_HOUSE_L;
                 } // Player 2: Blue
+                else if (settlement.getPlayer() == 3) {
+                    image = ORANGE_HOUSE_L;
+                } // Player 3: Orange
+                else if (settlement.getPlayer() == 4) {
+                    image = WHITE_HOUSE_L;
+                } // Player 4: White
+                else {
+                    image = RED_HOUSE_S;
+                }
             }
 
             // Draw the settlement image saved above, at the node's position
