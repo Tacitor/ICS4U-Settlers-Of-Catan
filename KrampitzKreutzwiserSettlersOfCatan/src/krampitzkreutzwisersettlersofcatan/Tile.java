@@ -102,6 +102,7 @@ public class Tile extends WorldObject {
      */
     public void setType(int type) {
         this.type = type;
+        image = applyImage();
     }
     
     /**
