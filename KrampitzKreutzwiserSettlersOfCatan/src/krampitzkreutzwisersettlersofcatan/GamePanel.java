@@ -61,6 +61,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showCardHitbox; //used for picking which cards the thief steals
     private boolean[] drawCardStacks; //controls the mode cards are drown in. Stacked or fully layout
     private boolean showSettlementHitbox;
+    private boolean showTileHitbox;
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
     private static int playerCount = 2; // The number of players in the game
@@ -141,6 +142,7 @@ public class GamePanel extends javax.swing.JPanel {
         showRoadHitbox = false;
         showSettlementHitbox = false;
         showCardHitbox = false;
+        showTileHitbox = false;
         playerSetupRoadsLeft = 1;
         playerSetupSettlementLeft = 1;
         victoryPointsToWin = 10;
@@ -586,6 +588,11 @@ public class GamePanel extends javax.swing.JPanel {
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
 
+                //no longer in steal start mode because the lable would have already been updated
+                if (thiefJustStarted) {
+                    thiefJustStarted = false;
+                }
+
                 //check if the current player needs to be stolen from
                 if (stealCardNum[currentPlayer] > 0) {
 
@@ -946,7 +953,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
-        } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0) { //check if the user clicked to select a card
+        } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0 && !thiefJustStarted) { //check if the user clicked to select a card and the thief didn't just start
 
             //get the y position for the cards
             int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
@@ -1212,7 +1219,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("giveStartingResources:")) {
                 giveStartingResources = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers4.5");
@@ -1515,11 +1522,6 @@ public class GamePanel extends javax.swing.JPanel {
                     instructionLbl.setForeground(Color.red);
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
-                }
-
-                //no longer in steal start mode because the lable above just updated
-                if (thiefJustStarted) {
-                    thiefJustStarted = false;
                 }
 
             } else if (thiefJustFinished) {
@@ -1893,6 +1895,11 @@ public class GamePanel extends javax.swing.JPanel {
             //steal the cards and allow the lables to update
             thiefIsStealing = true;
             thiefJustStarted = true;
+            
+            //show the tile hitboxes to the player who rolled the 7. This allows them to move the thief to the Tile of thier choosing.
+            showTileHitbox = true;
+            //disable the turn switch button so that this cannot be skiped
+            turnSwitchBtn.setEnabled(false);
 
             //save the player who just rolled a 7
             playerRolled7 = currentPlayer;
@@ -2187,6 +2194,17 @@ public class GamePanel extends javax.swing.JPanel {
                         (int) (imageHeight / scaleFactor),
                         null);
             }
+
+            //draw the hitbox for the tile
+            //make sure the hex fits the criteria. Thief cannot be moved to the tile where they already are.
+            if (showTileHitbox && !tiles.get(tileID).hasThief()) {
+                g2d.setColor(Color.green);
+                g2d.drawRect(tiles.get(tileID).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2),
+                        (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
+                        (int) (30 / scaleFactor),
+                        (int) (30 / scaleFactor));
+                g2d.setColor(Color.black);
+            }
         } //end tile drawing loop
 
         //set the font for the dice roll indecator
@@ -2314,11 +2332,11 @@ public class GamePanel extends javax.swing.JPanel {
                         image = BLANK_ROAD_V;
                     } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_R;
-                    } else if (road.getPlayer() == 2){
+                    } else if (road.getPlayer() == 2) {
                         image = BLUE_ROAD_R;
-                    } else if (road.getPlayer() == 3){
+                    } else if (road.getPlayer() == 3) {
                         image = ORANGE_ROAD_R;
-                    } else if (road.getPlayer() == 4){
+                    } else if (road.getPlayer() == 4) {
                         image = WHITE_ROAD_R;
                     } else {
                         image = RED_ROAD_H;
@@ -2913,19 +2931,19 @@ public class GamePanel extends javax.swing.JPanel {
         //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
-    
+
     public static void setPlayerCount(int playerCount) {
         GamePanel.playerCount = playerCount;
     }
-    
+
     public static int getPlayerCount() {
         return playerCount;
     }
-    
+
     public static void setgiveStartingResources(boolean giveStartingResources) {
         GamePanel.giveStartingResources = giveStartingResources;
     }
-    
+
     public static boolean getgiveStartingResources() {
         return giveStartingResources;
     }
