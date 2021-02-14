@@ -1473,7 +1473,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
         } //if the theif is stealing player's cards
-        else if (thiefIsStealing || thiefJustFinished) {
+        else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7)) {
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
