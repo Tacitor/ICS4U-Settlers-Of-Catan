@@ -22,6 +22,7 @@ public class MainMenu extends javax.swing.JFrame {
     private final UserManualUI userManualUIFrame; //referance to the user manual
     private final CreditsUI creditsUIFrame; //referance to the user credits JFrame
     private final GameFrame gameJFrame; //ref to the game JFrame
+    private final NewGameSettings newGameSettingsFrame;
 
     /**
      * Creates new form MainMenu
@@ -32,6 +33,7 @@ public class MainMenu extends javax.swing.JFrame {
         userManualUIFrame = new UserManualUI(this);
         creditsUIFrame = new CreditsUI(this);
         gameJFrame = new GameFrame(this);
+        newGameSettingsFrame = new NewGameSettings(this, gameJFrame);
         
     }
 
@@ -140,10 +142,11 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_exitBtnActionPerformed
 
     private void newGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameBtnActionPerformed
-        // Hide this window and show the game
+        // Hide this window and show the settings
         this.setVisible(false);
-        gameJFrame.resetGamePanel();
-        gameJFrame.setVisible(true);
+        newGameSettingsFrame.setVisible(true);
+        //gameJFrame.resetGamePanel();
+        //gameJFrame.setVisible(true);
     }//GEN-LAST:event_newGameBtnActionPerformed
 
     private void loadGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGameBtnActionPerformed
@@ -186,10 +189,20 @@ public class MainMenu extends javax.swing.JFrame {
                 gameJFrame.resetGamePanel();
                 
                 //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSaveV5")) {
-                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V5 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                if (!scanner.nextLine().equals("SettlersOfCatanSaveV6")) {
+                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V6 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
                 } else { //if it is a real save file
-                    gameJFrame.loadFromFile(saveFileLoader);
+                    //check if the next line hold the player count
+                    if (scanner.nextLine().equals("playerCount:")) {
+                        //set the player count
+                        GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
+                        gameJFrame.resetGamePanel();
+                        
+                        gameJFrame.loadFromFile(saveFileLoader);
+                        
+                    } else {
+                        JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
                 
                 //show the game                

@@ -63,8 +63,8 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showSettlementHitbox;
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
-    private int playerCount; // The number of players in the game
-    private final boolean giveStartingResources; // If players get startup resources
+    private static int playerCount = 2; // The number of players in the game
+    private static boolean giveStartingResources = true; // If players get startup resources
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final int victoryPoints[];
     private final int totalCardsCollected[];
@@ -107,10 +107,6 @@ public class GamePanel extends javax.swing.JPanel {
      * @param frame ref to the frame
      */
     public GamePanel(GameFrame frame) {
-
-        // Initialize settings variables
-        giveStartingResources = true;
-        playerCount = 2; // 2 Player game
 
         // Initalize variables
         superFrame = frame; //save refernce
@@ -1064,7 +1060,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV5"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV6"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1075,6 +1071,8 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(victoryPointsToWin);
             saveFile.println("currentPlayer:");
             saveFile.println(currentPlayer);
+            saveFile.println("giveStartingResources:");
+            saveFile.println(giveStartingResources);
             saveFile.println("inSetup:");
             saveFile.println(inSetup);
             saveFile.println("setupRoundsLeft:");
@@ -1174,7 +1172,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV5")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV6")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1211,6 +1209,13 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("currentPlayer:")) {
                 currentPlayer = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers4");
+            } else {
+                throwLoadError();
+            }
+            
+            if (scanner.nextLine().equals("giveStartingResources:")) {
+                giveStartingResources = Boolean.parseBoolean(scanner.nextLine());
+                //System.out.println("Yuppers4.5");
             } else {
                 throwLoadError();
             }
@@ -2907,6 +2912,22 @@ public class GamePanel extends javax.swing.JPanel {
         }
         //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    }
+    
+    public static void setPlayerCount(int playerCount) {
+        GamePanel.playerCount = playerCount;
+    }
+    
+    public static int getPlayerCount() {
+        return playerCount;
+    }
+    
+    public static void setgiveStartingResources(boolean giveStartingResources) {
+        GamePanel.giveStartingResources = giveStartingResources;
+    }
+    
+    public static boolean getgiveStartingResources() {
+        return giveStartingResources;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
