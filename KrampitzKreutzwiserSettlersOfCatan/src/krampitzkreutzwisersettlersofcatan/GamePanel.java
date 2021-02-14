@@ -1020,6 +1020,57 @@ public class GamePanel extends javax.swing.JPanel {
 
             }
 
+        } else if (thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) { //check if the player clicked on a Tile to move the thief
+            //loop through the Tiles. Ignore the null Tile at the end
+            for (int i = 0; i < tiles.size() - 1; i++) {
+
+                //get the x and y positions for that tile
+                int tilePosX = tiles.get(i).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2);
+                int tilePosY = (int) (tiles.get(i).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset);
+
+                //check if there was a click on that tile.
+                if (event.getX() > tilePosX
+                        && event.getY() > tilePosY
+                        && event.getX() < (tilePosX + (int) (30 / scaleFactor))
+                        && event.getY() < (tilePosY + (int) (30 / scaleFactor))) {
+                    //debug click detection
+                    System.out.println("Got Click");
+
+                    //check if that was a valid Tile to select. Eg. no thief on the tile
+                    if (!tiles.get(i).hasThief()) {
+                        System.out.println("ran!");
+                        //disabable the hitbox because the click was registered.
+                        showTileHitbox = false;
+                        
+                        //put the thief on that tile
+                        tiles.get(i).setThief(true);
+                        
+                        //remove the thief from the old one
+                        tiles.get(tileWithThief).setThief(false);
+                        
+                        //update the tileWithThief var
+                        tileWithThief = i;
+                        
+                        // Increment the thief movement counter
+                        thiefMoveCounter++;
+                        
+                        //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
+                        //onto slecting the cards they would like to discard if the requirements are met.
+                        turnSwitchBtn.setEnabled(true);
+                    }
+                    
+                    updateBuildButtons();
+                    repaint();
+                }
+
+                /*
+                g2d.drawRect(tiles.get(tileID).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2),
+                        (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
+                        (int) (30 / scaleFactor),
+                        (int) (30 / scaleFactor));
+                 */
+            }
+
         }
     }
 
@@ -1881,6 +1932,10 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Act on the dice roll
         if (roll == 7) { // Move the thief on a 7
+            
+            /*
+            Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
+            
             // Pick a random tile to move the thief to
             int random = (int) (Math.random() * 19);
             // Remove the thief from the tile it was on before
@@ -1891,11 +1946,13 @@ public class GamePanel extends javax.swing.JPanel {
             tileWithThief = random;
             // Increment the thief movement counter
             thiefMoveCounter++;
+            
+            */
 
             //steal the cards and allow the lables to update
             thiefIsStealing = true;
             thiefJustStarted = true;
-            
+
             //show the tile hitboxes to the player who rolled the 7. This allows them to move the thief to the Tile of thier choosing.
             showTileHitbox = true;
             //disable the turn switch button so that this cannot be skiped
