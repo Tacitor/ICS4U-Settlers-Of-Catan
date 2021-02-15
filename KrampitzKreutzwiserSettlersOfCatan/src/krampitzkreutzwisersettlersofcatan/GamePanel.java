@@ -1141,6 +1141,18 @@ public class GamePanel extends javax.swing.JPanel {
                         //System.out.println("Yup valid removal");
 
                         //steal the card
+                        //randomly select a card from the targets hand
+                        int randomCard = (int) (Math.random() * cards[playerTurnOrder.get(i)].size());
+                        
+                        //debug the stealing
+                        System.out.println("index of: " + randomCard);
+                        System.out.println("card type: " + cards[playerTurnOrder.get(i)].get(randomCard));
+                        
+                        //give the card to the playerRolled7
+                        cards[currentPlayer].add(cards[playerTurnOrder.get(i)].get(randomCard));
+                        //remove said card 
+                        cards[playerTurnOrder.get(i)].remove(randomCard);
+                        
                         //reenable the turn switch button
                         turnSwitchBtn.setEnabled(true);
 
