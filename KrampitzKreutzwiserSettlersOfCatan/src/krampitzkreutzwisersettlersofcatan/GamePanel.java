@@ -1146,7 +1146,11 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //clear the canStealCardPlayers ArrayList
                         canStealCardPlayers.clear();
-
+                        
+                        //update the instructions
+                        instructionLbl.setText("You may now continue your turn.");
+                        subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
+                        
                         //redraw
                         updateBuildButtons();
                         repaint();
@@ -1630,8 +1634,8 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildRoad = (playerSetupRoadsLeft > 0) && newestSetupSettlment != null;
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
-        } //if the theif is stealing player's cards
-        else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7)) {
+        } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
+        else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
