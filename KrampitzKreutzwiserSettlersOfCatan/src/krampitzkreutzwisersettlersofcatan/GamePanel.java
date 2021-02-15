@@ -1146,11 +1146,11 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //clear the canStealCardPlayers ArrayList
                         canStealCardPlayers.clear();
-                        
+
                         //update the instructions
                         instructionLbl.setText("You may now continue your turn.");
                         subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
-                        
+
                         //redraw
                         updateBuildButtons();
                         repaint();
@@ -2276,12 +2276,12 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(PLAYER_RED), //scale the image
                 getImgHeight(PLAYER_RED),
                 null);
-        
+
         //draw the current player icon header
         g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
         g2d.setColor(new java.awt.Color(255, 255, 225));
-        g2d.drawString("Current player:", 
-                superFrame.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor), 
+        g2d.drawString("Current player:",
+                superFrame.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor),
                 superFrame.getHeight() - getImgHeight(PLAYER_RED) - (int) (20 / scaleFactor));
 
         Image subsequentPlayerImage;
@@ -2305,19 +2305,24 @@ public class GamePanel extends javax.swing.JPanel {
             //draw the hitbox for the subsequent players
             //make sure the criteria is met before drawing.
             if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) {
-                g2d.setColor(Color.green);
-                g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i), //put it in the corner with some padding space
-                        superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2, //put it in the corner with some padding space
-                        getImgWidth(PLAYER_RED) / 2, //scale the image
-                        getImgHeight(PLAYER_RED) / 2);
-                g2d.setColor(Color.black);
+
+                //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
+                if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
+                    g2d.setColor(Color.green);
+                    g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i), //put it in the corner with some padding space
+                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2, //put it in the corner with some padding space
+                            getImgWidth(PLAYER_RED) / 2, //scale the image
+                            getImgHeight(PLAYER_RED) / 2);
+                    g2d.setColor(Color.black);
+                }
             }
 
         }
-        
+
         //draw the sub player header
-        g2d.drawString("Next player:", 
-                superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(PLAYER_RED) / 2), 
+        g2d.setColor(new java.awt.Color(255, 255, 225));
+        g2d.drawString("Next player:",
+                superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(PLAYER_RED) / 2),
                 superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(PLAYER_RED) / 2);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
