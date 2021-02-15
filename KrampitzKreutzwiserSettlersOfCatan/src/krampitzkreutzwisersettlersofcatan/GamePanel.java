@@ -625,9 +625,8 @@ public class GamePanel extends javax.swing.JPanel {
                     //is clicked next time the player to roll the dice is the correct one (an not the one that did last (but only sometimes))
                     currentPlayer = playerRolled7;
 
-                    //update the instructions
-                    //like 80% sure this is never actually shown so I think this can be removed if at soem point we clean up code.
-                    instructionLbl.setText("The theif is done stealing");
+                    //update the instructions for players that have valid card combos for building
+                    instructionLbl.setText("The thief is done stealing");
                     subInstructionLbl.setText("You may resume regular play");
                 }
 
@@ -1034,11 +1033,10 @@ public class GamePanel extends javax.swing.JPanel {
                         && event.getX() < (tilePosX + (int) (30 / scaleFactor))
                         && event.getY() < (tilePosY + (int) (30 / scaleFactor))) {
                     //debug click detection
-                    System.out.println("Got Click");
+                    //System.out.println("Got Click");
 
                     //check if that was a valid Tile to select. Eg. no thief on the tile
                     if (!tiles.get(i).hasThief()) {
-                        System.out.println("ran!");
                         //disabable the hitbox because the click was registered.
                         showTileHitbox = false;
                         
@@ -1564,21 +1562,25 @@ public class GamePanel extends javax.swing.JPanel {
             //set the instructions 
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
-                instructionLbl.setForeground(Color.red);
+                instructionLbl.setForeground(new Color(255, 100, 100));
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
 
                 //update the lables for the player if the thief is stealing their cards specifically. Do not show this if a 7 was JUST rolled
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
-                    instructionLbl.setForeground(Color.red);
+                    instructionLbl.setForeground(new Color(255, 100, 100));
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
+                } else if (showTileHitbox) { //if a 7 was JUST rolled and the current player needs to move the thief show a specific messgae.
+                    instructionLbl.setForeground(new Color(255, 100, 100));
+                    instructionLbl.setText("A Thief! They will steal cards. Select a hex to move the thief.");
+                    subInstructionLbl.setText("Afterwards, you can then end your turn so the thief can decide the next person to steal from");
                 }
 
             } else if (thiefJustFinished) {
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
                 instructionLbl.setText("The thief is done stealing");
-                subInstructionLbl.setText("You can play normaly again next round");
+                subInstructionLbl.setText("You may resume regular play, but you don't have enough cards to build anything");
             } else {
                 // Set the instruction labels to tell the player they dont have enough cards
                 instructionLbl.setText("Sorry, you don't have enough cards to build anything");
