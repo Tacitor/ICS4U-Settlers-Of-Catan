@@ -1,7 +1,7 @@
 /*
- * Lukas Krampitz and Evan Kreutwiser
- * Oct 23, 2020, November 4, 2020, and Nov 6 2020
- * Show the credits
+ * Lukas Krampitz
+ * Feb 14 2021
+ * Allow the user to select settings before starting a new game.
  */
 package krampitzkreutzwisersettlersofcatan;
 
