@@ -70,6 +70,13 @@ public class ImageRef {
     public final static Image PLAYER_ORANGE = new ImageIcon(ImageRef.class.getResource("playerOrange.png")).getImage();
     public final static Image PLAYER_WHITE = new ImageIcon(ImageRef.class.getResource("playerWhite.png")).getImage();
     
+    //smaller player indecator
+    public final static Image SMALL_PLAYER_RED = new ImageIcon(ImageRef.class.getResource("smallPlayerRed.png")).getImage();
+    public final static Image SMALL_PLAYER_BLUE = new ImageIcon(ImageRef.class.getResource("smallPlayerBlue.png")).getImage();
+    public final static Image SMALL_PLAYER_NONE = new ImageIcon(ImageRef.class.getResource("smallPlayerNone.png")).getImage();
+    public final static Image SMALL_PLAYER_ORANGE = new ImageIcon(ImageRef.class.getResource("smallPlayerOrange.png")).getImage();
+    public final static Image SMALL_PLAYER_WHITE = new ImageIcon(ImageRef.class.getResource("smallPlayerWhite.png")).getImage();
+    
     //dice images
     public final static Image DIE_IMAGE_1 = new ImageIcon(ImageRef.class.getResource("die1.png")).getImage();
     public final static Image DIE_IMAGE_2 = new ImageIcon(ImageRef.class.getResource("die2.png")).getImage();

@@ -2279,7 +2279,7 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgHeight(MATERIAL_KEY),
                 null);
 
-        Image currentPlayerImage = getPlayerImage(currentPlayer);
+        Image currentPlayerImage = getPlayerImage(currentPlayer, false);
 
         //draw the current player icon
         g2d.drawImage(currentPlayerImage,
@@ -2304,14 +2304,14 @@ public class GamePanel extends javax.swing.JPanel {
             if (thiefIsStealing) {
                 subsequentPlayerImage = PLAYER_NONE;
             } else {
-                subsequentPlayerImage = getPlayerImage(playerTurnOrder.get(i));
+                subsequentPlayerImage = getPlayerImage(playerTurnOrder.get(i), true);
             }
 
             g2d.drawImage(subsequentPlayerImage,
-                    superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i), //put it in the corner with some padding space
-                    superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2, //put it in the corner with some padding space
-                    getImgWidth(PLAYER_RED) / 2, //scale the image
-                    getImgHeight(PLAYER_RED) / 2,
+                    superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(SMALL_PLAYER_RED)) * i), //put it in the corner with some padding space
+                    superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED), //put it in the corner with some padding space
+                    getImgWidth(SMALL_PLAYER_RED), //scale the image
+                    getImgHeight(SMALL_PLAYER_RED),
                     null);
 
             //draw the hitbox for the subsequent players
@@ -2813,21 +2813,37 @@ public class GamePanel extends javax.swing.JPanel {
          */
     }
 
-    private Image getPlayerImage(int playerID) {
+    private Image getPlayerImage(int playerID, boolean smallImage) {
         Image playerImage;
 
-        if (inbetweenTurns) {
-            playerImage = PLAYER_NONE;
-        } else if (playerID == 1) {
-            playerImage = PLAYER_RED;
-        } else if (playerID == 2) {
-            playerImage = PLAYER_BLUE;
-        } else if (playerID == 3) {
-            playerImage = PLAYER_ORANGE;
-        } else if (playerID == 4) {
-            playerImage = PLAYER_WHITE;
+        if (smallImage) {
+            if (inbetweenTurns) {
+                playerImage = SMALL_PLAYER_NONE;
+            } else if (playerID == 1) {
+                playerImage = SMALL_PLAYER_RED;
+            } else if (playerID == 2) {
+                playerImage = SMALL_PLAYER_BLUE;
+            } else if (playerID == 3) {
+                playerImage = SMALL_PLAYER_ORANGE;
+            } else if (playerID == 4) {
+                playerImage = SMALL_PLAYER_WHITE;
+            } else {
+                playerImage = SMALL_PLAYER_NONE;
+            }
         } else {
-            playerImage = PLAYER_NONE;
+            if (inbetweenTurns) {
+                playerImage = PLAYER_NONE;
+            } else if (playerID == 1) {
+                playerImage = PLAYER_RED;
+            } else if (playerID == 2) {
+                playerImage = PLAYER_BLUE;
+            } else if (playerID == 3) {
+                playerImage = PLAYER_ORANGE;
+            } else if (playerID == 4) {
+                playerImage = PLAYER_WHITE;
+            } else {
+                playerImage = PLAYER_NONE;
+            }
         }
 
         return playerImage;
