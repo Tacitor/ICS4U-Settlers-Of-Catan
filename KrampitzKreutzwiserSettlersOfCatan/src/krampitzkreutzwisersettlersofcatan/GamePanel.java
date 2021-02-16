@@ -643,7 +643,7 @@ public class GamePanel extends javax.swing.JPanel {
                     subInstructionLbl.setText("You may resume regular play");
 
                     //now that the thief is done stealing check if the playerRolled7 can steal cards
-                    System.out.println(canStealCardPlayers.size());
+                    //System.out.println(canStealCardPlayers.size());
                     if (canStealCardPlayers.size() > 0) {
                         //does atleast one of the targetable sub players have more than one card to steal
                         subPlayersHaveEnoughcards = false; //checks for this so that the game does not softlock when the current player need to choose but has 0 options
@@ -1103,7 +1103,7 @@ public class GamePanel extends javax.swing.JPanel {
                             }
                         }
 
-                        System.out.println(canStealCardPlayers);
+                        //System.out.println(canStealCardPlayers);
 
                         //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
                         //onto slecting the cards they would like to discard if the requirements are met.
@@ -1145,8 +1145,8 @@ public class GamePanel extends javax.swing.JPanel {
                         int randomCard = (int) (Math.random() * cards[playerTurnOrder.get(i)].size());
                         
                         //debug the stealing
-                        System.out.println("index of: " + randomCard);
-                        System.out.println("card type: " + cards[playerTurnOrder.get(i)].get(randomCard));
+                        //System.out.println("index of: " + randomCard);
+                        //System.out.println("card type: " + cards[playerTurnOrder.get(i)].get(randomCard));
                         
                         //give the card to the playerRolled7
                         cards[currentPlayer].add(cards[playerTurnOrder.get(i)].get(randomCard));
