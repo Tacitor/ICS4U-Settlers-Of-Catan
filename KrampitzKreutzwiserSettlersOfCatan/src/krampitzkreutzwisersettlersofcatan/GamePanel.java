@@ -49,6 +49,9 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 2, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom
     private final int[] tileDrawOrder = new int[]{7, 3, 0, 12, 8, 4, 1, 16, 13, 9, 5, 2, 17, 14, 10, 6, 18, 15, 11}; //the order tiles are drawin in, in 3d tile mode to account fot the over lap
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
+    private ArrayList<Integer> playerTurnOrder; //the oder the players go in. index 0 is always the current player and index 1 is always the next up, etc.
+    private ArrayList<Integer> canStealCardPlayers; //any ints in this ArrayList are the player number of players that have a house on a hex that the thief was JUST moved to. Most of the time this is empty.
+    private boolean subPlayersHaveEnoughcards; //a boolean that is true is at least one of the players in canStealCardPlayers has 1 or more card.
 
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
     private int setupRoundsLeft; //the number of setup rounds left. A normal game will start with 2
@@ -61,10 +64,11 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showCardHitbox; //used for picking which cards the thief steals
     private boolean[] drawCardStacks; //controls the mode cards are drown in. Stacked or fully layout
     private boolean showSettlementHitbox;
+    private boolean showTileHitbox;
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
-    private int playerCount; // The number of players in the game
-    private final boolean giveStartingResources; // If players get startup resources
+    private static int playerCount = 2; // The number of players in the game
+    private static boolean giveStartingResources = true; // If players get startup resources
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final int victoryPoints[];
     private final int totalCardsCollected[];
@@ -108,10 +112,6 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public GamePanel(GameFrame frame) {
 
-        // Initialize settings variables
-        giveStartingResources = true;
-        playerCount = 2; // 2 Player game
-
         // Initalize variables
         superFrame = frame; //save refernce
         tiles = new ArrayList(); //init the master tile array list
@@ -145,10 +145,21 @@ public class GamePanel extends javax.swing.JPanel {
         showRoadHitbox = false;
         showSettlementHitbox = false;
         showCardHitbox = false;
+        showTileHitbox = false;
         playerSetupRoadsLeft = 1;
         playerSetupSettlementLeft = 1;
         victoryPointsToWin = 10;
         thiefMoveCounter = 0;
+
+        //init the playerTurnOrder
+        playerTurnOrder = new ArrayList<>();
+        //load the playerTurnOrder
+        for (int i = 0; i < playerCount; i++) {
+            playerTurnOrder.add(i + 1);
+        }
+
+        //init the canStealCardPlayers
+        canStealCardPlayers = new ArrayList<>();
 
         //set a default save path
         saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.save";
@@ -590,6 +601,11 @@ public class GamePanel extends javax.swing.JPanel {
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
 
+                //no longer in steal start mode because the lable would have already been updated
+                if (thiefJustStarted) {
+                    thiefJustStarted = false;
+                }
+
                 //check if the current player needs to be stolen from
                 if (stealCardNum[currentPlayer] > 0) {
 
@@ -622,12 +638,38 @@ public class GamePanel extends javax.swing.JPanel {
                     //is clicked next time the player to roll the dice is the correct one (an not the one that did last (but only sometimes))
                     currentPlayer = playerRolled7;
 
-                    //update the instructions
-                    //like 80% sure this is never actually shown so I think this can be removed if at soem point we clean up code.
-                    instructionLbl.setText("The theif is done stealing");
+                    //update the instructions for players that have valid card combos for building
+                    instructionLbl.setText("The thief is done stealing");
                     subInstructionLbl.setText("You may resume regular play");
-                }
 
+                    //now that the thief is done stealing check if the playerRolled7 can steal cards
+                    //System.out.println(canStealCardPlayers.size());
+                    if (canStealCardPlayers.size() > 0) {
+                        //does atleast one of the targetable sub players have more than one card to steal
+                        subPlayersHaveEnoughcards = false; //checks for this so that the game does not softlock when the current player need to choose but has 0 options
+
+                        for (int i = 0; i < canStealCardPlayers.size(); i++) {
+                            if (cards[canStealCardPlayers.get(i)].size() > 0) {
+                                subPlayersHaveEnoughcards = true;
+                            }
+                        }
+
+                        //if the playerRolled7 can steal
+                        if (subPlayersHaveEnoughcards) {
+
+                            //disable the turn switch button until the player has selected another player to steal from
+                            turnSwitchBtn.setEnabled(false);
+
+                            //update the lables for when the player can build
+                            instructionLbl.setText("The thief is done stealing. But you are not!");
+                            subInstructionLbl.setText("Select one of your fellow players to take one of their cards at random. got $$");
+                        } else {
+                            //if none of the sub players have any cards clear the canStealCardPlayers
+                            canStealCardPlayers.clear();
+                        }
+                    }
+
+                }
             } else { // If a turn of the real game is starting (not setup)
                 // Roll the dice and display the rolled number to the user
                 diceRoll();
@@ -950,7 +992,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
             }
-        } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0) { //check if the user clicked to select a card
+        } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0 && !thiefJustStarted) { //check if the user clicked to select a card and the thief didn't just start
 
             //get the y position for the cards
             int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
@@ -1017,6 +1059,129 @@ public class GamePanel extends javax.swing.JPanel {
 
             }
 
+        } else if (thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) { //check if the player clicked on a Tile to move the thief
+            //loop through the Tiles. Ignore the null Tile at the end
+            for (int i = 0; i < tiles.size() - 1; i++) {
+
+                //get the x and y positions for that tile
+                int tilePosX = tiles.get(i).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2);
+                int tilePosY = (int) (tiles.get(i).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset);
+
+                //check if there was a click on that tile.
+                if (event.getX() > tilePosX
+                        && event.getY() > tilePosY
+                        && event.getX() < (tilePosX + (int) (30 / scaleFactor))
+                        && event.getY() < (tilePosY + (int) (30 / scaleFactor))) {
+                    //debug click detection
+                    //System.out.println("Got Click");
+
+                    //check if that was a valid Tile to select. Eg. no thief on the tile
+                    if (!tiles.get(i).hasThief()) {
+                        //disabable the hitbox because the click was registered.
+                        showTileHitbox = false;
+
+                        //put the thief on that tile
+                        tiles.get(i).setThief(true);
+
+                        //remove the thief from the old one
+                        tiles.get(tileWithThief).setThief(false);
+
+                        //update the tileWithThief var
+                        tileWithThief = i;
+
+                        // Increment the thief movement counter
+                        thiefMoveCounter++;
+
+                        //check if the player who rolled the 7 is eligable to steal cards
+                        //loop through all the settlements and see if they boarder the new thief tile and if it is owned
+                        for (int j = 0; j < settlementNodes.size(); j++) {
+                            //loop 3 times for the 3 potencial tile connections
+                            for (int k = 1; k < 4; k++) {
+                                //check if the settlment is on the Tile and if the settlement is owned and if the owner is someone other than current player
+                                if (settlementNodes.get(j).getTile(k) == tiles.get(i) && settlementNodes.get(j).getPlayer() != 0 && settlementNodes.get(j).getPlayer() != currentPlayer) {
+                                    //if so than the current player can steal cards from the player that owns that settlment
+                                    canStealCardPlayers.add(settlementNodes.get(j).getPlayer());
+                                }
+                            }
+                        }
+
+                        //System.out.println(canStealCardPlayers);
+                        //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
+                        //onto slecting the cards they would like to discard if the requirements are met.
+                        turnSwitchBtn.setEnabled(true);
+                    }
+
+                    updateBuildButtons();
+                    repaint();
+                }
+            }
+
+        } else if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) { //check if the player just clicked to select another player to seal from
+            //debug
+            //System.out.println("Got a steal click");
+
+            int subPlayerPosY = superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2;
+            int subPlayerPosX;
+
+            //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
+            for (int i = 1; i < playerTurnOrder.size(); i++) {
+
+                subPlayerPosX = superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i);
+
+                //check if there was a click on one of the sub players
+                if (event.getX() > subPlayerPosX
+                        && event.getY() > subPlayerPosY
+                        && event.getX() < (subPlayerPosX + (getImgWidth(PLAYER_RED) / 2))
+                        && event.getY() < (subPlayerPosY + (getImgHeight(PLAYER_RED) / 2))) {
+
+                    //debug
+                    //System.out.println("Yuh we got a click on player: " + playerTurnOrder.get(i));
+                    //check if the player is allowed to steal from that players and that said player has atleast 1 card to steal
+                    if (canStealCardPlayers.contains(playerTurnOrder.get(i)) && cards[playerTurnOrder.get(i)].size() > 0) {
+                        //debug
+                        //System.out.println("Yup valid removal");
+
+                        //steal the card
+                        //randomly select a card from the targets hand
+                        int randomCard = (int) (Math.random() * cards[playerTurnOrder.get(i)].size());
+
+                        //debug the stealing
+                        //System.out.println("index of: " + randomCard);
+                        //System.out.println("card type: " + cards[playerTurnOrder.get(i)].get(randomCard));
+                        //give the card to the playerRolled7
+                        cards[currentPlayer].add(cards[playerTurnOrder.get(i)].get(randomCard));
+                        //remove said card from the original player
+                        cards[playerTurnOrder.get(i)].remove(randomCard);
+
+                        //reenable the turn switch button
+                        turnSwitchBtn.setEnabled(true);
+
+                        //clear the canStealCardPlayers ArrayList
+                        canStealCardPlayers.clear();
+
+                        //update the instructions
+                        instructionLbl.setText("You may now continue your turn.");
+                        subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
+
+                        //redraw
+                        updateBuildButtons();
+                        repaint();
+                    }
+
+                }
+
+            }
+
+            /*
+            if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) {
+                g2d.setColor(Color.green);
+                g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i), //put it in the corner with some padding space
+                    superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2, //put it in the corner with some padding space
+                    getImgWidth(PLAYER_RED) / 2, //scale the image
+                    getImgHeight(PLAYER_RED) / 2);
+                g2d.setColor(Color.black);
+            }
+             */
         }
     }
 
@@ -1064,7 +1229,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV5"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV6"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1075,6 +1240,8 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(victoryPointsToWin);
             saveFile.println("currentPlayer:");
             saveFile.println(currentPlayer);
+            saveFile.println("giveStartingResources:");
+            saveFile.println(giveStartingResources);
             saveFile.println("inSetup:");
             saveFile.println(inSetup);
             saveFile.println("setupRoundsLeft:");
@@ -1174,7 +1341,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV5")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV6")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1211,6 +1378,13 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("currentPlayer:")) {
                 currentPlayer = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers4");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("giveStartingResources:")) {
+                giveStartingResources = Boolean.parseBoolean(scanner.nextLine());
+                //System.out.println("Yuppers4.5");
             } else {
                 throwLoadError();
             }
@@ -1436,6 +1610,11 @@ public class GamePanel extends javax.swing.JPanel {
             subInstructionLbl.setText("Or end your turn to continue the game");
         }
 
+        //bring the playerTurnOrder Array to match the state it was when saving
+        while (playerTurnOrder.get(0) != currentPlayer) {
+            progressPlayerTurnOrder();
+        }
+
         repaint();
         updateBuildButtons();
     }
@@ -1467,8 +1646,8 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildRoad = (playerSetupRoadsLeft > 0) && newestSetupSettlment != null;
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
-        } //if the theif is stealing player's cards
-        else if (thiefIsStealing || thiefJustFinished) {
+        } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
+        else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
@@ -1501,26 +1680,26 @@ public class GamePanel extends javax.swing.JPanel {
             //set the instructions 
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
-                instructionLbl.setForeground(Color.red);
+                instructionLbl.setForeground(new Color(255, 100, 100));
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
 
                 //update the lables for the player if the thief is stealing their cards specifically. Do not show this if a 7 was JUST rolled
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
-                    instructionLbl.setForeground(Color.red);
+                    instructionLbl.setForeground(new Color(255, 100, 100));
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
+                } else if (showTileHitbox) { //if a 7 was JUST rolled and the current player needs to move the thief show a specific messgae.
+                    instructionLbl.setForeground(new Color(255, 100, 100));
+                    instructionLbl.setText("A Thief! They will steal cards. Select a hex to move the thief.");
+                    subInstructionLbl.setText("Afterwards, you can then end your turn so the thief can decide the next person to steal from");
                 }
 
-                //no longer in steal start mode because the lable above just updated
-                if (thiefJustStarted) {
-                    thiefJustStarted = false;
-                }
+            } else if (thiefJustFinished && subPlayersHaveEnoughcards) {
+                // Set the instruction labels to tell the player that they need to select a play to steal from
+                instructionLbl.setText("The thief is done stealing. But you are not!");
+                subInstructionLbl.setText("Select one of your fellow players to take one of their cards at random");
 
-            } else if (thiefJustFinished) {
-                // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
-                instructionLbl.setText("The thief is done stealing");
-                subInstructionLbl.setText("You can play normaly again next round");
             } else {
                 // Set the instruction labels to tell the player they dont have enough cards
                 instructionLbl.setText("Sorry, you don't have enough cards to build anything");
@@ -1874,6 +2053,10 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Act on the dice roll
         if (roll == 7) { // Move the thief on a 7
+
+            /*
+            Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
+            
             // Pick a random tile to move the thief to
             int random = (int) (Math.random() * 19);
             // Remove the thief from the tile it was on before
@@ -1884,10 +2067,16 @@ public class GamePanel extends javax.swing.JPanel {
             tileWithThief = random;
             // Increment the thief movement counter
             thiefMoveCounter++;
-
+            
+             */
             //steal the cards and allow the lables to update
             thiefIsStealing = true;
             thiefJustStarted = true;
+
+            //show the tile hitboxes to the player who rolled the 7. This allows them to move the thief to the Tile of thier choosing.
+            showTileHitbox = true;
+            //disable the turn switch button so that this cannot be skiped
+            turnSwitchBtn.setEnabled(false);
 
             //save the player who just rolled a 7
             playerRolled7 = currentPlayer;
@@ -2090,17 +2279,7 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgHeight(MATERIAL_KEY),
                 null);
 
-        Image currentPlayerImage;
-
-        if (inbetweenTurns) {
-            currentPlayerImage = PLAYER_NONE;
-        } else if (currentPlayer == 1) {
-            currentPlayerImage = PLAYER_RED;
-        } else if (currentPlayer == 2) {
-            currentPlayerImage = PLAYER_BLUE;
-        } else {
-            currentPlayerImage = PLAYER_NONE;
-        }
+        Image currentPlayerImage = getPlayerImage(currentPlayer, false);
 
         //draw the current player icon
         g2d.drawImage(currentPlayerImage,
@@ -2109,6 +2288,54 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(PLAYER_RED), //scale the image
                 getImgHeight(PLAYER_RED),
                 null);
+
+        //draw the current player icon header
+        g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
+        g2d.setColor(new java.awt.Color(255, 255, 225));
+        g2d.drawString("Current player:",
+                superFrame.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor),
+                superFrame.getHeight() - getImgHeight(PLAYER_RED) - (int) (20 / scaleFactor));
+
+        Image subsequentPlayerImage;
+
+        //draw the subsequent other players but smaller
+        for (int i = 1; i < playerTurnOrder.size(); i++) {
+            //only show the sub players if the thief is not stealing. Otherwise it gets confusing.
+            if (thiefIsStealing) {
+                subsequentPlayerImage = PLAYER_NONE;
+            } else {
+                subsequentPlayerImage = getPlayerImage(playerTurnOrder.get(i), true);
+            }
+
+            g2d.drawImage(subsequentPlayerImage,
+                    superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(SMALL_PLAYER_RED)) * i), //put it in the corner with some padding space
+                    superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED), //put it in the corner with some padding space
+                    getImgWidth(SMALL_PLAYER_RED), //scale the image
+                    getImgHeight(SMALL_PLAYER_RED),
+                    null);
+
+            //draw the hitbox for the subsequent players
+            //make sure the criteria is met before drawing.
+            if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) {
+
+                //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
+                if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
+                    g2d.setColor(Color.green);
+                    g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i),
+                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2,
+                            getImgWidth(PLAYER_RED) / 2,
+                            getImgHeight(PLAYER_RED) / 2);
+                    g2d.setColor(Color.black);
+                }
+            }
+
+        }
+
+        //draw the sub player header
+        g2d.setColor(new java.awt.Color(255, 255, 225));
+        g2d.drawString("Next player:",
+                superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(PLAYER_RED) / 2),
+                superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(PLAYER_RED) / 2);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         int tileID;
@@ -2178,6 +2405,17 @@ public class GamePanel extends javax.swing.JPanel {
                         (int) (imageHeight / scaleFactor),
                         null);
             }
+
+            //draw the hitbox for the tile
+            //make sure the hex fits the criteria. Thief cannot be moved to the tile where they already are.
+            if (showTileHitbox && !tiles.get(tileID).hasThief()) {
+                g2d.setColor(Color.green);
+                g2d.drawRect(tiles.get(tileID).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2),
+                        (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
+                        (int) (30 / scaleFactor),
+                        (int) (30 / scaleFactor));
+                g2d.setColor(Color.black);
+            }
         } //end tile drawing loop
 
         //set the font for the dice roll indecator
@@ -2220,6 +2458,10 @@ public class GamePanel extends javax.swing.JPanel {
             currentPlayerString = "1, Red";
         } else if (this.currentPlayer == 2) {
             currentPlayerString = "2, Blue";
+        } else if (this.currentPlayer == 3) {
+            currentPlayerString = "3, Orange";
+        } else if (this.currentPlayer == 4) {
+            currentPlayerString = "4, White";
         } else {
             currentPlayerString = "0, Error";
         }
@@ -2269,8 +2511,14 @@ public class GamePanel extends javax.swing.JPanel {
                         image = BLANK_ROAD_H;
                     } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_H;
-                    } else {
+                    } else if (road.getPlayer() == 2) {
                         image = BLUE_ROAD_H;
+                    } else if (road.getPlayer() == 3) {
+                        image = ORANGE_ROAD_H;
+                    } else if (road.getPlayer() == 4) {
+                        image = WHITE_ROAD_H;
+                    } else {
+                        image = RED_ROAD_L;
                     }
                     break;
                 case 1: // Road pointing to the top left ( \ ) 
@@ -2279,18 +2527,30 @@ public class GamePanel extends javax.swing.JPanel {
                         image = BLANK_ROAD_V;
                     } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_L;
-                    } else {
+                    } else if (road.getPlayer() == 2) {
                         image = BLUE_ROAD_L;
+                    } else if (road.getPlayer() == 3) {
+                        image = ORANGE_ROAD_L;
+                    } else if (road.getPlayer() == 4) {
+                        image = WHITE_ROAD_L;
+                    } else {
+                        image = RED_ROAD_H;
                     }
                     break;
                 case 2: // Road pointing to the top right ( / ) 
                     // Store the road image for the player's color
                     if (road.getPlayer() == 0) {
                         image = BLANK_ROAD_V;
-                    } else if (road.getPlayer() == 1 || road.getPlayer() == 0) {
+                    } else if (road.getPlayer() == 1) {
                         image = RED_ROAD_R;
-                    } else {
+                    } else if (road.getPlayer() == 2) {
                         image = BLUE_ROAD_R;
+                    } else if (road.getPlayer() == 3) {
+                        image = ORANGE_ROAD_R;
+                    } else if (road.getPlayer() == 4) {
+                        image = WHITE_ROAD_R;
+                    } else {
+                        image = RED_ROAD_H;
                     }
                     break;
                 default: // Make the compiler happy and error handling
@@ -2331,17 +2591,35 @@ public class GamePanel extends javax.swing.JPanel {
                 if (settlement.getPlayer() == 1) {
                     image = RED_HOUSE_S;
                 } // Player 1: Red
-                else {
+                else if (settlement.getPlayer() == 2) {
                     image = BLUE_HOUSE_S;
                 } // Player 2: Blue
+                else if (settlement.getPlayer() == 3) {
+                    image = ORANGE_HOUSE_S;
+                } // Player 3: Orange
+                else if (settlement.getPlayer() == 4) {
+                    image = WHITE_HOUSE_S;
+                } // Player 4: White
+                else {
+                    image = RED_HOUSE_L;
+                }
             } else { // Large settlement
                 // Store the large settlement image for the player's color
                 if (settlement.getPlayer() == 1) {
                     image = RED_HOUSE_L;
                 } // Player 1: Red
-                else {
+                else if (settlement.getPlayer() == 2) {
                     image = BLUE_HOUSE_L;
                 } // Player 2: Blue
+                else if (settlement.getPlayer() == 3) {
+                    image = ORANGE_HOUSE_L;
+                } // Player 3: Orange
+                else if (settlement.getPlayer() == 4) {
+                    image = WHITE_HOUSE_L;
+                } // Player 4: White
+                else {
+                    image = RED_HOUSE_S;
+                }
             }
 
             // Draw the settlement image saved above, at the node's position
@@ -2533,6 +2811,49 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(WATER_RING_OVERLAY), 
                 getImgHeight(WATER_RING_OVERLAY), null);
          */
+    }
+
+    /**
+     * Return the Image object of a player turn indicator
+     *
+     * @param playerID the player number associated with the image
+     * @param smallImage should the image be the small version
+     * @return
+     */
+    private Image getPlayerImage(int playerID, boolean smallImage) {
+        Image playerImage;
+
+        if (smallImage) {
+            if (inbetweenTurns) {
+                playerImage = SMALL_PLAYER_NONE;
+            } else if (playerID == 1) {
+                playerImage = SMALL_PLAYER_RED;
+            } else if (playerID == 2) {
+                playerImage = SMALL_PLAYER_BLUE;
+            } else if (playerID == 3) {
+                playerImage = SMALL_PLAYER_ORANGE;
+            } else if (playerID == 4) {
+                playerImage = SMALL_PLAYER_WHITE;
+            } else {
+                playerImage = SMALL_PLAYER_NONE;
+            }
+        } else {
+            if (inbetweenTurns) {
+                playerImage = PLAYER_NONE;
+            } else if (playerID == 1) {
+                playerImage = PLAYER_RED;
+            } else if (playerID == 2) {
+                playerImage = PLAYER_BLUE;
+            } else if (playerID == 3) {
+                playerImage = PLAYER_ORANGE;
+            } else if (playerID == 4) {
+                playerImage = PLAYER_WHITE;
+            } else {
+                playerImage = PLAYER_NONE;
+            }
+        }
+
+        return playerImage;
     }
 
     /**
@@ -2796,6 +3117,7 @@ public class GamePanel extends javax.swing.JPanel {
     private void nextPlayer() {
         currentPlayer++; //switch to the next player
         newestSetupSettlment = null; //remove the most recent built house as the turn just changed
+        progressPlayerTurnOrder(); //step the ArrayList to reflect the new current player
 
         // And go back to player 1 if the number exceeds the total number of players
         if (currentPlayer > playerCount) {
@@ -2815,6 +3137,21 @@ public class GamePanel extends javax.swing.JPanel {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Step the playerTurnOrder by one. Moves index 0 to back, 1 to 0, etc.
+     */
+    private void progressPlayerTurnOrder() {
+        //check if the thief is active
+        if (!thiefIsStealing) {
+            //save the value in index 0
+            int holdVal = playerTurnOrder.get(0);
+            //remove it from index 0
+            playerTurnOrder.remove(0);
+            //add it back to the end
+            playerTurnOrder.add(holdVal);
         }
     }
 
@@ -2863,6 +3200,38 @@ public class GamePanel extends javax.swing.JPanel {
         }
         //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    }
+
+    /**
+     * Set the number of players playing the game
+     * @param playerCount
+     */
+    public static void setPlayerCount(int playerCount) {
+        GamePanel.playerCount = playerCount;
+    }
+
+    /**
+     * Get the number of players playing the game
+     * @return
+     */
+    public static int getPlayerCount() {
+        return playerCount;
+    }
+
+    /**
+     * Set weather or not the players receive startup resource cards when the game leaves setup mode
+     * @param giveStartingResources
+     */
+    public static void setgiveStartingResources(boolean giveStartingResources) {
+        GamePanel.giveStartingResources = giveStartingResources;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static boolean getgiveStartingResources() {
+        return giveStartingResources;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
