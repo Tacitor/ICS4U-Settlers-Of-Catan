@@ -50,8 +50,8 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] tileDrawOrder = new int[]{7, 3, 0, 12, 8, 4, 1, 16, 13, 9, 5, 2, 17, 14, 10, 6, 18, 15, 11}; //the order tiles are drawin in, in 3d tile mode to account fot the over lap
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
     private ArrayList<Integer> playerTurnOrder; //the oder the players go in. index 0 is always the current player and index 1 is always the next up, etc.
-    private ArrayList<Integer> canStealCardPlayers;
-    private boolean subPlayersHaveEnoughcards;
+    private ArrayList<Integer> canStealCardPlayers; //any ints in this ArrayList are the player number of players that have a house on a hex that the thief was JUST moved to. Most of the time this is empty.
+    private boolean subPlayersHaveEnoughcards; //a boolean that is true is at least one of the players in canStealCardPlayers has 1 or more card.
 
     private boolean inSetup; // If the game is still being set up (players placing initiale buildings)
     private int setupRoundsLeft; //the number of setup rounds left. A normal game will start with 2
@@ -1097,14 +1097,15 @@ public class GamePanel extends javax.swing.JPanel {
                         for (int j = 0; j < settlementNodes.size(); j++) {
                             //loop 3 times for the 3 potencial tile connections
                             for (int k = 1; k < 4; k++) {
+                                //check if the settlment is on the Tile and if the settlement is owned and if the owner is someone other than current player
                                 if (settlementNodes.get(j).getTile(k) == tiles.get(i) && settlementNodes.get(j).getPlayer() != 0 && settlementNodes.get(j).getPlayer() != currentPlayer) {
+                                    //if so than the current player can steal cards from the player that owns that settlment
                                     canStealCardPlayers.add(settlementNodes.get(j).getPlayer());
                                 }
                             }
                         }
 
                         //System.out.println(canStealCardPlayers);
-
                         //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
                         //onto slecting the cards they would like to discard if the requirements are met.
                         turnSwitchBtn.setEnabled(true);
@@ -1143,16 +1144,15 @@ public class GamePanel extends javax.swing.JPanel {
                         //steal the card
                         //randomly select a card from the targets hand
                         int randomCard = (int) (Math.random() * cards[playerTurnOrder.get(i)].size());
-                        
+
                         //debug the stealing
                         //System.out.println("index of: " + randomCard);
                         //System.out.println("card type: " + cards[playerTurnOrder.get(i)].get(randomCard));
-                        
                         //give the card to the playerRolled7
                         cards[currentPlayer].add(cards[playerTurnOrder.get(i)].get(randomCard));
-                        //remove said card 
+                        //remove said card from the original player
                         cards[playerTurnOrder.get(i)].remove(randomCard);
-                        
+
                         //reenable the turn switch button
                         turnSwitchBtn.setEnabled(true);
 
@@ -1610,7 +1610,7 @@ public class GamePanel extends javax.swing.JPanel {
             subInstructionLbl.setText("Or end your turn to continue the game");
         }
 
-        //bing the playerTurnOrder Array to match the state it was when saving
+        //bring the playerTurnOrder Array to match the state it was when saving
         while (playerTurnOrder.get(0) != currentPlayer) {
             progressPlayerTurnOrder();
         }
@@ -1696,7 +1696,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else if (thiefJustFinished && subPlayersHaveEnoughcards) {
-                // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
+                // Set the instruction labels to tell the player that they need to select a play to steal from
                 instructionLbl.setText("The thief is done stealing. But you are not!");
                 subInstructionLbl.setText("Select one of your fellow players to take one of their cards at random");
 
@@ -2321,9 +2321,9 @@ public class GamePanel extends javax.swing.JPanel {
                 //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
                 if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
                     g2d.setColor(Color.green);
-                    g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i), //put it in the corner with some padding space
-                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2, //put it in the corner with some padding space
-                            getImgWidth(PLAYER_RED) / 2, //scale the image
+                    g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i),
+                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2,
+                            getImgWidth(PLAYER_RED) / 2,
                             getImgHeight(PLAYER_RED) / 2);
                     g2d.setColor(Color.black);
                 }
@@ -2813,6 +2813,13 @@ public class GamePanel extends javax.swing.JPanel {
          */
     }
 
+    /**
+     * Return the Image object of a player turn indicator
+     *
+     * @param playerID the player number associated with the image
+     * @param smallImage should the image be the small version
+     * @return
+     */
     private Image getPlayerImage(int playerID, boolean smallImage) {
         Image playerImage;
 
@@ -3195,18 +3202,34 @@ public class GamePanel extends javax.swing.JPanel {
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
 
+    /**
+     * Set the number of players playing the game
+     * @param playerCount
+     */
     public static void setPlayerCount(int playerCount) {
         GamePanel.playerCount = playerCount;
     }
 
+    /**
+     * Get the number of players playing the game
+     * @return
+     */
     public static int getPlayerCount() {
         return playerCount;
     }
 
+    /**
+     * Set weather or not the players receive startup resource cards when the game leaves setup mode
+     * @param giveStartingResources
+     */
     public static void setgiveStartingResources(boolean giveStartingResources) {
         GamePanel.giveStartingResources = giveStartingResources;
     }
 
+    /**
+     *
+     * @return
+     */
     public static boolean getgiveStartingResources() {
         return giveStartingResources;
     }
