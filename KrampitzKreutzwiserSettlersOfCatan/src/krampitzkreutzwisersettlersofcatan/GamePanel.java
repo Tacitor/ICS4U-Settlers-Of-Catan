@@ -315,6 +315,9 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl = new javax.swing.JLabel();
         backNoSaveBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
+        trade3to1Btn = new javax.swing.JButton();
+        trade4to1Btn = new javax.swing.JButton();
+        trade2to1Btn = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -397,6 +400,39 @@ public class GamePanel extends javax.swing.JPanel {
         titleLbl.setForeground(new java.awt.Color(255, 255, 225));
         titleLbl.setText("Settlers of Catan");
 
+        trade3to1Btn.setBackground(new java.awt.Color(102, 62, 38));
+        trade3to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        trade3to1Btn.setText("Trade 3:1");
+        trade3to1Btn.setToolTipText("");
+        trade3to1Btn.setEnabled(false);
+        trade3to1Btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                trade3to1BtnActionPerformed(evt);
+            }
+        });
+
+        trade4to1Btn.setBackground(new java.awt.Color(102, 62, 38));
+        trade4to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        trade4to1Btn.setText("Trade 4:1");
+        trade4to1Btn.setToolTipText("");
+        trade4to1Btn.setEnabled(false);
+        trade4to1Btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                trade4to1BtnActionPerformed(evt);
+            }
+        });
+
+        trade2to1Btn.setBackground(new java.awt.Color(102, 62, 38));
+        trade2to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        trade2to1Btn.setText("Specialized Trade 2:1");
+        trade2to1Btn.setToolTipText("");
+        trade2to1Btn.setEnabled(false);
+        trade2to1Btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                trade2to1BtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -422,10 +458,13 @@ public class GamePanel extends javax.swing.JPanel {
                         .addContainerGap(1157, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(trade3to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(titleLbl))
+                            .addComponent(titleLbl)
+                            .addComponent(trade4to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -451,7 +490,13 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementLRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 666, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
+                .addComponent(trade4to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(trade3to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 462, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -771,6 +816,18 @@ public class GamePanel extends javax.swing.JPanel {
             superFrame.setVisible(false); //hide the parent frame 
         }
     }//GEN-LAST:event_backNoSaveBtnActionPerformed
+
+    private void trade3to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade3to1BtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_trade3to1BtnActionPerformed
+
+    private void trade4to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade4to1BtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_trade4to1BtnActionPerformed
+
+    private void trade2to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade2to1BtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_trade2to1BtnActionPerformed
 
     /**
      * Handles mouse input, based on the state of the game
@@ -3247,6 +3304,9 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JLabel subInstructionLbl;
     private javax.swing.JLabel titleLbl;
+    private javax.swing.JButton trade2to1Btn;
+    private javax.swing.JButton trade3to1Btn;
+    private javax.swing.JButton trade4to1Btn;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 
