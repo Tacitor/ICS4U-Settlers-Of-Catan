@@ -8,6 +8,7 @@ package krampitzkreutzwisersettlersofcatan;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JFileChooser;
+import textures.ImageRef;
 
 /**
  *
@@ -21,6 +22,8 @@ public class GameFrame extends javax.swing.JFrame {
     private GamePanel theGamePanel; //referance to *a* GamePanel
     
     public GameFrame(MainMenu m) {
+        
+        setIcon();
 
         mainMenuFrame = m;
         screenSize = Toolkit.getDefaultToolkit().getScreenSize(); //acctually gets the data for the display
@@ -54,6 +57,13 @@ public class GameFrame extends javax.swing.JFrame {
         //System.out.println("Width: " + this.getWidth());
         //System.out.println("Height: " + this.getHeight());
         
+    }
+    
+    /**
+     * Set the icon for the JFRame
+     */
+    private void setIcon() {
+        this.setIconImage(ImageRef.ICON);
     }
     
     /**

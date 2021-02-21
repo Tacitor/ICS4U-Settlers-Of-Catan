@@ -9,6 +9,7 @@ import dataFiles.OldCode;
 import java.io.File; //File usage
 import java.io.InputStream; // File reference
 import java.util.Scanner; // File reading
+import textures.ImageRef;
 
 /**
  *
@@ -24,11 +25,20 @@ public class UserManualUI extends javax.swing.JFrame {
      * @param m The main menu JFrame this returns to on exit
      */
     public UserManualUI(MainMenu m) {
+        setIcon();
+        
         initComponents();
         mainMenuFrame = m;
         
         // Load and display the User Manual file
         loadMaterial();
+    }
+    
+    /**
+     * Set the icon for the JFRame
+     */
+    private void setIcon() {
+        this.setIconImage(ImageRef.ICON);
     }
 
     /**

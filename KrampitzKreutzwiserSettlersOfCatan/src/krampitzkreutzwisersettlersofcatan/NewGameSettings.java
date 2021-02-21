@@ -5,6 +5,8 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import textures.ImageRef;
+
 /**
  *
  * @author Tacitor
@@ -21,9 +23,18 @@ public class NewGameSettings extends javax.swing.JFrame {
      * @param m The main menu JFrame this returns to on exit
      */
     public NewGameSettings(MainMenu m, GameFrame g) {
+        setIcon();
+        
         initComponents();
         mainMenuFrame = m;
         gameFrame = g;
+    }
+    
+    /**
+     * Set the icon for the JFRame
+     */
+    private void setIcon() {
+        this.setIconImage(ImageRef.ICON);
     }
 
     /**

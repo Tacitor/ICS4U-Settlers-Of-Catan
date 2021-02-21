@@ -11,6 +11,7 @@ import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
+import textures.ImageRef;
 
 /**
  *
@@ -28,7 +29,10 @@ public class MainMenu extends javax.swing.JFrame {
      * Creates new form MainMenu
      */
     public MainMenu() {
+        
         initComponents();
+        
+        setIcon();
         
         userManualUIFrame = new UserManualUI(this);
         creditsUIFrame = new CreditsUI(this);
@@ -262,6 +266,13 @@ public class MainMenu extends javax.swing.JFrame {
                 new MainMenu().setVisible(true);
             }
         });
+    }
+    
+    /**
+     * Set the icon for the JFRame
+     */
+    private void setIcon() {
+        this.setIconImage(ImageRef.ICON);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
