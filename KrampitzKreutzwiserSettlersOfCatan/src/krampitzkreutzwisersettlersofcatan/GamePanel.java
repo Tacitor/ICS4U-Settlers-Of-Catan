@@ -415,7 +415,6 @@ public class GamePanel extends javax.swing.JPanel {
         trade4to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade4to1Btn.setText("Trade 4:1");
         trade4to1Btn.setToolTipText("");
-        trade4to1Btn.setEnabled(false);
         trade4to1Btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trade4to1BtnActionPerformed(evt);
@@ -779,6 +778,7 @@ public class GamePanel extends javax.swing.JPanel {
             buildRoadRBtn.setEnabled(false);
             buildSettlementSRBtn.setEnabled(false);
             buildSettlementLRBtn.setEnabled(false);
+            trade4to1Btn.setEnabled(false);
 
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
@@ -1696,6 +1696,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
         boolean canBuildCity;
+        boolean canTrade4to;
         ButtonModel oldSelection; // The button selected before this update began
 
         // If the game is in setup
@@ -1703,17 +1704,20 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildRoad = (playerSetupRoadsLeft > 0) && newestSetupSettlment != null;
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
+            canTrade4to = false;
         } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
         else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
+            canTrade4to = false;
         } // If the game is NOT in setup
         else {
             // Check if the player has enough cards to use the build buttons
             canBuildRoad = hasCards(0); // Roads
             canBuildSettlement = hasCards(1); // Settlements
             canBuildCity = hasCards(2); // Cities
+            canTrade4to = hasTradeCards(4);
         }
 
         // Save what button was selected before this update began
@@ -1776,6 +1780,7 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(canBuildRoad);              // Roads
         buildSettlementSRBtn.setEnabled(canBuildSettlement); // Settlements
         buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
+        trade4to1Btn.setEnabled(canTrade4to);                // Trade
 
         //update the colours of the radio buttons to reflect weather or not they are enabled. The stoped being done automatically when the default forground colour was changed.
         if (canBuildRoad) {
@@ -1804,6 +1809,40 @@ public class GamePanel extends javax.swing.JPanel {
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
+    }
+    
+    /**
+     * Determine if the current player has enough cards to begin a trade.
+     * 
+     * @param tradingType Three valid options. "4" for a four to one, "3", and "2" for their respective ratios
+     * @return 
+     */
+    private boolean hasTradeCards(int tradingType) {
+        boolean hasEnoughCards = false; //does the player have enough cards. Start false because no check has been made yet.
+        
+        //check if the input is valid
+        if (!(tradingType >= 2 && tradingType <= 4)) {
+            System.out.println("Error: hasTradeCards out of bounds with value: " + tradingType);
+        } else { //check the current players cards
+            //create an array to store how many cards of each type the player has
+            int[] numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
+            
+            //sum up the cards of each type
+            for (int i = 0; i < cards[currentPlayer].size(); i++) {
+                numCardType[cards[currentPlayer].get(i)] ++;
+            }
+            
+            //check if there is the required amount of each type
+            for (int i = 1; i < numCardType.length; i++) {
+                //check each type
+                if (numCardType[i] >= tradingType) {
+                    hasEnoughCards = true;
+                }
+            }
+            
+        }
+        
+        return hasEnoughCards;
     }
 
     /**
