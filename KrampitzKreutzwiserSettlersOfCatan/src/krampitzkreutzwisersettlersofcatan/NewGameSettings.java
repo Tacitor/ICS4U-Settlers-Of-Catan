@@ -66,6 +66,7 @@ public class NewGameSettings extends javax.swing.JFrame {
         startResTrueRbtn = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         startResourcesTxtAr1.setBackground(new java.awt.Color(240, 240, 240));
         startResourcesTxtAr1.setColumns(20);
