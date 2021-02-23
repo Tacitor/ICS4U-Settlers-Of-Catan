@@ -2438,11 +2438,17 @@ public class GamePanel extends javax.swing.JPanel {
                 superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(PLAYER_RED) / 2),
                 superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(PLAYER_RED) / 2);
         
-        Image TOP_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups1.png")).getImage(); 
+        Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage(); 
         
         //draw the ports
         for (int i = 0; i < ports.size(); i++) {
             g2d.drawImage(ports.get(i).getImage(),
+                    ports.get(i).getXPos(), 
+                    ports.get(i).getYPos(), 
+                    null);
+            
+            //draw the recource type on top
+            g2d.drawImage(ports.get(i).getTypeImage(),
                     ports.get(i).getXPos(), 
                     ports.get(i).getYPos(), 
                     null);

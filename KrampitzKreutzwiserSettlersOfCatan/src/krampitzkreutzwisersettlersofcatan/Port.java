@@ -21,14 +21,22 @@ public class Port extends WorldObject{
     private int orientation; //the rotation of the port. 0 for top, up to 5 going clockwise around the tile.
     private int type; //the type of the port. 0 for 3:1, 1-5 for a 2:1 where the specific 2:1 is the card type of this int.
     private Image image;
+    private Image typeImage;
     
-    //image files
+    //image files for base port
     private final static Image TOP_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups1.png")).getImage(); 
     private final static Image TOP_RIGHT_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups2.png")).getImage(); 
     private final static Image BOTTOM_RIGHT_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups3.png")).getImage(); 
     private final static Image BOTTOM_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups4.png")).getImage(); 
     private final static Image BOTTOM_LEFT_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups5.png")).getImage(); 
     private final static Image TOP_LEFT_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups6.png")).getImage(); 
+    //image files for type
+    private final static Image CLAY_PORT = new ImageIcon(ImageRef.class.getResource("clayPort.png")).getImage(); 
+    private final static Image WOOD_PORT = new ImageIcon(ImageRef.class.getResource("woodPort.png")).getImage(); 
+    private final static Image WHEAT_PORT = new ImageIcon(ImageRef.class.getResource("wheatPort.png")).getImage(); 
+    private final static Image SHEEP_PORT = new ImageIcon(ImageRef.class.getResource("sheepPort.png")).getImage(); 
+    private final static Image ORE_PORT = new ImageIcon(ImageRef.class.getResource("orePort.png")).getImage(); 
+    private final static Image WILD_CARD_PORT = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage();
     
     /**
      * Constructor for a blank Port
@@ -43,6 +51,7 @@ public class Port extends WorldObject{
         orientation = 0;
         type = 0;
         image = applyImage();
+        typeImage = applyTypeImage();
         
     }
     
@@ -61,6 +70,7 @@ public class Port extends WorldObject{
         this.type = type;
         
         image = applyImage();
+        typeImage = applyTypeImage();
         applyCoordinates();
     }
     
@@ -138,13 +148,29 @@ public class Port extends WorldObject{
         return image;
     }
     
+    /**
+     * Set the type Image of the Port
+     * @param image 
+     */
+    public void setTypeImage(Image typeImage) {
+        this.typeImage = typeImage;
+    }
+    
+    /**
+     * Get the type Image of the Port
+     * @return 
+     */
+    public Image getTypeImage() {
+        return typeImage;
+    }
+    
     @Override
     public WorldObject clone() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
-     * Dynamically set the image based on the type 
+     * Dynamically set the image based on the orientation 
      * @return 
      */
     private Image applyImage() {
@@ -163,6 +189,29 @@ public class Port extends WorldObject{
                 return TOP_LEFT_PORT;
             default:
                 return TOP_PORT;
+        }
+    }
+    
+    /**
+     * Dynamically set the type image based on the type 
+     * @return 
+     */
+    private Image applyTypeImage() {
+        switch (type) {
+            case 0:
+                return WILD_CARD_PORT;
+            case 1:
+                return CLAY_PORT;
+            case 2:
+                return WOOD_PORT;
+            case 3:
+                return WHEAT_PORT;
+            case 4:
+                return SHEEP_PORT;
+            case 5:
+                return ORE_PORT;
+            default:
+                return WILD_CARD_PORT;
         }
     }
     
