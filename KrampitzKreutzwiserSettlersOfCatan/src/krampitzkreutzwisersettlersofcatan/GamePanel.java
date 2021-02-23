@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import javax.swing.ButtonModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import textures.ImageRef;
 import static textures.ImageRef.*;
 
 /**
@@ -43,6 +45,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
     private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
+    private final ArrayList<Port> ports; //every trading port, its type, location, and orientation.
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
     //the old deflaut order                  {1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}
@@ -91,7 +94,7 @@ public class GamePanel extends javax.swing.JPanel {
     //var used for scaling
     private final int tileYOffset;
     private final int tileXOffset;
-    private final double scaleFactor;
+    public static double scaleFactor;
     private final int newTileWidth;
     private final int newTileHeight;
     private final int threeDTileOffset;
@@ -116,6 +119,7 @@ public class GamePanel extends javax.swing.JPanel {
         superFrame = frame; //save refernce
         tiles = new ArrayList(); //init the master tile array list
         settlementNodes = new ArrayList(); // Init the settlement node array list
+        ports = new ArrayList();
         roadNodes = new ArrayList(); // Init the road node array list
         inSetup = true;
         setupRoundsLeft = 2; //start up with two setup rounds
@@ -212,6 +216,7 @@ public class GamePanel extends javax.swing.JPanel {
         loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
         loadTiles(); //load the ArrayList of tiles with position and type data
         loadNodes(); // Create and link all of the board's settlement and road nodes
+        loadPorts(); //read in all the data about the ports and populate the Array List with Ports
 
         // Add the mouse listener that calls the mouse click event handler
         addMouseListener(new MouseAdapter() {
@@ -2432,6 +2437,16 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("Next player:",
                 superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(PLAYER_RED) / 2),
                 superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(PLAYER_RED) / 2);
+        
+        Image TOP_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups1.png")).getImage(); 
+        
+        //draw the ports
+        for (int i = 0; i < ports.size(); i++) {
+            g2d.drawImage(ports.get(i).getImage(),
+                    ports.get(i).getXPos(), 
+                    ports.get(i).getYPos(), 
+                    null);
+        }
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         int tileID;
@@ -2442,13 +2457,15 @@ public class GamePanel extends javax.swing.JPanel {
             //check if it is the new type or old size
             if (tiles.get(tileID).getImage().getHeight(null) == 150) {
                 //draw the tile
+                
                 g2d.drawImage(tiles.get(tileID).getImage(),
                         tiles.get(tileID).getXPos(),
                         (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
                         getImgWidth(tiles.get(tileID).getImage()),
                         getImgHeight(tiles.get(tileID).getImage()), null);
+                
             } else {
-
+                
                 //draw the tile
                 g2d.drawImage(tiles.get(tileID).getImage(),
                         tiles.get(tileID).getXPos(),
@@ -3203,6 +3220,44 @@ public class GamePanel extends javax.swing.JPanel {
         } catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading Tile Position file: " + e);
+        }
+    }
+    
+    /**
+     * read in the port positions and types. Also populate the Array List
+     */
+    private void loadPorts() {
+        
+        Port newPort; //the latest port being read in
+        
+        // Declare variables
+        Scanner fileReader;
+        InputStream file = OldCode.class.getResourceAsStream("portData.txt");
+
+        // Try to read the file
+        try {
+            // Create the scanner to read the file
+            fileReader = new Scanner(file);
+
+            // Read the entire file in and create the Ports
+            for (int i = 0; i < 9; i++) {
+                
+                //create the new Port
+                newPort = new Port(tiles.get(Integer.parseInt(fileReader.nextLine())),
+                        Integer.parseInt(fileReader.nextLine()),
+                        Integer.parseInt(fileReader.nextLine()));
+                
+                //add it to the Array List
+                ports.add(newPort);
+
+                //skip the next blank line but only if the scanner is not at the end
+                if (i < 8) {
+                    fileReader.nextLine();
+                }
+            }
+        } catch (Exception e) {
+            // Output the jsvs error to the standard output
+            System.out.println("Error reading trading port Position file: " + e);
         }
     }
 
