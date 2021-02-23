@@ -2449,8 +2449,8 @@ public class GamePanel extends javax.swing.JPanel {
             
             //draw the recource type on top
             g2d.drawImage(ports.get(i).getTypeImage(),
-                    ports.get(i).getXPos(), 
-                    ports.get(i).getYPos(), 
+                    ports.get(i).getTypePosX(), 
+                    ports.get(i).getTypePosY(), 
                     null);
         }
 

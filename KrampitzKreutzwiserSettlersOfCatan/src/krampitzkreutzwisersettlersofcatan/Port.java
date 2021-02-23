@@ -22,6 +22,8 @@ public class Port extends WorldObject{
     private int type; //the type of the port. 0 for 3:1, 1-5 for a 2:1 where the specific 2:1 is the card type of this int.
     private Image image;
     private Image typeImage;
+    private int typePosX; //the x position of the type image
+    private int typePosY;
     
     //image files for base port
     private final static Image TOP_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups1.png")).getImage(); 
@@ -45,6 +47,9 @@ public class Port extends WorldObject{
         //init the pos
         xPos = 0;
         yPos = 0;
+        
+        typePosX = 0;
+        typePosY = 0;
         
         //init the port attributes
         linkedTile = null;
@@ -72,6 +77,48 @@ public class Port extends WorldObject{
         image = applyImage();
         typeImage = applyTypeImage();
         applyCoordinates();
+        applyTypeImageCoordinates();
+    }
+    
+    /**
+     * Using the orientation return where the type image should be drawn. Update the correct attributes.
+     */
+    private void applyTypeImageCoordinates() {
+        //get the orientation
+        switch (orientation) {
+            case 0:
+                //if above
+                typePosX = linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 2) - (typeImage.getWidth(null) / 2);
+                typePosY = (int) (yPos + image.getHeight(null) - (30 / scaleFactor) - typeImage.getHeight(null));
+                break;
+            case 1:
+                //if top right
+                typePosX = (int) (xPos + (25 / scaleFactor) + typeImage.getWidth(null));
+                typePosY = (int) (yPos + typeImage.getHeight(null) / 2.0);
+                break;
+            case 2:
+                //if bottom right
+                typePosX = (int) (xPos + (25 / scaleFactor) + typeImage.getWidth(null));
+                typePosY = (yPos + image.getHeight(null) - typeImage.getHeight(null));
+                break;
+            case 3:
+                //if below
+                typePosX = linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 2) - (typeImage.getWidth(null) / 2);
+                typePosY = (int) (yPos + (30 / scaleFactor));
+                break;
+            case 4:
+                //if bottom left
+                typePosX = (int) (xPos + image.getWidth(null) - (50 / scaleFactor) - typeImage.getWidth(null));
+                typePosY = (yPos + image.getHeight(null) - typeImage.getHeight(null));
+                break;
+            case 5:
+                //if top left
+                typePosX = (int) (xPos + image.getWidth(null) - (50 / scaleFactor) - typeImage.getWidth(null));
+                typePosY = (int) (yPos + typeImage.getHeight(null) / 2.0);
+                break;
+            default:
+                break;
+        }
     }
     
     /**
@@ -79,25 +126,72 @@ public class Port extends WorldObject{
      */
     private void applyCoordinates() {
         //get the orientation
-        if (orientation == 0) { //if above
-            xPos = linkedTile.getXPos();
-            yPos = linkedTile.getYPos() - linkedTile.getImage().getHeight(null);
-        } else if (orientation == 1) { //if top right
-            xPos = (int) (linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 4.0) * 3);
-            yPos = (int) (linkedTile.getYPos() - (20 / scaleFactor));
-        } else if (orientation == 2) { //if bottom right
-            xPos = (int) (linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 4.0) * 3);
-            yPos = (int) (linkedTile.getYPos() - (20 / scaleFactor));
-        } else if (orientation == 3) { //if below
-            xPos = linkedTile.getXPos();
-            yPos = (int) (linkedTile.getYPos() + linkedTile.getImage().getHeight(null) - (20 / scaleFactor)); //set it below the tile but subtract the 3d space for the Alex tile art
-        } else if (orientation == 4) { //if bottom left
-            xPos = (int) (linkedTile.getXPos() - (linkedTile.getImage().getWidth(null) / 4.0) * 3);
-            yPos = (int) (linkedTile.getYPos() - (20 / scaleFactor));
-        } else if (orientation == 5) { //if top left
-            xPos = (int) (linkedTile.getXPos() - (linkedTile.getImage().getWidth(null) / 4.0) * 3);
-            yPos = (int) ((linkedTile.getYPos()) - (20 / scaleFactor));
+        switch (orientation) {
+            case 0:
+                //if above
+                xPos = linkedTile.getXPos();
+                yPos = linkedTile.getYPos() - linkedTile.getImage().getHeight(null);
+                break;
+            case 1:
+                //if top right
+                xPos = (int) (linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 4.0) * 3);
+                yPos = (int) (linkedTile.getYPos() - (20 / scaleFactor));
+                break;
+            case 2:
+                //if bottom right
+                xPos = (int) (linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 4.0) * 3);
+                yPos = (int) (linkedTile.getYPos() - (20 / scaleFactor));
+                break;
+            case 3:
+                //if below
+                xPos = linkedTile.getXPos();
+                yPos = (int) (linkedTile.getYPos() + linkedTile.getImage().getHeight(null) - (20 / scaleFactor)); //set it below the tile but subtract the 3d space for the Alex tile art
+                break;
+            case 4:
+                //if bottom left
+                xPos = (int) (linkedTile.getXPos() - (linkedTile.getImage().getWidth(null) / 4.0) * 3);
+                yPos = (int) (linkedTile.getYPos() - (20 / scaleFactor));
+                break;
+            case 5:
+                //if top left
+                xPos = (int) (linkedTile.getXPos() - (linkedTile.getImage().getWidth(null) / 4.0) * 3);
+                yPos = (int) ((linkedTile.getYPos()) - (20 / scaleFactor));
+                break;
+            default:
+                break;
         }
+    }
+    
+    /**
+     * Get the X position of the type image
+     * @return The object's current X position
+     */
+    public final int getTypePosX() {
+        return typePosX;
+    }
+
+    /**
+     * Set the X position of the type image
+     * @param typePosX
+     */
+    public final void setTypePosX(int typePosX) {
+        this.typePosX = typePosX;
+    }
+
+    /**
+     * Get the Y position of the type image
+     * @return The type image current Y position
+     */
+    public final int getTypePosY() {
+        return typePosY;
+    }
+
+    /**
+     * Set the Y position of the type image
+     * @param typePosY
+     */
+    public final void setTypePosY(int typePosY) {
+        this.typePosY = typePosY;
     }
     
     /**
@@ -149,8 +243,8 @@ public class Port extends WorldObject{
     }
     
     /**
-     * Set the type Image of the Port
-     * @param image 
+     * Set the type Image of the Port 
+     * @param typeImage
      */
     public void setTypeImage(Image typeImage) {
         this.typeImage = typeImage;
