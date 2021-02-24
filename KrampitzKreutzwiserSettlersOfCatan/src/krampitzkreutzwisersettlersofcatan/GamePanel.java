@@ -2441,8 +2441,8 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the sub player header
         g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("Next player:",
-                superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(PLAYER_RED) / 2),
-                superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(PLAYER_RED) / 2);
+                superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
+                superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
         
         Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage(); 
         
