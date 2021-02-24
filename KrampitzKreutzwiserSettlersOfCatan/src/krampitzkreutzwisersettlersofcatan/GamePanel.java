@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
@@ -98,6 +97,8 @@ public class GamePanel extends javax.swing.JPanel {
     private final int newTileWidth;
     private final int newTileHeight;
     private final int threeDTileOffset;
+    private static int frameWidth; //the dimentions of the JFrame holding the gamePanel
+    private static int frameHeight;
 
     //new dice roll lable
     private String[] diceRollVal;
@@ -117,6 +118,8 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Initalize variables
         superFrame = frame; //save refernce
+        frameWidth = superFrame.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
+        frameHeight = superFrame.getHeight();
         tiles = new ArrayList(); //init the master tile array list
         settlementNodes = new ArrayList(); // Init the settlement node array list
         ports = new ArrayList();
@@ -267,6 +270,9 @@ public class GamePanel extends javax.swing.JPanel {
         scaleWorldObjectPos(tiles, 1);
         scaleWorldObjectPos(roadNodes, 1);
         scaleWorldObjectPos(settlementNodes, 0);
+        scaleWorldObjectPos(ports, 0);
+        updatePortTypePos();
+        //remapPortTypePos();
 
         //get the fonts
         timesNewRoman = instructionLbl.getFont();
@@ -2445,12 +2451,16 @@ public class GamePanel extends javax.swing.JPanel {
             g2d.drawImage(ports.get(i).getImage(),
                     ports.get(i).getXPos(), 
                     ports.get(i).getYPos(), 
+                    getImgWidth(ports.get(i).getImage()),
+                    getImgHeight(ports.get(i).getImage()),                    
                     null);
             
             //draw the recource type on top
             g2d.drawImage(ports.get(i).getTypeImage(),
                     ports.get(i).getTypePosX(), 
-                    ports.get(i).getTypePosY(), 
+                    ports.get(i).getTypePosY(),  
+                    getImgWidth(ports.get(i).getTypeImage()),
+                    getImgHeight(ports.get(i).getTypeImage()), 
                     null);
         }
 
@@ -3033,7 +3043,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param image
      * @return
      */
-    public int getImgHeight(Image image) {
+    public final int getImgHeight(Image image) {
         if (superFrame.getWidth() > superFrame.getHeight()) {
             return (int) (image.getHeight(null) / 1080.0 * superFrame.getHeight());
         } else {
@@ -3198,6 +3208,37 @@ public class GamePanel extends javax.swing.JPanel {
                 //set the y
                 arrayList.get(i).setYPos(((int) (arrayList.get(i).getYPos() / 1080.0 * superFrame.getHeight())));
             }
+        }
+    }
+    
+    private void remapPortTypePos() {
+
+        // Loop through all the ports
+        for (int i = 0; i < ports.size(); i++) {
+
+            //pick a way to add the corrdinates for scaling
+            //choose a drawing type. One corrects for width and one corrects for height
+            if (superFrame.getWidth() <= superFrame.getHeight()) {
+                //set the x
+                ports.get(i).setTypePosX((int) (ports.get(i).getTypePosX()/ 1920.0 * superFrame.getWidth()));
+                //set the y
+                ports.get(i).setTypePosY((getTileYPos(ports.get(i).getTypePosY()) + tileYOffset));
+            } else {
+                //set the x
+                ports.get(i).setTypePosY((getTileXPos(ports.get(i).getTypePosY()) + tileXOffset));
+                //set the y
+                ports.get(i).setTypePosY(((int) (ports.get(i).getTypePosY() / 1080.0 * superFrame.getHeight())));
+            }
+        }
+    }
+    
+    /**
+     * Updated the image positions of the type images for the ports. This only brings them to where they need to be before major scaling point re-mapping.
+     */
+    private void updatePortTypePos() {
+        //loop through the ports
+        for (int i = 0; i < ports.size(); i++) {
+            ports.get(i).applyTypeImageCoordinates();
         }
     }
 
@@ -3395,6 +3436,38 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public static boolean getgiveStartingResources() {
         return giveStartingResources;
+    }
+    
+    /**
+     * Get the width of the JFrame holding the GamePanel
+     * @return 
+     */
+    public static int getFrameWidth() {
+        return frameWidth;
+    }
+    
+    /**
+     * Set the width of the JFrame holding the GamePanel
+     * @param frameWidth 
+     */
+    public static void setFrameWidth(int frameWidth) {
+        GamePanel.frameWidth = frameWidth;
+    }
+    
+    /**
+     * Get the height of the JFrame holding the GamePanel
+     * @return 
+     */
+    public static int getFrameHeight() {
+        return frameHeight;
+    }
+    
+    /**
+     * Set the height of the JFrame holding the GamePanel
+     * @param frameHeight
+     */
+    public static void setFrameHeight(int frameHeight) {
+        GamePanel.frameHeight = frameHeight;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

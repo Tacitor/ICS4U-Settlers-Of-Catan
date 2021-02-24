@@ -7,7 +7,7 @@ package krampitzkreutzwisersettlersofcatan;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
-import static krampitzkreutzwisersettlersofcatan.GamePanel.scaleFactor;
+import static krampitzkreutzwisersettlersofcatan.GamePanel.*;
 import textures.ImageRef;
 
 /**
@@ -83,38 +83,38 @@ public class Port extends WorldObject{
     /**
      * Using the orientation return where the type image should be drawn. Update the correct attributes.
      */
-    private void applyTypeImageCoordinates() {
+    public void applyTypeImageCoordinates() {
         //get the orientation
         switch (orientation) {
-            case 0:
+            case 0:                
                 //if above
-                typePosX = linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 2) - (typeImage.getWidth(null) / 2);
-                typePosY = (int) (yPos + image.getHeight(null) - (30 / scaleFactor) - typeImage.getHeight(null));
+                typePosX = (int) (linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 2.0) - (getImgWidth(typeImage) / 2.0));
+                typePosY = (int) (yPos + getImgHeight(image) - (getImgHeight(image) / 5.0) - getImgHeight(typeImage));
                 break;
             case 1:
                 //if top right
-                typePosX = (int) (xPos + (25 / scaleFactor) + typeImage.getWidth(null));
-                typePosY = (int) (yPos + typeImage.getHeight(null) / 2.0);
+                typePosX = (int) (xPos + (25 / scaleFactor) + getImgWidth(typeImage));
+                typePosY = (int) (yPos + getImgHeight(typeImage) / 2.0);
                 break;
             case 2:
                 //if bottom right
-                typePosX = (int) (xPos + (25 / scaleFactor) + typeImage.getWidth(null));
-                typePosY = (yPos + image.getHeight(null) - typeImage.getHeight(null));
+                typePosX = (int) (xPos + (25 / scaleFactor) + getImgWidth(typeImage));
+                typePosY = (yPos + getImgHeight(image) - getImgHeight(typeImage));
                 break;
             case 3:
                 //if below
-                typePosX = linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 2) - (typeImage.getWidth(null) / 2);
+                typePosX = linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 2) - (getImgWidth(typeImage) / 2);
                 typePosY = (int) (yPos + (30 / scaleFactor));
                 break;
             case 4:
                 //if bottom left
-                typePosX = (int) (xPos + image.getWidth(null) - (50 / scaleFactor) - typeImage.getWidth(null));
-                typePosY = (yPos + image.getHeight(null) - typeImage.getHeight(null));
+                typePosX = (int) (xPos + getImgWidth(image) - (50 / scaleFactor) - getImgWidth(typeImage));
+                typePosY = (yPos + getImgHeight(image) - getImgHeight(typeImage));
                 break;
             case 5:
                 //if top left
-                typePosX = (int) (xPos + image.getWidth(null) - (50 / scaleFactor) - typeImage.getWidth(null));
-                typePosY = (int) (yPos + typeImage.getHeight(null) / 2.0);
+                typePosX = (int) (xPos + getImgWidth(image) - (50 / scaleFactor) - getImgWidth(typeImage));
+                typePosY = (int) (yPos + getImgHeight(typeImage) / 2.0);
                 break;
             default:
                 break;
@@ -159,6 +159,37 @@ public class Port extends WorldObject{
                 break;
             default:
                 break;
+        }
+    }
+    
+    /**
+     * Calculates the new scaled width of an image with a locked aspect ratio.
+     *
+     * @param image
+     * @return
+     */
+    public final int getImgWidth(Image image) {
+
+        if (getFrameWidth() > getFrameHeight()) {
+            return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
+        } else {
+            return (int) (image.getWidth(null) / 1920.0 * getFrameWidth());
+        }
+
+    }
+
+    /**
+     * Calculates the new scaled height of an image with a locked aspect ratio.
+     *
+     * @param image
+     * @return
+     */
+    public final int getImgHeight(Image image) {
+        
+        if (getFrameWidth() > getFrameHeight()) {
+            return (int) (image.getHeight(null) / 1080.0 * getFrameHeight());
+        } else {
+            return (int) (getImgWidth(image) / ((float) image.getWidth(null) / image.getHeight(null)));
         }
     }
     
