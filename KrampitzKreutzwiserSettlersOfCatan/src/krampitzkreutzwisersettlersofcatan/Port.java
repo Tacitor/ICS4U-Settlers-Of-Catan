@@ -130,12 +130,12 @@ public class Port extends WorldObject{
             case 0:
                 //if above
                 xPos = linkedTile.getXPos();
-                yPos = linkedTile.getYPos() - linkedTile.getImage().getHeight(null);
+                yPos = (int) (linkedTile.getYPos() - linkedTile.getImage().getHeight(null) + (5 / scaleFactor));
                 break;
             case 1:
                 //if top right
                 xPos = (int) (linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 4.0) * 3);
-                yPos = (int) (linkedTile.getYPos() - (20 / scaleFactor));
+                yPos = (int) (linkedTile.getYPos() - (15 / scaleFactor));
                 break;
             case 2:
                 //if bottom right
@@ -145,7 +145,7 @@ public class Port extends WorldObject{
             case 3:
                 //if below
                 xPos = linkedTile.getXPos();
-                yPos = (int) (linkedTile.getYPos() + linkedTile.getImage().getHeight(null) - (20 / scaleFactor)); //set it below the tile but subtract the 3d space for the Alex tile art
+                yPos = (int) (linkedTile.getYPos() + linkedTile.getImage().getHeight(null) - (25 / scaleFactor)); //set it below the tile but subtract the 3d space for the Alex tile art
                 break;
             case 4:
                 //if bottom left
@@ -155,7 +155,7 @@ public class Port extends WorldObject{
             case 5:
                 //if top left
                 xPos = (int) (linkedTile.getXPos() - (linkedTile.getImage().getWidth(null) / 4.0) * 3);
-                yPos = (int) ((linkedTile.getYPos()) - (20 / scaleFactor));
+                yPos = (int) ((linkedTile.getYPos()) - (15 / scaleFactor));
                 break;
             default:
                 break;

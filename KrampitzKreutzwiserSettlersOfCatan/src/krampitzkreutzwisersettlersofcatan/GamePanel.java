@@ -2553,16 +2553,22 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.drawImage(DICE_IMAGES[0],
                         rightDrawMargin,
                         (int) (400 / scaleFactor),
+                        getImgWidth(DICE_IMAGES[0]),
+                        getImgHeight(DICE_IMAGES[0]),
                         null);
             } else { //else draw the dice that go with the roll
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[0])],
                         rightDrawMargin,
                         (int) (400 / scaleFactor),
+                        getImgWidth(DICE_IMAGES[1]),
+                        getImgHeight(DICE_IMAGES[1]),
                         null);
 
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
-                        rightDrawMargin + (int) (100 / scaleFactor),
+                        rightDrawMargin + getImgWidth(DICE_IMAGES[1]),
                         (int) (400 / scaleFactor),
+                        getImgWidth(DICE_IMAGES[1]),
+                        getImgHeight(DICE_IMAGES[1]),
                         null);
 
             }
