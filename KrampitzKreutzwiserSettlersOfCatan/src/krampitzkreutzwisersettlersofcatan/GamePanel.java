@@ -1188,19 +1188,19 @@ public class GamePanel extends javax.swing.JPanel {
             //debug
             //System.out.println("Got a steal click");
 
-            int subPlayerPosY = superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2;
+            int subPlayerPosY = superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED);
             int subPlayerPosX;
 
             //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
             for (int i = 1; i < playerTurnOrder.size(); i++) {
 
-                subPlayerPosX = superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i);
+                subPlayerPosX = superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i);
 
                 //check if there was a click on one of the sub players
                 if (event.getX() > subPlayerPosX
                         && event.getY() > subPlayerPosY
-                        && event.getX() < (subPlayerPosX + (getImgWidth(PLAYER_RED) / 2))
-                        && event.getY() < (subPlayerPosY + (getImgHeight(PLAYER_RED) / 2))) {
+                        && event.getX() < (subPlayerPosX + (getImgWidth(SMALL_PLAYER_RED)))
+                        && event.getY() < (subPlayerPosY + (getImgHeight(SMALL_PLAYER_RED)))) {
 
                     //debug
                     //System.out.println("Yuh we got a click on player: " + playerTurnOrder.get(i));
@@ -2409,7 +2409,7 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 1; i < playerTurnOrder.size(); i++) {
             //only show the sub players if the thief is not stealing. Otherwise it gets confusing.
             if (thiefIsStealing) {
-                subsequentPlayerImage = PLAYER_NONE;
+                subsequentPlayerImage = SMALL_PLAYER_NONE;
             } else {
                 subsequentPlayerImage = getPlayerImage(playerTurnOrder.get(i), true);
             }
@@ -2428,10 +2428,10 @@ public class GamePanel extends javax.swing.JPanel {
                 //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
                 if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
                     g2d.setColor(Color.green);
-                    g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i),
-                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2,
-                            getImgWidth(PLAYER_RED) / 2,
-                            getImgHeight(PLAYER_RED) / 2);
+                    g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
+                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
+                            getImgWidth(SMALL_PLAYER_RED),
+                            getImgHeight(SMALL_PLAYER_RED));
                     g2d.setColor(Color.black);
                 }
             }
