@@ -258,6 +258,22 @@ public class Port extends WorldObject{
     }
     
     /**
+     * Set the type of the Port
+     * @param type 
+     */
+    public void setType(int type) {
+        this.type = type;
+    }
+    
+    /**
+     * Get the type of the Port
+     * @return 
+     */
+    public int getType() {
+        return type;
+    }
+    
+    /**
      * Set the base Image of the Port
      * @param image 
      */
