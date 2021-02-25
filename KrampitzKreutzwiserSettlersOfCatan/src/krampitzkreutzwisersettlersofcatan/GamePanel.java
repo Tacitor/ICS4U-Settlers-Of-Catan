@@ -1346,8 +1346,8 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() > cardYPos
                             && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
                         
-                        //check if the card is available to trade
-                        if (cardTypeCount[i] >= 4) {
+                        //check if the card is available to trade and that it is not the same type the payer would like to trade TO
+                        if (cardTypeCount[i] >= 4 && (i + 1) != tradeResource) {
                             //debug click detection
                             //System.out.println("Card stack Clicked!");
                             Integer typeToRemove = i+1;
@@ -1356,6 +1356,28 @@ public class GamePanel extends javax.swing.JPanel {
                             for (int j = 0; j < 4; j++) {
                                 cards[currentPlayer].remove(typeToRemove);
                             }
+                            
+                            //add the card the player wants
+                            cards[currentPlayer].add(tradeResource);
+                            
+                            //sort the cards so when the build button are updated they are in the correct order
+                            quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+                            
+                            //turn off behavior as if the cancel button was pressed.
+                            turnSwitchBtn.setEnabled(true);
+                            trade4to1Btn.setText("Trade 4:1");
+                            //remove the intent to trade
+                            tradingMode = 0;
+                            //clear the resource if there was one
+                            tradeResource = 0;
+                            //hide the hitboxes
+                            showPortHitbox = false;
+                            showCardHitbox = false;
+                            //update the buildbuttons (should be renabeling them now)
+                            updateBuildButtons();
+                            //give the instructions that the user can now do what ever they want
+                            instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
+                            subInstructionLbl.setText("You may now continue your turn how ever you please.");
                         }
                     }
                 }
@@ -1373,8 +1395,8 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
                             && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
                         
-                        //check if the card is available to trade
-                        if (numCardType[cards[currentPlayer].get(i)] >= 4) {
+                        //check if the card is available to trade and that it is not the same type the payer would like to trade TO
+                        if (numCardType[cards[currentPlayer].get(i)] >= 4 && cards[currentPlayer].get(i) != tradeResource) {
                             //debug click detection
                             //System.out.println("Card no stack Clicked!");
                             Integer typeToRemove = cards[currentPlayer].get(i);
@@ -1383,6 +1405,28 @@ public class GamePanel extends javax.swing.JPanel {
                             for (int j = 0; j < 4; j++) {
                                 cards[currentPlayer].remove(typeToRemove);
                             }
+                            
+                            //add the card the player wants
+                            cards[currentPlayer].add(tradeResource);
+                            
+                            //sort the cards so when the build button are updated they are in the correct order
+                            quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+                            
+                            //turn off behavior as if the cancel button was pressed.
+                            turnSwitchBtn.setEnabled(true);
+                            trade4to1Btn.setText("Trade 4:1");
+                            //remove the intent to trade
+                            tradingMode = 0;
+                            //clear the resource if there was one
+                            tradeResource = 0;
+                            //hide the hitboxes
+                            showPortHitbox = false;
+                            showCardHitbox = false;
+                            //update the buildbuttons (should be renabeling them now)
+                            updateBuildButtons();
+                            //give the instructions that the user can now do what ever they want
+                            instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
+                            subInstructionLbl.setText("You may now continue your turn how ever you please.");
                         }
 
                     }
@@ -3058,7 +3102,8 @@ public class GamePanel extends javax.swing.JPanel {
                         //decide if to draw this on in the loop
                         if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                             drawSpecificHitbox = true;
-                        } else if (cardTypeCount[i] >= 4) { //if it is for trading purpous do some more checks
+                        } else if (cardTypeCount[i] >= 4 && (i + 1) != tradeResource) { //if it is for trading purpous do some more checks
+                            //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
                             drawSpecificHitbox = true;
                         } else {
                             drawSpecificHitbox = false;
@@ -3126,7 +3171,8 @@ public class GamePanel extends javax.swing.JPanel {
                         //decide if to draw this on in the loop
                         if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                             drawSpecificHitbox = true;
-                        } else if (numCardType[type] >= 4) { //if it is for trading purpous do some more checks
+                        } else if (numCardType[type] >= 4 && cards[currentPlayer].get(i) != tradeResource) { //if it is for trading purpous do some more checks
+                            //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
                             drawSpecificHitbox = true;
                         } else {
                             drawSpecificHitbox = false;
