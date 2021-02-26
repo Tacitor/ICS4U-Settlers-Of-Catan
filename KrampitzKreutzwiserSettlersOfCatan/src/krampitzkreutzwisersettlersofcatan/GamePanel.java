@@ -1269,7 +1269,7 @@ public class GamePanel extends javax.swing.JPanel {
                         //update the instructions
                         instructionLbl.setText("You may now continue your turn.");
                         subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
-                        
+
                         //sort the cards first
                         quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
 
@@ -1293,44 +1293,44 @@ public class GamePanel extends javax.swing.JPanel {
             }
              */
         } else if (showPortHitbox && tradingMode != 0 && tradeResource == 0) { //check if the player is clicking a port to select a resource type to trade to
-            
+
             int portPosX;
             int portPosY;
-            
+
             //loop through the ports
             for (int i = 0; i < ports.size(); i++) {
                 portPosX = ports.get(i).getTypePosX();
                 portPosY = ports.get(i).getTypePosY();
-                
+
                 //check if there was a click on a port
-                if (event.getX() > portPosX &&
-                        event.getY() > portPosY &&
-                        event.getX() < (portPosX + getImgWidth(ports.get(i).getTypeImage())) &&
-                        event.getY() < (portPosY + getImgHeight(ports.get(i).getTypeImage()))) {
-                    
+                if (event.getX() > portPosX
+                        && event.getY() > portPosY
+                        && event.getX() < (portPosX + getImgWidth(ports.get(i).getTypeImage()))
+                        && event.getY() < (portPosY + getImgHeight(ports.get(i).getTypeImage()))) {
+
                     //check if its a non general port and also if clicking that port would leave the player with no options for cards to trade away
                     if (ports.get(i).getType() != 0 && canTradeTo(ports.get(i).getType(), tradingMode)) {
-                        
+
                         //register the type the player want to trade TO
                         tradeResource = ports.get(i).getType();
-                        
+
                         //turn off the hitboxes
                         showPortHitbox = false;
-                        
+
                         //update the instructions for the next trading step
                         instructionLbl.setText("Now select a card");
                         subInstructionLbl.setText("This card should be of the type you would like to trade away");
-                        
+
                         //show the card hitboxes
                         showCardHitbox = true;
-                        
+
                         //update the screen
                         repaint();
                     }
                 }
-                
+
             }
-            
+
         } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
             //get the y position for the cards
             int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
@@ -1345,24 +1345,24 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
                             && event.getY() > cardYPos
                             && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
-                        
+
                         //check if the card is available to trade and that it is not the same type the payer would like to trade TO
                         if (cardTypeCount[i] >= 4 && (i + 1) != tradeResource) {
                             //debug click detection
                             //System.out.println("Card stack Clicked!");
-                            Integer typeToRemove = i+1;
-                            
+                            Integer typeToRemove = i + 1;
+
                             //remove 4 of that card type
                             for (int j = 0; j < 4; j++) {
                                 cards[currentPlayer].remove(typeToRemove);
                             }
-                            
+
                             //add the card the player wants
                             cards[currentPlayer].add(tradeResource);
-                            
+
                             //sort the cards so when the build button are updated they are in the correct order
                             quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
-                            
+
                             //turn off behavior as if the cancel button was pressed.
                             turnSwitchBtn.setEnabled(true);
                             trade4to1Btn.setText("Trade 4:1");
@@ -1394,24 +1394,24 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() > cardYPos
                             && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
                             && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
-                        
+
                         //check if the card is available to trade and that it is not the same type the payer would like to trade TO
                         if (numCardType[cards[currentPlayer].get(i)] >= 4 && cards[currentPlayer].get(i) != tradeResource) {
                             //debug click detection
                             //System.out.println("Card no stack Clicked!");
                             Integer typeToRemove = cards[currentPlayer].get(i);
-                            
+
                             //remove 4 of that card type
                             for (int j = 0; j < 4; j++) {
                                 cards[currentPlayer].remove(typeToRemove);
                             }
-                            
+
                             //add the card the player wants
                             cards[currentPlayer].add(tradeResource);
-                            
+
                             //sort the cards so when the build button are updated they are in the correct order
                             quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
-                            
+
                             //turn off behavior as if the cancel button was pressed.
                             turnSwitchBtn.setEnabled(true);
                             trade4to1Btn.setText("Trade 4:1");
@@ -1433,7 +1433,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             }
-            
+
             //update the screen
             repaint();
         }
@@ -1915,7 +1915,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
-            
+
             //check the trading type
             switch (tradingMode) {
                 case 1:
@@ -2034,28 +2034,29 @@ public class GamePanel extends javax.swing.JPanel {
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
     }
-    
+
     /**
      * Determine if the current player has enough cards to begin a trade.
-     * 
-     * @param tradingType Three valid options. "4" for a four to one, "3", and "2" for their respective ratios
-     * @return 
+     *
+     * @param tradingType Three valid options. "4" for a four to one, "3", and
+     * "2" for their respective ratios
+     * @return
      */
     private boolean hasTradeCards(int tradingType) {
         boolean hasEnoughCards = false; //does the player have enough cards. Start false because no check has been made yet.
-        
+
         //check if the input is valid
         if (!(tradingType >= 2 && tradingType <= 4)) {
             System.out.println("Error: hasTradeCards out of bounds with value: " + tradingType);
         } else { //check the current players cards
             //create an array to store how many cards of each type the player has
             numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
-            
+
             //sum up the cards of each type
             for (int i = 0; i < cards[currentPlayer].size(); i++) {
-                numCardType[cards[currentPlayer].get(i)] ++;
+                numCardType[cards[currentPlayer].get(i)]++;
             }
-            
+
             //check if there is the required amount of each type
             for (int i = 1; i < numCardType.length; i++) {
                 //check each type
@@ -2063,9 +2064,9 @@ public class GamePanel extends javax.swing.JPanel {
                     hasEnoughCards = true;
                 }
             }
-            
+
         }
-        
+
         return hasEnoughCards;
     }
 
@@ -2656,27 +2657,27 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("Next player:",
                 superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
                 superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
-        
-        Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage(); 
-        
+
+        Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage();
+
         //draw the ports
         boolean drawSpecificHitbox = false; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
         for (int i = 0; i < ports.size(); i++) {
             g2d.drawImage(ports.get(i).getImage(),
-                    ports.get(i).getXPos(), 
-                    ports.get(i).getYPos(), 
+                    ports.get(i).getXPos(),
+                    ports.get(i).getYPos(),
                     getImgWidth(ports.get(i).getImage()),
-                    getImgHeight(ports.get(i).getImage()),                    
+                    getImgHeight(ports.get(i).getImage()),
                     null);
-            
+
             //draw the recource type on top
             g2d.drawImage(ports.get(i).getTypeImage(),
-                    ports.get(i).getTypePosX(), 
-                    ports.get(i).getTypePosY(),  
+                    ports.get(i).getTypePosX(),
+                    ports.get(i).getTypePosY(),
                     getImgWidth(ports.get(i).getTypeImage()),
-                    getImgHeight(ports.get(i).getTypeImage()), 
+                    getImgHeight(ports.get(i).getTypeImage()),
                     null);
-            
+
             //draw the hitbox
             if (showPortHitbox) {
                 //decide if that specif box should be drawn
@@ -2687,13 +2688,13 @@ public class GamePanel extends javax.swing.JPanel {
                 } else if (tradingMode == 3) {
                     //check if the current player is on any of the 2:1 ports
                 }
-                
+
                 //check if that one should be drawn
                 if (drawSpecificHitbox) {
-                    g2d.drawRect(ports.get(i).getTypePosX(), 
-                        ports.get(i).getTypePosY(),  
-                        getImgWidth(ports.get(i).getTypeImage()),
-                        getImgHeight(ports.get(i).getTypeImage()));
+                    g2d.drawRect(ports.get(i).getTypePosX(),
+                            ports.get(i).getTypePosY(),
+                            getImgWidth(ports.get(i).getTypeImage()),
+                            getImgHeight(ports.get(i).getTypeImage()));
                 }
             }
         }
@@ -2707,15 +2708,15 @@ public class GamePanel extends javax.swing.JPanel {
             //check if it is the new type or old size
             if (tiles.get(tileID).getImage().getHeight(null) == 150) {
                 //draw the tile
-                
+
                 g2d.drawImage(tiles.get(tileID).getImage(),
                         tiles.get(tileID).getXPos(),
                         (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
                         getImgWidth(tiles.get(tileID).getImage()),
                         getImgHeight(tiles.get(tileID).getImage()), null);
-                
+
             } else {
-                
+
                 //draw the tile
                 g2d.drawImage(tiles.get(tileID).getImage(),
                         tiles.get(tileID).getXPos(),
@@ -3033,7 +3034,7 @@ public class GamePanel extends javax.swing.JPanel {
         if (!inbetweenTurns) {
             // Get the number of cards the player has
             int listSize = cards[currentPlayer].size();
-            
+
             //get the number of each card type the player has
             //setup an array to hold the results
             cardTypeCount = new int[5];
@@ -3042,9 +3043,9 @@ public class GamePanel extends javax.swing.JPanel {
             for (int i = 0; i < listSize; i++) {
                 cardTypeCount[cards[currentPlayer].get(i) - 1]++;
             }
-            
+
             drawSpecificHitbox = false; //reset the var
-            
+
             // Calculate where the first card must go to center the list
             cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
@@ -3108,7 +3109,7 @@ public class GamePanel extends javax.swing.JPanel {
                         } else {
                             drawSpecificHitbox = false;
                         }
-                        
+
                         if (drawSpecificHitbox) {
                             g2d.setColor(Color.green);
                             Stroke tempStroke = g2d.getStroke();
@@ -3177,7 +3178,7 @@ public class GamePanel extends javax.swing.JPanel {
                         } else {
                             drawSpecificHitbox = false;
                         }
-                        
+
                         if (drawSpecificHitbox) {
                             g2d.setColor(Color.green);
                             Stroke tempStroke = g2d.getStroke();
@@ -3471,7 +3472,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     private void remapPortTypePos() {
 
         // Loop through all the ports
@@ -3481,7 +3482,7 @@ public class GamePanel extends javax.swing.JPanel {
             //choose a drawing type. One corrects for width and one corrects for height
             if (superFrame.getWidth() <= superFrame.getHeight()) {
                 //set the x
-                ports.get(i).setTypePosX((int) (ports.get(i).getTypePosX()/ 1920.0 * superFrame.getWidth()));
+                ports.get(i).setTypePosX((int) (ports.get(i).getTypePosX() / 1920.0 * superFrame.getWidth()));
                 //set the y
                 ports.get(i).setTypePosY((getTileYPos(ports.get(i).getTypePosY()) + tileYOffset));
             } else {
@@ -3492,9 +3493,11 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     /**
-     * Updated the image positions of the type images for the ports. This only brings them to where they need to be before major scaling point re-mapping.
+     * Updated the image positions of the type images for the ports. This only
+     * brings them to where they need to be before major scaling point
+     * re-mapping.
      */
     private void updatePortTypePos() {
         //loop through the ports
@@ -3536,14 +3539,14 @@ public class GamePanel extends javax.swing.JPanel {
             System.out.println("Error reading Tile Position file: " + e);
         }
     }
-    
+
     /**
      * read in the port positions and types. Also populate the Array List
      */
     private void loadPorts() {
-        
+
         Port newPort; //the latest port being read in
-        
+
         // Declare variables
         Scanner fileReader;
         InputStream file = OldCode.class.getResourceAsStream("portData.txt");
@@ -3555,12 +3558,12 @@ public class GamePanel extends javax.swing.JPanel {
 
             // Read the entire file in and create the Ports
             for (int i = 0; i < 9; i++) {
-                
+
                 //create the new Port
                 newPort = new Port(tiles.get(Integer.parseInt(fileReader.nextLine())),
                         Integer.parseInt(fileReader.nextLine()),
                         Integer.parseInt(fileReader.nextLine()));
-                
+
                 //add it to the Array List
                 ports.add(newPort);
 
@@ -3666,18 +3669,19 @@ public class GamePanel extends javax.swing.JPanel {
         //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
-    
+
     /**
-     * Decides if a trade is valid. This check prevents selecting a clay trade but not having more than 4 cards or something other than clay
-     * 
+     * Decides if a trade is valid. This check prevents selecting a clay trade
+     * but not having more than 4 cards or something other than clay
+     *
      * @param resourceType
      * @param tradeType
-     * @return 
+     * @return
      */
     private boolean canTradeTo(int resourceType, int tradeType) {
         boolean showPort = false;
         int minCardsNeeded = 4; //the minimin amount of cards needed of one type to make a trade
-        
+
         //find the min cards needed
         switch (tradeType) {
             case 3:
@@ -3693,7 +3697,7 @@ public class GamePanel extends javax.swing.JPanel {
                 minCardsNeeded = 4;
                 break;
         }
-        
+
         //loop through all the card types
         for (int i = 0; i < cardTypeCount.length; i++) {
             //check if that port can be used
@@ -3701,12 +3705,13 @@ public class GamePanel extends javax.swing.JPanel {
                 showPort = true;
             }
         }
-        
+
         return showPort;
     }
 
     /**
      * Set the number of players playing the game
+     *
      * @param playerCount
      */
     public static void setPlayerCount(int playerCount) {
@@ -3715,6 +3720,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Get the number of players playing the game
+     *
      * @return
      */
     public static int getPlayerCount() {
@@ -3722,7 +3728,9 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Set weather or not the players receive startup resource cards when the game leaves setup mode
+     * Set weather or not the players receive startup resource cards when the
+     * game leaves setup mode
+     *
      * @param giveStartingResources
      */
     public static void setgiveStartingResources(boolean giveStartingResources) {
@@ -3736,33 +3744,37 @@ public class GamePanel extends javax.swing.JPanel {
     public static boolean getgiveStartingResources() {
         return giveStartingResources;
     }
-    
+
     /**
      * Get the width of the JFrame holding the GamePanel
-     * @return 
+     *
+     * @return
      */
     public static int getFrameWidth() {
         return frameWidth;
     }
-    
+
     /**
      * Set the width of the JFrame holding the GamePanel
-     * @param frameWidth 
+     *
+     * @param frameWidth
      */
     public static void setFrameWidth(int frameWidth) {
         GamePanel.frameWidth = frameWidth;
     }
-    
+
     /**
      * Get the height of the JFrame holding the GamePanel
-     * @return 
+     *
+     * @return
      */
     public static int getFrameHeight() {
         return frameHeight;
     }
-    
+
     /**
      * Set the height of the JFrame holding the GamePanel
+     *
      * @param frameHeight
      */
     public static void setFrameHeight(int frameHeight) {
