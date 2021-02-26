@@ -1381,7 +1381,7 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
 
                         //check if the card is available to trade and that it is not the same type the payer would like to trade TO
-                        if (cardTypeCount[i] >= 4 && (i + 1) != tradeResource) {
+                        if (cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource) {
                             //debug click detection
                             //System.out.println("Card stack Clicked!");
                             Integer typeToRemove = i + 1;
@@ -1400,6 +1400,7 @@ public class GamePanel extends javax.swing.JPanel {
                             //turn off behavior as if the cancel button was pressed.
                             turnSwitchBtn.setEnabled(true);
                             trade4to1Btn.setText("Trade 4:1");
+                            trade3to1Btn.setText("Trade 3:1");
                             //remove the intent to trade
                             tradingMode = 0;
                             minTradeCardsNeeded = 0;
@@ -1431,13 +1432,13 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
 
                         //check if the card is available to trade and that it is not the same type the payer would like to trade TO
-                        if (numCardType[cards[currentPlayer].get(i)] >= 4 && cards[currentPlayer].get(i) != tradeResource) {
+                        if (numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded && cards[currentPlayer].get(i) != tradeResource) {
                             //debug click detection
                             //System.out.println("Card no stack Clicked!");
                             Integer typeToRemove = cards[currentPlayer].get(i);
 
-                            //remove 4 of that card type
-                            for (int j = 0; j < 4; j++) {
+                            //remove the required amount of that card type
+                            for (int j = 0; j < minTradeCardsNeeded; j++) {
                                 cards[currentPlayer].remove(typeToRemove);
                             }
 
@@ -1450,6 +1451,7 @@ public class GamePanel extends javax.swing.JPanel {
                             //turn off behavior as if the cancel button was pressed.
                             turnSwitchBtn.setEnabled(true);
                             trade4to1Btn.setText("Trade 4:1");
+                            trade3to1Btn.setText("Trade 3:1");
                             //remove the intent to trade
                             tradingMode = 0;
                             minTradeCardsNeeded = 0;
@@ -3148,10 +3150,8 @@ public class GamePanel extends javax.swing.JPanel {
                         //decide if to draw this on in the loop
                         if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                             drawSpecificHitbox = true;
-                        } else if (tradingMode == 1 && cardTypeCount[i] >= 4 && (i + 1) != tradeResource) { //if it is for trading purpous do some more checks
-                            //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
-                            drawSpecificHitbox = true;
-                        } else if (tradingMode == 2 && cardTypeCount[i] >= 3 && (i + 1) != tradeResource) { //check for a 3:1
+                        } else if (cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource) { //if it is for trading purpous do some more checks
+                            //has to have more than the minimum or more cards and cannot be the same type of card the play wants to end up with.
                             drawSpecificHitbox = true;
                         } else {
                             drawSpecificHitbox = false;
@@ -3219,10 +3219,8 @@ public class GamePanel extends javax.swing.JPanel {
                         //decide if to draw this on in the loop
                         if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                             drawSpecificHitbox = true;
-                        } else if (tradingMode == 1 && numCardType[type] >= 4 && cards[currentPlayer].get(i) != tradeResource) { //if it is for trading purpous do some more checks
+                        } else if (numCardType[type] >= minTradeCardsNeeded && cards[currentPlayer].get(i) != tradeResource) { //if it is for trading purpous do some more checks
                             //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
-                            drawSpecificHitbox = true;
-                        } else if (tradingMode == 2 && numCardType[type] >= 3 && cards[currentPlayer].get(i) != tradeResource) { //check for a 3:1
                             drawSpecificHitbox = true;
                         } else {
                             drawSpecificHitbox = false;
