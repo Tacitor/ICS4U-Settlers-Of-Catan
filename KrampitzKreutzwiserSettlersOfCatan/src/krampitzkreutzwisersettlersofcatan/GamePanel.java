@@ -70,6 +70,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showPortHitbox;
     private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
     private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
+    private int minTradeCardsNeeded; //the number of cards needed for that tradingMode //the minimin amount of cards needed of one type to make a trade
     private int[] numCardType;
     private int[] cardTypeCount; //the count of how many cards of each type the current player has valid inxies are 0-4
     private int currentPlayer; // The player currently taking their turn
@@ -423,7 +424,6 @@ public class GamePanel extends javax.swing.JPanel {
         trade3to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade3to1Btn.setText("Trade 3:1");
         trade3to1Btn.setToolTipText("");
-        trade3to1Btn.setEnabled(false);
         trade3to1Btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trade3to1BtnActionPerformed(evt);
@@ -798,6 +798,7 @@ public class GamePanel extends javax.swing.JPanel {
             buildSettlementSRBtn.setEnabled(false);
             buildSettlementLRBtn.setEnabled(false);
             trade4to1Btn.setEnabled(false);
+            trade3to1Btn.setEnabled(false);
 
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
@@ -837,18 +838,50 @@ public class GamePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_backNoSaveBtnActionPerformed
 
     private void trade3to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade3to1BtnActionPerformed
-        // TODO add your handling code here:
+        //check what mode of trading the game is in for 3:1
+        if (tradingMode != 0) {
+            //if the user clicked the cancel button reenable the turnswitch button and update the button lable
+            turnSwitchBtn.setEnabled(true);
+            trade3to1Btn.setText("Trade 3:1");
+            //remove the intent to trade
+            tradingMode = 0;
+            minTradeCardsNeeded = 0;
+            //clear the resource if there was one
+            tradeResource = 0;
+            //hide the hitboxes
+            showPortHitbox = false;
+            showCardHitbox = false;
+            //update the buildbuttons (should be renabeling them now)
+            updateBuildButtons();
+            repaint();
+        } else {
+            //if the user clicked the button in the inactive state activate it.
+            //register the intent to trade
+            tradingMode = 2;
+            minTradeCardsNeeded = 3;
+            //diable turn switching
+            turnSwitchBtn.setEnabled(false);
+            //update the text of the button
+            trade3to1Btn.setText("Cancel");
+            //show the hitboxes
+            showPortHitbox = true;
+            //update the buildbuttons (should be disables for trading mode)
+            updateBuildButtons();
+            instructionLbl.setText("Please select the resource you would like to recive");
+            subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
+            repaint();
+        }
     }//GEN-LAST:event_trade3to1BtnActionPerformed
 
     private void trade4to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade4to1BtnActionPerformed
-        // TODO add your handling code here:
-        //check what mode of trading the game is in
+        //check what mode of trading the game is in for 4:1
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
             turnSwitchBtn.setEnabled(true);
             trade4to1Btn.setText("Trade 4:1");
             //remove the intent to trade
             tradingMode = 0;
+            minTradeCardsNeeded = 0;
             //clear the resource if there was one
             tradeResource = 0;
             //hide the hitboxes
@@ -861,6 +894,7 @@ public class GamePanel extends javax.swing.JPanel {
             //if the user clicked the button in the inactive state activate it.
             //register the intent to trade
             tradingMode = 1;
+            minTradeCardsNeeded = 4;
             //diable turn switching
             turnSwitchBtn.setEnabled(false);
             //update the text of the button
@@ -876,7 +910,7 @@ public class GamePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_trade4to1BtnActionPerformed
 
     private void trade2to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade2to1BtnActionPerformed
-        // TODO add your handling code here:
+        //check what mode of trading the game is in for 2:1
     }//GEN-LAST:event_trade2to1BtnActionPerformed
 
     /**
@@ -1352,8 +1386,8 @@ public class GamePanel extends javax.swing.JPanel {
                             //System.out.println("Card stack Clicked!");
                             Integer typeToRemove = i + 1;
 
-                            //remove 4 of that card type
-                            for (int j = 0; j < 4; j++) {
+                            //remove the required amount of that card type
+                            for (int j = 0; j < minTradeCardsNeeded; j++) {
                                 cards[currentPlayer].remove(typeToRemove);
                             }
 
@@ -1368,6 +1402,7 @@ public class GamePanel extends javax.swing.JPanel {
                             trade4to1Btn.setText("Trade 4:1");
                             //remove the intent to trade
                             tradingMode = 0;
+                            minTradeCardsNeeded = 0;
                             //clear the resource if there was one
                             tradeResource = 0;
                             //hide the hitboxes
@@ -1417,6 +1452,7 @@ public class GamePanel extends javax.swing.JPanel {
                             trade4to1Btn.setText("Trade 4:1");
                             //remove the intent to trade
                             tradingMode = 0;
+                            minTradeCardsNeeded = 0;
                             //clear the resource if there was one
                             tradeResource = 0;
                             //hide the hitboxes
@@ -1894,6 +1930,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean canBuildSettlement;
         boolean canBuildCity;
         boolean canTrade4to;
+        boolean canTrade3to;
         ButtonModel oldSelection; // The button selected before this update began
 
         // If the game is in setup
@@ -1902,6 +1939,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
             canTrade4to = false;
+            canTrade3to = false;
         } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
         //or if a player is trading
         else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
@@ -1909,6 +1947,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildSettlement = false;
             canBuildCity = false;
             canTrade4to = false;
+            canTrade3to = false;
         } //else if the player is currently trading
         else if (tradingMode != 0) {
             //diable all the building
@@ -1921,18 +1960,22 @@ public class GamePanel extends javax.swing.JPanel {
                 case 1:
                     //if 4:1
                     canTrade4to = true;
+                    canTrade3to = false;
                     break;
                 case 2:
                     //if 3:1
                     canTrade4to = false;
+                    canTrade3to = true;
                     break;
                 case 3:
                     //if 2:1
                     canTrade4to = false;
+                    canTrade3to = false;
                     break;
                 default:
                     //if anything else
                     canTrade4to = false;
+                    canTrade3to = false;
                     break;
             }
 
@@ -1942,6 +1985,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildSettlement = hasCards(1); // Settlements
             canBuildCity = hasCards(2); // Cities
             canTrade4to = hasTradeCards(4);
+            canTrade3to = hasTradeCards(3);
         }
 
         // Save what button was selected before this update began
@@ -2004,7 +2048,8 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(canBuildRoad);              // Roads
         buildSettlementSRBtn.setEnabled(canBuildSettlement); // Settlements
         buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
-        trade4to1Btn.setEnabled(canTrade4to);                // Trade
+        trade4to1Btn.setEnabled(canTrade4to);                //trade 4:1
+        trade3to1Btn.setEnabled(canTrade3to);                //trade 3:1
 
         //update the colours of the radio buttons to reflect weather or not they are enabled. The stoped being done automatically when the default forground colour was changed.
         if (canBuildRoad) {
@@ -3103,8 +3148,10 @@ public class GamePanel extends javax.swing.JPanel {
                         //decide if to draw this on in the loop
                         if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                             drawSpecificHitbox = true;
-                        } else if (cardTypeCount[i] >= 4 && (i + 1) != tradeResource) { //if it is for trading purpous do some more checks
+                        } else if (tradingMode == 1 && cardTypeCount[i] >= 4 && (i + 1) != tradeResource) { //if it is for trading purpous do some more checks
                             //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
+                            drawSpecificHitbox = true;
+                        } else if (tradingMode == 2 && cardTypeCount[i] >= 3 && (i + 1) != tradeResource) { //check for a 3:1
                             drawSpecificHitbox = true;
                         } else {
                             drawSpecificHitbox = false;
@@ -3172,8 +3219,10 @@ public class GamePanel extends javax.swing.JPanel {
                         //decide if to draw this on in the loop
                         if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                             drawSpecificHitbox = true;
-                        } else if (numCardType[type] >= 4 && cards[currentPlayer].get(i) != tradeResource) { //if it is for trading purpous do some more checks
+                        } else if (tradingMode == 1 && numCardType[type] >= 4 && cards[currentPlayer].get(i) != tradeResource) { //if it is for trading purpous do some more checks
                             //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
+                            drawSpecificHitbox = true;
+                        } else if (tradingMode == 2 && numCardType[type] >= 3 && cards[currentPlayer].get(i) != tradeResource) { //check for a 3:1
                             drawSpecificHitbox = true;
                         } else {
                             drawSpecificHitbox = false;
@@ -3680,28 +3729,11 @@ public class GamePanel extends javax.swing.JPanel {
      */
     private boolean canTradeTo(int resourceType, int tradeType) {
         boolean showPort = false;
-        int minCardsNeeded = 4; //the minimin amount of cards needed of one type to make a trade
-
-        //find the min cards needed
-        switch (tradeType) {
-            case 3:
-                //if 2:1 need 2 cards
-                minCardsNeeded = 2;
-                break;
-            case 2:
-                //if 3:1 need 3 cards
-                minCardsNeeded = 3;
-                break;
-            case 1:
-                //if 4:1 need 4 cards
-                minCardsNeeded = 4;
-                break;
-        }
 
         //loop through all the card types
         for (int i = 0; i < cardTypeCount.length; i++) {
             //check if that port can be used
-            if (cardTypeCount[i] >= minCardsNeeded && (i + 1) != resourceType) {
+            if (cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != resourceType) {
                 showPort = true;
             }
         }
