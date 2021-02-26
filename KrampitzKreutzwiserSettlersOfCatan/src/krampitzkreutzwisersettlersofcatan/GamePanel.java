@@ -71,6 +71,7 @@ public class GamePanel extends javax.swing.JPanel {
     private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
     private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
     private int minTradeCardsNeeded; //the number of cards needed for that tradingMode //the minimin amount of cards needed of one type to make a trade
+    private boolean[][] playerHasPort; //main array is for players, index 0 is not used, index 1-4 are the player numbers. sub arrays are of length 6. inxed 0 for 3:1 port, indexes 1-5 for 2:1 of that type
     private int[] numCardType;
     private int[] cardTypeCount; //the count of how many cards of each type the current player has valid inxies are 0-4
     private int currentPlayer; // The player currently taking their turn
@@ -147,6 +148,9 @@ public class GamePanel extends javax.swing.JPanel {
         //the +1 allows methods to use player IDs directly without subtracting 1
         drawCardStacks = new boolean[playerCount + 1];//create the array of how to draw the cards for each player
         //the +1 allows methods to use player IDs directly without subtracting 1
+        playerHasPort = new boolean[playerCount + 1][6]; //create the array keeping track of what player has acces to what ports
+        //the +1 allows methods to use player IDs directly without subtracting 1
+        //the 6 is for the six types of ports ^
         totalCardsCollected = new int[5];
         //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
         cardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
@@ -212,6 +216,15 @@ public class GamePanel extends javax.swing.JPanel {
             cards[i] = new ArrayList(); // Cards ArrayList
             victoryPoints[i] = 0; // Victory point counter
             drawCardStacks[i] = false;
+        }
+        
+        //fill the playerHasPort 2D array with false for all players ecxept 0 and fill all the ports they have with falses because noone has ports yet
+        //skip player 0
+        for (int i = 1; i < playerHasPort.length; i++) {
+            //go through the sub arrays and fill them with six falses
+            for (int j = 0; j < playerHasPort[i].length; j++) {
+                playerHasPort[i][j] = false;
+            }
         }
 
         // Intialize the card counter array
