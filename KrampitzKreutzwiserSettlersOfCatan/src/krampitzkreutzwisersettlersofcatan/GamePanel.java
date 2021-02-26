@@ -1308,8 +1308,8 @@ public class GamePanel extends javax.swing.JPanel {
                         event.getX() < (portPosX + getImgWidth(ports.get(i).getTypeImage())) &&
                         event.getY() < (portPosY + getImgHeight(ports.get(i).getTypeImage()))) {
                     
-                    //check if its a non general port
-                    if (ports.get(i).getType() != 0) {
+                    //check if its a non general port and also if clicking that port would leave the player with no options for cards to trade away
+                    if (ports.get(i).getType() != 0 && canTradeTo(ports.get(i).getType(), tradingMode)) {
                         
                         //register the type the player want to trade TO
                         tradeResource = ports.get(i).getType();
@@ -1331,7 +1331,7 @@ public class GamePanel extends javax.swing.JPanel {
                 
             }
             
-        } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) {
+        } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
             //get the y position for the cards
             int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
 
@@ -2683,7 +2683,7 @@ public class GamePanel extends javax.swing.JPanel {
                 if (ports.get(i).getType() == 0) {
                     drawSpecificHitbox = false;
                 } else if (tradingMode == 1 || tradingMode == 2) {
-                    drawSpecificHitbox = true;
+                    drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode);
                 } else if (tradingMode == 3) {
                     //check if the current player is on any of the 2:1 ports
                 }
@@ -3034,6 +3034,15 @@ public class GamePanel extends javax.swing.JPanel {
             // Get the number of cards the player has
             int listSize = cards[currentPlayer].size();
             
+            //get the number of each card type the player has
+            //setup an array to hold the results
+            cardTypeCount = new int[5];
+
+            //loop thorugh and populate the array
+            for (int i = 0; i < listSize; i++) {
+                cardTypeCount[cards[currentPlayer].get(i) - 1]++;
+            }
+            
             drawSpecificHitbox = false; //reset the var
             
             // Calculate where the first card must go to center the list
@@ -3042,15 +3051,6 @@ public class GamePanel extends javax.swing.JPanel {
             //check if the cards would go off the screen
             if ((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(CARD_CLAY)))) {
                 drawCardStacks[currentPlayer] = true;
-
-                //get the number of each card type the player has
-                //setup an array to hold the results
-                cardTypeCount = new int[5];
-
-                //loop thorugh and populate the array
-                for (int i = 0; i < listSize; i++) {
-                    cardTypeCount[cards[currentPlayer].get(i) - 1]++;
-                }
 
                 //draw the number of cards the payer has of each type
                 //change the font
@@ -3665,6 +3665,44 @@ public class GamePanel extends javax.swing.JPanel {
         }
         //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    }
+    
+    /**
+     * Decides if a trade is valid. This check prevents selecting a clay trade but not having more than 4 cards or something other than clay
+     * 
+     * @param resourceType
+     * @param tradeType
+     * @return 
+     */
+    private boolean canTradeTo(int resourceType, int tradeType) {
+        boolean showPort = false;
+        int minCardsNeeded = 4; //the minimin amount of cards needed of one type to make a trade
+        
+        //find the min cards needed
+        switch (tradeType) {
+            case 3:
+                //if 2:1 need 2 cards
+                minCardsNeeded = 2;
+                break;
+            case 2:
+                //if 3:1 need 3 cards
+                minCardsNeeded = 3;
+                break;
+            case 1:
+                //if 4:1 need 4 cards
+                minCardsNeeded = 4;
+                break;
+        }
+        
+        //loop through all the card types
+        for (int i = 0; i < cardTypeCount.length; i++) {
+            //check if that port can be used
+            if (cardTypeCount[i] >= minCardsNeeded && (i + 1) != resourceType) {
+                showPort = true;
+            }
+        }
+        
+        return showPort;
     }
 
     /**
