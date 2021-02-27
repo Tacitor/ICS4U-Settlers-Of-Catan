@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
@@ -1057,6 +1058,22 @@ public class GamePanel extends javax.swing.JPanel {
 
                                 // Set the settlement's player to the current player
                                 settlementNodes.get(i).setPlayer(currentPlayer);
+                                
+                                Tile portLinkedTile; //the tile linked to the port to check agaist
+                                
+                                //loop thorugh the ports and see if the settlement just built is on a port
+                                for (int j = 0; j < ports.size(); j++) {
+                                    //save the Tile
+                                    portLinkedTile = ports.get(j).getLinkedTile();
+                                    
+                                    //loop through the 3 tile the settlement is on use int range 1-3
+                                    for (int k = 1; k < 4; k++) {
+                                        if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
+                                            //save that the new settlemtn is on a port and which one
+                                            playerHasPort[currentPlayer][ports.get(j).getType()] = true;
+                                        }
+                                    }
+                                }
 
                                 //save the settelment just built
                                 newestSetupSettlment = settlementNodes.get(i);
@@ -2000,7 +2017,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildSettlement = hasCards(1); // Settlements
             canBuildCity = hasCards(2); // Cities
             canTrade4to = hasTradeCards(4);
-            canTrade3to = hasTradeCards(3);
+            canTrade3to = hasTradeCards(3) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
         }
 
         // Save what button was selected before this update began
