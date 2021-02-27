@@ -266,6 +266,8 @@ public class MainMenu extends javax.swing.JFrame {
                 new MainMenu().setVisible(true);
             }
         });
+        
+        System.out.println("Hello");
     }
     
     /**
