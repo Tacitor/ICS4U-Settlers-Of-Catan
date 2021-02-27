@@ -3198,8 +3198,6 @@ public class GamePanel extends javax.swing.JPanel {
                 cardTypeCount[cards[currentPlayer].get(i) - 1]++;
             }
 
-            drawSpecificHitbox = false; //reset the var
-
             // Calculate where the first card must go to center the list
             cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
@@ -3257,13 +3255,14 @@ public class GamePanel extends javax.swing.JPanel {
                         //decide if to draw this on in the loop
                         if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                             drawSpecificHitbox = true;
-                        } else if (cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource) { //if it is for trading purpous do some more checks
+                        } else if (tradingMode == 3) { //special handeling for 2:1
+                            //check if the card is of the type the player muct trade for 2:1 trading
+                            drawSpecificHitbox = (i + 1) != tradeResource && (playerHasPort[currentPlayer][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded;
+                        } else { //if it is for other 4:1 or 3:1 trading purpous do some more checks
                             //has to have more than the minimum or more cards and cannot be the same type of card the play wants to end up with.
-                            drawSpecificHitbox = true;
-                        } else {
-                            drawSpecificHitbox = false;
-                        }
-
+                            drawSpecificHitbox = cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource;
+                        } 
+                        
                         if (drawSpecificHitbox) {
                             g2d.setColor(Color.green);
                             Stroke tempStroke = g2d.getStroke();
@@ -3326,13 +3325,14 @@ public class GamePanel extends javax.swing.JPanel {
                         //decide if to draw this on in the loop
                         if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                             drawSpecificHitbox = true;
-                        } else if (numCardType[type] >= minTradeCardsNeeded && cards[currentPlayer].get(i) != tradeResource) { //if it is for trading purpous do some more checks
+                        } else if (tradingMode == 3) { //special handeling for 2:1
+                            //check if the card is of the type the player muct trade for 2:1 trading
+                            drawSpecificHitbox = cards[currentPlayer].get(i) != tradeResource && (playerHasPort[currentPlayer][cards[currentPlayer].get(i)]) && numCardType[type] >= minTradeCardsNeeded;
+                        } else { //if it is for trading purpous do some more checks
                             //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
-                            drawSpecificHitbox = true;
-                        } else {
-                            drawSpecificHitbox = false;
-                        }
-
+                            drawSpecificHitbox = numCardType[type] >= minTradeCardsNeeded && cards[currentPlayer].get(i) != tradeResource;
+                        } 
+                        
                         if (drawSpecificHitbox) {
                             g2d.setColor(Color.green);
                             Stroke tempStroke = g2d.getStroke();
