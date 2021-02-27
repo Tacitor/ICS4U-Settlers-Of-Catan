@@ -458,7 +458,6 @@ public class GamePanel extends javax.swing.JPanel {
         trade2to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade2to1Btn.setText("Specialized Trade 2:1");
         trade2to1Btn.setToolTipText("");
-        trade2to1Btn.setEnabled(false);
         trade2to1Btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trade2to1BtnActionPerformed(evt);
@@ -925,6 +924,38 @@ public class GamePanel extends javax.swing.JPanel {
 
     private void trade2to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade2to1BtnActionPerformed
         //check what mode of trading the game is in for 2:1
+        if (tradingMode != 0) {
+            //if the user clicked the cancel button reenable the turnswitch button and update the button lable
+            turnSwitchBtn.setEnabled(true);
+            trade2to1Btn.setText("Specialized Trade 2:1");
+            //remove the intent to trade
+            tradingMode = 0;
+            minTradeCardsNeeded = 0;
+            //clear the resource if there was one
+            tradeResource = 0;
+            //hide the hitboxes
+            showPortHitbox = false;
+            showCardHitbox = false;
+            //update the buildbuttons (should be renabeling them now)
+            updateBuildButtons();
+            repaint();
+        } else {
+            //if the user clicked the button in the inactive state activate it.
+            //register the intent to trade
+            tradingMode = 3;
+            minTradeCardsNeeded = 2;
+            //diable turn switching
+            turnSwitchBtn.setEnabled(false);
+            //update the text of the button
+            trade2to1Btn.setText("Cancel");
+            //show the hitboxes
+            showPortHitbox = true;
+            //update the buildbuttons (should be disables for trading mode)
+            updateBuildButtons();
+            instructionLbl.setText("Please select the resource you would like to recive");
+            subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
+            repaint();
+        }
     }//GEN-LAST:event_trade2to1BtnActionPerformed
 
     /**
@@ -1431,6 +1462,7 @@ public class GamePanel extends javax.swing.JPanel {
                             turnSwitchBtn.setEnabled(true);
                             trade4to1Btn.setText("Trade 4:1");
                             trade3to1Btn.setText("Trade 3:1");
+                            trade2to1Btn.setText("Specialized Trade 2:1");
                             //remove the intent to trade
                             tradingMode = 0;
                             minTradeCardsNeeded = 0;
@@ -1482,6 +1514,7 @@ public class GamePanel extends javax.swing.JPanel {
                             turnSwitchBtn.setEnabled(true);
                             trade4to1Btn.setText("Trade 4:1");
                             trade3to1Btn.setText("Trade 3:1");
+                            trade2to1Btn.setText("Specialized Trade 2:1");
                             //remove the intent to trade
                             tradingMode = 0;
                             minTradeCardsNeeded = 0;
@@ -1503,6 +1536,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             //update the screen
+            updateBuildButtons();
             repaint();
         }
     }
@@ -1963,6 +1997,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean canBuildCity;
         boolean canTrade4to;
         boolean canTrade3to;
+        boolean canTrade2to;
         ButtonModel oldSelection; // The button selected before this update began
 
         // If the game is in setup
@@ -1972,6 +2007,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildCity = false; // No settlement upgrades during setup
             canTrade4to = false;
             canTrade3to = false;
+            canTrade2to = false;
         } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
         //or if a player is trading
         else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
@@ -1980,6 +2016,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildCity = false;
             canTrade4to = false;
             canTrade3to = false;
+            canTrade2to = false;
         } //else if the player is currently trading
         else if (tradingMode != 0) {
             //diable all the building
@@ -1993,21 +2030,25 @@ public class GamePanel extends javax.swing.JPanel {
                     //if 4:1
                     canTrade4to = true;
                     canTrade3to = false;
+                    canTrade2to = false;
                     break;
                 case 2:
                     //if 3:1
                     canTrade4to = false;
                     canTrade3to = true;
+                    canTrade2to = false;
                     break;
                 case 3:
                     //if 2:1
                     canTrade4to = false;
                     canTrade3to = false;
+                    canTrade2to = true;
                     break;
                 default:
                     //if anything else
                     canTrade4to = false;
                     canTrade3to = false;
+                    canTrade2to = false;
                     break;
             }
 
@@ -2018,6 +2059,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildCity = hasCards(2); // Cities
             canTrade4to = hasTradeCards(4);
             canTrade3to = hasTradeCards(3) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
+            canTrade2to = hasSpecializedPort();
         }
 
         // Save what button was selected before this update began
@@ -2082,6 +2124,7 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
         trade4to1Btn.setEnabled(canTrade4to);                //trade 4:1
         trade3to1Btn.setEnabled(canTrade3to);                //trade 3:1
+        trade2to1Btn.setEnabled(canTrade2to);                //trade 2:1
 
         //update the colours of the radio buttons to reflect weather or not they are enabled. The stoped being done automatically when the default forground colour was changed.
         if (canBuildRoad) {
@@ -2110,6 +2153,26 @@ public class GamePanel extends javax.swing.JPanel {
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
+    }
+    
+    private boolean hasSpecializedPort() {
+        boolean has2to1 = false;
+        
+        //create an array to store how many cards of each type the player has
+        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
+        
+        //sum up the cards of each type
+        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+            numCardType[cards[currentPlayer].get(i)]++;
+        }
+        
+        for (int i = 1; i < 6; i++) { //loop thorugh indexes 1-5
+            if (playerHasPort[currentPlayer][i] && numCardType[i] >= 2) { //check if the player has that port and atleast 2 cards of that type
+                has2to1 = true;
+            }
+        }
+        
+        return has2to1;
     }
 
     /**
@@ -2760,10 +2823,10 @@ public class GamePanel extends javax.swing.JPanel {
                 //decide if that specif box should be drawn
                 if (ports.get(i).getType() == 0) {
                     drawSpecificHitbox = false;
-                } else if (tradingMode == 1 || tradingMode == 2) {
+                } else if (tradingMode == 1 || tradingMode == 2 || tradingMode == 3) {
                     drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode);
-                } else if (tradingMode == 3) {
-                    //check if the current player is on any of the 2:1 ports
+                } else {
+                    drawSpecificHitbox = false;
                 }
 
                 //check if that one should be drawn
