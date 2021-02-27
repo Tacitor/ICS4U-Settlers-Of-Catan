@@ -2823,8 +2823,10 @@ public class GamePanel extends javax.swing.JPanel {
                 //decide if that specif box should be drawn
                 if (ports.get(i).getType() == 0) {
                     drawSpecificHitbox = false;
-                } else if (tradingMode == 1 || tradingMode == 2 || tradingMode == 3) {
-                    drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode);
+                } else if (tradingMode == 1 || tradingMode == 2) {
+                    drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
+                } else if (tradingMode == 3) { //if its a specialized 2:1
+                    drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType()); 
                 } else {
                     drawSpecificHitbox = false;
                 }
@@ -3829,6 +3831,37 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
+        return showPort;
+    }
+    
+    /**
+     * Decides if a Port's hit-box should be drawn if is 2:1 mode
+     * 
+     * @param resourceType
+     * @return 
+     */
+    private boolean canTradeSecializedTo(int resourceType) {
+        boolean showPort = false;
+        
+        //create an array to store how many cards of each type the player has
+        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
+        
+        //sum up the cards of each type
+        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+            numCardType[cards[currentPlayer].get(i)]++;
+        }
+        
+        //do not show the port if it is the 2:1 port that the player has. This prevents trading wood for wood.
+        if (!playerHasPort[currentPlayer][resourceType]) {
+            showPort = true;
+        } else { //if the player does have that port check if they have another 2:1
+            for (int i = 1; i < playerHasPort[currentPlayer].length; i++) {
+                if (playerHasPort[currentPlayer][i] && numCardType[i] >= 2 && i != resourceType) { //if the player owns that 2:1 port check if they have enough cards to use it and that it is a differnt port
+                    showPort = true;
+                }
+            }
+        }
+        
         return showPort;
     }
 
