@@ -218,7 +218,7 @@ public class GamePanel extends javax.swing.JPanel {
             victoryPoints[i] = 0; // Victory point counter
             drawCardStacks[i] = false;
         }
-        
+
         //fill the playerHasPort 2D array with false for all players ecxept 0 and fill all the ports they have with falses because noone has ports yet
         //skip player 0
         for (int i = 1; i < playerHasPort.length; i++) {
@@ -1089,14 +1089,14 @@ public class GamePanel extends javax.swing.JPanel {
 
                                 // Set the settlement's player to the current player
                                 settlementNodes.get(i).setPlayer(currentPlayer);
-                                
+
                                 Tile portLinkedTile; //the tile linked to the port to check agaist
-                                
+
                                 //loop thorugh the ports and see if the settlement just built is on a port
                                 for (int j = 0; j < ports.size(); j++) {
                                     //save the Tile
                                     portLinkedTile = ports.get(j).getLinkedTile();
-                                    
+
                                     //loop through the 3 tile the settlement is on use int range 1-3
                                     for (int k = 1; k < 4; k++) {
                                         if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
@@ -1391,11 +1391,13 @@ public class GamePanel extends javax.swing.JPanel {
 
             int portPosX;
             int portPosY;
+            boolean validPort;
 
             //loop through the ports
             for (int i = 0; i < ports.size(); i++) {
                 portPosX = ports.get(i).getTypePosX();
                 portPosY = ports.get(i).getTypePosY();
+                validPort = false;
 
                 //check if there was a click on a port
                 if (event.getX() > portPosX
@@ -1404,23 +1406,33 @@ public class GamePanel extends javax.swing.JPanel {
                         && event.getY() < (portPosY + getImgHeight(ports.get(i).getTypeImage()))) {
 
                     //check if its a non general port and also if clicking that port would leave the player with no options for cards to trade away
-                    if (ports.get(i).getType() != 0 && canTradeTo(ports.get(i).getType(), tradingMode)) {
+                    //split up into generic 4:1 or 3:1, and specialized 2:1 trades
+                    if (ports.get(i).getType() != 0) {
 
-                        //register the type the player want to trade TO
-                        tradeResource = ports.get(i).getType();
+                        if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(ports.get(i).getType(), tradingMode)) {
+                            validPort = true;
+                        } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) {
+                            validPort = true;
+                        }
 
-                        //turn off the hitboxes
-                        showPortHitbox = false;
+                        //only make the selection if its a valid port selection
+                        if (validPort) {
+                            //register the type the player want to trade TO
+                            tradeResource = ports.get(i).getType();
 
-                        //update the instructions for the next trading step
-                        instructionLbl.setText("Now select a card");
-                        subInstructionLbl.setText("This card should be of the type you would like to trade away");
+                            //turn off the hitboxes
+                            showPortHitbox = false;
 
-                        //show the card hitboxes
-                        showCardHitbox = true;
+                            //update the instructions for the next trading step
+                            instructionLbl.setText("Now select a card");
+                            subInstructionLbl.setText("This card should be of the type you would like to trade away");
 
-                        //update the screen
-                        repaint();
+                            //show the card hitboxes
+                            showCardHitbox = true;
+
+                            //update the screen
+                            repaint();
+                        }
                     }
                 }
 
@@ -2154,24 +2166,24 @@ public class GamePanel extends javax.swing.JPanel {
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
     }
-    
+
     private boolean hasSpecializedPort() {
         boolean has2to1 = false;
-        
+
         //create an array to store how many cards of each type the player has
         numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
-        
+
         //sum up the cards of each type
         for (int i = 0; i < cards[currentPlayer].size(); i++) {
             numCardType[cards[currentPlayer].get(i)]++;
         }
-        
+
         for (int i = 1; i < 6; i++) { //loop thorugh indexes 1-5
             if (playerHasPort[currentPlayer][i] && numCardType[i] >= 2) { //check if the player has that port and atleast 2 cards of that type
                 has2to1 = true;
             }
         }
-        
+
         return has2to1;
     }
 
@@ -2826,7 +2838,7 @@ public class GamePanel extends javax.swing.JPanel {
                 } else if (tradingMode == 1 || tradingMode == 2) {
                     drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
                 } else if (tradingMode == 3) { //if its a specialized 2:1
-                    drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType()); 
+                    drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType());
                 } else {
                     drawSpecificHitbox = false;
                 }
@@ -3833,24 +3845,24 @@ public class GamePanel extends javax.swing.JPanel {
 
         return showPort;
     }
-    
+
     /**
      * Decides if a Port's hit-box should be drawn if is 2:1 mode
-     * 
+     *
      * @param resourceType
-     * @return 
+     * @return
      */
     private boolean canTradeSecializedTo(int resourceType) {
         boolean showPort = false;
-        
+
         //create an array to store how many cards of each type the player has
         numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
-        
+
         //sum up the cards of each type
         for (int i = 0; i < cards[currentPlayer].size(); i++) {
             numCardType[cards[currentPlayer].get(i)]++;
         }
-        
+
         //do not show the port if it is the 2:1 port that the player has. This prevents trading wood for wood.
         if (!playerHasPort[currentPlayer][resourceType]) {
             showPort = true;
@@ -3861,7 +3873,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
         }
-        
+
         return showPort;
     }
 
