@@ -295,7 +295,7 @@ public class GamePanel extends javax.swing.JPanel {
         scaleWorldObjectPos(roadNodes, 1);
         scaleWorldObjectPos(settlementNodes, 0);
         scaleWorldObjectPos(ports, 0);
-        updatePortTypePos();
+        updatePortPos();
         //remapPortTypePos();
 
         //get the fonts
@@ -309,6 +309,10 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementLRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
 
         buildBtn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
+        
+        trade4to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
+        trade3to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
+        trade2to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
 
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
@@ -472,32 +476,28 @@ public class GamePanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buildSettlementSRBtn)
+                    .addComponent(turnSwitchBtn)
+                    .addComponent(buildMenuLbl)
+                    .addComponent(buildRoadRBtn)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(instructionPromptLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(buildSettlementSRBtn)
-                            .addComponent(turnSwitchBtn)
-                            .addComponent(buildMenuLbl)
-                            .addComponent(buildRoadRBtn)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(instructionPromptLbl)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(instructionLbl)
-                                    .addComponent(subInstructionLbl)))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap(1157, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(trade3to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(titleLbl)
-                            .addComponent(trade4to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(instructionLbl)
+                            .addComponent(subInstructionLbl)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(titleLbl)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(trade2to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(trade3to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(1157, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -523,12 +523,12 @@ public class GamePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildBtn)
                 .addGap(29, 29, 29)
-                .addComponent(trade4to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(trade4to1Btn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(trade3to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(trade3to1Btn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 462, Short.MAX_VALUE)
+                .addComponent(trade2to1Btn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 516, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -2064,6 +2064,9 @@ public class GamePanel extends javax.swing.JPanel {
 
                     //skip a line
                     scanner.nextLine();
+                    
+                    ports.get(portNum).applyCoordinates();
+                    ports.get(portNum).applyTypeImageCoordinates();
                 }
 
             } else {
@@ -2118,7 +2121,7 @@ public class GamePanel extends javax.swing.JPanel {
         while (playerTurnOrder.get(0) != currentPlayer) {
             progressPlayerTurnOrder();
         }
-
+        
         repaint();
         updateBuildButtons();
     }
@@ -3801,35 +3804,15 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
-    private void remapPortTypePos() {
-
-        // Loop through all the ports
-        for (int i = 0; i < ports.size(); i++) {
-
-            //pick a way to add the corrdinates for scaling
-            //choose a drawing type. One corrects for width and one corrects for height
-            if (superFrame.getWidth() <= superFrame.getHeight()) {
-                //set the x
-                ports.get(i).setTypePosX((int) (ports.get(i).getTypePosX() / 1920.0 * superFrame.getWidth()));
-                //set the y
-                ports.get(i).setTypePosY((getTileYPos(ports.get(i).getTypePosY()) + tileYOffset));
-            } else {
-                //set the x
-                ports.get(i).setTypePosY((getTileXPos(ports.get(i).getTypePosY()) + tileXOffset));
-                //set the y
-                ports.get(i).setTypePosY(((int) (ports.get(i).getTypePosY() / 1080.0 * superFrame.getHeight())));
-            }
-        }
-    }
-
     /**
      * Updated the image positions of the type images for the ports. This only
      * brings them to where they need to be before major scaling point
      * re-mapping.
      */
-    private void updatePortTypePos() {
+    private void updatePortPos() {
         //loop through the ports
         for (int i = 0; i < ports.size(); i++) {
+            ports.get(i).applyCoordinates();
             ports.get(i).applyTypeImageCoordinates();
         }
     }
