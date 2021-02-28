@@ -17,6 +17,7 @@ public class Tile extends WorldObject {
     private int type; // The material type. Values are staticly available in the GamePanel class
     private int harvestRollNum; // The number that must be rolled to collect from this tile
     private Image image; //the image of the Tile, based off the type
+    private int refNum; //the index number this will have in the ArrayList
     
     //image files
     private final static Image WOOD_TILE = new ImageIcon(ImageRef.class.getResource("wood.png")).getImage(); 
@@ -26,7 +27,7 @@ public class Tile extends WorldObject {
     private final static Image DESERT_TILE = new ImageIcon(ImageRef.class.getResource("desert.png")).getImage(); 
     private final static Image CLAY_TILE = new ImageIcon(ImageRef.class.getResource("clay.png")).getImage(); 
     private final static Image WATER_TILE = new ImageIcon(ImageRef.class.getResource("water.png")).getImage(); 
-    
+
     /**
      * Constructor for a blank tile
      */
@@ -61,13 +62,15 @@ public class Tile extends WorldObject {
      * @param xPos The new tile's X position
      * @param yPos The new tile's Y position
      * @param type The type of resource is creates
+     * @param refNum
      */
-    public Tile(int xPos, int yPos, int type) {
+    public Tile(int xPos, int yPos, int type, int refNum) {
         // Initialize the tile and set the position
         this(xPos, yPos); // With constructor chaining
     
         // Set the tile's type
         this.type = type;
+        this.refNum = refNum;
         
         image = applyImage();
     }
@@ -79,9 +82,9 @@ public class Tile extends WorldObject {
      * @param type The type of resource is creates
      * @param harvestRollNum The number that must be rolled to collect the associated resource type
      */
-    public Tile(int xPos, int yPos, int type, int harvestRollNum) {
+    public Tile(int xPos, int yPos, int type, int harvestRollNum, int refNum) {
         // Initialize the tile and set the position and type
-        this(xPos, yPos, type); // With constructor chaining
+        this(xPos, yPos, type, refNum); // With constructor chaining
     
         // Set the tile's harvesting number
         this.harvestRollNum = harvestRollNum;
@@ -176,6 +179,22 @@ public class Tile extends WorldObject {
         this.harvestRollNum = harvestRollNum;
     }
     
+    /**
+     * Get the reference number of the Tile. This is the spot in the ArrayList it will occupy
+     * @return 
+     */
+    public int getRefNum() {
+        return refNum;
+    }
+    
+    /**
+     * Set the reference number of the Tile. This is the spot in the ArrayList it will occupy
+     * @param refNum 
+     */
+    public void setRefNum(int refNum) {
+        this.refNum = refNum;
+    }
+    
     
     /**
      * Create an identical copy of the world tile
@@ -186,6 +205,7 @@ public class Tile extends WorldObject {
         // Create a new instance with the same properties
         Tile copy = new Tile(xPos, yPos, type, harvestRollNum);
         copy.hasThief = hasThief;
+        copy.refNum = refNum;
         // Return the copy
         return copy;
     }

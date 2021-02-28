@@ -124,7 +124,7 @@ public class Port extends WorldObject{
     /**
      * using the linked Tile and orientation calculate the x and y positions of the Port
      */
-    private void applyCoordinates() {
+    public void applyCoordinates() {
         //get the orientation
         switch (orientation) {
             case 0:
@@ -231,6 +231,8 @@ public class Port extends WorldObject{
      */
     public void setLinkedTile (Tile linkedTile) {
         this.linkedTile = linkedTile;
+        applyCoordinates();;
+        applyTypeImageCoordinates();
     }
     
     /**
@@ -247,6 +249,9 @@ public class Port extends WorldObject{
      */
     public void setOrientation(int orientation) {
         this.orientation = orientation;
+        image = applyImage();
+        applyCoordinates();
+        applyTypeImageCoordinates();
     }
     
     /**
@@ -263,6 +268,7 @@ public class Port extends WorldObject{
      */
     public void setType(int type) {
         this.type = type;
+        typeImage = applyTypeImage();
     }
     
     /**
@@ -314,7 +320,7 @@ public class Port extends WorldObject{
      * Dynamically set the image based on the orientation 
      * @return 
      */
-    private Image applyImage() {
+    public Image applyImage() {
         switch (orientation) {
             case 0:
                 return TOP_PORT;
@@ -337,7 +343,7 @@ public class Port extends WorldObject{
      * Dynamically set the type image based on the type 
      * @return 
      */
-    private Image applyTypeImage() {
+    public Image applyTypeImage() {
         switch (type) {
             case 0:
                 return WILD_CARD_PORT;
@@ -354,6 +360,20 @@ public class Port extends WorldObject{
             default:
                 return WILD_CARD_PORT;
         }
+    }
+    
+    /**
+     * Create a string representations of the port
+     * @return The ports's attributes as a string
+     */
+    @Override
+    public String toString(){
+        // Create a String out of the tile's attributes
+        return "Port:\n"
+                + super.toString() + "\n"
+                + "Type: " + type + "\n"
+                + "linkedTile: " + linkedTile.getRefNum() + "\n"
+                + "Orientation: " + orientation + "\n";
     }
     
 }

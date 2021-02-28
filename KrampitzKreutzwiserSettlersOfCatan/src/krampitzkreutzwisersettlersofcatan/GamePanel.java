@@ -1632,7 +1632,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV6"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV7"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1723,8 +1723,22 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println(settlementNodes.get(i).isLarge());
                 saveFile.println(); //add a line break below
             }
+            
+            //add the Port data
+            saveFile.println("Ports:");
+            for (int i = 0; i < ports.size(); i++) { //loop thorugh all the ports and add it to the save file.
+                saveFile.println("Port number:");
+                saveFile.println(i);
+                saveFile.println("LinkedTile:");
+                saveFile.println(ports.get(i).getLinkedTile().getRefNum());
+                saveFile.println("Orientation:");
+                saveFile.println(ports.get(i).getOrientation());
+                saveFile.println("Type:");
+                saveFile.println(ports.get(i).getType());
+                saveFile.println(); //add a line break below
+            }
 
-            //add the
+            //add the close
             saveFile.close();
             return true;
         } catch (FileNotFoundException e) {
@@ -1744,7 +1758,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV6")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV7")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1994,6 +2008,45 @@ public class GamePanel extends javax.swing.JPanel {
                         throwLoadError();
                     }
 
+                    //skip a line
+                    scanner.nextLine();
+                }
+
+            } else {
+                throwLoadError();
+            }
+            
+            if (scanner.nextLine().equals("Ports:")) {
+                //System.out.println("Yuppers13");
+
+                int portNum = 0;
+
+                //loop through all the ports
+                for (int i = 0; i < ports.size(); i++) {
+                    if (scanner.nextLine().equals("Port number:")) {
+                        portNum = Integer.parseInt(scanner.nextLine());
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("LinkedTile:")) {
+                        ports.get(portNum).setLinkedTile(tiles.get(Integer.parseInt(scanner.nextLine())));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Orientation:")) {
+                        ports.get(portNum).setOrientation(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Type:")) {
+                        ports.get(portNum).setType(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+                    
                     //skip a line
                     scanner.nextLine();
                 }
@@ -3546,7 +3599,7 @@ public class GamePanel extends javax.swing.JPanel {
         Tile newTile;
         for (int i = 0; i < 19; i++) {
             //int r = (int) (Math.random() * 6);
-            newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i]); //set the position and a type based on the text file
+            newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i], i); //set the position and a type based on the text file
 
             //add the harvest roll num
             newTile.setHarvestRollNum(tileHarvestRollNums[i]);
