@@ -577,12 +577,7 @@ public class GamePanel extends javax.swing.JPanel {
         if (!inbetweenTurns) {
             //check to make sure there isn't already another building trying to be made
             if (buildingObject != 0) {
-                //if there is turn off any building mode currently
-                buildingObject = 0;
-                showRoadHitbox = false;
-                showSettlementHitbox = false;
-                // Change the button back to the build button
-                buildBtn.setText("Build");
+                cancelBuilding();
                 // Redraw the board to remove hitbox outlines
                 repaint();
                 // Dont pick a new building to place
@@ -878,6 +873,8 @@ public class GamePanel extends javax.swing.JPanel {
             trade3to1Btn.setText("Cancel");
             //show the hitboxes
             showPortHitbox = true;
+            //canbel any building if there is any
+            cancelBuilding();
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
             instructionLbl.setText("Please select the resource you would like to recive");
@@ -914,6 +911,8 @@ public class GamePanel extends javax.swing.JPanel {
             trade4to1Btn.setText("Cancel");
             //show the hitboxes
             showPortHitbox = true;
+            //canbel any building if there is any
+            cancelBuilding();
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
             instructionLbl.setText("Please select the resource you would like to recive");
@@ -950,6 +949,8 @@ public class GamePanel extends javax.swing.JPanel {
             trade2to1Btn.setText("Cancel");
             //show the hitboxes
             showPortHitbox = true;
+            //canbel any building if there is any
+            cancelBuilding();
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
             instructionLbl.setText("Please select the resource you would like to recive");
@@ -1441,12 +1442,15 @@ public class GamePanel extends javax.swing.JPanel {
         } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
             //get the y position for the cards
             int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
+            boolean validCard;
 
             //check what mode the card drawing is in
             if (drawCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
 
                 //loop though the 5 stacks
                 for (int i = 0; i < 5; i++) {
+                    validCard = false;
+                    
                     //check for a click
                     if (event.getX() > cardStackXPositions[i]
                             && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
@@ -1454,40 +1458,52 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
 
                         //check if the card is available to trade and that it is not the same type the payer would like to trade TO
-                        if (cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource) {
-                            //debug click detection
-                            //System.out.println("Card stack Clicked!");
-                            Integer typeToRemove = i + 1;
-
-                            //remove the required amount of that card type
-                            for (int j = 0; j < minTradeCardsNeeded; j++) {
-                                cards[currentPlayer].remove(typeToRemove);
+                        //split the handeling for the 2:1 away from the others
+                        if ((i + 1) != tradeResource) {
+                            
+                            //check for a specialized trade
+                            if (tradingMode == 3 && (playerHasPort[currentPlayer][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded) {
+                                validCard = true;
+                            } else if ((tradingMode == 1 || tradingMode == 2) && cardTypeCount[i] >= minTradeCardsNeeded) { //if 4:1 or 3:1
+                                validCard = true;
                             }
+                            
+                            //only make the selection if its a valid card selection
+                            if (validCard) {
+                                //debug click detection
+                                //System.out.println("Card stack Clicked!");
+                                Integer typeToRemove = i + 1;
 
-                            //add the card the player wants
-                            cards[currentPlayer].add(tradeResource);
+                                //remove the required amount of that card type
+                                for (int j = 0; j < minTradeCardsNeeded; j++) {
+                                    cards[currentPlayer].remove(typeToRemove);
+                                }
 
-                            //sort the cards so when the build button are updated they are in the correct order
-                            quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+                                //add the card the player wants
+                                cards[currentPlayer].add(tradeResource);
 
-                            //turn off behavior as if the cancel button was pressed.
-                            turnSwitchBtn.setEnabled(true);
-                            trade4to1Btn.setText("Trade 4:1");
-                            trade3to1Btn.setText("Trade 3:1");
-                            trade2to1Btn.setText("Specialized Trade 2:1");
-                            //remove the intent to trade
-                            tradingMode = 0;
-                            minTradeCardsNeeded = 0;
-                            //clear the resource if there was one
-                            tradeResource = 0;
-                            //hide the hitboxes
-                            showPortHitbox = false;
-                            showCardHitbox = false;
-                            //update the buildbuttons (should be renabeling them now)
-                            updateBuildButtons();
-                            //give the instructions that the user can now do what ever they want
-                            instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
-                            subInstructionLbl.setText("You may now continue your turn how ever you please.");
+                                //sort the cards so when the build button are updated they are in the correct order
+                                quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+
+                                //turn off behavior as if the cancel button was pressed.
+                                turnSwitchBtn.setEnabled(true);
+                                trade4to1Btn.setText("Trade 4:1");
+                                trade3to1Btn.setText("Trade 3:1");
+                                trade2to1Btn.setText("Specialized Trade 2:1");
+                                //remove the intent to trade
+                                tradingMode = 0;
+                                minTradeCardsNeeded = 0;
+                                //clear the resource if there was one
+                                tradeResource = 0;
+                                //hide the hitboxes
+                                showPortHitbox = false;
+                                showCardHitbox = false;
+                                //update the buildbuttons (should be renabeling them now)
+                                updateBuildButtons();
+                                //give the instructions that the user can now do what ever they want
+                                instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
+                                subInstructionLbl.setText("You may now continue your turn how ever you please.");
+                            }
                         }
                     }
                 }
@@ -1496,6 +1512,8 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //check if the user clicked on any card
                 for (int i = 0; i < cards[currentPlayer].size(); i++) {
+                    validCard = false;
+                    
                     //get the x position for that card
                     int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
 
@@ -1506,40 +1524,52 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
 
                         //check if the card is available to trade and that it is not the same type the payer would like to trade TO
-                        if (numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded && cards[currentPlayer].get(i) != tradeResource) {
-                            //debug click detection
-                            //System.out.println("Card no stack Clicked!");
-                            Integer typeToRemove = cards[currentPlayer].get(i);
-
-                            //remove the required amount of that card type
-                            for (int j = 0; j < minTradeCardsNeeded; j++) {
-                                cards[currentPlayer].remove(typeToRemove);
+                        //split the 2:1 haneling
+                        if (cards[currentPlayer].get(i) != tradeResource) {
+                            
+                            //check for specialized
+                            if (tradingMode == 3 && (playerHasPort[currentPlayer][cards[currentPlayer].get(i)]) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) {
+                                validCard = true;
+                            } else if ((tradingMode == 1 || tradingMode == 2) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) { //if 4:1 or 3:1
+                                validCard = true;
                             }
+                            
+                            //only make the selection if its a valid card selection
+                            if (validCard) {
+                                //debug click detection
+                                //System.out.println("Card no stack Clicked!");
+                                Integer typeToRemove = cards[currentPlayer].get(i);
 
-                            //add the card the player wants
-                            cards[currentPlayer].add(tradeResource);
+                                //remove the required amount of that card type
+                                for (int j = 0; j < minTradeCardsNeeded; j++) {
+                                    cards[currentPlayer].remove(typeToRemove);
+                                }
 
-                            //sort the cards so when the build button are updated they are in the correct order
-                            quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+                                //add the card the player wants
+                                cards[currentPlayer].add(tradeResource);
 
-                            //turn off behavior as if the cancel button was pressed.
-                            turnSwitchBtn.setEnabled(true);
-                            trade4to1Btn.setText("Trade 4:1");
-                            trade3to1Btn.setText("Trade 3:1");
-                            trade2to1Btn.setText("Specialized Trade 2:1");
-                            //remove the intent to trade
-                            tradingMode = 0;
-                            minTradeCardsNeeded = 0;
-                            //clear the resource if there was one
-                            tradeResource = 0;
-                            //hide the hitboxes
-                            showPortHitbox = false;
-                            showCardHitbox = false;
-                            //update the buildbuttons (should be renabeling them now)
-                            updateBuildButtons();
-                            //give the instructions that the user can now do what ever they want
-                            instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
-                            subInstructionLbl.setText("You may now continue your turn how ever you please.");
+                                //sort the cards so when the build button are updated they are in the correct order
+                                quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+
+                                //turn off behavior as if the cancel button was pressed.
+                                turnSwitchBtn.setEnabled(true);
+                                trade4to1Btn.setText("Trade 4:1");
+                                trade3to1Btn.setText("Trade 3:1");
+                                trade2to1Btn.setText("Specialized Trade 2:1");
+                                //remove the intent to trade
+                                tradingMode = 0;
+                                minTradeCardsNeeded = 0;
+                                //clear the resource if there was one
+                                tradeResource = 0;
+                                //hide the hitboxes
+                                showPortHitbox = false;
+                                showCardHitbox = false;
+                                //update the buildbuttons (should be renabeling them now)
+                                updateBuildButtons();
+                                //give the instructions that the user can now do what ever they want
+                                instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
+                                subInstructionLbl.setText("You may now continue your turn how ever you please.");
+                            }
                         }
 
                     }
@@ -1548,7 +1578,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             //update the screen
-            updateBuildButtons();
             repaint();
         }
     }
@@ -3875,6 +3904,18 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         return showPort;
+    }
+    
+    /**
+     * Return variables to their neutral state when there is no building
+     */
+    private void cancelBuilding() {
+        //if there is turn off any building mode currently
+        buildingObject = 0;
+        showRoadHitbox = false;
+        showSettlementHitbox = false;
+        // Change the button back to the build button
+        buildBtn.setText("Build");
     }
 
     /**
