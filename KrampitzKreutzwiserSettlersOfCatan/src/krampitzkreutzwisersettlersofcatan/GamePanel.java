@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
@@ -189,11 +188,13 @@ public class GamePanel extends javax.swing.JPanel {
         //create a filter for catan save files
         FileFilter catanSaveFile = new FileFilter() {
             //add the description
+            @Override
             public String getDescription() {
                 return "Catan Save File (*.catan)";
             }
 
             //add the logic for the filter
+            @Override
             public boolean accept(File f) {
                 //if it's a directory ignor it
                 if (f.isDirectory()) {
@@ -971,229 +972,233 @@ public class GamePanel extends javax.swing.JPanel {
         //check if the player is building
         if (buildingObject != 0) {
             //check what they are building
-            if (buildingObject == 1) { //roads
-
-                //check the distance to the nearest road using hitboxes and check if it is close enough 
-                for (int i = 0; i < roadNodes.size() - 1; i++) {
-
-                    //get the type of road and set the width and height //get this to not be hard coded if there is time
-                    if (roadNodes.get(i).getOrientation() == 0) {
-                        roadWidth = getImgWidth(RED_ROAD_H); //scale the road dimensions
-                        roadHeight = getImgHeight(RED_ROAD_H);
-                    } else {
-                        roadWidth = getImgWidth(RED_ROAD_L);
-                        roadHeight = getImgHeight(RED_ROAD_L);
-                    }
-
-                    //if the player click in a valid hitbox for a road
-                    if (event.getX() > roadNodes.get(i).getXPos() - roadWidth / 2
-                            && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
-                            && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
-                            && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
-                        //debug road build detection
-                        //System.out.println("road match");
-
-                        //check that the road is unowned
-                        if (roadNodes.get(i).getPlayer() == 0) {
-                            //check what mode the game is in 
-                            if (inSetup && playerSetupRoadsLeft > 0) {
-
-                                //check if the player has placed a settlement yet
-                                if (newestSetupSettlment != null) {
-
-                                    //check that the road is next to the just build settlement
-                                    if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
-                                            || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
-                                            || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
-
-                                        roadNodes.get(i).setPlayer(currentPlayer);
-                                        playerSetupRoadsLeft--;
-                                        // Update thwe build buttons to relfect the remaining setup buildings
-                                        updateBuildButtons();
-                                    } else { //display the error to the user
-                                        instructionLbl.setText("Sorry but that is not a valid location.");
-                                        subInstructionLbl.setText("Try building next to the settlement just built.");
-                                    }
-                                } else { //display the error to the user
-                                    instructionLbl.setText("Sorry but you must build a new settlement first.");
-                                    subInstructionLbl.setText("Try building the road after.");
-                                }
-
-                            } // If the real game is in progress and the player can build there
-                            else if (canBuildRoad(roadNodes.get(i))) {
-                                // The card check has already been made, and the user has the right cards
-
-                                // Remove the cards from the player's deck
-                                // Remove 1 clay and 1 wood
-                                cards[currentPlayer].remove(new Integer(1));
-                                cards[currentPlayer].remove(new Integer(2));
-
-                                // Set the road's player to the current player
-                                roadNodes.get(i).setPlayer(currentPlayer);
-
-                                // Update the building buttons to reflect the player's new list of cards
-                                updateBuildButtons();
-                            } // If the player could not build there
-                            else {
-                                // Print out why the player could not build there
-                                instructionLbl.setText("Sorry but you can't build a road there.");
-                                subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
-                            }
+            switch (buildingObject) {
+                case 1:
+                    //roads
+                    
+                    //check the distance to the nearest road using hitboxes and check if it is close enough
+                    for (int i = 0; i < roadNodes.size() - 1; i++) {
+                        
+                        //get the type of road and set the width and height //get this to not be hard coded if there is time
+                        if (roadNodes.get(i).getOrientation() == 0) {
+                            roadWidth = getImgWidth(RED_ROAD_H); //scale the road dimensions
+                            roadHeight = getImgHeight(RED_ROAD_H);
                         } else {
-                            instructionLbl.setText("Sorry but you can't take a claimed road.");
-                            subInstructionLbl.setText("Try building where there isn't already another road");
+                            roadWidth = getImgWidth(RED_ROAD_L);
+                            roadHeight = getImgHeight(RED_ROAD_L);
                         }
-
-                        // Stop building
-                        buildingObject = 0;
-                        showRoadHitbox = false;
-                        // Change the button back to the build button
-                        buildBtn.setText("Build");
-                        // Redraw the board
-                        repaint();
-                    }
-                }
-            } else if (buildingObject == 2) { //small house
-
-                //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
-                for (int i = 0; i < settlementNodes.size(); i++) {
-
-                    //if the player clicks in a valid hitbox for a settlement
-                    if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                            && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                            && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                            && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
-                        //debug settlent build detection
-                        //System.out.println("hitbox match");
-
-                        //check that the settlement is unowned
-                        if (settlementNodes.get(i).getPlayer() == 0) {
-
-                            // Check that the player can build there and update the instruction labels accordingly if hey cannot
-                            if (canBuildSettlement(settlementNodes.get(i), false)) {
-
-                                // If the game is in setup
-                                if (inSetup) { // In Setup
-                                    // Decremeent the number of setup settlements since one is placed
-                                    playerSetupSettlementLeft--;
-                                } // If the main game is in progress
-                                else {
+                        
+                        //if the player click in a valid hitbox for a road
+                        if (event.getX() > roadNodes.get(i).getXPos() - roadWidth / 2
+                                && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
+                                && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
+                                && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
+                            //debug road build detection
+                            //System.out.println("road match");
+                            
+                            //check that the road is unowned
+                            if (roadNodes.get(i).getPlayer() == 0) {
+                                //check what mode the game is in
+                                if (inSetup && playerSetupRoadsLeft > 0) {
+                                    
+                                    //check if the player has placed a settlement yet
+                                    if (newestSetupSettlment != null) {
+                                        
+                                        //check that the road is next to the just build settlement
+                                        if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
+                                                || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
+                                                || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
+                                            
+                                            roadNodes.get(i).setPlayer(currentPlayer);
+                                            playerSetupRoadsLeft--;
+                                            // Update thwe build buttons to relfect the remaining setup buildings
+                                            updateBuildButtons();
+                                        } else { //display the error to the user
+                                            instructionLbl.setText("Sorry but that is not a valid location.");
+                                            subInstructionLbl.setText("Try building next to the settlement just built.");
+                                        }
+                                    } else { //display the error to the user
+                                        instructionLbl.setText("Sorry but you must build a new settlement first.");
+                                        subInstructionLbl.setText("Try building the road after.");
+                                    }
+                                    
+                                } // If the real game is in progress and the player can build there
+                                else if (canBuildRoad(roadNodes.get(i))) {
                                     // The card check has already been made, and the user has the right cards
-
-                                    // Remove the required cards from the player's deck
-                                    // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
+                                    
+                                    // Remove the cards from the player's deck
+                                    // Remove 1 clay and 1 wood
                                     cards[currentPlayer].remove(new Integer(1));
                                     cards[currentPlayer].remove(new Integer(2));
-                                    cards[currentPlayer].remove(new Integer(3));
-                                    cards[currentPlayer].remove(new Integer(4));
+                                    
+                                    // Set the road's player to the current player
+                                    roadNodes.get(i).setPlayer(currentPlayer);
+                                    
+                                    // Update the building buttons to reflect the player's new list of cards
+                                    updateBuildButtons();
+                                } // If the player could not build there
+                                else {
+                                    // Print out why the player could not build there
+                                    instructionLbl.setText("Sorry but you can't build a road there.");
+                                    subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
                                 }
-
-                                // Set the settlement's player to the current player
-                                settlementNodes.get(i).setPlayer(currentPlayer);
-
-                                Tile portLinkedTile; //the tile linked to the port to check agaist
-
-                                //loop thorugh the ports and see if the settlement just built is on a port
-                                for (int j = 0; j < ports.size(); j++) {
-                                    //save the Tile
-                                    portLinkedTile = ports.get(j).getLinkedTile();
-
-                                    //loop through the 3 tile the settlement is on use int range 1-3
-                                    for (int k = 1; k < 4; k++) {
-                                        if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
-                                            //save that the new settlemtn is on a port and which one
-                                            playerHasPort[currentPlayer][ports.get(j).getType()] = true;
+                            } else {
+                                instructionLbl.setText("Sorry but you can't take a claimed road.");
+                                subInstructionLbl.setText("Try building where there isn't already another road");
+                            }
+                            
+                            // Stop building
+                            buildingObject = 0;
+                            showRoadHitbox = false;
+                            // Change the button back to the build button
+                            buildBtn.setText("Build");
+                            // Redraw the board
+                            repaint();
+                        }
+                    }   break;
+                case 2:
+                    //small house
+                    
+                    //check the distance to the nearest settlement node using hitboxes and check if it is close enough
+                    for (int i = 0; i < settlementNodes.size(); i++) {
+                        
+                        //if the player clicks in a valid hitbox for a settlement
+                        if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                                && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                                && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                                && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+                            //debug settlent build detection
+                            //System.out.println("hitbox match");
+                            
+                            //check that the settlement is unowned
+                            if (settlementNodes.get(i).getPlayer() == 0) {
+                                
+                                // Check that the player can build there and update the instruction labels accordingly if hey cannot
+                                if (canBuildSettlement(settlementNodes.get(i), false)) {
+                                    
+                                    // If the game is in setup
+                                    if (inSetup) { // In Setup
+                                        // Decremeent the number of setup settlements since one is placed
+                                        playerSetupSettlementLeft--;
+                                    } // If the main game is in progress
+                                    else {
+                                        // The card check has already been made, and the user has the right cards
+                                        
+                                        // Remove the required cards from the player's deck
+                                        // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
+                                        cards[currentPlayer].remove(new Integer(1));
+                                        cards[currentPlayer].remove(new Integer(2));
+                                        cards[currentPlayer].remove(new Integer(3));
+                                        cards[currentPlayer].remove(new Integer(4));
+                                    }
+                                    
+                                    // Set the settlement's player to the current player
+                                    settlementNodes.get(i).setPlayer(currentPlayer);
+                                    
+                                    Tile portLinkedTile; //the tile linked to the port to check agaist
+                                    
+                                    //loop thorugh the ports and see if the settlement just built is on a port
+                                    for (int j = 0; j < ports.size(); j++) {
+                                        //save the Tile
+                                        portLinkedTile = ports.get(j).getLinkedTile();
+                                        
+                                        //loop through the 3 tile the settlement is on use int range 1-3
+                                        for (int k = 1; k < 4; k++) {
+                                            if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
+                                                //save that the new settlemtn is on a port and which one
+                                                playerHasPort[currentPlayer][ports.get(j).getType()] = true;
+                                            }
                                         }
                                     }
+                                    
+                                    //save the settelment just built
+                                    newestSetupSettlment = settlementNodes.get(i);
+                                    
+                                    // Increment the player's victory point counter
+                                    victoryPoints[currentPlayer]++;
+                                    
+                                    // Update the building buttons to reflect the player's new list of cards
+                                    // or number of setup buildings
+                                    updateBuildButtons();
                                 }
-
-                                //save the settelment just built
-                                newestSetupSettlment = settlementNodes.get(i);
-
-                                // Increment the player's victory point counter
-                                victoryPoints[currentPlayer]++;
-
-                                // Update the building buttons to reflect the player's new list of cards
-                                // or number of setup buildings
-                                updateBuildButtons();
-                            }
-
-                        } else {
-                            instructionLbl.setText("Sorry but you can't take a claimed settlements.");
-                            subInstructionLbl.setText("Try building where there isn't already another settlements");
-                        }
-
-                        // Stop building and hide the hitboxes
-                        buildingObject = 0;
-                        showSettlementHitbox = false;
-                        // Change the button back to the build button
-                        buildBtn.setText("Build");
-                        // Redraw the board
-                        repaint();
-                    }
-                }
-
-            } else if (buildingObject == 3) { //large house
-
-                //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
-                for (int i = 0; i < settlementNodes.size(); i++) {
-
-                    //if the player clicks in a valid hitbox for a settlement
-                    if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                            && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                            && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                            && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
-
-                        // Check that the current player owns settlement
-                        if (settlementNodes.get(i).getPlayer() == currentPlayer) {
-
-                            // Check that the settlement isn't already large
-                            if (settlementNodes.get(i).isLarge() == false) {
-                                // The card check has already been made, and the user has the right cards
-
-                                // Remove the cards from the player's deck
-                                // Remove 2 wheat, and 3 ore
-                                cards[currentPlayer].remove(new Integer(3));
-                                cards[currentPlayer].remove(new Integer(3));
-                                cards[currentPlayer].remove(new Integer(5));
-                                cards[currentPlayer].remove(new Integer(5));
-                                cards[currentPlayer].remove(new Integer(5));
-
-                                // Make the settlement large
-                                settlementNodes.get(i).setLarge(true);
-
-                                // Increment the player's victory point counter
-                                victoryPoints[currentPlayer]++;
-
-                                // Update the building buttons to reflect the player's new list of cards
-                                updateBuildButtons();
-                            } else { // If the settlement is already large
-
-                                instructionLbl.setText("Sorry but settlement is already large.");
-                                subInstructionLbl.setText("Try upgrading a small settlement");
-                            }
-                        } else { // If the settlement belongs to another player
-                            //check what player it is
-                            if (settlementNodes.get(i).getPlayer() == 0) {
-                                instructionLbl.setText("Sorry but you can't upgrade an unowned settlement.");
-                                subInstructionLbl.setText("Try upgrading your own settlement");
+                                
                             } else {
-                                instructionLbl.setText("Sorry but you can't upgrade someone elses settlement.");
-                                subInstructionLbl.setText("Try upgrading your own settlement");
+                                instructionLbl.setText("Sorry but you can't take a claimed settlements.");
+                                subInstructionLbl.setText("Try building where there isn't already another settlements");
                             }
+                            
+                            // Stop building and hide the hitboxes
+                            buildingObject = 0;
+                            showSettlementHitbox = false;
+                            // Change the button back to the build button
+                            buildBtn.setText("Build");
+                            // Redraw the board
+                            repaint();
                         }
-
-                        // Stop building and hide the hitboxes
-                        buildingObject = 0;
-                        showSettlementHitbox = false;
-                        // Change the button back to the build button
-                        buildBtn.setText("Build");
-                        // Redraw the board
-                        repaint();
-                    }
-                }
-            } else {
-                System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
+                    }   break;
+                case 3:
+                    //large house
+                    
+                    //check the distance to the nearest settlement node using hitboxes and check if it is close enough
+                    for (int i = 0; i < settlementNodes.size(); i++) {
+                        
+                        //if the player clicks in a valid hitbox for a settlement
+                        if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                                && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                                && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                                && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+                            
+                            // Check that the current player owns settlement
+                            if (settlementNodes.get(i).getPlayer() == currentPlayer) {
+                                
+                                // Check that the settlement isn't already large
+                                if (settlementNodes.get(i).isLarge() == false) {
+                                    // The card check has already been made, and the user has the right cards
+                                    
+                                    // Remove the cards from the player's deck
+                                    // Remove 2 wheat, and 3 ore
+                                    cards[currentPlayer].remove(new Integer(3));
+                                    cards[currentPlayer].remove(new Integer(3));
+                                    cards[currentPlayer].remove(new Integer(5));
+                                    cards[currentPlayer].remove(new Integer(5));
+                                    cards[currentPlayer].remove(new Integer(5));
+                                    
+                                    // Make the settlement large
+                                    settlementNodes.get(i).setLarge(true);
+                                    
+                                    // Increment the player's victory point counter
+                                    victoryPoints[currentPlayer]++;
+                                    
+                                    // Update the building buttons to reflect the player's new list of cards
+                                    updateBuildButtons();
+                                } else { // If the settlement is already large
+                                    
+                                    instructionLbl.setText("Sorry but settlement is already large.");
+                                    subInstructionLbl.setText("Try upgrading a small settlement");
+                                }
+                            } else { // If the settlement belongs to another player
+                                //check what player it is
+                                if (settlementNodes.get(i).getPlayer() == 0) {
+                                    instructionLbl.setText("Sorry but you can't upgrade an unowned settlement.");
+                                    subInstructionLbl.setText("Try upgrading your own settlement");
+                                } else {
+                                    instructionLbl.setText("Sorry but you can't upgrade someone elses settlement.");
+                                    subInstructionLbl.setText("Try upgrading your own settlement");
+                                }
+                            }
+                            
+                            // Stop building and hide the hitboxes
+                            buildingObject = 0;
+                            showSettlementHitbox = false;
+                            // Change the button back to the build button
+                            buildBtn.setText("Build");
+                            // Redraw the board
+                            repaint();
+                        }
+                    }   break;
+                default:
+                    System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
+                    break;
             }
         } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0 && !thiefJustStarted) { //check if the user clicked to select a card and the thief didn't just start
 
@@ -1584,6 +1589,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Save game data to a file
+     * @return if the operation was successful
      */
     public boolean save() {
         boolean success = false;
@@ -1721,7 +1727,7 @@ public class GamePanel extends javax.swing.JPanel {
             //add the
             saveFile.close();
             return true;
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "The game is not able to save at this time. Invalid state\n", "Saving Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -2842,7 +2848,7 @@ public class GamePanel extends javax.swing.JPanel {
         Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage();
 
         //draw the ports
-        boolean drawSpecificHitbox = false; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
+        boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
         for (int i = 0; i < ports.size(); i++) {
             g2d.drawImage(ports.get(i).getImage(),
                     ports.get(i).getXPos(),
@@ -3059,52 +3065,73 @@ public class GamePanel extends javax.swing.JPanel {
             road = roadNodes.get(i);
             switch (road.getOrientation()) {
                 case 0: // Horizontal road ( -- )
-                    // Store the road image for the player's color
-                    if (road.getPlayer() == 0) {
-                        image = BLANK_ROAD_H;
-                    } else if (road.getPlayer() == 1) {
-                        image = RED_ROAD_H;
-                    } else if (road.getPlayer() == 2) {
-                        image = BLUE_ROAD_H;
-                    } else if (road.getPlayer() == 3) {
-                        image = ORANGE_ROAD_H;
-                    } else if (road.getPlayer() == 4) {
-                        image = WHITE_ROAD_H;
-                    } else {
-                        image = RED_ROAD_L;
-                    }
+            // Store the road image for the player's color
+            switch (road.getPlayer()) {
+                case 0:
+                    image = BLANK_ROAD_H;
                     break;
-                case 1: // Road pointing to the top left ( \ ) 
-                    // Store the road image for the player's color
-                    if (road.getPlayer() == 0) {
-                        image = BLANK_ROAD_V;
-                    } else if (road.getPlayer() == 1) {
-                        image = RED_ROAD_L;
-                    } else if (road.getPlayer() == 2) {
-                        image = BLUE_ROAD_L;
-                    } else if (road.getPlayer() == 3) {
-                        image = ORANGE_ROAD_L;
-                    } else if (road.getPlayer() == 4) {
-                        image = WHITE_ROAD_L;
-                    } else {
-                        image = RED_ROAD_H;
-                    }
+                case 1:
+                    image = RED_ROAD_H;
                     break;
-                case 2: // Road pointing to the top right ( / ) 
-                    // Store the road image for the player's color
-                    if (road.getPlayer() == 0) {
-                        image = BLANK_ROAD_V;
-                    } else if (road.getPlayer() == 1) {
-                        image = RED_ROAD_R;
-                    } else if (road.getPlayer() == 2) {
-                        image = BLUE_ROAD_R;
-                    } else if (road.getPlayer() == 3) {
-                        image = ORANGE_ROAD_R;
-                    } else if (road.getPlayer() == 4) {
-                        image = WHITE_ROAD_R;
-                    } else {
-                        image = RED_ROAD_H;
-                    }
+                case 2:
+                    image = BLUE_ROAD_H;
+                    break;
+                case 3:
+                    image = ORANGE_ROAD_H;
+                    break;
+                case 4:
+                    image = WHITE_ROAD_H;
+                    break;
+                default:
+                    image = RED_ROAD_L;
+                    break;
+            }
+                    break;
+                case 1: // Road pointing to the top left ( \ )
+            // Store the road image for the player's color
+            switch (road.getPlayer()) {
+                case 0:
+                    image = BLANK_ROAD_V;
+                    break;
+                case 1:
+                    image = RED_ROAD_L;
+                    break;
+                case 2:
+                    image = BLUE_ROAD_L;
+                    break;
+                case 3:
+                    image = ORANGE_ROAD_L;
+                    break;
+                case 4:
+                    image = WHITE_ROAD_L;
+                    break;
+                default:
+                    image = RED_ROAD_H;
+                    break;
+            }
+                    break;
+                case 2: // Road pointing to the top right ( / )
+            // Store the road image for the player's color
+            switch (road.getPlayer()) {
+                case 0:
+                    image = BLANK_ROAD_V;
+                    break;
+                case 1:
+                    image = RED_ROAD_R;
+                    break;
+                case 2:
+                    image = BLUE_ROAD_R;
+                    break;
+                case 3:
+                    image = ORANGE_ROAD_R;
+                    break;
+                case 4:
+                    image = WHITE_ROAD_R;
+                    break;
+                default:
+                    image = RED_ROAD_H;
+                    break;
+            }
                     break;
                 default: // Make the compiler happy and error handling
                     image = RED_ROAD_H; // Just add an image so theres something to render
@@ -3141,37 +3168,49 @@ public class GamePanel extends javax.swing.JPanel {
             } // Otherwise, check the size of the settlement to see which image to use
             else if (settlement.isLarge() == false) { // Small settlement
                 // Store the small settlement image for the player's color
-                if (settlement.getPlayer() == 1) {
-                    image = RED_HOUSE_S;
-                } // Player 1: Red
-                else if (settlement.getPlayer() == 2) {
-                    image = BLUE_HOUSE_S;
-                } // Player 2: Blue
-                else if (settlement.getPlayer() == 3) {
-                    image = ORANGE_HOUSE_S;
-                } // Player 3: Orange
-                else if (settlement.getPlayer() == 4) {
-                    image = WHITE_HOUSE_S;
-                } // Player 4: White
-                else {
-                    image = RED_HOUSE_L;
+                switch (settlement.getPlayer()) {
+                // Player 1: Red
+                    case 1:
+                        image = RED_HOUSE_S;
+                        break;
+                // Player 2: Blue
+                    case 2:
+                        image = BLUE_HOUSE_S;
+                        break;
+                // Player 3: Orange
+                    case 3:
+                        image = ORANGE_HOUSE_S;
+                        break;
+                // Player 4: White
+                    case 4:
+                        image = WHITE_HOUSE_S;
+                        break;
+                    default:
+                        image = RED_HOUSE_L;
+                        break;
                 }
             } else { // Large settlement
                 // Store the large settlement image for the player's color
-                if (settlement.getPlayer() == 1) {
-                    image = RED_HOUSE_L;
-                } // Player 1: Red
-                else if (settlement.getPlayer() == 2) {
-                    image = BLUE_HOUSE_L;
-                } // Player 2: Blue
-                else if (settlement.getPlayer() == 3) {
-                    image = ORANGE_HOUSE_L;
-                } // Player 3: Orange
-                else if (settlement.getPlayer() == 4) {
-                    image = WHITE_HOUSE_L;
-                } // Player 4: White
-                else {
-                    image = RED_HOUSE_S;
+                switch (settlement.getPlayer()) {
+                // Player 1: Red
+                    case 1:
+                        image = RED_HOUSE_L;
+                        break;
+                // Player 2: Blue
+                    case 2:
+                        image = BLUE_HOUSE_L;
+                        break;
+                // Player 3: Orange
+                    case 3:
+                        image = ORANGE_HOUSE_L;
+                        break;
+                // Player 4: White
+                    case 4:
+                        image = WHITE_HOUSE_L;
+                        break;
+                    default:
+                        image = RED_HOUSE_S;
+                        break;
                 }
             }
 
@@ -3189,19 +3228,23 @@ public class GamePanel extends javax.swing.JPanel {
                 boolean drawHitBox = false;
 
                 //check what build mode is active
-                if (buildingObject == 2) { //check for new settlment
-                    //check if a new settlment can go there
-                    drawHitBox = canBuildSettlement(settlement, true);
-
-                } else if (buildingObject == 3) { //check for upgrading to city
-                    //check if an upgrade can be made
-                    if ((!settlement.isLarge()) && settlement.getPlayer() == currentPlayer) {
-                        drawHitBox = true;
-                    }
-
-                } else { //error
-                    instructionLbl.setText("Error drawing settlment hitboxes");
-                    subInstructionLbl.setText("Please contact the developer");
+                switch (buildingObject) {
+                    case 2:
+                        //check for new settlment
+                        //check if a new settlment can go there
+                        drawHitBox = canBuildSettlement(settlement, true);
+                        break;
+                    case 3:
+                        //check for upgrading to city
+                        //check if an upgrade can be made
+                        if ((!settlement.isLarge()) && settlement.getPlayer() == currentPlayer) {
+                            drawHitBox = true;
+                        }   break;
+                    default:
+                        //error
+                        instructionLbl.setText("Error drawing settlment hitboxes");
+                        subInstructionLbl.setText("Please contact the developer");
+                        break;
                 }
 
                 //draw the hitbox
@@ -3717,7 +3760,7 @@ public class GamePanel extends javax.swing.JPanel {
                     fileReader.nextLine();
                 }
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading Tile Position file: " + e);
         }
@@ -3755,7 +3798,7 @@ public class GamePanel extends javax.swing.JPanel {
                     fileReader.nextLine();
                 }
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading trading port Position file: " + e);
         }
@@ -3808,7 +3851,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     private void randomizeTiles() {
         //randomly select a number of times to shuffle the board
-        int numShuffle = (int) (Math.random() * 15) + 25;
+        int numShuffle/* = (int) (Math.random() * 15) + 25*/;
         numShuffle = 1000;
         int tempNumHold; //the value that is being swapped
         int numSlot1; //the index being swaped from
