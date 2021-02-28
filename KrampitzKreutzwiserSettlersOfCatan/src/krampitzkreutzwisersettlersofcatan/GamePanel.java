@@ -72,7 +72,7 @@ public class GamePanel extends javax.swing.JPanel {
     private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
     private int minTradeCardsNeeded; //the number of cards needed for that tradingMode //the minimin amount of cards needed of one type to make a trade
     private boolean[][] playerHasPort; //main array is for players, index 0 is not used, index 1-4 are the player numbers. sub arrays are of length 6. inxed 0 for 3:1 port, indexes 1-5 for 2:1 of that type
-    private int[] numCardType;
+    private int[] numCardType; //the number of cards the current player has of each type. valid indexes are 0-5, but 0 never contains useful data.
     private int[] cardTypeCount; //the count of how many cards of each type the current player has valid inxies are 0-4
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
@@ -296,7 +296,6 @@ public class GamePanel extends javax.swing.JPanel {
         scaleWorldObjectPos(settlementNodes, 0);
         scaleWorldObjectPos(ports, 0);
         updatePortPos();
-        //remapPortTypePos();
 
         //get the fonts
         timesNewRoman = instructionLbl.getFont();
@@ -309,7 +308,7 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementLRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
 
         buildBtn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
-        
+
         trade4to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
         trade3to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
         trade2to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
@@ -808,6 +807,7 @@ public class GamePanel extends javax.swing.JPanel {
             buildSettlementLRBtn.setEnabled(false);
             trade4to1Btn.setEnabled(false);
             trade3to1Btn.setEnabled(false);
+            trade2to1Btn.setEnabled(false);
 
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
@@ -1124,8 +1124,8 @@ public class GamePanel extends javax.swing.JPanel {
                                 }
 
                             } else {
-                                instructionLbl.setText("Sorry but you can't take a claimed settlements.");
-                                subInstructionLbl.setText("Try building where there isn't already another settlements");
+                                instructionLbl.setText("Sorry but you can't take a claimed settlement.");
+                                subInstructionLbl.setText("Try building where there isn't already another settlement");
                             }
 
                             // Stop building and hide the hitboxes
@@ -1418,9 +1418,10 @@ public class GamePanel extends javax.swing.JPanel {
                     //split up into generic 4:1 or 3:1, and specialized 2:1 trades
                     if (ports.get(i).getType() != 0) {
 
+                        //4:1 or 3:1 tradng
                         if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(ports.get(i).getType(), tradingMode)) {
                             validPort = true;
-                        } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) {
+                        } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) { //2:1 tradng
                             validPort = true;
                         }
 
@@ -2064,7 +2065,8 @@ public class GamePanel extends javax.swing.JPanel {
 
                     //skip a line
                     scanner.nextLine();
-                    
+
+                    //make sure the coordiantes are up to date. (80% sure this is redundant)
                     ports.get(portNum).applyCoordinates();
                     ports.get(portNum).applyTypeImageCoordinates();
                 }
@@ -2078,7 +2080,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //System.out.println("Yuppers14");
                 for (int i = 1; i < playerCount + 1; i++) {
-                    
+
                     if (scanner.nextLine().equals("Player: " + (i))) {
                         //System.out.println("Yuppers10.1");
                     } else {
@@ -2121,7 +2123,7 @@ public class GamePanel extends javax.swing.JPanel {
         while (playerTurnOrder.get(0) != currentPlayer) {
             progressPlayerTurnOrder();
         }
-        
+
         repaint();
         updateBuildButtons();
     }
@@ -2176,7 +2178,7 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildCity = false;
 
             //check the trading type
-            switch (tradingMode) {
+            switch (tradingMode) { //make sure the only button active is the current trade mode. This allows the user to cancel trading.
                 case 1:
                     //if 4:1
                     canTrade4to = true;
@@ -2306,6 +2308,12 @@ public class GamePanel extends javax.swing.JPanel {
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
     }
 
+    /**
+     * Determine if a the current player has enough cards to make a 2:1 trade
+     * and if they have a port to support that.
+     *
+     * @return
+     */
     private boolean hasSpecializedPort() {
         boolean has2to1 = false;
 
@@ -4035,7 +4043,7 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Return variables to their neutral state when there is no building
+     * Reset variables to their neutral state when there is no building
      */
     private void cancelBuilding() {
         //if there is turn off any building mode currently
