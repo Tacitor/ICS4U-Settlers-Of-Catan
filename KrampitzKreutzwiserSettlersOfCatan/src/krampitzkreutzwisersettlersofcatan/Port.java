@@ -130,31 +130,31 @@ public class Port extends WorldObject{
             case 0:
                 //if above
                 xPos = linkedTile.getXPos();
-                yPos = (int) (linkedTile.getYPos() - linkedTile.getImage().getHeight(null) + (5 / scaleFactor));
+                yPos = (int) (linkedTile.getYPos() - getImgWidth(linkedTile.getImage()) + (5 / scaleFactor));
                 break;
             case 1:
                 //if top right
-                xPos = (int) (linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 4.0) * 3);
+                xPos = (int) (linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 4.0) * 3);
                 yPos = (int) (linkedTile.getYPos() - (15 / scaleFactor));
                 break;
             case 2:
                 //if bottom right
-                xPos = (int) (linkedTile.getXPos() + (linkedTile.getImage().getWidth(null) / 4.0) * 3);
+                xPos = (int) (linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 4.0) * 3);
                 yPos = (int) (linkedTile.getYPos() - (20 / scaleFactor));
                 break;
             case 3:
                 //if below
                 xPos = linkedTile.getXPos();
-                yPos = (int) (linkedTile.getYPos() + linkedTile.getImage().getHeight(null) - (25 / scaleFactor)); //set it below the tile but subtract the 3d space for the Alex tile art
+                yPos = (int) (linkedTile.getYPos() + getImgHeight(linkedTile.getImage()) - (25 / scaleFactor)); //set it below the tile but subtract the 3d space for the Alex tile art
                 break;
             case 4:
                 //if bottom left
-                xPos = (int) (linkedTile.getXPos() - (linkedTile.getImage().getWidth(null) / 4.0) * 3);
+                xPos = (int) (linkedTile.getXPos() - (getImgWidth(linkedTile.getImage()) / 4.0) * 3);
                 yPos = (int) (linkedTile.getYPos() - (20 / scaleFactor));
                 break;
             case 5:
                 //if top left
-                xPos = (int) (linkedTile.getXPos() - (linkedTile.getImage().getWidth(null) / 4.0) * 3);
+                xPos = (int) (linkedTile.getXPos() - (getImgWidth(linkedTile.getImage()) / 4.0) * 3);
                 yPos = (int) ((linkedTile.getYPos()) - (15 / scaleFactor));
                 break;
             default:
@@ -231,8 +231,6 @@ public class Port extends WorldObject{
      */
     public void setLinkedTile (Tile linkedTile) {
         this.linkedTile = linkedTile;
-        applyCoordinates();;
-        applyTypeImageCoordinates();
     }
     
     /**
@@ -250,8 +248,6 @@ public class Port extends WorldObject{
     public void setOrientation(int orientation) {
         this.orientation = orientation;
         image = applyImage();
-        applyCoordinates();
-        applyTypeImageCoordinates();
     }
     
     /**
