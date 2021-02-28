@@ -975,10 +975,10 @@ public class GamePanel extends javax.swing.JPanel {
             switch (buildingObject) {
                 case 1:
                     //roads
-                    
+
                     //check the distance to the nearest road using hitboxes and check if it is close enough
                     for (int i = 0; i < roadNodes.size() - 1; i++) {
-                        
+
                         //get the type of road and set the width and height //get this to not be hard coded if there is time
                         if (roadNodes.get(i).getOrientation() == 0) {
                             roadWidth = getImgWidth(RED_ROAD_H); //scale the road dimensions
@@ -987,7 +987,7 @@ public class GamePanel extends javax.swing.JPanel {
                             roadWidth = getImgWidth(RED_ROAD_L);
                             roadHeight = getImgHeight(RED_ROAD_L);
                         }
-                        
+
                         //if the player click in a valid hitbox for a road
                         if (event.getX() > roadNodes.get(i).getXPos() - roadWidth / 2
                                 && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
@@ -995,20 +995,20 @@ public class GamePanel extends javax.swing.JPanel {
                                 && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
                             //debug road build detection
                             //System.out.println("road match");
-                            
+
                             //check that the road is unowned
                             if (roadNodes.get(i).getPlayer() == 0) {
                                 //check what mode the game is in
                                 if (inSetup && playerSetupRoadsLeft > 0) {
-                                    
+
                                     //check if the player has placed a settlement yet
                                     if (newestSetupSettlment != null) {
-                                        
+
                                         //check that the road is next to the just build settlement
                                         if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
                                                 || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
                                                 || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
-                                            
+
                                             roadNodes.get(i).setPlayer(currentPlayer);
                                             playerSetupRoadsLeft--;
                                             // Update thwe build buttons to relfect the remaining setup buildings
@@ -1021,19 +1021,19 @@ public class GamePanel extends javax.swing.JPanel {
                                         instructionLbl.setText("Sorry but you must build a new settlement first.");
                                         subInstructionLbl.setText("Try building the road after.");
                                     }
-                                    
+
                                 } // If the real game is in progress and the player can build there
                                 else if (canBuildRoad(roadNodes.get(i))) {
                                     // The card check has already been made, and the user has the right cards
-                                    
+
                                     // Remove the cards from the player's deck
                                     // Remove 1 clay and 1 wood
                                     cards[currentPlayer].remove(new Integer(1));
                                     cards[currentPlayer].remove(new Integer(2));
-                                    
+
                                     // Set the road's player to the current player
                                     roadNodes.get(i).setPlayer(currentPlayer);
-                                    
+
                                     // Update the building buttons to reflect the player's new list of cards
                                     updateBuildButtons();
                                 } // If the player could not build there
@@ -1046,7 +1046,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 instructionLbl.setText("Sorry but you can't take a claimed road.");
                                 subInstructionLbl.setText("Try building where there isn't already another road");
                             }
-                            
+
                             // Stop building
                             buildingObject = 0;
                             showRoadHitbox = false;
@@ -1055,13 +1055,14 @@ public class GamePanel extends javax.swing.JPanel {
                             // Redraw the board
                             repaint();
                         }
-                    }   break;
+                    }
+                    break;
                 case 2:
                     //small house
-                    
+
                     //check the distance to the nearest settlement node using hitboxes and check if it is close enough
                     for (int i = 0; i < settlementNodes.size(); i++) {
-                        
+
                         //if the player clicks in a valid hitbox for a settlement
                         if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
                                 && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
@@ -1069,13 +1070,13 @@ public class GamePanel extends javax.swing.JPanel {
                                 && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
                             //debug settlent build detection
                             //System.out.println("hitbox match");
-                            
+
                             //check that the settlement is unowned
                             if (settlementNodes.get(i).getPlayer() == 0) {
-                                
+
                                 // Check that the player can build there and update the instruction labels accordingly if hey cannot
                                 if (canBuildSettlement(settlementNodes.get(i), false)) {
-                                    
+
                                     // If the game is in setup
                                     if (inSetup) { // In Setup
                                         // Decremeent the number of setup settlements since one is placed
@@ -1083,7 +1084,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     } // If the main game is in progress
                                     else {
                                         // The card check has already been made, and the user has the right cards
-                                        
+
                                         // Remove the required cards from the player's deck
                                         // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
                                         cards[currentPlayer].remove(new Integer(1));
@@ -1091,17 +1092,17 @@ public class GamePanel extends javax.swing.JPanel {
                                         cards[currentPlayer].remove(new Integer(3));
                                         cards[currentPlayer].remove(new Integer(4));
                                     }
-                                    
+
                                     // Set the settlement's player to the current player
                                     settlementNodes.get(i).setPlayer(currentPlayer);
-                                    
+
                                     Tile portLinkedTile; //the tile linked to the port to check agaist
-                                    
+
                                     //loop thorugh the ports and see if the settlement just built is on a port
                                     for (int j = 0; j < ports.size(); j++) {
                                         //save the Tile
                                         portLinkedTile = ports.get(j).getLinkedTile();
-                                        
+
                                         //loop through the 3 tile the settlement is on use int range 1-3
                                         for (int k = 1; k < 4; k++) {
                                             if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
@@ -1110,23 +1111,23 @@ public class GamePanel extends javax.swing.JPanel {
                                             }
                                         }
                                     }
-                                    
+
                                     //save the settelment just built
                                     newestSetupSettlment = settlementNodes.get(i);
-                                    
+
                                     // Increment the player's victory point counter
                                     victoryPoints[currentPlayer]++;
-                                    
+
                                     // Update the building buttons to reflect the player's new list of cards
                                     // or number of setup buildings
                                     updateBuildButtons();
                                 }
-                                
+
                             } else {
                                 instructionLbl.setText("Sorry but you can't take a claimed settlements.");
                                 subInstructionLbl.setText("Try building where there isn't already another settlements");
                             }
-                            
+
                             // Stop building and hide the hitboxes
                             buildingObject = 0;
                             showSettlementHitbox = false;
@@ -1135,26 +1136,27 @@ public class GamePanel extends javax.swing.JPanel {
                             // Redraw the board
                             repaint();
                         }
-                    }   break;
+                    }
+                    break;
                 case 3:
                     //large house
-                    
+
                     //check the distance to the nearest settlement node using hitboxes and check if it is close enough
                     for (int i = 0; i < settlementNodes.size(); i++) {
-                        
+
                         //if the player clicks in a valid hitbox for a settlement
                         if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
                                 && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
                                 && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
                                 && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
-                            
+
                             // Check that the current player owns settlement
                             if (settlementNodes.get(i).getPlayer() == currentPlayer) {
-                                
+
                                 // Check that the settlement isn't already large
                                 if (settlementNodes.get(i).isLarge() == false) {
                                     // The card check has already been made, and the user has the right cards
-                                    
+
                                     // Remove the cards from the player's deck
                                     // Remove 2 wheat, and 3 ore
                                     cards[currentPlayer].remove(new Integer(3));
@@ -1162,17 +1164,17 @@ public class GamePanel extends javax.swing.JPanel {
                                     cards[currentPlayer].remove(new Integer(5));
                                     cards[currentPlayer].remove(new Integer(5));
                                     cards[currentPlayer].remove(new Integer(5));
-                                    
+
                                     // Make the settlement large
                                     settlementNodes.get(i).setLarge(true);
-                                    
+
                                     // Increment the player's victory point counter
                                     victoryPoints[currentPlayer]++;
-                                    
+
                                     // Update the building buttons to reflect the player's new list of cards
                                     updateBuildButtons();
                                 } else { // If the settlement is already large
-                                    
+
                                     instructionLbl.setText("Sorry but settlement is already large.");
                                     subInstructionLbl.setText("Try upgrading a small settlement");
                                 }
@@ -1186,7 +1188,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     subInstructionLbl.setText("Try upgrading your own settlement");
                                 }
                             }
-                            
+
                             // Stop building and hide the hitboxes
                             buildingObject = 0;
                             showSettlementHitbox = false;
@@ -1195,7 +1197,8 @@ public class GamePanel extends javax.swing.JPanel {
                             // Redraw the board
                             repaint();
                         }
-                    }   break;
+                    }
+                    break;
                 default:
                     System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
                     break;
@@ -1455,7 +1458,7 @@ public class GamePanel extends javax.swing.JPanel {
                 //loop though the 5 stacks
                 for (int i = 0; i < 5; i++) {
                     validCard = false;
-                    
+
                     //check for a click
                     if (event.getX() > cardStackXPositions[i]
                             && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
@@ -1465,14 +1468,14 @@ public class GamePanel extends javax.swing.JPanel {
                         //check if the card is available to trade and that it is not the same type the payer would like to trade TO
                         //split the handeling for the 2:1 away from the others
                         if ((i + 1) != tradeResource) {
-                            
+
                             //check for a specialized trade
                             if (tradingMode == 3 && (playerHasPort[currentPlayer][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded) {
                                 validCard = true;
                             } else if ((tradingMode == 1 || tradingMode == 2) && cardTypeCount[i] >= minTradeCardsNeeded) { //if 4:1 or 3:1
                                 validCard = true;
                             }
-                            
+
                             //only make the selection if its a valid card selection
                             if (validCard) {
                                 //debug click detection
@@ -1518,7 +1521,7 @@ public class GamePanel extends javax.swing.JPanel {
                 //check if the user clicked on any card
                 for (int i = 0; i < cards[currentPlayer].size(); i++) {
                     validCard = false;
-                    
+
                     //get the x position for that card
                     int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
 
@@ -1531,14 +1534,14 @@ public class GamePanel extends javax.swing.JPanel {
                         //check if the card is available to trade and that it is not the same type the payer would like to trade TO
                         //split the 2:1 haneling
                         if (cards[currentPlayer].get(i) != tradeResource) {
-                            
+
                             //check for specialized
                             if (tradingMode == 3 && (playerHasPort[currentPlayer][cards[currentPlayer].get(i)]) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) {
                                 validCard = true;
                             } else if ((tradingMode == 1 || tradingMode == 2) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) { //if 4:1 or 3:1
                                 validCard = true;
                             }
-                            
+
                             //only make the selection if its a valid card selection
                             if (validCard) {
                                 //debug click detection
@@ -1589,6 +1592,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Save game data to a file
+     *
      * @return if the operation was successful
      */
     public boolean save() {
@@ -1723,7 +1727,7 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println(settlementNodes.get(i).isLarge());
                 saveFile.println(); //add a line break below
             }
-            
+
             //add the Port data
             saveFile.println("Ports:");
             for (int i = 0; i < ports.size(); i++) { //loop thorugh all the ports and add it to the save file.
@@ -1736,6 +1740,17 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println("Type:");
                 saveFile.println(ports.get(i).getType());
                 saveFile.println(); //add a line break below
+            }
+
+            //add the playerHasPort data
+            saveFile.println("playerHasPort:");
+            for (int i = 1; i < playerHasPort.length; i++) {
+                saveFile.println("Player: " + (i));
+                saveFile.println("hasPorts:");
+                for (int j = 0; j < playerHasPort[i].length; j++) {
+                    saveFile.println(playerHasPort[i][j]);
+                }
+                saveFile.println();
             }
 
             //add the close
@@ -2015,7 +2030,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("Ports:")) {
                 //System.out.println("Yuppers13");
 
@@ -2046,9 +2061,42 @@ public class GamePanel extends javax.swing.JPanel {
                     } else {
                         throwLoadError();
                     }
-                    
+
                     //skip a line
                     scanner.nextLine();
+                }
+
+            } else {
+                throwLoadError();
+            }
+
+            //get the playerHasPort data
+            if (scanner.nextLine().equals("playerHasPort:")) {
+
+                //System.out.println("Yuppers14");
+                for (int i = 1; i < playerCount + 1; i++) {
+                    
+                    if (scanner.nextLine().equals("Player: " + (i))) {
+                        //System.out.println("Yuppers10.1");
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("hasPorts:")) {
+
+                        for (int j = 0; j < playerHasPort[i].length; j++) {
+                            playerHasPort[i][j] = Boolean.parseBoolean(scanner.nextLine());
+                        }
+
+                        //skip a line
+                        scanner.nextLine();
+
+                        //System.out.println("Yuppers10.3");
+                    } else {
+                        throwLoadError();
+                        System.out.println("uh oh");
+                    }
+
                 }
 
             } else {
@@ -3118,73 +3166,73 @@ public class GamePanel extends javax.swing.JPanel {
             road = roadNodes.get(i);
             switch (road.getOrientation()) {
                 case 0: // Horizontal road ( -- )
-            // Store the road image for the player's color
-            switch (road.getPlayer()) {
-                case 0:
-                    image = BLANK_ROAD_H;
-                    break;
-                case 1:
-                    image = RED_ROAD_H;
-                    break;
-                case 2:
-                    image = BLUE_ROAD_H;
-                    break;
-                case 3:
-                    image = ORANGE_ROAD_H;
-                    break;
-                case 4:
-                    image = WHITE_ROAD_H;
-                    break;
-                default:
-                    image = RED_ROAD_L;
-                    break;
-            }
+                    // Store the road image for the player's color
+                    switch (road.getPlayer()) {
+                        case 0:
+                            image = BLANK_ROAD_H;
+                            break;
+                        case 1:
+                            image = RED_ROAD_H;
+                            break;
+                        case 2:
+                            image = BLUE_ROAD_H;
+                            break;
+                        case 3:
+                            image = ORANGE_ROAD_H;
+                            break;
+                        case 4:
+                            image = WHITE_ROAD_H;
+                            break;
+                        default:
+                            image = RED_ROAD_L;
+                            break;
+                    }
                     break;
                 case 1: // Road pointing to the top left ( \ )
-            // Store the road image for the player's color
-            switch (road.getPlayer()) {
-                case 0:
-                    image = BLANK_ROAD_V;
-                    break;
-                case 1:
-                    image = RED_ROAD_L;
-                    break;
-                case 2:
-                    image = BLUE_ROAD_L;
-                    break;
-                case 3:
-                    image = ORANGE_ROAD_L;
-                    break;
-                case 4:
-                    image = WHITE_ROAD_L;
-                    break;
-                default:
-                    image = RED_ROAD_H;
-                    break;
-            }
+                    // Store the road image for the player's color
+                    switch (road.getPlayer()) {
+                        case 0:
+                            image = BLANK_ROAD_V;
+                            break;
+                        case 1:
+                            image = RED_ROAD_L;
+                            break;
+                        case 2:
+                            image = BLUE_ROAD_L;
+                            break;
+                        case 3:
+                            image = ORANGE_ROAD_L;
+                            break;
+                        case 4:
+                            image = WHITE_ROAD_L;
+                            break;
+                        default:
+                            image = RED_ROAD_H;
+                            break;
+                    }
                     break;
                 case 2: // Road pointing to the top right ( / )
-            // Store the road image for the player's color
-            switch (road.getPlayer()) {
-                case 0:
-                    image = BLANK_ROAD_V;
-                    break;
-                case 1:
-                    image = RED_ROAD_R;
-                    break;
-                case 2:
-                    image = BLUE_ROAD_R;
-                    break;
-                case 3:
-                    image = ORANGE_ROAD_R;
-                    break;
-                case 4:
-                    image = WHITE_ROAD_R;
-                    break;
-                default:
-                    image = RED_ROAD_H;
-                    break;
-            }
+                    // Store the road image for the player's color
+                    switch (road.getPlayer()) {
+                        case 0:
+                            image = BLANK_ROAD_V;
+                            break;
+                        case 1:
+                            image = RED_ROAD_R;
+                            break;
+                        case 2:
+                            image = BLUE_ROAD_R;
+                            break;
+                        case 3:
+                            image = ORANGE_ROAD_R;
+                            break;
+                        case 4:
+                            image = WHITE_ROAD_R;
+                            break;
+                        default:
+                            image = RED_ROAD_H;
+                            break;
+                    }
                     break;
                 default: // Make the compiler happy and error handling
                     image = RED_ROAD_H; // Just add an image so theres something to render
@@ -3222,19 +3270,19 @@ public class GamePanel extends javax.swing.JPanel {
             else if (settlement.isLarge() == false) { // Small settlement
                 // Store the small settlement image for the player's color
                 switch (settlement.getPlayer()) {
-                // Player 1: Red
+                    // Player 1: Red
                     case 1:
                         image = RED_HOUSE_S;
                         break;
-                // Player 2: Blue
+                    // Player 2: Blue
                     case 2:
                         image = BLUE_HOUSE_S;
                         break;
-                // Player 3: Orange
+                    // Player 3: Orange
                     case 3:
                         image = ORANGE_HOUSE_S;
                         break;
-                // Player 4: White
+                    // Player 4: White
                     case 4:
                         image = WHITE_HOUSE_S;
                         break;
@@ -3245,19 +3293,19 @@ public class GamePanel extends javax.swing.JPanel {
             } else { // Large settlement
                 // Store the large settlement image for the player's color
                 switch (settlement.getPlayer()) {
-                // Player 1: Red
+                    // Player 1: Red
                     case 1:
                         image = RED_HOUSE_L;
                         break;
-                // Player 2: Blue
+                    // Player 2: Blue
                     case 2:
                         image = BLUE_HOUSE_L;
                         break;
-                // Player 3: Orange
+                    // Player 3: Orange
                     case 3:
                         image = ORANGE_HOUSE_L;
                         break;
-                // Player 4: White
+                    // Player 4: White
                     case 4:
                         image = WHITE_HOUSE_L;
                         break;
@@ -3292,7 +3340,8 @@ public class GamePanel extends javax.swing.JPanel {
                         //check if an upgrade can be made
                         if ((!settlement.isLarge()) && settlement.getPlayer() == currentPlayer) {
                             drawHitBox = true;
-                        }   break;
+                        }
+                        break;
                     default:
                         //error
                         instructionLbl.setText("Error drawing settlment hitboxes");
@@ -3386,8 +3435,8 @@ public class GamePanel extends javax.swing.JPanel {
                         } else { //if it is for other 4:1 or 3:1 trading purpous do some more checks
                             //has to have more than the minimum or more cards and cannot be the same type of card the play wants to end up with.
                             drawSpecificHitbox = cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource;
-                        } 
-                        
+                        }
+
                         if (drawSpecificHitbox) {
                             g2d.setColor(Color.green);
                             Stroke tempStroke = g2d.getStroke();
@@ -3456,8 +3505,8 @@ public class GamePanel extends javax.swing.JPanel {
                         } else { //if it is for trading purpous do some more checks
                             //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
                             drawSpecificHitbox = numCardType[type] >= minTradeCardsNeeded && cards[currentPlayer].get(i) != tradeResource;
-                        } 
-                        
+                        }
+
                         if (drawSpecificHitbox) {
                             g2d.setColor(Color.green);
                             Stroke tempStroke = g2d.getStroke();
@@ -4001,7 +4050,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         return showPort;
     }
-    
+
     /**
      * Return variables to their neutral state when there is no building
      */
