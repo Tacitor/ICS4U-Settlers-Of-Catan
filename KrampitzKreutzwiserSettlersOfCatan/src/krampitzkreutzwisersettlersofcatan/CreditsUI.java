@@ -6,9 +6,9 @@
 package krampitzkreutzwisersettlersofcatan;
 
 import dataFiles.OldCode;
-import java.io.File; //File usage
 import java.io.InputStream; // File reference
 import java.util.Scanner; // File reading
+import textures.ImageRef;
 
 /**
  *
@@ -24,6 +24,8 @@ public class CreditsUI extends javax.swing.JFrame {
      * @param m The main menu JFrame this returns to on exit
      */
     public CreditsUI(MainMenu m) {
+        setIcon();
+        
         initComponents();
         mainMenuFrame = m;
         
@@ -61,6 +63,13 @@ public class CreditsUI extends javax.swing.JFrame {
         
         // Display the file's contents from the string
         creditslTxtAr.setText(fileContents);
+    }
+    
+    /**
+     * Set the icon for the JFRame
+     */
+    private void setIcon() {
+        this.setIconImage(ImageRef.ICON);
     }
     
     /**

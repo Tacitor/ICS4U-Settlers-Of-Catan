@@ -34,38 +34,34 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Component id="buildSettlementSRBtn" min="-2" max="-2" attributes="0"/>
+                  <Component id="turnSwitchBtn" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="buildMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="buildRoadRBtn" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="instructionPromptLbl" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="buildSettlementSRBtn" min="-2" max="-2" attributes="0"/>
-                          <Component id="turnSwitchBtn" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="buildMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="buildRoadRBtn" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="instructionPromptLbl" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="instructionLbl" min="-2" max="-2" attributes="0"/>
-                                  <Component id="subInstructionLbl" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="buildBtn" alignment="0" max="32767" attributes="0"/>
-                              <Component id="buildSettlementLRBtn" alignment="0" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="instructionLbl" min="-2" max="-2" attributes="0"/>
+                          <Component id="subInstructionLbl" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="1157" max="32767" attributes="0"/>
                   </Group>
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="backBtn" alignment="0" max="32767" attributes="0"/>
-                              <Component id="backNoSaveBtn" alignment="0" max="32767" attributes="0"/>
-                          </Group>
-                          <Component id="titleLbl" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="buildBtn" alignment="0" max="32767" attributes="0"/>
+                      <Component id="buildSettlementLRBtn" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="backBtn" alignment="0" max="32767" attributes="0"/>
+                      <Component id="backNoSaveBtn" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+                  <Component id="titleLbl" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="trade2to1Btn" alignment="0" max="32767" attributes="0"/>
+                      <Component id="trade4to1Btn" alignment="0" max="32767" attributes="0"/>
+                      <Component id="trade3to1Btn" alignment="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
+              <EmptySpace pref="1157" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -93,7 +89,13 @@
               <Component id="buildSettlementLRBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="buildBtn" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="666" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+              <Component id="trade4to1Btn" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="trade3to1Btn" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="trade2to1Btn" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="516" max="32767" attributes="0"/>
               <Component id="backNoSaveBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="backBtn" min="-2" max="-2" attributes="0"/>
@@ -257,6 +259,51 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Settlers of Catan"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="trade3to1Btn">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="26" green="3e" red="66" type="rgb"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Dialog" size="18" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Trade 3:1"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="trade3to1BtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="trade4to1Btn">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="26" green="3e" red="66" type="rgb"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Dialog" size="18" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Trade 4:1"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="trade4to1BtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="trade2to1Btn">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="26" green="3e" red="66" type="rgb"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Dialog" size="18" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Specialized Trade 2:1"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="trade2to1BtnActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

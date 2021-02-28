@@ -11,6 +11,7 @@ import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
+import textures.ImageRef;
 
 /**
  *
@@ -28,7 +29,10 @@ public class MainMenu extends javax.swing.JFrame {
      * Creates new form MainMenu
      */
     public MainMenu() {
+        
         initComponents();
+        
+        setIcon();
         
         userManualUIFrame = new UserManualUI(this);
         creditsUIFrame = new CreditsUI(this);
@@ -189,8 +193,8 @@ public class MainMenu extends javax.swing.JFrame {
                 gameJFrame.resetGamePanel();
                 
                 //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSaveV6")) {
-                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V6 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                if (!scanner.nextLine().equals("SettlersOfCatanSaveV7")) {
+                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V7 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
                 } else { //if it is a real save file
                     //check if the next line hold the player count
                     if (scanner.nextLine().equals("playerCount:")) {
@@ -262,6 +266,15 @@ public class MainMenu extends javax.swing.JFrame {
                 new MainMenu().setVisible(true);
             }
         });
+        
+        
+    }
+    
+    /**
+     * Set the icon for the JFRame
+     */
+    private void setIcon() {
+        this.setIconImage(ImageRef.ICON);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

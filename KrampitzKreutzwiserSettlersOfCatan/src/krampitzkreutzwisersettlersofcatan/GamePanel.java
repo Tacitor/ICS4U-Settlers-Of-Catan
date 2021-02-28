@@ -22,11 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import javax.swing.ButtonModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import textures.ImageRef;
 import static textures.ImageRef.*;
 
 /**
@@ -43,6 +44,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
     private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
+    private final ArrayList<Port> ports; //every trading port, its type, location, and orientation.
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
     //the old deflaut order                  {1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}
@@ -65,6 +67,13 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean[] drawCardStacks; //controls the mode cards are drown in. Stacked or fully layout
     private boolean showSettlementHitbox;
     private boolean showTileHitbox;
+    private boolean showPortHitbox;
+    private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
+    private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
+    private int minTradeCardsNeeded; //the number of cards needed for that tradingMode //the minimin amount of cards needed of one type to make a trade
+    private boolean[][] playerHasPort; //main array is for players, index 0 is not used, index 1-4 are the player numbers. sub arrays are of length 6. inxed 0 for 3:1 port, indexes 1-5 for 2:1 of that type
+    private int[] numCardType; //the number of cards the current player has of each type. valid indexes are 0-5, but 0 never contains useful data.
+    private int[] cardTypeCount; //the count of how many cards of each type the current player has valid inxies are 0-4
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
     private static int playerCount = 2; // The number of players in the game
@@ -91,10 +100,12 @@ public class GamePanel extends javax.swing.JPanel {
     //var used for scaling
     private final int tileYOffset;
     private final int tileXOffset;
-    private final double scaleFactor;
+    public static double scaleFactor;
     private final int newTileWidth;
     private final int newTileHeight;
     private final int threeDTileOffset;
+    private static int frameWidth; //the dimentions of the JFrame holding the gamePanel
+    private static int frameHeight;
 
     //new dice roll lable
     private String[] diceRollVal;
@@ -114,8 +125,11 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Initalize variables
         superFrame = frame; //save refernce
+        frameWidth = superFrame.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
+        frameHeight = superFrame.getHeight();
         tiles = new ArrayList(); //init the master tile array list
         settlementNodes = new ArrayList(); // Init the settlement node array list
+        ports = new ArrayList();
         roadNodes = new ArrayList(); // Init the road node array list
         inSetup = true;
         setupRoundsLeft = 2; //start up with two setup rounds
@@ -134,6 +148,9 @@ public class GamePanel extends javax.swing.JPanel {
         //the +1 allows methods to use player IDs directly without subtracting 1
         drawCardStacks = new boolean[playerCount + 1];//create the array of how to draw the cards for each player
         //the +1 allows methods to use player IDs directly without subtracting 1
+        playerHasPort = new boolean[playerCount + 1][6]; //create the array keeping track of what player has acces to what ports
+        //the +1 allows methods to use player IDs directly without subtracting 1
+        //the 6 is for the six types of ports ^
         totalCardsCollected = new int[5];
         //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
         cardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
@@ -146,6 +163,9 @@ public class GamePanel extends javax.swing.JPanel {
         showSettlementHitbox = false;
         showCardHitbox = false;
         showTileHitbox = false;
+        showPortHitbox = false;
+        tradingMode = 0;
+        tradeResource = 0;
         playerSetupRoadsLeft = 1;
         playerSetupSettlementLeft = 1;
         victoryPointsToWin = 10;
@@ -168,11 +188,13 @@ public class GamePanel extends javax.swing.JPanel {
         //create a filter for catan save files
         FileFilter catanSaveFile = new FileFilter() {
             //add the description
+            @Override
             public String getDescription() {
                 return "Catan Save File (*.catan)";
             }
 
             //add the logic for the filter
+            @Override
             public boolean accept(File f) {
                 //if it's a directory ignor it
                 if (f.isDirectory()) {
@@ -198,6 +220,15 @@ public class GamePanel extends javax.swing.JPanel {
             drawCardStacks[i] = false;
         }
 
+        //fill the playerHasPort 2D array with false for all players ecxept 0 and fill all the ports they have with falses because noone has ports yet
+        //skip player 0
+        for (int i = 1; i < playerHasPort.length; i++) {
+            //go through the sub arrays and fill them with six falses
+            for (int j = 0; j < playerHasPort[i].length; j++) {
+                playerHasPort[i][j] = false;
+            }
+        }
+
         // Intialize the card counter array
         for (int i = 0; i < totalCardsCollected.length; i++) {
             totalCardsCollected[i] = 0; // Victory point counter
@@ -212,6 +243,7 @@ public class GamePanel extends javax.swing.JPanel {
         loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
         loadTiles(); //load the ArrayList of tiles with position and type data
         loadNodes(); // Create and link all of the board's settlement and road nodes
+        loadPorts(); //read in all the data about the ports and populate the Array List with Ports
 
         // Add the mouse listener that calls the mouse click event handler
         addMouseListener(new MouseAdapter() {
@@ -262,6 +294,8 @@ public class GamePanel extends javax.swing.JPanel {
         scaleWorldObjectPos(tiles, 1);
         scaleWorldObjectPos(roadNodes, 1);
         scaleWorldObjectPos(settlementNodes, 0);
+        scaleWorldObjectPos(ports, 0);
+        updatePortPos();
 
         //get the fonts
         timesNewRoman = instructionLbl.getFont();
@@ -274,6 +308,10 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementLRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
 
         buildBtn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
+
+        trade4to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
+        trade3to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
+        trade2to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
 
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
@@ -315,6 +353,9 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl = new javax.swing.JLabel();
         backNoSaveBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
+        trade3to1Btn = new javax.swing.JButton();
+        trade4to1Btn = new javax.swing.JButton();
+        trade2to1Btn = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -397,6 +438,36 @@ public class GamePanel extends javax.swing.JPanel {
         titleLbl.setForeground(new java.awt.Color(255, 255, 225));
         titleLbl.setText("Settlers of Catan");
 
+        trade3to1Btn.setBackground(new java.awt.Color(102, 62, 38));
+        trade3to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        trade3to1Btn.setText("Trade 3:1");
+        trade3to1Btn.setToolTipText("");
+        trade3to1Btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                trade3to1BtnActionPerformed(evt);
+            }
+        });
+
+        trade4to1Btn.setBackground(new java.awt.Color(102, 62, 38));
+        trade4to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        trade4to1Btn.setText("Trade 4:1");
+        trade4to1Btn.setToolTipText("");
+        trade4to1Btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                trade4to1BtnActionPerformed(evt);
+            }
+        });
+
+        trade2to1Btn.setBackground(new java.awt.Color(102, 62, 38));
+        trade2to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        trade2to1Btn.setText("Specialized Trade 2:1");
+        trade2to1Btn.setToolTipText("");
+        trade2to1Btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                trade2to1BtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -404,29 +475,28 @@ public class GamePanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buildSettlementSRBtn)
+                    .addComponent(turnSwitchBtn)
+                    .addComponent(buildMenuLbl)
+                    .addComponent(buildRoadRBtn)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(instructionPromptLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(buildSettlementSRBtn)
-                            .addComponent(turnSwitchBtn)
-                            .addComponent(buildMenuLbl)
-                            .addComponent(buildRoadRBtn)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(instructionPromptLbl)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(instructionLbl)
-                                    .addComponent(subInstructionLbl)))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap(1157, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(titleLbl))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(instructionLbl)
+                            .addComponent(subInstructionLbl)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(titleLbl)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(trade2to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(trade3to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(1157, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -451,7 +521,13 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementLRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 666, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
+                .addComponent(trade4to1Btn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(trade3to1Btn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(trade2to1Btn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 516, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -501,12 +577,7 @@ public class GamePanel extends javax.swing.JPanel {
         if (!inbetweenTurns) {
             //check to make sure there isn't already another building trying to be made
             if (buildingObject != 0) {
-                //if there is turn off any building mode currently
-                buildingObject = 0;
-                showRoadHitbox = false;
-                showSettlementHitbox = false;
-                // Change the button back to the build button
-                buildBtn.setText("Build");
+                cancelBuilding();
                 // Redraw the board to remove hitbox outlines
                 repaint();
                 // Dont pick a new building to place
@@ -734,6 +805,9 @@ public class GamePanel extends javax.swing.JPanel {
             buildRoadRBtn.setEnabled(false);
             buildSettlementSRBtn.setEnabled(false);
             buildSettlementLRBtn.setEnabled(false);
+            trade4to1Btn.setEnabled(false);
+            trade3to1Btn.setEnabled(false);
+            trade2to1Btn.setEnabled(false);
 
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
@@ -772,6 +846,120 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_backNoSaveBtnActionPerformed
 
+    private void trade3to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade3to1BtnActionPerformed
+        //check what mode of trading the game is in for 3:1
+        if (tradingMode != 0) {
+            //if the user clicked the cancel button reenable the turnswitch button and update the button lable
+            turnSwitchBtn.setEnabled(true);
+            trade3to1Btn.setText("Trade 3:1");
+            //remove the intent to trade
+            tradingMode = 0;
+            minTradeCardsNeeded = 0;
+            //clear the resource if there was one
+            tradeResource = 0;
+            //hide the hitboxes
+            showPortHitbox = false;
+            showCardHitbox = false;
+            //update the buildbuttons (should be renabeling them now)
+            updateBuildButtons();
+            repaint();
+        } else {
+            //if the user clicked the button in the inactive state activate it.
+            //register the intent to trade
+            tradingMode = 2;
+            minTradeCardsNeeded = 3;
+            //diable turn switching
+            turnSwitchBtn.setEnabled(false);
+            //update the text of the button
+            trade3to1Btn.setText("Cancel");
+            //show the hitboxes
+            showPortHitbox = true;
+            //canbel any building if there is any
+            cancelBuilding();
+            //update the buildbuttons (should be disables for trading mode)
+            updateBuildButtons();
+            instructionLbl.setText("Please select the resource you would like to recive");
+            subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
+            repaint();
+        }
+    }//GEN-LAST:event_trade3to1BtnActionPerformed
+
+    private void trade4to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade4to1BtnActionPerformed
+        //check what mode of trading the game is in for 4:1
+        if (tradingMode != 0) {
+            //if the user clicked the cancel button reenable the turnswitch button and update the button lable
+            turnSwitchBtn.setEnabled(true);
+            trade4to1Btn.setText("Trade 4:1");
+            //remove the intent to trade
+            tradingMode = 0;
+            minTradeCardsNeeded = 0;
+            //clear the resource if there was one
+            tradeResource = 0;
+            //hide the hitboxes
+            showPortHitbox = false;
+            showCardHitbox = false;
+            //update the buildbuttons (should be renabeling them now)
+            updateBuildButtons();
+            repaint();
+        } else {
+            //if the user clicked the button in the inactive state activate it.
+            //register the intent to trade
+            tradingMode = 1;
+            minTradeCardsNeeded = 4;
+            //diable turn switching
+            turnSwitchBtn.setEnabled(false);
+            //update the text of the button
+            trade4to1Btn.setText("Cancel");
+            //show the hitboxes
+            showPortHitbox = true;
+            //canbel any building if there is any
+            cancelBuilding();
+            //update the buildbuttons (should be disables for trading mode)
+            updateBuildButtons();
+            instructionLbl.setText("Please select the resource you would like to recive");
+            subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
+            repaint();
+        }
+    }//GEN-LAST:event_trade4to1BtnActionPerformed
+
+    private void trade2to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade2to1BtnActionPerformed
+        //check what mode of trading the game is in for 2:1
+        if (tradingMode != 0) {
+            //if the user clicked the cancel button reenable the turnswitch button and update the button lable
+            turnSwitchBtn.setEnabled(true);
+            trade2to1Btn.setText("Specialized Trade 2:1");
+            //remove the intent to trade
+            tradingMode = 0;
+            minTradeCardsNeeded = 0;
+            //clear the resource if there was one
+            tradeResource = 0;
+            //hide the hitboxes
+            showPortHitbox = false;
+            showCardHitbox = false;
+            //update the buildbuttons (should be renabeling them now)
+            updateBuildButtons();
+            repaint();
+        } else {
+            //if the user clicked the button in the inactive state activate it.
+            //register the intent to trade
+            tradingMode = 3;
+            minTradeCardsNeeded = 2;
+            //diable turn switching
+            turnSwitchBtn.setEnabled(false);
+            //update the text of the button
+            trade2to1Btn.setText("Cancel");
+            //show the hitboxes
+            showPortHitbox = true;
+            //canbel any building if there is any
+            cancelBuilding();
+            //update the buildbuttons (should be disables for trading mode)
+            updateBuildButtons();
+            instructionLbl.setText("Please select the resource you would like to recive");
+            subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
+            repaint();
+        }
+    }//GEN-LAST:event_trade2to1BtnActionPerformed
+
     /**
      * Handles mouse input, based on the state of the game
      *
@@ -784,213 +972,236 @@ public class GamePanel extends javax.swing.JPanel {
         //check if the player is building
         if (buildingObject != 0) {
             //check what they are building
-            if (buildingObject == 1) { //roads
+            switch (buildingObject) {
+                case 1:
+                    //roads
 
-                //check the distance to the nearest road using hitboxes and check if it is close enough 
-                for (int i = 0; i < roadNodes.size() - 1; i++) {
+                    //check the distance to the nearest road using hitboxes and check if it is close enough
+                    for (int i = 0; i < roadNodes.size() - 1; i++) {
 
-                    //get the type of road and set the width and height //get this to not be hard coded if there is time
-                    if (roadNodes.get(i).getOrientation() == 0) {
-                        roadWidth = getImgWidth(RED_ROAD_H); //scale the road dimensions
-                        roadHeight = getImgHeight(RED_ROAD_H);
-                    } else {
-                        roadWidth = getImgWidth(RED_ROAD_L);
-                        roadHeight = getImgHeight(RED_ROAD_L);
-                    }
-
-                    //if the player click in a valid hitbox for a road
-                    if (event.getX() > roadNodes.get(i).getXPos() - roadWidth / 2
-                            && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
-                            && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
-                            && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
-                        //debug road build detection
-                        //System.out.println("road match");
-
-                        //check that the road is unowned
-                        if (roadNodes.get(i).getPlayer() == 0) {
-                            //check what mode the game is in 
-                            if (inSetup && playerSetupRoadsLeft > 0) {
-
-                                //check if the player has placed a settlement yet
-                                if (newestSetupSettlment != null) {
-
-                                    //check that the road is next to the just build settlement
-                                    if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
-                                            || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
-                                            || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
-
-                                        roadNodes.get(i).setPlayer(currentPlayer);
-                                        playerSetupRoadsLeft--;
-                                        // Update thwe build buttons to relfect the remaining setup buildings
-                                        updateBuildButtons();
-                                    } else { //display the error to the user
-                                        instructionLbl.setText("Sorry but that is not a valid location.");
-                                        subInstructionLbl.setText("Try building next to the settlement just built.");
-                                    }
-                                } else { //display the error to the user
-                                    instructionLbl.setText("Sorry but you must build a new settlement first.");
-                                    subInstructionLbl.setText("Try building the road after.");
-                                }
-
-                            } // If the real game is in progress and the player can build there
-                            else if (canBuildRoad(roadNodes.get(i))) {
-                                // The card check has already been made, and the user has the right cards
-
-                                // Remove the cards from the player's deck
-                                // Remove 1 clay and 1 wood
-                                cards[currentPlayer].remove(new Integer(1));
-                                cards[currentPlayer].remove(new Integer(2));
-
-                                // Set the road's player to the current player
-                                roadNodes.get(i).setPlayer(currentPlayer);
-
-                                // Update the building buttons to reflect the player's new list of cards
-                                updateBuildButtons();
-                            } // If the player could not build there
-                            else {
-                                // Print out why the player could not build there
-                                instructionLbl.setText("Sorry but you can't build a road there.");
-                                subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
-                            }
+                        //get the type of road and set the width and height //get this to not be hard coded if there is time
+                        if (roadNodes.get(i).getOrientation() == 0) {
+                            roadWidth = getImgWidth(RED_ROAD_H); //scale the road dimensions
+                            roadHeight = getImgHeight(RED_ROAD_H);
                         } else {
-                            instructionLbl.setText("Sorry but you can't take a claimed road.");
-                            subInstructionLbl.setText("Try building where there isn't already another road");
+                            roadWidth = getImgWidth(RED_ROAD_L);
+                            roadHeight = getImgHeight(RED_ROAD_L);
                         }
 
-                        // Stop building
-                        buildingObject = 0;
-                        showRoadHitbox = false;
-                        // Change the button back to the build button
-                        buildBtn.setText("Build");
-                        // Redraw the board
-                        repaint();
-                    }
-                }
-            } else if (buildingObject == 2) { //small house
+                        //if the player click in a valid hitbox for a road
+                        if (event.getX() > roadNodes.get(i).getXPos() - roadWidth / 2
+                                && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
+                                && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
+                                && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
+                            //debug road build detection
+                            //System.out.println("road match");
 
-                //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
-                for (int i = 0; i < settlementNodes.size(); i++) {
+                            //check that the road is unowned
+                            if (roadNodes.get(i).getPlayer() == 0) {
+                                //check what mode the game is in
+                                if (inSetup && playerSetupRoadsLeft > 0) {
 
-                    //if the player clicks in a valid hitbox for a settlement
-                    if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                            && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                            && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                            && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
-                        //debug settlent build detection
-                        //System.out.println("hitbox match");
+                                    //check if the player has placed a settlement yet
+                                    if (newestSetupSettlment != null) {
 
-                        //check that the settlement is unowned
-                        if (settlementNodes.get(i).getPlayer() == 0) {
+                                        //check that the road is next to the just build settlement
+                                        if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
+                                                || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
+                                                || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
 
-                            // Check that the player can build there and update the instruction labels accordingly if hey cannot
-                            if (canBuildSettlement(settlementNodes.get(i), false)) {
+                                            roadNodes.get(i).setPlayer(currentPlayer);
+                                            playerSetupRoadsLeft--;
+                                            // Update thwe build buttons to relfect the remaining setup buildings
+                                            updateBuildButtons();
+                                        } else { //display the error to the user
+                                            instructionLbl.setText("Sorry but that is not a valid location.");
+                                            subInstructionLbl.setText("Try building next to the settlement just built.");
+                                        }
+                                    } else { //display the error to the user
+                                        instructionLbl.setText("Sorry but you must build a new settlement first.");
+                                        subInstructionLbl.setText("Try building the road after.");
+                                    }
 
-                                // If the game is in setup
-                                if (inSetup) { // In Setup
-                                    // Decremeent the number of setup settlements since one is placed
-                                    playerSetupSettlementLeft--;
-                                } // If the main game is in progress
-                                else {
+                                } // If the real game is in progress and the player can build there
+                                else if (canBuildRoad(roadNodes.get(i))) {
                                     // The card check has already been made, and the user has the right cards
 
-                                    // Remove the required cards from the player's deck
-                                    // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
+                                    // Remove the cards from the player's deck
+                                    // Remove 1 clay and 1 wood
                                     cards[currentPlayer].remove(new Integer(1));
                                     cards[currentPlayer].remove(new Integer(2));
-                                    cards[currentPlayer].remove(new Integer(3));
-                                    cards[currentPlayer].remove(new Integer(4));
+
+                                    // Set the road's player to the current player
+                                    roadNodes.get(i).setPlayer(currentPlayer);
+
+                                    // Update the building buttons to reflect the player's new list of cards
+                                    updateBuildButtons();
+                                } // If the player could not build there
+                                else {
+                                    // Print out why the player could not build there
+                                    instructionLbl.setText("Sorry but you can't build a road there.");
+                                    subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
+                                }
+                            } else {
+                                instructionLbl.setText("Sorry but you can't take a claimed road.");
+                                subInstructionLbl.setText("Try building where there isn't already another road");
+                            }
+
+                            // Stop building
+                            buildingObject = 0;
+                            showRoadHitbox = false;
+                            // Change the button back to the build button
+                            buildBtn.setText("Build");
+                            // Redraw the board
+                            repaint();
+                        }
+                    }
+                    break;
+                case 2:
+                    //small house
+
+                    //check the distance to the nearest settlement node using hitboxes and check if it is close enough
+                    for (int i = 0; i < settlementNodes.size(); i++) {
+
+                        //if the player clicks in a valid hitbox for a settlement
+                        if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                                && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                                && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                                && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+                            //debug settlent build detection
+                            //System.out.println("hitbox match");
+
+                            //check that the settlement is unowned
+                            if (settlementNodes.get(i).getPlayer() == 0) {
+
+                                // Check that the player can build there and update the instruction labels accordingly if hey cannot
+                                if (canBuildSettlement(settlementNodes.get(i), false)) {
+
+                                    // If the game is in setup
+                                    if (inSetup) { // In Setup
+                                        // Decremeent the number of setup settlements since one is placed
+                                        playerSetupSettlementLeft--;
+                                    } // If the main game is in progress
+                                    else {
+                                        // The card check has already been made, and the user has the right cards
+
+                                        // Remove the required cards from the player's deck
+                                        // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
+                                        cards[currentPlayer].remove(new Integer(1));
+                                        cards[currentPlayer].remove(new Integer(2));
+                                        cards[currentPlayer].remove(new Integer(3));
+                                        cards[currentPlayer].remove(new Integer(4));
+                                    }
+
+                                    // Set the settlement's player to the current player
+                                    settlementNodes.get(i).setPlayer(currentPlayer);
+
+                                    Tile portLinkedTile; //the tile linked to the port to check agaist
+
+                                    //loop thorugh the ports and see if the settlement just built is on a port
+                                    for (int j = 0; j < ports.size(); j++) {
+                                        //save the Tile
+                                        portLinkedTile = ports.get(j).getLinkedTile();
+
+                                        //loop through the 3 tile the settlement is on use int range 1-3
+                                        for (int k = 1; k < 4; k++) {
+                                            if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
+                                                //save that the new settlemtn is on a port and which one
+                                                playerHasPort[currentPlayer][ports.get(j).getType()] = true;
+                                            }
+                                        }
+                                    }
+
+                                    //save the settelment just built
+                                    newestSetupSettlment = settlementNodes.get(i);
+
+                                    // Increment the player's victory point counter
+                                    victoryPoints[currentPlayer]++;
+
+                                    // Update the building buttons to reflect the player's new list of cards
+                                    // or number of setup buildings
+                                    updateBuildButtons();
                                 }
 
-                                // Set the settlement's player to the current player
-                                settlementNodes.get(i).setPlayer(currentPlayer);
-
-                                //save the settelment just built
-                                newestSetupSettlment = settlementNodes.get(i);
-
-                                // Increment the player's victory point counter
-                                victoryPoints[currentPlayer]++;
-
-                                // Update the building buttons to reflect the player's new list of cards
-                                // or number of setup buildings
-                                updateBuildButtons();
-                            }
-
-                        } else {
-                            instructionLbl.setText("Sorry but you can't take a claimed settlements.");
-                            subInstructionLbl.setText("Try building where there isn't already another settlements");
-                        }
-
-                        // Stop building and hide the hitboxes
-                        buildingObject = 0;
-                        showSettlementHitbox = false;
-                        // Change the button back to the build button
-                        buildBtn.setText("Build");
-                        // Redraw the board
-                        repaint();
-                    }
-                }
-
-            } else if (buildingObject == 3) { //large house
-
-                //check the distance to the nearest settlement node using hitboxes and check if it is close enough 
-                for (int i = 0; i < settlementNodes.size(); i++) {
-
-                    //if the player clicks in a valid hitbox for a settlement
-                    if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                            && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                            && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                            && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
-
-                        // Check that the current player owns settlement
-                        if (settlementNodes.get(i).getPlayer() == currentPlayer) {
-
-                            // Check that the settlement isn't already large
-                            if (settlementNodes.get(i).isLarge() == false) {
-                                // The card check has already been made, and the user has the right cards
-
-                                // Remove the cards from the player's deck
-                                // Remove 2 wheat, and 3 ore
-                                cards[currentPlayer].remove(new Integer(3));
-                                cards[currentPlayer].remove(new Integer(3));
-                                cards[currentPlayer].remove(new Integer(5));
-                                cards[currentPlayer].remove(new Integer(5));
-                                cards[currentPlayer].remove(new Integer(5));
-
-                                // Make the settlement large
-                                settlementNodes.get(i).setLarge(true);
-
-                                // Increment the player's victory point counter
-                                victoryPoints[currentPlayer]++;
-
-                                // Update the building buttons to reflect the player's new list of cards
-                                updateBuildButtons();
-                            } else { // If the settlement is already large
-
-                                instructionLbl.setText("Sorry but settlement is already large.");
-                                subInstructionLbl.setText("Try upgrading a small settlement");
-                            }
-                        } else { // If the settlement belongs to another player
-                            //check what player it is
-                            if (settlementNodes.get(i).getPlayer() == 0) {
-                                instructionLbl.setText("Sorry but you can't upgrade an unowned settlement.");
-                                subInstructionLbl.setText("Try upgrading your own settlement");
                             } else {
-                                instructionLbl.setText("Sorry but you can't upgrade someone elses settlement.");
-                                subInstructionLbl.setText("Try upgrading your own settlement");
+                                instructionLbl.setText("Sorry but you can't take a claimed settlement.");
+                                subInstructionLbl.setText("Try building where there isn't already another settlement");
                             }
-                        }
 
-                        // Stop building and hide the hitboxes
-                        buildingObject = 0;
-                        showSettlementHitbox = false;
-                        // Change the button back to the build button
-                        buildBtn.setText("Build");
-                        // Redraw the board
-                        repaint();
+                            // Stop building and hide the hitboxes
+                            buildingObject = 0;
+                            showSettlementHitbox = false;
+                            // Change the button back to the build button
+                            buildBtn.setText("Build");
+                            // Redraw the board
+                            repaint();
+                        }
                     }
-                }
-            } else {
-                System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
+                    break;
+                case 3:
+                    //large house
+
+                    //check the distance to the nearest settlement node using hitboxes and check if it is close enough
+                    for (int i = 0; i < settlementNodes.size(); i++) {
+
+                        //if the player clicks in a valid hitbox for a settlement
+                        if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                                && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                                && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                                && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+
+                            // Check that the current player owns settlement
+                            if (settlementNodes.get(i).getPlayer() == currentPlayer) {
+
+                                // Check that the settlement isn't already large
+                                if (settlementNodes.get(i).isLarge() == false) {
+                                    // The card check has already been made, and the user has the right cards
+
+                                    // Remove the cards from the player's deck
+                                    // Remove 2 wheat, and 3 ore
+                                    cards[currentPlayer].remove(new Integer(3));
+                                    cards[currentPlayer].remove(new Integer(3));
+                                    cards[currentPlayer].remove(new Integer(5));
+                                    cards[currentPlayer].remove(new Integer(5));
+                                    cards[currentPlayer].remove(new Integer(5));
+
+                                    // Make the settlement large
+                                    settlementNodes.get(i).setLarge(true);
+
+                                    // Increment the player's victory point counter
+                                    victoryPoints[currentPlayer]++;
+
+                                    // Update the building buttons to reflect the player's new list of cards
+                                    updateBuildButtons();
+                                } else { // If the settlement is already large
+
+                                    instructionLbl.setText("Sorry but settlement is already large.");
+                                    subInstructionLbl.setText("Try upgrading a small settlement");
+                                }
+                            } else { // If the settlement belongs to another player
+                                //check what player it is
+                                if (settlementNodes.get(i).getPlayer() == 0) {
+                                    instructionLbl.setText("Sorry but you can't upgrade an unowned settlement.");
+                                    subInstructionLbl.setText("Try upgrading your own settlement");
+                                } else {
+                                    instructionLbl.setText("Sorry but you can't upgrade someone elses settlement.");
+                                    subInstructionLbl.setText("Try upgrading your own settlement");
+                                }
+                            }
+
+                            // Stop building and hide the hitboxes
+                            buildingObject = 0;
+                            showSettlementHitbox = false;
+                            // Change the button back to the build button
+                            buildBtn.setText("Build");
+                            // Redraw the board
+                            repaint();
+                        }
+                    }
+                    break;
+                default:
+                    System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
+                    break;
             }
         } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0 && !thiefJustStarted) { //check if the user clicked to select a card and the thief didn't just start
 
@@ -1120,19 +1331,19 @@ public class GamePanel extends javax.swing.JPanel {
             //debug
             //System.out.println("Got a steal click");
 
-            int subPlayerPosY = superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2;
+            int subPlayerPosY = superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED);
             int subPlayerPosX;
 
             //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
             for (int i = 1; i < playerTurnOrder.size(); i++) {
 
-                subPlayerPosX = superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i);
+                subPlayerPosX = superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i);
 
                 //check if there was a click on one of the sub players
                 if (event.getX() > subPlayerPosX
                         && event.getY() > subPlayerPosY
-                        && event.getX() < (subPlayerPosX + (getImgWidth(PLAYER_RED) / 2))
-                        && event.getY() < (subPlayerPosY + (getImgHeight(PLAYER_RED) / 2))) {
+                        && event.getX() < (subPlayerPosX + (getImgWidth(SMALL_PLAYER_RED)))
+                        && event.getY() < (subPlayerPosY + (getImgHeight(SMALL_PLAYER_RED)))) {
 
                     //debug
                     //System.out.println("Yuh we got a click on player: " + playerTurnOrder.get(i));
@@ -1163,6 +1374,9 @@ public class GamePanel extends javax.swing.JPanel {
                         instructionLbl.setText("You may now continue your turn.");
                         subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
 
+                        //sort the cards first
+                        quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+
                         //redraw
                         updateBuildButtons();
                         repaint();
@@ -1182,11 +1396,205 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setColor(Color.black);
             }
              */
+        } else if (showPortHitbox && tradingMode != 0 && tradeResource == 0) { //check if the player is clicking a port to select a resource type to trade to
+
+            int portPosX;
+            int portPosY;
+            boolean validPort;
+
+            //loop through the ports
+            for (int i = 0; i < ports.size(); i++) {
+                portPosX = ports.get(i).getTypePosX();
+                portPosY = ports.get(i).getTypePosY();
+                validPort = false;
+
+                //check if there was a click on a port
+                if (event.getX() > portPosX
+                        && event.getY() > portPosY
+                        && event.getX() < (portPosX + getImgWidth(ports.get(i).getTypeImage()))
+                        && event.getY() < (portPosY + getImgHeight(ports.get(i).getTypeImage()))) {
+
+                    //check if its a non general port and also if clicking that port would leave the player with no options for cards to trade away
+                    //split up into generic 4:1 or 3:1, and specialized 2:1 trades
+                    if (ports.get(i).getType() != 0) {
+
+                        //4:1 or 3:1 tradng
+                        if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(ports.get(i).getType(), tradingMode)) {
+                            validPort = true;
+                        } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) { //2:1 tradng
+                            validPort = true;
+                        }
+
+                        //only make the selection if its a valid port selection
+                        if (validPort) {
+                            //register the type the player want to trade TO
+                            tradeResource = ports.get(i).getType();
+
+                            //turn off the hitboxes
+                            showPortHitbox = false;
+
+                            //update the instructions for the next trading step
+                            instructionLbl.setText("Now select a card");
+                            subInstructionLbl.setText("This card should be of the type you would like to trade away");
+
+                            //show the card hitboxes
+                            showCardHitbox = true;
+
+                            //update the screen
+                            repaint();
+                        }
+                    }
+                }
+
+            }
+
+        } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
+            //get the y position for the cards
+            int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
+            boolean validCard;
+
+            //check what mode the card drawing is in
+            if (drawCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
+
+                //loop though the 5 stacks
+                for (int i = 0; i < 5; i++) {
+                    validCard = false;
+
+                    //check for a click
+                    if (event.getX() > cardStackXPositions[i]
+                            && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
+                            && event.getY() > cardYPos
+                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+
+                        //check if the card is available to trade and that it is not the same type the payer would like to trade TO
+                        //split the handeling for the 2:1 away from the others
+                        if ((i + 1) != tradeResource) {
+
+                            //check for a specialized trade
+                            if (tradingMode == 3 && (playerHasPort[currentPlayer][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded) {
+                                validCard = true;
+                            } else if ((tradingMode == 1 || tradingMode == 2) && cardTypeCount[i] >= minTradeCardsNeeded) { //if 4:1 or 3:1
+                                validCard = true;
+                            }
+
+                            //only make the selection if its a valid card selection
+                            if (validCard) {
+                                //debug click detection
+                                //System.out.println("Card stack Clicked!");
+                                Integer typeToRemove = i + 1;
+
+                                //remove the required amount of that card type
+                                for (int j = 0; j < minTradeCardsNeeded; j++) {
+                                    cards[currentPlayer].remove(typeToRemove);
+                                }
+
+                                //add the card the player wants
+                                cards[currentPlayer].add(tradeResource);
+
+                                //sort the cards so when the build button are updated they are in the correct order
+                                quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+
+                                //turn off behavior as if the cancel button was pressed.
+                                turnSwitchBtn.setEnabled(true);
+                                trade4to1Btn.setText("Trade 4:1");
+                                trade3to1Btn.setText("Trade 3:1");
+                                trade2to1Btn.setText("Specialized Trade 2:1");
+                                //remove the intent to trade
+                                tradingMode = 0;
+                                minTradeCardsNeeded = 0;
+                                //clear the resource if there was one
+                                tradeResource = 0;
+                                //hide the hitboxes
+                                showPortHitbox = false;
+                                showCardHitbox = false;
+                                //update the buildbuttons (should be renabeling them now)
+                                updateBuildButtons();
+                                //give the instructions that the user can now do what ever they want
+                                instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
+                                subInstructionLbl.setText("You may now continue your turn how ever you please.");
+                            }
+                        }
+                    }
+                }
+
+            } else { //check for a click on a card in the full layout mode
+
+                //check if the user clicked on any card
+                for (int i = 0; i < cards[currentPlayer].size(); i++) {
+                    validCard = false;
+
+                    //get the x position for that card
+                    int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
+
+                    //check if there was a click on a card
+                    if (event.getX() > cardXPos
+                            && event.getY() > cardYPos
+                            && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
+                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+
+                        //check if the card is available to trade and that it is not the same type the payer would like to trade TO
+                        //split the 2:1 haneling
+                        if (cards[currentPlayer].get(i) != tradeResource) {
+
+                            //check for specialized
+                            if (tradingMode == 3 && (playerHasPort[currentPlayer][cards[currentPlayer].get(i)]) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) {
+                                validCard = true;
+                            } else if ((tradingMode == 1 || tradingMode == 2) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) { //if 4:1 or 3:1
+                                validCard = true;
+                            }
+
+                            //only make the selection if its a valid card selection
+                            if (validCard) {
+                                //debug click detection
+                                //System.out.println("Card no stack Clicked!");
+                                Integer typeToRemove = cards[currentPlayer].get(i);
+
+                                //remove the required amount of that card type
+                                for (int j = 0; j < minTradeCardsNeeded; j++) {
+                                    cards[currentPlayer].remove(typeToRemove);
+                                }
+
+                                //add the card the player wants
+                                cards[currentPlayer].add(tradeResource);
+
+                                //sort the cards so when the build button are updated they are in the correct order
+                                quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+
+                                //turn off behavior as if the cancel button was pressed.
+                                turnSwitchBtn.setEnabled(true);
+                                trade4to1Btn.setText("Trade 4:1");
+                                trade3to1Btn.setText("Trade 3:1");
+                                trade2to1Btn.setText("Specialized Trade 2:1");
+                                //remove the intent to trade
+                                tradingMode = 0;
+                                minTradeCardsNeeded = 0;
+                                //clear the resource if there was one
+                                tradeResource = 0;
+                                //hide the hitboxes
+                                showPortHitbox = false;
+                                showCardHitbox = false;
+                                //update the buildbuttons (should be renabeling them now)
+                                updateBuildButtons();
+                                //give the instructions that the user can now do what ever they want
+                                instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
+                                subInstructionLbl.setText("You may now continue your turn how ever you please.");
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+            //update the screen
+            repaint();
         }
     }
 
     /**
      * Save game data to a file
+     *
+     * @return if the operation was successful
      */
     public boolean save() {
         boolean success = false;
@@ -1229,7 +1637,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV6"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV7"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1321,10 +1729,35 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println(); //add a line break below
             }
 
-            //add the
+            //add the Port data
+            saveFile.println("Ports:");
+            for (int i = 0; i < ports.size(); i++) { //loop thorugh all the ports and add it to the save file.
+                saveFile.println("Port number:");
+                saveFile.println(i);
+                saveFile.println("LinkedTile:");
+                saveFile.println(ports.get(i).getLinkedTile().getRefNum());
+                saveFile.println("Orientation:");
+                saveFile.println(ports.get(i).getOrientation());
+                saveFile.println("Type:");
+                saveFile.println(ports.get(i).getType());
+                saveFile.println(); //add a line break below
+            }
+
+            //add the playerHasPort data
+            saveFile.println("playerHasPort:");
+            for (int i = 1; i < playerHasPort.length; i++) {
+                saveFile.println("Player: " + (i));
+                saveFile.println("hasPorts:");
+                for (int j = 0; j < playerHasPort[i].length; j++) {
+                    saveFile.println(playerHasPort[i][j]);
+                }
+                saveFile.println();
+            }
+
+            //add the close
             saveFile.close();
             return true;
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "The game is not able to save at this time. Invalid state\n", "Saving Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -1341,7 +1774,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV6")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV7")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1599,6 +2032,82 @@ public class GamePanel extends javax.swing.JPanel {
                 throwLoadError();
             }
 
+            if (scanner.nextLine().equals("Ports:")) {
+                //System.out.println("Yuppers13");
+
+                int portNum = 0;
+
+                //loop through all the ports
+                for (int i = 0; i < ports.size(); i++) {
+                    if (scanner.nextLine().equals("Port number:")) {
+                        portNum = Integer.parseInt(scanner.nextLine());
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("LinkedTile:")) {
+                        ports.get(portNum).setLinkedTile(tiles.get(Integer.parseInt(scanner.nextLine())));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Orientation:")) {
+                        ports.get(portNum).setOrientation(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("Type:")) {
+                        ports.get(portNum).setType(Integer.parseInt(scanner.nextLine()));
+                    } else {
+                        throwLoadError();
+                    }
+
+                    //skip a line
+                    scanner.nextLine();
+
+                    //make sure the coordiantes are up to date. (80% sure this is redundant)
+                    ports.get(portNum).applyCoordinates();
+                    ports.get(portNum).applyTypeImageCoordinates();
+                }
+
+            } else {
+                throwLoadError();
+            }
+
+            //get the playerHasPort data
+            if (scanner.nextLine().equals("playerHasPort:")) {
+
+                //System.out.println("Yuppers14");
+                for (int i = 1; i < playerCount + 1; i++) {
+
+                    if (scanner.nextLine().equals("Player: " + (i))) {
+                        //System.out.println("Yuppers10.1");
+                    } else {
+                        throwLoadError();
+                    }
+
+                    if (scanner.nextLine().equals("hasPorts:")) {
+
+                        for (int j = 0; j < playerHasPort[i].length; j++) {
+                            playerHasPort[i][j] = Boolean.parseBoolean(scanner.nextLine());
+                        }
+
+                        //skip a line
+                        scanner.nextLine();
+
+                        //System.out.println("Yuppers10.3");
+                    } else {
+                        throwLoadError();
+                        System.out.println("uh oh");
+                    }
+
+                }
+
+            } else {
+                throwLoadError();
+            }
+
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -1639,6 +2148,9 @@ public class GamePanel extends javax.swing.JPanel {
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
         boolean canBuildCity;
+        boolean canTrade4to;
+        boolean canTrade3to;
+        boolean canTrade2to;
         ButtonModel oldSelection; // The button selected before this update began
 
         // If the game is in setup
@@ -1646,17 +2158,61 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildRoad = (playerSetupRoadsLeft > 0) && newestSetupSettlment != null;
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
+            canTrade4to = false;
+            canTrade3to = false;
+            canTrade2to = false;
         } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
+        //or if a player is trading
         else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
-        } // If the game is NOT in setup
-        else {
+            canTrade4to = false;
+            canTrade3to = false;
+            canTrade2to = false;
+        } //else if the player is currently trading
+        else if (tradingMode != 0) {
+            //diable all the building
+            canBuildRoad = false;
+            canBuildSettlement = false;
+            canBuildCity = false;
+
+            //check the trading type
+            switch (tradingMode) { //make sure the only button active is the current trade mode. This allows the user to cancel trading.
+                case 1:
+                    //if 4:1
+                    canTrade4to = true;
+                    canTrade3to = false;
+                    canTrade2to = false;
+                    break;
+                case 2:
+                    //if 3:1
+                    canTrade4to = false;
+                    canTrade3to = true;
+                    canTrade2to = false;
+                    break;
+                case 3:
+                    //if 2:1
+                    canTrade4to = false;
+                    canTrade3to = false;
+                    canTrade2to = true;
+                    break;
+                default:
+                    //if anything else
+                    canTrade4to = false;
+                    canTrade3to = false;
+                    canTrade2to = false;
+                    break;
+            }
+
+        } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
             canBuildRoad = hasCards(0); // Roads
             canBuildSettlement = hasCards(1); // Settlements
             canBuildCity = hasCards(2); // Cities
+            canTrade4to = hasTradeCards(4);
+            canTrade3to = hasTradeCards(3) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
+            canTrade2to = hasSpecializedPort();
         }
 
         // Save what button was selected before this update began
@@ -1719,6 +2275,9 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(canBuildRoad);              // Roads
         buildSettlementSRBtn.setEnabled(canBuildSettlement); // Settlements
         buildSettlementLRBtn.setEnabled(canBuildCity);       // Cities
+        trade4to1Btn.setEnabled(canTrade4to);                //trade 4:1
+        trade3to1Btn.setEnabled(canTrade3to);                //trade 3:1
+        trade2to1Btn.setEnabled(canTrade2to);                //trade 2:1
 
         //update the colours of the radio buttons to reflect weather or not they are enabled. The stoped being done automatically when the default forground colour was changed.
         if (canBuildRoad) {
@@ -1747,6 +2306,67 @@ public class GamePanel extends javax.swing.JPanel {
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
+    }
+
+    /**
+     * Determine if a the current player has enough cards to make a 2:1 trade
+     * and if they have a port to support that.
+     *
+     * @return
+     */
+    private boolean hasSpecializedPort() {
+        boolean has2to1 = false;
+
+        //create an array to store how many cards of each type the player has
+        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
+
+        //sum up the cards of each type
+        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+            numCardType[cards[currentPlayer].get(i)]++;
+        }
+
+        for (int i = 1; i < 6; i++) { //loop thorugh indexes 1-5
+            if (playerHasPort[currentPlayer][i] && numCardType[i] >= 2) { //check if the player has that port and atleast 2 cards of that type
+                has2to1 = true;
+            }
+        }
+
+        return has2to1;
+    }
+
+    /**
+     * Determine if the current player has enough cards to begin a trade.
+     *
+     * @param tradingType Three valid options. "4" for a four to one, "3", and
+     * "2" for their respective ratios
+     * @return
+     */
+    private boolean hasTradeCards(int tradingType) {
+        boolean hasEnoughCards = false; //does the player have enough cards. Start false because no check has been made yet.
+
+        //check if the input is valid
+        if (!(tradingType >= 2 && tradingType <= 4)) {
+            System.out.println("Error: hasTradeCards out of bounds with value: " + tradingType);
+        } else { //check the current players cards
+            //create an array to store how many cards of each type the player has
+            numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
+
+            //sum up the cards of each type
+            for (int i = 0; i < cards[currentPlayer].size(); i++) {
+                numCardType[cards[currentPlayer].get(i)]++;
+            }
+
+            //check if there is the required amount of each type
+            for (int i = 1; i < numCardType.length; i++) {
+                //check each type
+                if (numCardType[i] >= tradingType) {
+                    hasEnoughCards = true;
+                }
+            }
+
+        }
+
+        return hasEnoughCards;
     }
 
     /**
@@ -2302,7 +2922,7 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 1; i < playerTurnOrder.size(); i++) {
             //only show the sub players if the thief is not stealing. Otherwise it gets confusing.
             if (thiefIsStealing) {
-                subsequentPlayerImage = PLAYER_NONE;
+                subsequentPlayerImage = SMALL_PLAYER_NONE;
             } else {
                 subsequentPlayerImage = getPlayerImage(playerTurnOrder.get(i), true);
             }
@@ -2321,10 +2941,10 @@ public class GamePanel extends javax.swing.JPanel {
                 //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
                 if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
                     g2d.setColor(Color.green);
-                    g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i),
-                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2,
-                            getImgWidth(PLAYER_RED) / 2,
-                            getImgHeight(PLAYER_RED) / 2);
+                    g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
+                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
+                            getImgWidth(SMALL_PLAYER_RED),
+                            getImgHeight(SMALL_PLAYER_RED));
                     g2d.setColor(Color.black);
                 }
             }
@@ -2334,8 +2954,51 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the sub player header
         g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("Next player:",
-                superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(PLAYER_RED) / 2),
-                superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(PLAYER_RED) / 2);
+                superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
+                superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
+
+        Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage();
+
+        //draw the ports
+        boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
+        for (int i = 0; i < ports.size(); i++) {
+            g2d.drawImage(ports.get(i).getImage(),
+                    ports.get(i).getXPos(),
+                    ports.get(i).getYPos(),
+                    getImgWidth(ports.get(i).getImage()),
+                    getImgHeight(ports.get(i).getImage()),
+                    null);
+
+            //draw the recource type on top
+            g2d.drawImage(ports.get(i).getTypeImage(),
+                    ports.get(i).getTypePosX(),
+                    ports.get(i).getTypePosY(),
+                    getImgWidth(ports.get(i).getTypeImage()),
+                    getImgHeight(ports.get(i).getTypeImage()),
+                    null);
+
+            //draw the hitbox
+            if (showPortHitbox) {
+                //decide if that specif box should be drawn
+                if (ports.get(i).getType() == 0) {
+                    drawSpecificHitbox = false;
+                } else if (tradingMode == 1 || tradingMode == 2) {
+                    drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
+                } else if (tradingMode == 3) { //if its a specialized 2:1
+                    drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType());
+                } else {
+                    drawSpecificHitbox = false;
+                }
+
+                //check if that one should be drawn
+                if (drawSpecificHitbox) {
+                    g2d.drawRect(ports.get(i).getTypePosX(),
+                            ports.get(i).getTypePosY(),
+                            getImgWidth(ports.get(i).getTypeImage()),
+                            getImgHeight(ports.get(i).getTypeImage()));
+                }
+            }
+        }
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         int tileID;
@@ -2346,11 +3009,13 @@ public class GamePanel extends javax.swing.JPanel {
             //check if it is the new type or old size
             if (tiles.get(tileID).getImage().getHeight(null) == 150) {
                 //draw the tile
+
                 g2d.drawImage(tiles.get(tileID).getImage(),
                         tiles.get(tileID).getXPos(),
                         (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
                         getImgWidth(tiles.get(tileID).getImage()),
                         getImgHeight(tiles.get(tileID).getImage()), null);
+
             } else {
 
                 //draw the tile
@@ -2434,16 +3099,22 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.drawImage(DICE_IMAGES[0],
                         rightDrawMargin,
                         (int) (400 / scaleFactor),
+                        getImgWidth(DICE_IMAGES[0]),
+                        getImgHeight(DICE_IMAGES[0]),
                         null);
             } else { //else draw the dice that go with the roll
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[0])],
                         rightDrawMargin,
                         (int) (400 / scaleFactor),
+                        getImgWidth(DICE_IMAGES[1]),
+                        getImgHeight(DICE_IMAGES[1]),
                         null);
 
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
-                        rightDrawMargin + (int) (100 / scaleFactor),
+                        rightDrawMargin + getImgWidth(DICE_IMAGES[1]),
                         (int) (400 / scaleFactor),
+                        getImgWidth(DICE_IMAGES[1]),
+                        getImgHeight(DICE_IMAGES[1]),
                         null);
 
             }
@@ -2507,50 +3178,71 @@ public class GamePanel extends javax.swing.JPanel {
             switch (road.getOrientation()) {
                 case 0: // Horizontal road ( -- )
                     // Store the road image for the player's color
-                    if (road.getPlayer() == 0) {
-                        image = BLANK_ROAD_H;
-                    } else if (road.getPlayer() == 1) {
-                        image = RED_ROAD_H;
-                    } else if (road.getPlayer() == 2) {
-                        image = BLUE_ROAD_H;
-                    } else if (road.getPlayer() == 3) {
-                        image = ORANGE_ROAD_H;
-                    } else if (road.getPlayer() == 4) {
-                        image = WHITE_ROAD_H;
-                    } else {
-                        image = RED_ROAD_L;
+                    switch (road.getPlayer()) {
+                        case 0:
+                            image = BLANK_ROAD_H;
+                            break;
+                        case 1:
+                            image = RED_ROAD_H;
+                            break;
+                        case 2:
+                            image = BLUE_ROAD_H;
+                            break;
+                        case 3:
+                            image = ORANGE_ROAD_H;
+                            break;
+                        case 4:
+                            image = WHITE_ROAD_H;
+                            break;
+                        default:
+                            image = RED_ROAD_L;
+                            break;
                     }
                     break;
-                case 1: // Road pointing to the top left ( \ ) 
+                case 1: // Road pointing to the top left ( \ )
                     // Store the road image for the player's color
-                    if (road.getPlayer() == 0) {
-                        image = BLANK_ROAD_V;
-                    } else if (road.getPlayer() == 1) {
-                        image = RED_ROAD_L;
-                    } else if (road.getPlayer() == 2) {
-                        image = BLUE_ROAD_L;
-                    } else if (road.getPlayer() == 3) {
-                        image = ORANGE_ROAD_L;
-                    } else if (road.getPlayer() == 4) {
-                        image = WHITE_ROAD_L;
-                    } else {
-                        image = RED_ROAD_H;
+                    switch (road.getPlayer()) {
+                        case 0:
+                            image = BLANK_ROAD_V;
+                            break;
+                        case 1:
+                            image = RED_ROAD_L;
+                            break;
+                        case 2:
+                            image = BLUE_ROAD_L;
+                            break;
+                        case 3:
+                            image = ORANGE_ROAD_L;
+                            break;
+                        case 4:
+                            image = WHITE_ROAD_L;
+                            break;
+                        default:
+                            image = RED_ROAD_H;
+                            break;
                     }
                     break;
-                case 2: // Road pointing to the top right ( / ) 
+                case 2: // Road pointing to the top right ( / )
                     // Store the road image for the player's color
-                    if (road.getPlayer() == 0) {
-                        image = BLANK_ROAD_V;
-                    } else if (road.getPlayer() == 1) {
-                        image = RED_ROAD_R;
-                    } else if (road.getPlayer() == 2) {
-                        image = BLUE_ROAD_R;
-                    } else if (road.getPlayer() == 3) {
-                        image = ORANGE_ROAD_R;
-                    } else if (road.getPlayer() == 4) {
-                        image = WHITE_ROAD_R;
-                    } else {
-                        image = RED_ROAD_H;
+                    switch (road.getPlayer()) {
+                        case 0:
+                            image = BLANK_ROAD_V;
+                            break;
+                        case 1:
+                            image = RED_ROAD_R;
+                            break;
+                        case 2:
+                            image = BLUE_ROAD_R;
+                            break;
+                        case 3:
+                            image = ORANGE_ROAD_R;
+                            break;
+                        case 4:
+                            image = WHITE_ROAD_R;
+                            break;
+                        default:
+                            image = RED_ROAD_H;
+                            break;
                     }
                     break;
                 default: // Make the compiler happy and error handling
@@ -2588,37 +3280,49 @@ public class GamePanel extends javax.swing.JPanel {
             } // Otherwise, check the size of the settlement to see which image to use
             else if (settlement.isLarge() == false) { // Small settlement
                 // Store the small settlement image for the player's color
-                if (settlement.getPlayer() == 1) {
-                    image = RED_HOUSE_S;
-                } // Player 1: Red
-                else if (settlement.getPlayer() == 2) {
-                    image = BLUE_HOUSE_S;
-                } // Player 2: Blue
-                else if (settlement.getPlayer() == 3) {
-                    image = ORANGE_HOUSE_S;
-                } // Player 3: Orange
-                else if (settlement.getPlayer() == 4) {
-                    image = WHITE_HOUSE_S;
-                } // Player 4: White
-                else {
-                    image = RED_HOUSE_L;
+                switch (settlement.getPlayer()) {
+                    // Player 1: Red
+                    case 1:
+                        image = RED_HOUSE_S;
+                        break;
+                    // Player 2: Blue
+                    case 2:
+                        image = BLUE_HOUSE_S;
+                        break;
+                    // Player 3: Orange
+                    case 3:
+                        image = ORANGE_HOUSE_S;
+                        break;
+                    // Player 4: White
+                    case 4:
+                        image = WHITE_HOUSE_S;
+                        break;
+                    default:
+                        image = RED_HOUSE_L;
+                        break;
                 }
             } else { // Large settlement
                 // Store the large settlement image for the player's color
-                if (settlement.getPlayer() == 1) {
-                    image = RED_HOUSE_L;
-                } // Player 1: Red
-                else if (settlement.getPlayer() == 2) {
-                    image = BLUE_HOUSE_L;
-                } // Player 2: Blue
-                else if (settlement.getPlayer() == 3) {
-                    image = ORANGE_HOUSE_L;
-                } // Player 3: Orange
-                else if (settlement.getPlayer() == 4) {
-                    image = WHITE_HOUSE_L;
-                } // Player 4: White
-                else {
-                    image = RED_HOUSE_S;
+                switch (settlement.getPlayer()) {
+                    // Player 1: Red
+                    case 1:
+                        image = RED_HOUSE_L;
+                        break;
+                    // Player 2: Blue
+                    case 2:
+                        image = BLUE_HOUSE_L;
+                        break;
+                    // Player 3: Orange
+                    case 3:
+                        image = ORANGE_HOUSE_L;
+                        break;
+                    // Player 4: White
+                    case 4:
+                        image = WHITE_HOUSE_L;
+                        break;
+                    default:
+                        image = RED_HOUSE_S;
+                        break;
                 }
             }
 
@@ -2636,19 +3340,24 @@ public class GamePanel extends javax.swing.JPanel {
                 boolean drawHitBox = false;
 
                 //check what build mode is active
-                if (buildingObject == 2) { //check for new settlment
-                    //check if a new settlment can go there
-                    drawHitBox = canBuildSettlement(settlement, true);
-
-                } else if (buildingObject == 3) { //check for upgrading to city
-                    //check if an upgrade can be made
-                    if ((!settlement.isLarge()) && settlement.getPlayer() == currentPlayer) {
-                        drawHitBox = true;
-                    }
-
-                } else { //error
-                    instructionLbl.setText("Error drawing settlment hitboxes");
-                    subInstructionLbl.setText("Please contact the developer");
+                switch (buildingObject) {
+                    case 2:
+                        //check for new settlment
+                        //check if a new settlment can go there
+                        drawHitBox = canBuildSettlement(settlement, true);
+                        break;
+                    case 3:
+                        //check for upgrading to city
+                        //check if an upgrade can be made
+                        if ((!settlement.isLarge()) && settlement.getPlayer() == currentPlayer) {
+                            drawHitBox = true;
+                        }
+                        break;
+                    default:
+                        //error
+                        instructionLbl.setText("Error drawing settlment hitboxes");
+                        subInstructionLbl.setText("Please contact the developer");
+                        break;
                 }
 
                 //draw the hitbox
@@ -2664,21 +3373,22 @@ public class GamePanel extends javax.swing.JPanel {
         if (!inbetweenTurns) {
             // Get the number of cards the player has
             int listSize = cards[currentPlayer].size();
+
+            //get the number of each card type the player has
+            //setup an array to hold the results
+            cardTypeCount = new int[5];
+
+            //loop thorugh and populate the array
+            for (int i = 0; i < listSize; i++) {
+                cardTypeCount[cards[currentPlayer].get(i) - 1]++;
+            }
+
             // Calculate where the first card must go to center the list
             cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
             //check if the cards would go off the screen
             if ((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(CARD_CLAY)))) {
                 drawCardStacks[currentPlayer] = true;
-
-                //get the number of each card type the player has
-                //setup an array to hold the results
-                int[] cardTypeCount = new int[5];
-
-                //loop thorugh and populate the array
-                for (int i = 0; i < listSize; i++) {
-                    cardTypeCount[cards[currentPlayer].get(i) - 1]++;
-                }
 
                 //draw the number of cards the payer has of each type
                 //change the font
@@ -2727,15 +3437,28 @@ public class GamePanel extends javax.swing.JPanel {
 
                     //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
                     if (showCardHitbox && cardTypeCount[i] > 0) {
-                        g2d.setColor(Color.green);
-                        Stroke tempStroke = g2d.getStroke();
-                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                        g2d.drawRect(cardStackXPositions[i],
-                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
-                                getImgWidth(image),
-                                getImgHeight(image));
-                        g2d.setStroke(tempStroke);
-                        g2d.setColor(new java.awt.Color(255, 255, 225));
+                        //decide if to draw this on in the loop
+                        if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
+                            drawSpecificHitbox = true;
+                        } else if (tradingMode == 3) { //special handeling for 2:1
+                            //check if the card is of the type the player muct trade for 2:1 trading
+                            drawSpecificHitbox = (i + 1) != tradeResource && (playerHasPort[currentPlayer][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded;
+                        } else { //if it is for other 4:1 or 3:1 trading purpous do some more checks
+                            //has to have more than the minimum or more cards and cannot be the same type of card the play wants to end up with.
+                            drawSpecificHitbox = cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource;
+                        }
+
+                        if (drawSpecificHitbox) {
+                            g2d.setColor(Color.green);
+                            Stroke tempStroke = g2d.getStroke();
+                            g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                            g2d.drawRect(cardStackXPositions[i],
+                                    (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                    getImgWidth(image),
+                                    getImgHeight(image));
+                            g2d.setStroke(tempStroke);
+                            g2d.setColor(new java.awt.Color(255, 255, 225));
+                        }
                     }
 
                 }
@@ -2784,15 +3507,28 @@ public class GamePanel extends javax.swing.JPanel {
 
                     //draw the hitbox
                     if (showCardHitbox) {
-                        g2d.setColor(Color.green);
-                        Stroke tempStroke = g2d.getStroke();
-                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                        g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
-                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
-                                getImgWidth(image),
-                                getImgHeight(image));
-                        g2d.setStroke(tempStroke);
-                        g2d.setColor(Color.black);
+                        //decide if to draw this on in the loop
+                        if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
+                            drawSpecificHitbox = true;
+                        } else if (tradingMode == 3) { //special handeling for 2:1
+                            //check if the card is of the type the player muct trade for 2:1 trading
+                            drawSpecificHitbox = cards[currentPlayer].get(i) != tradeResource && (playerHasPort[currentPlayer][cards[currentPlayer].get(i)]) && numCardType[type] >= minTradeCardsNeeded;
+                        } else { //if it is for trading purpous do some more checks
+                            //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
+                            drawSpecificHitbox = numCardType[type] >= minTradeCardsNeeded && cards[currentPlayer].get(i) != tradeResource;
+                        }
+
+                        if (drawSpecificHitbox) {
+                            g2d.setColor(Color.green);
+                            Stroke tempStroke = g2d.getStroke();
+                            g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                            g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                                    (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                    getImgWidth(image),
+                                    getImgHeight(image));
+                            g2d.setStroke(tempStroke);
+                            g2d.setColor(Color.black);
+                        }
                     }
 
                 }
@@ -2908,7 +3644,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param image
      * @return
      */
-    public int getImgHeight(Image image) {
+    public final int getImgHeight(Image image) {
         if (superFrame.getWidth() > superFrame.getHeight()) {
             return (int) (image.getHeight(null) / 1080.0 * superFrame.getHeight());
         } else {
@@ -2923,7 +3659,7 @@ public class GamePanel extends javax.swing.JPanel {
         Tile newTile;
         for (int i = 0; i < 19; i++) {
             //int r = (int) (Math.random() * 6);
-            newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i]); //set the position and a type based on the text file
+            newTile = new Tile(tilePos[i][0], tilePos[i][1], tileTypes[i], i); //set the position and a type based on the text file
 
             //add the harvest roll num
             newTile.setHarvestRollNum(tileHarvestRollNums[i]);
@@ -3077,6 +3813,19 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
+     * Updated the image positions of the type images for the ports. This only
+     * brings them to where they need to be before major scaling point
+     * re-mapping.
+     */
+    private void updatePortPos() {
+        //loop through the ports
+        for (int i = 0; i < ports.size(); i++) {
+            ports.get(i).applyCoordinates();
+            ports.get(i).applyTypeImageCoordinates();
+        }
+    }
+
+    /**
      * read in the tile positions
      */
     private void loadTilePos() {
@@ -3104,9 +3853,47 @@ public class GamePanel extends javax.swing.JPanel {
                     fileReader.nextLine();
                 }
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading Tile Position file: " + e);
+        }
+    }
+
+    /**
+     * read in the port positions and types. Also populate the Array List
+     */
+    private void loadPorts() {
+
+        Port newPort; //the latest port being read in
+
+        // Declare variables
+        Scanner fileReader;
+        InputStream file = OldCode.class.getResourceAsStream("portData.txt");
+
+        // Try to read the file
+        try {
+            // Create the scanner to read the file
+            fileReader = new Scanner(file);
+
+            // Read the entire file in and create the Ports
+            for (int i = 0; i < 9; i++) {
+
+                //create the new Port
+                newPort = new Port(tiles.get(Integer.parseInt(fileReader.nextLine())),
+                        Integer.parseInt(fileReader.nextLine()),
+                        Integer.parseInt(fileReader.nextLine()));
+
+                //add it to the Array List
+                ports.add(newPort);
+
+                //skip the next blank line but only if the scanner is not at the end
+                if (i < 8) {
+                    fileReader.nextLine();
+                }
+            }
+        } catch (NumberFormatException e) {
+            // Output the jsvs error to the standard output
+            System.out.println("Error reading trading port Position file: " + e);
         }
     }
 
@@ -3157,7 +3944,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     private void randomizeTiles() {
         //randomly select a number of times to shuffle the board
-        int numShuffle = (int) (Math.random() * 15) + 25;
+        int numShuffle/* = (int) (Math.random() * 15) + 25*/;
         numShuffle = 1000;
         int tempNumHold; //the value that is being swapped
         int numSlot1; //the index being swaped from
@@ -3203,7 +3990,73 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
+     * Decides if a trade is valid. This check prevents selecting a clay trade
+     * but not having more than 4 cards or something other than clay
+     *
+     * @param resourceType
+     * @param tradeType
+     * @return
+     */
+    private boolean canTradeTo(int resourceType, int tradeType) {
+        boolean showPort = false;
+
+        //loop through all the card types
+        for (int i = 0; i < cardTypeCount.length; i++) {
+            //check if that port can be used
+            if (cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != resourceType) {
+                showPort = true;
+            }
+        }
+
+        return showPort;
+    }
+
+    /**
+     * Decides if a Port's hit-box should be drawn if is 2:1 mode
+     *
+     * @param resourceType
+     * @return
+     */
+    private boolean canTradeSecializedTo(int resourceType) {
+        boolean showPort = false;
+
+        //create an array to store how many cards of each type the player has
+        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
+
+        //sum up the cards of each type
+        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+            numCardType[cards[currentPlayer].get(i)]++;
+        }
+
+        //do not show the port if it is the 2:1 port that the player has. This prevents trading wood for wood.
+        if (!playerHasPort[currentPlayer][resourceType]) {
+            showPort = true;
+        } else { //if the player does have that port check if they have another 2:1
+            for (int i = 1; i < playerHasPort[currentPlayer].length; i++) {
+                if (playerHasPort[currentPlayer][i] && numCardType[i] >= 2 && i != resourceType) { //if the player owns that 2:1 port check if they have enough cards to use it and that it is a differnt port
+                    showPort = true;
+                }
+            }
+        }
+
+        return showPort;
+    }
+
+    /**
+     * Reset variables to their neutral state when there is no building
+     */
+    private void cancelBuilding() {
+        //if there is turn off any building mode currently
+        buildingObject = 0;
+        showRoadHitbox = false;
+        showSettlementHitbox = false;
+        // Change the button back to the build button
+        buildBtn.setText("Build");
+    }
+
+    /**
      * Set the number of players playing the game
+     *
      * @param playerCount
      */
     public static void setPlayerCount(int playerCount) {
@@ -3212,6 +4065,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Get the number of players playing the game
+     *
      * @return
      */
     public static int getPlayerCount() {
@@ -3219,7 +4073,9 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Set weather or not the players receive startup resource cards when the game leaves setup mode
+     * Set weather or not the players receive startup resource cards when the
+     * game leaves setup mode
+     *
      * @param giveStartingResources
      */
     public static void setgiveStartingResources(boolean giveStartingResources) {
@@ -3232,6 +4088,42 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public static boolean getgiveStartingResources() {
         return giveStartingResources;
+    }
+
+    /**
+     * Get the width of the JFrame holding the GamePanel
+     *
+     * @return
+     */
+    public static int getFrameWidth() {
+        return frameWidth;
+    }
+
+    /**
+     * Set the width of the JFrame holding the GamePanel
+     *
+     * @param frameWidth
+     */
+    public static void setFrameWidth(int frameWidth) {
+        GamePanel.frameWidth = frameWidth;
+    }
+
+    /**
+     * Get the height of the JFrame holding the GamePanel
+     *
+     * @return
+     */
+    public static int getFrameHeight() {
+        return frameHeight;
+    }
+
+    /**
+     * Set the height of the JFrame holding the GamePanel
+     *
+     * @param frameHeight
+     */
+    public static void setFrameHeight(int frameHeight) {
+        GamePanel.frameHeight = frameHeight;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -3247,6 +4139,9 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JLabel subInstructionLbl;
     private javax.swing.JLabel titleLbl;
+    private javax.swing.JButton trade2to1Btn;
+    private javax.swing.JButton trade3to1Btn;
+    private javax.swing.JButton trade4to1Btn;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 

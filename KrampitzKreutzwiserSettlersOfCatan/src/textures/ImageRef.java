@@ -14,6 +14,9 @@ import javax.swing.ImageIcon;
  */
 public class ImageRef {
     
+    //icon image for game
+    public final static Image ICON = new ImageIcon(ImageRef.class.getResource("icon.png")).getImage();
+    
     //images for the cards
     public final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage();
     public final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage();
