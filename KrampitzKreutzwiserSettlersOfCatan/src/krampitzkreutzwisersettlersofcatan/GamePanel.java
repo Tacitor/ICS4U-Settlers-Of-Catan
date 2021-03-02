@@ -21,8 +21,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -182,7 +186,7 @@ public class GamePanel extends javax.swing.JPanel {
         canStealCardPlayers = new ArrayList<>();
 
         //set a default save path
-        saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.save";
+        saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.catan";
         //initialize the filechooser
         saveFileChooser = new JFileChooser();
         //create a filter for catan save files
@@ -818,6 +822,22 @@ public class GamePanel extends javax.swing.JPanel {
 
             // Redraw the board so the next player doesnt see the other player's cards
             repaint();
+            
+            try {
+                //ensure the directory is there
+                Files.createDirectories(Paths.get(System.getProperty("user.home") + "\\AppData\\Roaming\\SettlerDevs\\Catan"));
+                
+                //make an auto save now that the turn is over
+                if (!writeToFile(System.getProperty("user.home") + "\\AppData\\Roaming\\SettlerDevs\\Catan\\autosave.catan")) {
+                    //if there was an error
+                    System.out.println("Error writing to autosave.");
+                }
+            } catch (FileNotFoundException ex) {
+                System.out.println("Error creating autosave.");
+            } catch (IOException ex) {
+                Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         } else if (playerSetupRoadsLeft != 0) {
             //let the player know that they have more setup roads to place
             instructionLbl.setText("Make sure you place your " + playerSetupRoadsLeft + " remaining road(s).");
@@ -1619,7 +1639,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "An error occurred while trying to save the game.", "Saving Error", JOptionPane.ERROR_MESSAGE);
             success = false;
         }
@@ -1757,7 +1777,7 @@ public class GamePanel extends javax.swing.JPanel {
             //add the close
             saveFile.close();
             return true;
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "The game is not able to save at this time. Invalid state\n", "Saving Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -2108,7 +2128,7 @@ public class GamePanel extends javax.swing.JPanel {
                 throwLoadError();
             }
 
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -3853,7 +3873,7 @@ public class GamePanel extends javax.swing.JPanel {
                     fileReader.nextLine();
                 }
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading Tile Position file: " + e);
         }
@@ -3891,7 +3911,7 @@ public class GamePanel extends javax.swing.JPanel {
                     fileReader.nextLine();
                 }
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading trading port Position file: " + e);
         }
