@@ -1783,14 +1783,14 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
-    public void load(JFileChooser loadFileChooser) {
+    public void load(String filePathString) {
         //System.out.println("Yupp");
 
         int tempScannerVal;
 
         //load the save file 
         try {
-            File savefile = new File(loadFileChooser.getSelectedFile().getPath());
+            File savefile = new File(filePathString);
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)

@@ -84,11 +84,11 @@ public class GameFrame extends javax.swing.JFrame {
     }
     
     /**
-     * Passes the load address on to the GamePanel
-     * @param loadFileChooser 
+     * Passes the load address on to the GamePanel 
+     * @param filePathString
      */
-    public void loadFromFile(JFileChooser loadFileChooser) {
-        theGamePanel.load(loadFileChooser);
+    public void loadFromFile(String filePathString) {
+        theGamePanel.load(filePathString);
     }
 
 }

@@ -25,17 +25,21 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="35" max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="rulesBtn" pref="473" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                  <Component id="rulesBtn" alignment="0" max="32767" attributes="0"/>
                   <Component id="newGameBtn" alignment="0" max="32767" attributes="0"/>
-                  <Component id="loadGameBtn" alignment="0" max="32767" attributes="0"/>
                   <Component id="creditsBtn" alignment="0" max="32767" attributes="0"/>
-                  <Component id="exitBtn" alignment="0" pref="473" max="32767" attributes="0"/>
-                  <Component id="titleLbl" alignment="0" max="32767" attributes="0"/>
+                  <Component id="exitBtn" alignment="0" max="32767" attributes="0"/>
+                  <Component id="titleLbl" alignment="1" pref="473" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="loadAutosaveBtn" min="-2" pref="226" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="loadGameBtn" min="-2" pref="226" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+              <EmptySpace pref="40" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -47,14 +51,17 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="newGameBtn" min="-2" pref="53" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="loadGameBtn" min="-2" pref="53" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="loadAutosaveBtn" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
+                  <Component id="loadGameBtn" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="creditsBtn" min="-2" pref="53" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="rulesBtn" min="-2" pref="53" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="exitBtn" min="-2" pref="53" max="-2" attributes="0"/>
-              <EmptySpace pref="25" max="32767" attributes="0"/>
+              <EmptySpace pref="20" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -122,6 +129,17 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rulesBtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="loadAutosaveBtn">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="MV Boli" size="16" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Load Autosave"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadAutosaveBtnActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
