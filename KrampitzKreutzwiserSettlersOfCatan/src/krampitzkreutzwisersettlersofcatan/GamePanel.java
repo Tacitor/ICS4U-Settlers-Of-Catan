@@ -1117,18 +1117,34 @@ public class GamePanel extends javax.swing.JPanel {
                                     settlementNodes.get(i).setPlayer(currentPlayer);
 
                                     Tile portLinkedTile; //the tile linked to the port to check agaist
+                                    boolean onCoast; //weather or not the node is on the coast (on the null tile)
+                                    boolean onPortTile; //weather or not the node is on a tile that is the linkedTile for a port
 
                                     //loop thorugh the ports and see if the settlement just built is on a port
                                     for (int j = 0; j < ports.size(); j++) {
                                         //save the Tile
                                         portLinkedTile = ports.get(j).getLinkedTile();
+                                        //reset the bool vars
+                                        onCoast = false;
+                                        onPortTile = false;
 
                                         //loop through the 3 tile the settlement is on use int range 1-3
                                         for (int k = 1; k < 4; k++) {
+                                            //check if this tile is the same as a port's tile
                                             if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
-                                                //save that the new settlemtn is on a port and which one
-                                                playerHasPort[currentPlayer][ports.get(j).getType()] = true;
+                                                onPortTile = true;
                                             }
+                                            
+                                            //also check if this tile is the null tile meaning the settlemnt is on the coast
+                                            if (settlementNodes.get(i).getTile(k) == null) {
+                                                onCoast = true;
+                                            }
+                                        }
+                                        
+                                        //only register the port as owned if the conditions are met
+                                        if (onCoast && onPortTile) {
+                                            //save that the new settlement is on a port and which one
+                                            playerHasPort[currentPlayer][ports.get(j).getType()] = true;
                                         }
                                     }
 
