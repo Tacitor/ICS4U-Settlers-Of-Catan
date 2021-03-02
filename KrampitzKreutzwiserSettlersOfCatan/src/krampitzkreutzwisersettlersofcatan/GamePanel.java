@@ -825,10 +825,10 @@ public class GamePanel extends javax.swing.JPanel {
             
             try {
                 //ensure the directory is there
-                Files.createDirectories(Paths.get(System.getProperty("user.home") + "\\AppData\\Roaming\\SettlerDevs\\Catan"));
+                Files.createDirectories(Paths.get(System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan"));
                 
                 //make an auto save now that the turn is over
-                if (!writeToFile(System.getProperty("user.home") + "\\AppData\\Roaming\\SettlerDevs\\Catan\\autosave.catan")) {
+                if (!writeToFile(System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan")) {
                     //if there was an error
                     System.out.println("Error writing to autosave.");
                 }
