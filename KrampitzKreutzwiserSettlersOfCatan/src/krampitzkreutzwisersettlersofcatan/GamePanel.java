@@ -365,7 +365,6 @@ public class GamePanel extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1920, 1080));
 
-        backBtn.setBackground(new java.awt.Color(102, 62, 38));
         backBtn.setText("< Save and Exit");
         backBtn.setFocusable(false);
         backBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -374,7 +373,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         });
 
-        turnSwitchBtn.setBackground(new java.awt.Color(102, 62, 38));
         turnSwitchBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         turnSwitchBtn.setText("End Current Player's Turn");
         turnSwitchBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -415,7 +413,6 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(false);
         buildRoadRBtn.setOpaque(false);
 
-        buildBtn.setBackground(new java.awt.Color(102, 62, 38));
         buildBtn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         buildBtn.setText("Build");
         buildBtn.setToolTipText("");
@@ -429,7 +426,6 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
-        backNoSaveBtn.setBackground(new java.awt.Color(102, 62, 38));
         backNoSaveBtn.setText("< Exit without saving");
         backNoSaveBtn.setFocusable(false);
         backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -442,7 +438,6 @@ public class GamePanel extends javax.swing.JPanel {
         titleLbl.setForeground(new java.awt.Color(255, 255, 225));
         titleLbl.setText("Settlers of Catan");
 
-        trade3to1Btn.setBackground(new java.awt.Color(102, 62, 38));
         trade3to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade3to1Btn.setText("Trade 3:1");
         trade3to1Btn.setToolTipText("");
@@ -455,7 +450,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         });
 
-        trade4to1Btn.setBackground(new java.awt.Color(102, 62, 38));
         trade4to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade4to1Btn.setText("Trade 4:1");
         trade4to1Btn.setToolTipText("");
@@ -468,7 +462,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         });
 
-        trade2to1Btn.setBackground(new java.awt.Color(102, 62, 38));
         trade2to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade2to1Btn.setText("Specialized Trade 2:1");
         trade2to1Btn.setToolTipText("");

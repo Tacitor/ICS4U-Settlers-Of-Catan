@@ -107,9 +107,6 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="backBtn">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="26" green="3e" red="66" type="rgb"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="&lt; Save and Exit"/>
         <Property name="focusable" type="boolean" value="false"/>
       </Properties>
@@ -119,9 +116,6 @@
     </Component>
     <Component class="javax.swing.JButton" name="turnSwitchBtn">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="26" green="3e" red="66" type="rgb"/>
-        </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Times New Roman" size="18" style="0"/>
         </Property>
@@ -213,9 +207,6 @@
     </Component>
     <Component class="javax.swing.JButton" name="buildBtn">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="26" green="3e" red="66" type="rgb"/>
-        </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Dialog" size="18" style="0"/>
         </Property>
@@ -239,9 +230,6 @@
     </Component>
     <Component class="javax.swing.JButton" name="backNoSaveBtn">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="26" green="3e" red="66" type="rgb"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="&lt; Exit without saving"/>
         <Property name="focusable" type="boolean" value="false"/>
       </Properties>
@@ -262,9 +250,6 @@
     </Component>
     <Component class="javax.swing.JButton" name="trade3to1Btn">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="26" green="3e" red="66" type="rgb"/>
-        </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Dialog" size="18" style="0"/>
         </Property>
@@ -286,9 +271,6 @@
     </Component>
     <Component class="javax.swing.JButton" name="trade4to1Btn">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="26" green="3e" red="66" type="rgb"/>
-        </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Dialog" size="18" style="0"/>
         </Property>
@@ -310,9 +292,6 @@
     </Component>
     <Component class="javax.swing.JButton" name="trade2to1Btn">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="26" green="3e" red="66" type="rgb"/>
-        </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Dialog" size="18" style="0"/>
         </Property>
