@@ -318,6 +318,7 @@ public class GamePanel extends javax.swing.JPanel {
         trade2to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
 
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
         instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
@@ -360,6 +361,7 @@ public class GamePanel extends javax.swing.JPanel {
         trade3to1Btn = new javax.swing.JButton();
         trade4to1Btn = new javax.swing.JButton();
         trade2to1Btn = new javax.swing.JButton();
+        tradeMenuLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -441,9 +443,9 @@ public class GamePanel extends javax.swing.JPanel {
         trade3to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade3to1Btn.setText("Trade 3:1");
         trade3to1Btn.setToolTipText("");
-        trade3to1Btn.setMaximumSize(new java.awt.Dimension(207, 33));
-        trade3to1Btn.setMinimumSize(new java.awt.Dimension(207, 33));
-        trade3to1Btn.setPreferredSize(new java.awt.Dimension(207, 33));
+        trade3to1Btn.setMaximumSize(null);
+        trade3to1Btn.setMinimumSize(null);
+        trade3to1Btn.setPreferredSize(null);
         trade3to1Btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trade3to1BtnActionPerformed(evt);
@@ -453,9 +455,9 @@ public class GamePanel extends javax.swing.JPanel {
         trade4to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade4to1Btn.setText("Trade 4:1");
         trade4to1Btn.setToolTipText("");
-        trade4to1Btn.setMaximumSize(new java.awt.Dimension(207, 33));
-        trade4to1Btn.setMinimumSize(new java.awt.Dimension(207, 33));
-        trade4to1Btn.setPreferredSize(new java.awt.Dimension(207, 33));
+        trade4to1Btn.setMaximumSize(null);
+        trade4to1Btn.setMinimumSize(null);
+        trade4to1Btn.setPreferredSize(null);
         trade4to1Btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trade4to1BtnActionPerformed(evt);
@@ -463,13 +465,20 @@ public class GamePanel extends javax.swing.JPanel {
         });
 
         trade2to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        trade2to1Btn.setText("Specialized Trade 2:1");
+        trade2to1Btn.setText("Trade 2:1");
         trade2to1Btn.setToolTipText("");
+        trade2to1Btn.setMaximumSize(null);
+        trade2to1Btn.setMinimumSize(null);
+        trade2to1Btn.setPreferredSize(null);
         trade2to1Btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trade2to1BtnActionPerformed(evt);
             }
         });
+
+        tradeMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        tradeMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
+        tradeMenuLbl.setText("Trade Menu:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -488,17 +497,17 @@ public class GamePanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(instructionLbl)
                             .addComponent(subInstructionLbl)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(titleLbl)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(titleLbl)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(trade2to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addComponent(trade3to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(trade2to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(tradeMenuLbl))
                 .addContainerGap(1157, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -524,13 +533,15 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementLRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildBtn)
-                .addGap(29, 29, 29)
-                .addComponent(trade4to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(tradeMenuLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(trade3to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 516, Short.MAX_VALUE)
+                .addComponent(trade4to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(trade3to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 504, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -946,7 +957,7 @@ public class GamePanel extends javax.swing.JPanel {
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
             turnSwitchBtn.setEnabled(true);
-            trade2to1Btn.setText("Specialized Trade 2:1");
+            trade2to1Btn.setText("Trade 2:1");
             //remove the intent to trade
             tradingMode = 0;
             minTradeCardsNeeded = 0;
@@ -1533,7 +1544,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 turnSwitchBtn.setEnabled(true);
                                 trade4to1Btn.setText("Trade 4:1");
                                 trade3to1Btn.setText("Trade 3:1");
-                                trade2to1Btn.setText("Specialized Trade 2:1");
+                                trade2to1Btn.setText("Trade 2:1");
                                 //remove the intent to trade
                                 tradingMode = 0;
                                 minTradeCardsNeeded = 0;
@@ -1599,7 +1610,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 turnSwitchBtn.setEnabled(true);
                                 trade4to1Btn.setText("Trade 4:1");
                                 trade3to1Btn.setText("Trade 3:1");
-                                trade2to1Btn.setText("Specialized Trade 2:1");
+                                trade2to1Btn.setText("Trade 2:1");
                                 //remove the intent to trade
                                 tradingMode = 0;
                                 minTradeCardsNeeded = 0;
@@ -4177,6 +4188,7 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JButton trade2to1Btn;
     private javax.swing.JButton trade3to1Btn;
     private javax.swing.JButton trade4to1Btn;
+    private javax.swing.JLabel tradeMenuLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 
