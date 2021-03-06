@@ -833,6 +833,7 @@ public class GamePanel extends javax.swing.JPanel {
             // Redraw the board so the next player doesnt see the other player's cards
             repaint();
             
+            //create and auto save in the roaming directory
             try {
                 //ensure the directory is there
                 Files.createDirectories(Paths.get(System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan"));
