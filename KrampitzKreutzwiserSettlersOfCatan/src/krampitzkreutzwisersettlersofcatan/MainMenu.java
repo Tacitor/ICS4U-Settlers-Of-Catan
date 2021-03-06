@@ -18,8 +18,8 @@ import textures.ImageRef;
  * @author Tacitor
  * @author Evan
  */
-public class MainMenu extends javax.swing.JFrame {    
-    
+public class MainMenu extends javax.swing.JFrame {
+
     private final UserManualUI userManualUIFrame; //referance to the user manual
     private final CreditsUI creditsUIFrame; //referance to the user credits JFrame
     private final GameFrame gameJFrame; //ref to the game JFrame
@@ -29,16 +29,16 @@ public class MainMenu extends javax.swing.JFrame {
      * Creates new form MainMenu
      */
     public MainMenu() {
-        
+
         initComponents();
-        
+
         setIcon();
-        
+
         userManualUIFrame = new UserManualUI(this);
         creditsUIFrame = new CreditsUI(this);
         gameJFrame = new GameFrame(this);
         newGameSettingsFrame = new NewGameSettings(this, gameJFrame);
-        
+
     }
 
     /**
@@ -56,6 +56,7 @@ public class MainMenu extends javax.swing.JFrame {
         loadGameBtn = new javax.swing.JButton();
         creditsBtn = new javax.swing.JButton();
         rulesBtn = new javax.swing.JButton();
+        loadAutosaveBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Settlers of Catan - ICS4U Edition");
@@ -105,20 +106,31 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
+        loadAutosaveBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
+        loadAutosaveBtn.setText("Load Autosave");
+        loadAutosaveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadAutosaveBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(35, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(rulesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
-                    .addComponent(newGameBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(loadGameBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(creditsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(exitBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
-                    .addComponent(titleLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(30, 30, 30))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(rulesBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(newGameBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(creditsBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(exitBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(titleLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(loadAutosaveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(loadGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,14 +140,16 @@ public class MainMenu extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(newGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(loadGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(loadAutosaveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loadGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(creditsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(rulesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(exitBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -155,14 +169,14 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void loadGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGameBtnActionPerformed
         JFileChooser saveFileLoader = new JFileChooser(); //make a new file chooser
-        
+
         //create a filter for catan save files
-        FileFilter catanSaveFile = new FileFilter() { 
+        FileFilter catanSaveFile = new FileFilter() {
             //add the description
             public String getDescription() {
                 return "Catan Save File (*.catan)";
             }
-            
+
             //add the logic for the filter
             public boolean accept(File f) {
                 //if it's a directory ignor it
@@ -173,25 +187,25 @@ public class MainMenu extends javax.swing.JFrame {
                 }
             }
         };
-        
+
         //set up the file choose and call it
         saveFileLoader.setDialogTitle("Select a Save File to Open:");
         saveFileLoader.addChoosableFileFilter(catanSaveFile);
         saveFileLoader.setFileFilter(catanSaveFile);
         int userLoadSelection = saveFileLoader.showOpenDialog(this);
-        
+
         //check if the user selected a file
         if (userLoadSelection == JFileChooser.APPROVE_OPTION) {
-            
+
             //test if it is a vailid save file
             try {
                 File savefile = new File(saveFileLoader.getSelectedFile().getPath());
                 Scanner scanner = new Scanner(savefile);
-                
+
                 // Hide this window and reset the game
                 this.setVisible(false);
                 gameJFrame.resetGamePanel();
-                
+
                 //check if it is a vailid game save
                 if (!scanner.nextLine().equals("SettlersOfCatanSaveV7")) {
                     JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V7 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
@@ -201,21 +215,21 @@ public class MainMenu extends javax.swing.JFrame {
                         //set the player count
                         GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
                         gameJFrame.resetGamePanel();
-                        
-                        gameJFrame.loadFromFile(saveFileLoader);
-                        
+
+                        gameJFrame.loadFromFile(saveFileLoader.getSelectedFile().getPath());
+
                     } else {
                         JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                
+
                 //show the game                
                 gameJFrame.setVisible(true);
-                
+
             } catch (FileNotFoundException e) {
                 JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
             }
-            
+
         } else { //if there was so file selected
             JOptionPane.showMessageDialog(null, "There was no file selected.", "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -232,6 +246,44 @@ public class MainMenu extends javax.swing.JFrame {
         this.setVisible(false);
         userManualUIFrame.setVisible(true);
     }//GEN-LAST:event_rulesBtnActionPerformed
+
+    private void loadAutosaveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadAutosaveBtnActionPerformed
+        String autosaveLocation = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan";
+        
+        //test if it is a vailid autosave file
+        try {
+            //use the predetermined auto save file location
+            File savefile = new File(autosaveLocation);
+            Scanner scanner = new Scanner(savefile);
+
+            // Hide this window and reset the game
+            this.setVisible(false);
+            gameJFrame.resetGamePanel();
+
+            //check if it is a vailid game save
+            if (!scanner.nextLine().equals("SettlersOfCatanSaveV7")) {
+                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V7 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+            } else { //if it is a real save file
+                //check if the next line hold the player count
+                if (scanner.nextLine().equals("playerCount:")) {
+                    //set the player count
+                    GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
+                    gameJFrame.resetGamePanel();
+
+                    gameJFrame.loadFromFile(autosaveLocation);
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            //show the game                
+            gameJFrame.setVisible(true);
+
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "There was no autosave file detected:\n" + e, "No Autosave", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_loadAutosaveBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -266,10 +318,9 @@ public class MainMenu extends javax.swing.JFrame {
                 new MainMenu().setVisible(true);
             }
         });
-        
-        
+
     }
-    
+
     /**
      * Set the icon for the JFRame
      */
@@ -280,6 +331,7 @@ public class MainMenu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton creditsBtn;
     private javax.swing.JButton exitBtn;
+    private javax.swing.JButton loadAutosaveBtn;
     private javax.swing.JButton loadGameBtn;
     private javax.swing.JButton newGameBtn;
     private javax.swing.JButton rulesBtn;

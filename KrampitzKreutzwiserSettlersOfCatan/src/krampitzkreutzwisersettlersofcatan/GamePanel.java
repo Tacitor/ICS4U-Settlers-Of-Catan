@@ -21,8 +21,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -182,7 +186,7 @@ public class GamePanel extends javax.swing.JPanel {
         canStealCardPlayers = new ArrayList<>();
 
         //set a default save path
-        saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.save";
+        saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.catan";
         //initialize the filechooser
         saveFileChooser = new JFileChooser();
         //create a filter for catan save files
@@ -314,6 +318,7 @@ public class GamePanel extends javax.swing.JPanel {
         trade2to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
 
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
         instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
@@ -356,12 +361,12 @@ public class GamePanel extends javax.swing.JPanel {
         trade3to1Btn = new javax.swing.JButton();
         trade4to1Btn = new javax.swing.JButton();
         trade2to1Btn = new javax.swing.JButton();
+        tradeMenuLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1920, 1080));
 
-        backBtn.setBackground(new java.awt.Color(102, 62, 38));
         backBtn.setText("< Save and Exit");
         backBtn.setFocusable(false);
         backBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -370,7 +375,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         });
 
-        turnSwitchBtn.setBackground(new java.awt.Color(102, 62, 38));
         turnSwitchBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         turnSwitchBtn.setText("End Current Player's Turn");
         turnSwitchBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -411,7 +415,6 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(false);
         buildRoadRBtn.setOpaque(false);
 
-        buildBtn.setBackground(new java.awt.Color(102, 62, 38));
         buildBtn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         buildBtn.setText("Build");
         buildBtn.setToolTipText("");
@@ -425,7 +428,6 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
-        backNoSaveBtn.setBackground(new java.awt.Color(102, 62, 38));
         backNoSaveBtn.setText("< Exit without saving");
         backNoSaveBtn.setFocusable(false);
         backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -438,35 +440,45 @@ public class GamePanel extends javax.swing.JPanel {
         titleLbl.setForeground(new java.awt.Color(255, 255, 225));
         titleLbl.setText("Settlers of Catan");
 
-        trade3to1Btn.setBackground(new java.awt.Color(102, 62, 38));
         trade3to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade3to1Btn.setText("Trade 3:1");
         trade3to1Btn.setToolTipText("");
+        trade3to1Btn.setMaximumSize(null);
+        trade3to1Btn.setMinimumSize(null);
+        trade3to1Btn.setPreferredSize(null);
         trade3to1Btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trade3to1BtnActionPerformed(evt);
             }
         });
 
-        trade4to1Btn.setBackground(new java.awt.Color(102, 62, 38));
         trade4to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         trade4to1Btn.setText("Trade 4:1");
         trade4to1Btn.setToolTipText("");
+        trade4to1Btn.setMaximumSize(null);
+        trade4to1Btn.setMinimumSize(null);
+        trade4to1Btn.setPreferredSize(null);
         trade4to1Btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trade4to1BtnActionPerformed(evt);
             }
         });
 
-        trade2to1Btn.setBackground(new java.awt.Color(102, 62, 38));
         trade2to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        trade2to1Btn.setText("Specialized Trade 2:1");
+        trade2to1Btn.setText("Trade 2:1");
         trade2to1Btn.setToolTipText("");
+        trade2to1Btn.setMaximumSize(null);
+        trade2to1Btn.setMinimumSize(null);
+        trade2to1Btn.setPreferredSize(null);
         trade2to1Btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trade2to1BtnActionPerformed(evt);
             }
         });
+
+        tradeMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        tradeMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
+        tradeMenuLbl.setText("Trade Menu:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -485,17 +497,17 @@ public class GamePanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(instructionLbl)
                             .addComponent(subInstructionLbl)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(titleLbl)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(titleLbl)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(trade2to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(trade2to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(trade3to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(trade3to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(tradeMenuLbl))
                 .addContainerGap(1157, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -521,13 +533,15 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementLRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildBtn)
-                .addGap(29, 29, 29)
-                .addComponent(trade4to1Btn)
+                .addGap(18, 18, 18)
+                .addComponent(tradeMenuLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(trade3to1Btn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(trade2to1Btn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 516, Short.MAX_VALUE)
+                .addComponent(trade4to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(trade3to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 504, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -818,6 +832,23 @@ public class GamePanel extends javax.swing.JPanel {
 
             // Redraw the board so the next player doesnt see the other player's cards
             repaint();
+            
+            //create and auto save in the roaming directory
+            try {
+                //ensure the directory is there
+                Files.createDirectories(Paths.get(System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan"));
+                
+                //make an auto save now that the turn is over
+                if (!writeToFile(System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan")) {
+                    //if there was an error
+                    System.out.println("Error writing to autosave.");
+                }
+            } catch (FileNotFoundException ex) {
+                System.out.println("Error creating autosave.");
+            } catch (IOException ex) {
+                Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         } else if (playerSetupRoadsLeft != 0) {
             //let the player know that they have more setup roads to place
             instructionLbl.setText("Make sure you place your " + playerSetupRoadsLeft + " remaining road(s).");
@@ -927,7 +958,7 @@ public class GamePanel extends javax.swing.JPanel {
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
             turnSwitchBtn.setEnabled(true);
-            trade2to1Btn.setText("Specialized Trade 2:1");
+            trade2to1Btn.setText("Trade 2:1");
             //remove the intent to trade
             tradingMode = 0;
             minTradeCardsNeeded = 0;
@@ -1097,18 +1128,34 @@ public class GamePanel extends javax.swing.JPanel {
                                     settlementNodes.get(i).setPlayer(currentPlayer);
 
                                     Tile portLinkedTile; //the tile linked to the port to check agaist
+                                    boolean onCoast; //weather or not the node is on the coast (on the null tile)
+                                    boolean onPortTile; //weather or not the node is on a tile that is the linkedTile for a port
 
                                     //loop thorugh the ports and see if the settlement just built is on a port
                                     for (int j = 0; j < ports.size(); j++) {
                                         //save the Tile
                                         portLinkedTile = ports.get(j).getLinkedTile();
+                                        //reset the bool vars
+                                        onCoast = false;
+                                        onPortTile = false;
 
                                         //loop through the 3 tile the settlement is on use int range 1-3
                                         for (int k = 1; k < 4; k++) {
+                                            //check if this tile is the same as a port's tile
                                             if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
-                                                //save that the new settlemtn is on a port and which one
-                                                playerHasPort[currentPlayer][ports.get(j).getType()] = true;
+                                                onPortTile = true;
                                             }
+                                            
+                                            //also check if this tile is the null tile meaning the settlemnt is on the coast
+                                            if (settlementNodes.get(i).getTile(k) == null) {
+                                                onCoast = true;
+                                            }
+                                        }
+                                        
+                                        //only register the port as owned if the conditions are met
+                                        if (onCoast && onPortTile) {
+                                            //save that the new settlement is on a port and which one
+                                            playerHasPort[currentPlayer][ports.get(j).getType()] = true;
                                         }
                                     }
 
@@ -1498,7 +1545,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 turnSwitchBtn.setEnabled(true);
                                 trade4to1Btn.setText("Trade 4:1");
                                 trade3to1Btn.setText("Trade 3:1");
-                                trade2to1Btn.setText("Specialized Trade 2:1");
+                                trade2to1Btn.setText("Trade 2:1");
                                 //remove the intent to trade
                                 tradingMode = 0;
                                 minTradeCardsNeeded = 0;
@@ -1564,7 +1611,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 turnSwitchBtn.setEnabled(true);
                                 trade4to1Btn.setText("Trade 4:1");
                                 trade3to1Btn.setText("Trade 3:1");
-                                trade2to1Btn.setText("Specialized Trade 2:1");
+                                trade2to1Btn.setText("Trade 2:1");
                                 //remove the intent to trade
                                 tradingMode = 0;
                                 minTradeCardsNeeded = 0;
@@ -1619,7 +1666,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "An error occurred while trying to save the game.", "Saving Error", JOptionPane.ERROR_MESSAGE);
             success = false;
         }
@@ -1757,20 +1804,20 @@ public class GamePanel extends javax.swing.JPanel {
             //add the close
             saveFile.close();
             return true;
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "The game is not able to save at this time. Invalid state\n", "Saving Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
 
-    public void load(JFileChooser loadFileChooser) {
+    public void load(String filePathString) {
         //System.out.println("Yupp");
 
         int tempScannerVal;
 
         //load the save file 
         try {
-            File savefile = new File(loadFileChooser.getSelectedFile().getPath());
+            File savefile = new File(filePathString);
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
@@ -2108,7 +2155,7 @@ public class GamePanel extends javax.swing.JPanel {
                 throwLoadError();
             }
 
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -3853,7 +3900,7 @@ public class GamePanel extends javax.swing.JPanel {
                     fileReader.nextLine();
                 }
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading Tile Position file: " + e);
         }
@@ -3891,7 +3938,7 @@ public class GamePanel extends javax.swing.JPanel {
                     fileReader.nextLine();
                 }
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             // Output the jsvs error to the standard output
             System.out.println("Error reading trading port Position file: " + e);
         }
@@ -4142,6 +4189,7 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JButton trade2to1Btn;
     private javax.swing.JButton trade3to1Btn;
     private javax.swing.JButton trade4to1Btn;
+    private javax.swing.JLabel tradeMenuLbl;
     private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 
