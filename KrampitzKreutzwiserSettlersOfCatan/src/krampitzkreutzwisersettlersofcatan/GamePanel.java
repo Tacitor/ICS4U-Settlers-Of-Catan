@@ -832,12 +832,12 @@ public class GamePanel extends javax.swing.JPanel {
 
             // Redraw the board so the next player doesnt see the other player's cards
             repaint();
-            
+
             //create and auto save in the roaming directory
             try {
                 //ensure the directory is there
                 Files.createDirectories(Paths.get(System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan"));
-                
+
                 //make an auto save now that the turn is over
                 if (!writeToFile(System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan")) {
                     //if there was an error
@@ -848,7 +848,7 @@ public class GamePanel extends javax.swing.JPanel {
             } catch (IOException ex) {
                 Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         } else if (playerSetupRoadsLeft != 0) {
             //let the player know that they have more setup roads to place
             instructionLbl.setText("Make sure you place your " + playerSetupRoadsLeft + " remaining road(s).");
@@ -1145,13 +1145,13 @@ public class GamePanel extends javax.swing.JPanel {
                                             if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
                                                 onPortTile = true;
                                             }
-                                            
+
                                             //also check if this tile is the null tile meaning the settlemnt is on the coast
                                             if (settlementNodes.get(i).getTile(k) == null) {
                                                 onCoast = true;
                                             }
                                         }
-                                        
+
                                         //only register the port as owned if the conditions are met
                                         if (onCoast && onPortTile) {
                                             //save that the new settlement is on a port and which one
@@ -2150,7 +2150,7 @@ public class GamePanel extends javax.swing.JPanel {
                     }
 
                 }
-                
+
                 //close the scanner
                 scanner.close();
 
@@ -2258,7 +2258,7 @@ public class GamePanel extends javax.swing.JPanel {
         } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
             canBuildRoad = hasCards(0); // Roads
-            canBuildSettlement = hasCards(1); // Settlements
+            canBuildSettlement = hasCards(1) && canBuildASettlment(); // Settlements
             canBuildCity = hasCards(2); // Cities
             canTrade4to = hasTradeCards(4);
             canTrade3to = hasTradeCards(3) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
@@ -2613,6 +2613,24 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // If the user cannot build here
+        return false;
+    }
+
+    /**
+     * Checks to see if the player can build an settlement at all
+     *
+     * @return
+     */
+    private boolean canBuildASettlment() {
+
+        //loop thorugh all the settlments
+        for (int i = 0; i < settlementNodes.size(); i++) {
+            //if one of them matches return true with no need to check the others
+            if (canBuildSettlement(settlementNodes.get(i), true)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -3204,7 +3222,7 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("Resource Cards:",
                 rightDrawMargin + (int) (180 / scaleFactor),
                 (int) (600 / scaleFactor));
-        
+
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
             //draw the player number
@@ -3220,8 +3238,8 @@ public class GamePanel extends javax.swing.JPanel {
                     rightDrawMargin + (int) (180 / scaleFactor),
                     (int) ((600 + (30 * i)) / scaleFactor));
             //draw the player's indecator dot
-            g2d.drawImage(PLAYER_DOTS[i], 
-                    rightDrawMargin + getImgWidth(PLAYER_DOTS[i]), 
+            g2d.drawImage(PLAYER_DOTS[i],
+                    rightDrawMargin + getImgWidth(PLAYER_DOTS[i]),
                     (int) ((580 + (30 * i)) / scaleFactor),
                     getImgWidth(PLAYER_DOTS[i]),
                     getImgHeight(PLAYER_DOTS[i]), null);
