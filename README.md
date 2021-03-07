@@ -12,7 +12,7 @@ Simply download the latest release [here](https://github.com/Evan-Kreutzwiser/IC
 
 ### User manual
 
-The manual can be found [here](https://docs.google.com/document/d/1QKhQxhj773bPqVhxTzyTDrKYvnO2Q0CqAzI3E8s_Rhw/edit?usp=sharing)
+The manual can be found [here](https://docs.google.com/document/d/1Yui2nNrhF328qY6BMiPgiv8o7pgvlbDmCtIbw7EgMjA/edit?usp=sharing)
 
 ### Bugs and Issues
 
