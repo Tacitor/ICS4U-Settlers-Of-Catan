@@ -2150,6 +2150,9 @@ public class GamePanel extends javax.swing.JPanel {
                     }
 
                 }
+                
+                //close the scanner
+                scanner.close();
 
             } else {
                 throwLoadError();
