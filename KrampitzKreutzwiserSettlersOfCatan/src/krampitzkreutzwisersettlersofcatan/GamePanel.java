@@ -2150,6 +2150,9 @@ public class GamePanel extends javax.swing.JPanel {
                     }
 
                 }
+                
+                //close the scanner
+                scanner.close();
 
             } else {
                 throwLoadError();
@@ -3201,6 +3204,7 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("Resource Cards:",
                 rightDrawMargin + (int) (180 / scaleFactor),
                 (int) (600 / scaleFactor));
+        
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
             //draw the player number
@@ -3215,6 +3219,12 @@ public class GamePanel extends javax.swing.JPanel {
             g2d.drawString("" + cards[i].size(),
                     rightDrawMargin + (int) (180 / scaleFactor),
                     (int) ((600 + (30 * i)) / scaleFactor));
+            //draw the player's indecator dot
+            g2d.drawImage(PLAYER_DOTS[i], 
+                    rightDrawMargin + getImgWidth(PLAYER_DOTS[i]), 
+                    (int) ((580 + (30 * i)) / scaleFactor),
+                    getImgWidth(PLAYER_DOTS[i]),
+                    getImgHeight(PLAYER_DOTS[i]), null);
         }
 
         // Draw the 72 road nodes
