@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,10 +79,12 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean[][] playerHasPort; //main array is for players, index 0 is not used, index 1-4 are the player numbers. sub arrays are of length 6. inxed 0 for 3:1 port, indexes 1-5 for 2:1 of that type
     private int[] numCardType; //the number of cards the current player has of each type. valid indexes are 0-5, but 0 never contains useful data.
     private int[] cardTypeCount; //the count of how many cards of each type the current player has valid inxies are 0-4
+    private int[] setupTurnOrder; //the order players take their turn during the setup phase
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
     private static int playerCount = 2; // The number of players in the game
     private static boolean giveStartingResources = true; // If players get startup resources
+    private static boolean doSnakeRules = true; //make the setup phase of the game more fair follow normal order fist setup round, then reverse
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final int victoryPoints[];
     private final int totalCardsCollected[];
@@ -156,6 +159,7 @@ public class GamePanel extends javax.swing.JPanel {
         //the +1 allows methods to use player IDs directly without subtracting 1
         //the 6 is for the six types of ports ^
         totalCardsCollected = new int[5];
+        setupTurnOrder = new int[playerCount * setupRoundsLeft]; //accounds for all the players for every setup round there will be
         //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
         cardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
@@ -237,6 +241,18 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 0; i < totalCardsCollected.length; i++) {
             totalCardsCollected[i] = 0; // Victory point counter
         }
+
+        //Fill the setupOrder Array with the correct order players go in
+        for (int i = 0; i < (setupRoundsLeft); i++) { //loop through each setup round
+            
+            //loop through all the players for only that round
+            for (int j = 0; j < playerCount; j++) {
+                setupTurnOrder[i*playerCount+j] = playerCount - j;
+            }
+
+        }
+        
+        System.out.println(Arrays.toString(setupTurnOrder));
 
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
@@ -3989,6 +4005,11 @@ public class GamePanel extends javax.swing.JPanel {
             if (inSetup) {
                 //count the completion of a setup round
                 setupRoundsLeft--;
+
+                //check if snake rules should apply
+                if (doSnakeRules && setupRoundsLeft % 2 == 1) { //do a reverse round everytime the amount of setup rounds is odd. (if first round, then 2 rounds are left, not true, seconds there is only 1 left)
+
+                }
 
                 //check if all setup rounds have been played
                 if (setupRoundsLeft < 1) {
