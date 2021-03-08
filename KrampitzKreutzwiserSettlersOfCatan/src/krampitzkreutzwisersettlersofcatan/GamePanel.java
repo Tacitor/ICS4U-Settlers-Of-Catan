@@ -244,14 +244,19 @@ public class GamePanel extends javax.swing.JPanel {
 
         //Fill the setupOrder Array with the correct order players go in
         for (int i = 0; i < (setupRoundsLeft); i++) { //loop through each setup round
-            
+
             //loop through all the players for only that round
             for (int j = 0; j < playerCount; j++) {
-                setupTurnOrder[i*playerCount+j] = playerCount - j;
+                //check if its a reverse round
+                if (doSnakeRules && i % 2 == 1) {
+                    setupTurnOrder[i * playerCount + j] = playerCount - j;
+                } else {
+                    setupTurnOrder[i * playerCount + j] = j+1;
+                }
             }
 
         }
-        
+
         System.out.println(Arrays.toString(setupTurnOrder));
 
         // Initialize the window and board
