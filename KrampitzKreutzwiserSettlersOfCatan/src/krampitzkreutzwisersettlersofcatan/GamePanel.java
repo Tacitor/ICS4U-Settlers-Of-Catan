@@ -24,7 +24,6 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -254,8 +253,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
         }
-
-        System.out.println(Arrays.toString(setupTurnOrder));
 
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
@@ -1703,7 +1700,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV7"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV8"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1716,6 +1713,10 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(currentPlayer);
             saveFile.println("giveStartingResources:");
             saveFile.println(giveStartingResources);
+            saveFile.println("doSnakeRules:");
+            saveFile.println(doSnakeRules);
+            saveFile.println("setupTurnOrderIndex:");
+            saveFile.println(setupTurnOrderIndex);
             saveFile.println("inSetup:");
             saveFile.println(inSetup);
             saveFile.println("setupRoundsLeft:");
@@ -1731,6 +1732,16 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
             saveFile.println(playerSetupSettlementLeft);
+
+            saveFile.println("setupTurnOrder:");
+            saveFile.println("length:");
+            saveFile.println(setupTurnOrder.length);
+            saveFile.println("order:");
+            for (int i = 0; i < setupTurnOrder.length; i++) {
+                saveFile.println(setupTurnOrder[i]);
+            }
+
+            saveFile.println();
 
             saveFile.println("Total cards collected:");
             for (int i = 0; i < totalCardsCollected.length; i++) {
@@ -1840,7 +1851,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV7")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV8")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1888,6 +1899,20 @@ public class GamePanel extends javax.swing.JPanel {
                 throwLoadError();
             }
 
+            if (scanner.nextLine().equals("doSnakeRules:")) {
+                doSnakeRules = Boolean.parseBoolean(scanner.nextLine());
+                //System.out.println("Yuppers4.6");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("setupTurnOrderIndex:")) {
+                setupTurnOrderIndex = Integer.parseInt(scanner.nextLine());
+                //System.out.println("Yuppers4.7");
+            } else {
+                throwLoadError();
+            }
+
             if (scanner.nextLine().equals("inSetup:")) {
                 inSetup = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
@@ -1929,6 +1954,25 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
+
+            if (scanner.nextLine().equals("setupTurnOrder:") && scanner.nextLine().equals("length:")) {
+                //System.out.println("Yuppers7.5");
+
+                int length = Integer.parseInt(scanner.nextLine());
+
+                if (scanner.nextLine().equals("order:")) {
+
+                    for (int i = 0; i < length; i++) {
+                        setupTurnOrder[i] = Integer.parseInt(scanner.nextLine());
+                    }
+
+                }
+
+            } else {
+                throwLoadError();
+            }
+
+            scanner.nextLine();
 
             //get the total cards collected
             if (scanner.nextLine().equals("Total cards collected:")) {
@@ -1985,12 +2029,12 @@ public class GamePanel extends javax.swing.JPanel {
                             //System.out.println("Yuppers10.3");
                         } else {
                             throwLoadError();
-                            System.out.println("Its me");
+                            //System.out.println("Its me");
                         }
 
                     } else {
                         throwLoadError();
-                        System.out.println("no me");
+                        //System.out.println("no me");
                     }
 
                 }
@@ -2165,7 +2209,7 @@ public class GamePanel extends javax.swing.JPanel {
                         //System.out.println("Yuppers10.3");
                     } else {
                         throwLoadError();
-                        System.out.println("uh oh");
+                        //System.out.println("uh oh");
                     }
 
                 }
@@ -2191,6 +2235,12 @@ public class GamePanel extends javax.swing.JPanel {
         //bring the playerTurnOrder Array to match the state it was when saving
         while (playerTurnOrder.get(0) != currentPlayer) {
             progressPlayerTurnOrder();
+        }
+
+        //if doing snake rules update the sub plays to match what it's supposed to be
+        if (doSnakeRules && inSetup) {
+            //update the playerTurnOrder
+            setupUpdatePlayerTurnOrder();
         }
 
         repaint();
@@ -4005,27 +4055,11 @@ public class GamePanel extends javax.swing.JPanel {
             try { //try progressing the setup phase
                 currentPlayer = setupTurnOrder[setupTurnOrderIndex]; //set the current player to the next one on the sequence
 
-                //get the sub players to reflect the next few turns
-                playerTurnOrder.clear(); //reset the ArrayList
-                
-                int nextPlayerIfEndOfSetup = 1; //the next player to display in the sub player lineup if the setup phase is ending.
-
-                //add the amount of elements equal to the number of players minus 1
-                for (int i = 0; i < playerCount; i++) {
-
-                    //check if the inxes exists
-                    if (setupTurnOrderIndex + i < setupTurnOrder.length) {
-                        playerTurnOrder.add(setupTurnOrder[setupTurnOrderIndex + i]);
-                    } else {
-                        //if that index does not exist that means the setup phase is nearing its end
-                        //for that reason show the standard order of players starting with player 1
-                        playerTurnOrder.add(nextPlayerIfEndOfSetup);
-                        nextPlayerIfEndOfSetup++; //show the next player next time
-                    }
-                }
-
                 //progress the "cursor"
                 setupTurnOrderIndex++;
+
+                setupUpdatePlayerTurnOrder();
+
             } catch (ArrayIndexOutOfBoundsException e) { //if there are no more prescribed turns that means setup is over
                 //ensure that it's the setupTurnOrder that is out of bounds
                 if (setupTurnOrderIndex == setupTurnOrder.length) {
@@ -4216,6 +4250,31 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
+     * Update the playerTurnOrder, to represent the arrays determining the setup
+     * order in setup mode
+     */
+    private void setupUpdatePlayerTurnOrder() {
+        //get the sub players to reflect the next few turns
+        playerTurnOrder.clear(); //reset the ArrayList
+
+        int nextPlayerIfEndOfSetup = 1; //the next player to display in the sub player lineup if the setup phase is ending.
+
+        //add the amount of elements equal to the number of players minus 1
+        for (int i = 0; i < playerCount; i++) {
+
+            //check if the inxes exists
+            if ((setupTurnOrderIndex - 1) + i < setupTurnOrder.length) { //subtract 1 from setupTurnOrderIndex to the current turn, instead of where the cursor is for ready for next turn
+                playerTurnOrder.add(setupTurnOrder[(setupTurnOrderIndex - 1) + i]);
+            } else {
+                //if that index does not exist that means the setup phase is nearing its end
+                //for that reason show the standard order of players starting with player 1
+                playerTurnOrder.add(nextPlayerIfEndOfSetup);
+                nextPlayerIfEndOfSetup++; //show the next player next time
+            }
+        }
+    }
+
+    /**
      * Set the number of players playing the game
      *
      * @param playerCount
@@ -4286,7 +4345,7 @@ public class GamePanel extends javax.swing.JPanel {
     public static void setFrameHeight(int frameHeight) {
         GamePanel.frameHeight = frameHeight;
     }
-    
+
     /**
      * Get whether or not the game will doSnakeRules
      *

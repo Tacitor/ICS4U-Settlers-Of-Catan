@@ -207,7 +207,7 @@ public class MainMenu extends javax.swing.JFrame {
                 gameJFrame.resetGamePanel();
 
                 //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSaveV7")) {
+                if (!scanner.nextLine().equals("SettlersOfCatanSaveV8")) {
                     JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V7 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
                 } else { //if it is a real save file
                     //check if the next line hold the player count
@@ -261,7 +261,7 @@ public class MainMenu extends javax.swing.JFrame {
             gameJFrame.resetGamePanel();
 
             //check if it is a vailid game save
-            if (!scanner.nextLine().equals("SettlersOfCatanSaveV7")) {
+            if (!scanner.nextLine().equals("SettlersOfCatanSaveV8")) {
                 JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V7 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
             } else { //if it is a real save file
                 //check if the next line hold the player count
