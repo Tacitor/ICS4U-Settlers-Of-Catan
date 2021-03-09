@@ -280,9 +280,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         });
 
-        // Set the state of the builds buttons for the first player
-        updateBuildButtons();
-
         //the dimentions of a hex Tile after scaling. Saves making this calculation over and over again
         newTileWidth = getImgWidth(tiles.get(0).getImage());
         newTileHeight = getImgHeight(tiles.get(0).getImage());
@@ -350,6 +347,9 @@ public class GamePanel extends javax.swing.JPanel {
         //init the offset for the "3d" overlap tiles
         threeDTileOffset = (int) (-20 / scaleFactor);
 
+        // Set the state of the builds buttons for the first player
+        updateBuildButtons();
+
     }
 
     /**
@@ -403,6 +403,7 @@ public class GamePanel extends javax.swing.JPanel {
         instructionPromptLbl.setForeground(new java.awt.Color(255, 255, 225));
         instructionPromptLbl.setText("Instructions:");
 
+        instructionLbl.setBackground(new java.awt.Color(255, 255, 225));
         instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         instructionLbl.setText("Place two roads and two small settlements each to start. Only one of each per setup round.");
@@ -798,6 +799,8 @@ public class GamePanel extends javax.swing.JPanel {
 
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
+            //reset the font
+            instructionLbl.setFont(timesNewRoman);
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
@@ -2263,6 +2266,8 @@ public class GamePanel extends javax.swing.JPanel {
 
         //reset the colour
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
+        //reset the font
+        instructionLbl.setFont(timesNewRoman);
 
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
@@ -2355,17 +2360,20 @@ public class GamePanel extends javax.swing.JPanel {
             //set the instructions 
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
-                instructionLbl.setForeground(new Color(255, 100, 100));
+                instructionLbl.setForeground(new Color(255, 175, 175));
+                instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) (timesNewRoman.getSize() / scaleFactor)));
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
 
                 //update the lables for the player if the thief is stealing their cards specifically. Do not show this if a 7 was JUST rolled
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
-                    instructionLbl.setForeground(new Color(255, 100, 100));
+                    instructionLbl.setForeground(new Color(255, 175, 175));
+                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) (timesNewRoman.getSize() / scaleFactor)));
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
                 } else if (showTileHitbox) { //if a 7 was JUST rolled and the current player needs to move the thief show a specific messgae.
-                    instructionLbl.setForeground(new Color(255, 100, 100));
+                    instructionLbl.setForeground(new Color(255, 175, 175));
+                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) (timesNewRoman.getSize() / scaleFactor)));
                     instructionLbl.setText("A Thief! They will steal cards. Select a hex to move the thief.");
                     subInstructionLbl.setText("Afterwards, you can then end your turn so the thief can decide the next person to steal from");
                 }
