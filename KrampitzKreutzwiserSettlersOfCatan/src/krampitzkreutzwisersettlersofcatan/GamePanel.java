@@ -403,7 +403,6 @@ public class GamePanel extends javax.swing.JPanel {
         instructionPromptLbl.setForeground(new java.awt.Color(255, 255, 225));
         instructionPromptLbl.setText("Instructions:");
 
-        instructionLbl.setBackground(new java.awt.Color(255, 255, 225));
         instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         instructionLbl.setText("Place two roads and two small settlements each to start. Only one of each per setup round.");
