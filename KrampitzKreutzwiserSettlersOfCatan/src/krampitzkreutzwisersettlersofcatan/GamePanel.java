@@ -4031,6 +4031,7 @@ public class GamePanel extends javax.swing.JPanel {
                 if (setupTurnOrderIndex == setupTurnOrder.length) {
                     inSetup = false;
                     initPlayerTurnOrder(); //reset the order of the sub player in the even that they got messed up
+                    currentPlayer = 1; //make sure that player 1 is starting
                     // If enabled. give everyone their starting resources
                     if (giveStartingResources) {
                         collectMaterials(0); // 0 makes it collect everything possible
@@ -4285,7 +4286,25 @@ public class GamePanel extends javax.swing.JPanel {
     public static void setFrameHeight(int frameHeight) {
         GamePanel.frameHeight = frameHeight;
     }
- 
+    
+    /**
+     * Get whether or not the game will doSnakeRules
+     *
+     * @return
+     */
+    public static boolean getDoSnakeRules() {
+        return doSnakeRules;
+    }
+
+    /**
+     * Set whether or not the game will doSnakeRules
+     *
+     * @param doSnakeRules
+     */
+    public static void setDoSnakeRules(boolean doSnakeRules) {
+        GamePanel.doSnakeRules = doSnakeRules;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.JButton backNoSaveBtn;
