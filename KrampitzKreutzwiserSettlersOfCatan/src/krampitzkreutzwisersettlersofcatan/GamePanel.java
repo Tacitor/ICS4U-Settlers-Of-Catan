@@ -246,9 +246,9 @@ public class GamePanel extends javax.swing.JPanel {
             for (int j = 0; j < playerCount; j++) {
                 //check if its a reverse round
                 if (doSnakeRules && i % 2 == 1) {
-                    setupTurnOrder[i * playerCount + j] = playerCount - j;
+                    setupTurnOrder[i * playerCount + j] = playerCount - j; //revese round (4,3,2,1)
                 } else {
-                    setupTurnOrder[i * playerCount + j] = j + 1;
+                    setupTurnOrder[i * playerCount + j] = j + 1; //regular round (1,2,3,4)
                 }
             }
 
