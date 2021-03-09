@@ -80,6 +80,7 @@ public class GamePanel extends javax.swing.JPanel {
     private int[] numCardType; //the number of cards the current player has of each type. valid indexes are 0-5, but 0 never contains useful data.
     private int[] cardTypeCount; //the count of how many cards of each type the current player has valid inxies are 0-4
     private int[] setupTurnOrder; //the order players take their turn during the setup phase
+    private int setupTurnOrderIndex; //the position the game is currently on in the setupTurnOrder array 
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
     private static int playerCount = 2; // The number of players in the game
@@ -146,6 +147,7 @@ public class GamePanel extends javax.swing.JPanel {
         thiefJustFinished = false;
         thiefJustStarted = false;
         currentPlayer = 1; // Player 1 starts
+        setupTurnOrderIndex = 1; //set the "cursor" to the second position because player 1 was already set to the current player
         playerRolled7 = 0; //no player has rolled a 7 yet. So set the null player 0 to start
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
@@ -180,11 +182,7 @@ public class GamePanel extends javax.swing.JPanel {
         thiefMoveCounter = 0;
 
         //init the playerTurnOrder
-        playerTurnOrder = new ArrayList<>();
-        //load the playerTurnOrder
-        for (int i = 0; i < playerCount; i++) {
-            playerTurnOrder.add(i + 1);
-        }
+        initPlayerTurnOrder();
 
         //init the canStealCardPlayers
         canStealCardPlayers = new ArrayList<>();
@@ -251,7 +249,7 @@ public class GamePanel extends javax.swing.JPanel {
                 if (doSnakeRules && i % 2 == 1) {
                     setupTurnOrder[i * playerCount + j] = playerCount - j;
                 } else {
-                    setupTurnOrder[i * playerCount + j] = j+1;
+                    setupTurnOrder[i * playerCount + j] = j + 1;
                 }
             }
 
@@ -1149,8 +1147,8 @@ public class GamePanel extends javax.swing.JPanel {
                                     settlementNodes.get(i).setPlayer(currentPlayer);
 
                                     Tile portLinkedTile; //the tile linked to the port to check agaist
-                                    boolean onCoast; //weather or not the node is on the coast (on the null tile)
-                                    boolean onPortTile; //weather or not the node is on a tile that is the linkedTile for a port
+                                    boolean onCoast; //whether or not the node is on the coast (on the null tile)
+                                    boolean onPortTile; //whether or not the node is on a tile that is the linkedTile for a port
 
                                     //loop thorugh the ports and see if the settlement just built is on a port
                                     for (int j = 0; j < ports.size(); j++) {
@@ -2350,7 +2348,7 @@ public class GamePanel extends javax.swing.JPanel {
         trade3to1Btn.setEnabled(canTrade3to);                //trade 3:1
         trade2to1Btn.setEnabled(canTrade2to);                //trade 2:1
 
-        //update the colours of the radio buttons to reflect weather or not they are enabled. The stoped being done automatically when the default forground colour was changed.
+        //update the colours of the radio buttons to reflect whether or not they are enabled. The stoped being done automatically when the default forground colour was changed.
         if (canBuildRoad) {
             buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
         } else {
@@ -3998,30 +3996,80 @@ public class GamePanel extends javax.swing.JPanel {
      * first player
      */
     private void nextPlayer() {
-        currentPlayer++; //switch to the next player
+
         newestSetupSettlment = null; //remove the most recent built house as the turn just changed
-        progressPlayerTurnOrder(); //step the ArrayList to reflect the new current player
 
-        // And go back to player 1 if the number exceeds the total number of players
-        if (currentPlayer > playerCount) {
-            currentPlayer = 1;
-            // If the game was in setup, all of the turns have ended now and the normal game can begin
-            //therefore count down a setup round to get closer to that normal game
-            if (inSetup) {
-                //count the completion of a setup round
-                setupRoundsLeft--;
+        //check if the game is in setup
+        if (inSetup) {
 
-                //check if snake rules should apply
-                if (doSnakeRules && setupRoundsLeft % 2 == 1) { //do a reverse round everytime the amount of setup rounds is odd. (if first round, then 2 rounds are left, not true, seconds there is only 1 left)
+            try { //try progressing the setup phase
+                currentPlayer = setupTurnOrder[setupTurnOrderIndex]; //set the current player to the next one on the sequence
 
+                //get the sub players to reflect the next few turns
+                playerTurnOrder.clear(); //reset the ArrayList
+                
+                int nextPlayerIfEndOfSetup = 1; //the next player to display in the sub player lineup if the setup phase is ending.
+
+                //add the amount of elements equal to the number of players minus 1
+                for (int i = 0; i < playerCount; i++) {
+
+                    //check if the inxes exists
+                    if (setupTurnOrderIndex + i < setupTurnOrder.length) {
+                        playerTurnOrder.add(setupTurnOrder[setupTurnOrderIndex + i]);
+                    } else {
+                        //if that index does not exist that means the setup phase is nearing its end
+                        //for that reason show the standard order of players starting with player 1
+                        playerTurnOrder.add(nextPlayerIfEndOfSetup);
+                        nextPlayerIfEndOfSetup++; //show the next player next time
+                    }
                 }
 
-                //check if all setup rounds have been played
-                if (setupRoundsLeft < 1) {
+                //progress the "cursor"
+                setupTurnOrderIndex++;
+            } catch (ArrayIndexOutOfBoundsException e) { //if there are no more prescribed turns that means setup is over
+                //ensure that it's the setupTurnOrder that is out of bounds
+                if (setupTurnOrderIndex == setupTurnOrder.length) {
                     inSetup = false;
+                    initPlayerTurnOrder(); //reset the order of the sub player in the even that they got messed up
                     // If enabled. give everyone their starting resources
                     if (giveStartingResources) {
                         collectMaterials(0); // 0 makes it collect everything possible
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error changing players during settup\n" + e, "Turn Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error changing players during settup\n" + e, "Turn Error", JOptionPane.ERROR_MESSAGE);
+                superFrame.setVisible(false);
+                superFrame.getMainMenu().setVisible(true);
+            }
+
+        } else { //for regular turn changing
+
+            currentPlayer++; //switch to the next player
+            progressPlayerTurnOrder(); //step the ArrayList to reflect the new current player
+
+            // And go back to player 1 if the number exceeds the total number of players
+            if (currentPlayer > playerCount) {
+                currentPlayer = 1;
+                // If the game was in setup, all of the turns have ended now and the normal game can begin
+                //therefore count down a setup round to get closer to that normal game
+                if (inSetup) {
+                    //count the completion of a setup round
+                    setupRoundsLeft--;
+
+                    //check if snake rules should apply
+                    if (doSnakeRules && setupRoundsLeft % 2 == 1) { //do a reverse round everytime the amount of setup rounds is odd. (if first round, then 2 rounds are left, not true, seconds there is only 1 left)
+
+                    }
+
+                    //check if all setup rounds have been played
+                    if (setupRoundsLeft < 1) {
+                        inSetup = false;
+                        // If enabled. give everyone their starting resources
+                        if (giveStartingResources) {
+                            collectMaterials(0); // 0 makes it collect everything possible
+                        }
                     }
                 }
             }
@@ -4040,6 +4088,17 @@ public class GamePanel extends javax.swing.JPanel {
             playerTurnOrder.remove(0);
             //add it back to the end
             playerTurnOrder.add(holdVal);
+        }
+    }
+
+    /**
+     * Setup the playerTurnOrder ArrayList
+     */
+    private void initPlayerTurnOrder() {
+        playerTurnOrder = new ArrayList<>();
+        //load the playerTurnOrder
+        for (int i = 0; i < playerCount; i++) {
+            playerTurnOrder.add(i + 1);
         }
     }
 
@@ -4174,7 +4233,7 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Set weather or not the players receive startup resource cards when the
+     * Set whether or not the players receive startup resource cards when the
      * game leaves setup mode
      *
      * @param giveStartingResources
@@ -4226,7 +4285,7 @@ public class GamePanel extends javax.swing.JPanel {
     public static void setFrameHeight(int frameHeight) {
         GamePanel.frameHeight = frameHeight;
     }
-
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.JButton backNoSaveBtn;
