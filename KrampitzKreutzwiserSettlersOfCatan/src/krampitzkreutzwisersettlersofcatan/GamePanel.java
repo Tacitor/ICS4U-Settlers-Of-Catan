@@ -78,10 +78,13 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean[][] playerHasPort; //main array is for players, index 0 is not used, index 1-4 are the player numbers. sub arrays are of length 6. inxed 0 for 3:1 port, indexes 1-5 for 2:1 of that type
     private int[] numCardType; //the number of cards the current player has of each type. valid indexes are 0-5, but 0 never contains useful data.
     private int[] cardTypeCount; //the count of how many cards of each type the current player has valid inxies are 0-4
+    private int[] setupTurnOrder; //the order players take their turn during the setup phase
+    private int setupTurnOrderIndex; //the position the game is currently on in the setupTurnOrder array 
     private int currentPlayer; // The player currently taking their turn
     private int playerRolled7; //the player who most recently rolled a seven
     private static int playerCount = 2; // The number of players in the game
     private static boolean giveStartingResources = true; // If players get startup resources
+    private static boolean doSnakeRules = true; //make the setup phase of the game more fair follow normal order fist setup round, then reverse
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final int victoryPoints[];
     private final int totalCardsCollected[];
@@ -143,6 +146,7 @@ public class GamePanel extends javax.swing.JPanel {
         thiefJustFinished = false;
         thiefJustStarted = false;
         currentPlayer = 1; // Player 1 starts
+        setupTurnOrderIndex = 1; //set the "cursor" to the second position because player 1 was already set to the current player
         playerRolled7 = 0; //no player has rolled a 7 yet. So set the null player 0 to start
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
@@ -156,6 +160,7 @@ public class GamePanel extends javax.swing.JPanel {
         //the +1 allows methods to use player IDs directly without subtracting 1
         //the 6 is for the six types of ports ^
         totalCardsCollected = new int[5];
+        setupTurnOrder = new int[playerCount * setupRoundsLeft]; //accounds for all the players for every setup round there will be
         //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
         cardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
@@ -176,11 +181,7 @@ public class GamePanel extends javax.swing.JPanel {
         thiefMoveCounter = 0;
 
         //init the playerTurnOrder
-        playerTurnOrder = new ArrayList<>();
-        //load the playerTurnOrder
-        for (int i = 0; i < playerCount; i++) {
-            playerTurnOrder.add(i + 1);
-        }
+        initPlayerTurnOrder();
 
         //init the canStealCardPlayers
         canStealCardPlayers = new ArrayList<>();
@@ -238,6 +239,21 @@ public class GamePanel extends javax.swing.JPanel {
             totalCardsCollected[i] = 0; // Victory point counter
         }
 
+        //Fill the setupOrder Array with the correct order players go in
+        for (int i = 0; i < (setupRoundsLeft); i++) { //loop through each setup round
+
+            //loop through all the players for only that round
+            for (int j = 0; j < playerCount; j++) {
+                //check if its a reverse round
+                if (doSnakeRules && i % 2 == 1) {
+                    setupTurnOrder[i * playerCount + j] = playerCount - j;
+                } else {
+                    setupTurnOrder[i * playerCount + j] = j + 1;
+                }
+            }
+
+        }
+
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
 
@@ -263,9 +279,6 @@ public class GamePanel extends javax.swing.JPanel {
                 mouseClick(evt);
             }
         });
-
-        // Set the state of the builds buttons for the first player
-        updateBuildButtons();
 
         //the dimentions of a hex Tile after scaling. Saves making this calculation over and over again
         newTileWidth = getImgWidth(tiles.get(0).getImage());
@@ -333,6 +346,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         //init the offset for the "3d" overlap tiles
         threeDTileOffset = (int) (-20 / scaleFactor);
+
+        // Set the state of the builds buttons for the first player
+        updateBuildButtons();
 
     }
 
@@ -782,6 +798,8 @@ public class GamePanel extends javax.swing.JPanel {
 
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
+            //reset the font
+            instructionLbl.setFont(timesNewRoman);
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
@@ -1128,8 +1146,8 @@ public class GamePanel extends javax.swing.JPanel {
                                     settlementNodes.get(i).setPlayer(currentPlayer);
 
                                     Tile portLinkedTile; //the tile linked to the port to check agaist
-                                    boolean onCoast; //weather or not the node is on the coast (on the null tile)
-                                    boolean onPortTile; //weather or not the node is on a tile that is the linkedTile for a port
+                                    boolean onCoast; //whether or not the node is on the coast (on the null tile)
+                                    boolean onPortTile; //whether or not the node is on a tile that is the linkedTile for a port
 
                                     //loop thorugh the ports and see if the settlement just built is on a port
                                     for (int j = 0; j < ports.size(); j++) {
@@ -1684,7 +1702,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV7"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV8"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1697,6 +1715,10 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(currentPlayer);
             saveFile.println("giveStartingResources:");
             saveFile.println(giveStartingResources);
+            saveFile.println("doSnakeRules:");
+            saveFile.println(doSnakeRules);
+            saveFile.println("setupTurnOrderIndex:");
+            saveFile.println(setupTurnOrderIndex);
             saveFile.println("inSetup:");
             saveFile.println(inSetup);
             saveFile.println("setupRoundsLeft:");
@@ -1712,6 +1734,16 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
             saveFile.println(playerSetupSettlementLeft);
+
+            saveFile.println("setupTurnOrder:");
+            saveFile.println("length:");
+            saveFile.println(setupTurnOrder.length);
+            saveFile.println("order:");
+            for (int i = 0; i < setupTurnOrder.length; i++) {
+                saveFile.println(setupTurnOrder[i]);
+            }
+
+            saveFile.println();
 
             saveFile.println("Total cards collected:");
             for (int i = 0; i < totalCardsCollected.length; i++) {
@@ -1821,7 +1853,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV7")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV8")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1869,6 +1901,20 @@ public class GamePanel extends javax.swing.JPanel {
                 throwLoadError();
             }
 
+            if (scanner.nextLine().equals("doSnakeRules:")) {
+                doSnakeRules = Boolean.parseBoolean(scanner.nextLine());
+                //System.out.println("Yuppers4.6");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("setupTurnOrderIndex:")) {
+                setupTurnOrderIndex = Integer.parseInt(scanner.nextLine());
+                //System.out.println("Yuppers4.7");
+            } else {
+                throwLoadError();
+            }
+
             if (scanner.nextLine().equals("inSetup:")) {
                 inSetup = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
@@ -1910,6 +1956,25 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
+
+            if (scanner.nextLine().equals("setupTurnOrder:") && scanner.nextLine().equals("length:")) {
+                //System.out.println("Yuppers7.5");
+
+                int length = Integer.parseInt(scanner.nextLine());
+
+                if (scanner.nextLine().equals("order:")) {
+
+                    for (int i = 0; i < length; i++) {
+                        setupTurnOrder[i] = Integer.parseInt(scanner.nextLine());
+                    }
+
+                }
+
+            } else {
+                throwLoadError();
+            }
+
+            scanner.nextLine();
 
             //get the total cards collected
             if (scanner.nextLine().equals("Total cards collected:")) {
@@ -1966,12 +2031,12 @@ public class GamePanel extends javax.swing.JPanel {
                             //System.out.println("Yuppers10.3");
                         } else {
                             throwLoadError();
-                            System.out.println("Its me");
+                            //System.out.println("Its me");
                         }
 
                     } else {
                         throwLoadError();
-                        System.out.println("no me");
+                        //System.out.println("no me");
                     }
 
                 }
@@ -2146,7 +2211,7 @@ public class GamePanel extends javax.swing.JPanel {
                         //System.out.println("Yuppers10.3");
                     } else {
                         throwLoadError();
-                        System.out.println("uh oh");
+                        //System.out.println("uh oh");
                     }
 
                 }
@@ -2174,6 +2239,12 @@ public class GamePanel extends javax.swing.JPanel {
             progressPlayerTurnOrder();
         }
 
+        //if doing snake rules update the sub plays to match what it's supposed to be
+        if (doSnakeRules && inSetup) {
+            //update the playerTurnOrder
+            setupUpdatePlayerTurnOrder();
+        }
+
         repaint();
         updateBuildButtons();
     }
@@ -2194,6 +2265,8 @@ public class GamePanel extends javax.swing.JPanel {
 
         //reset the colour
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
+        //reset the font
+        instructionLbl.setFont(timesNewRoman);
 
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
@@ -2286,17 +2359,20 @@ public class GamePanel extends javax.swing.JPanel {
             //set the instructions 
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
-                instructionLbl.setForeground(new Color(255, 100, 100));
+                instructionLbl.setForeground(new Color(255, 175, 175));
+                instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) (timesNewRoman.getSize() / scaleFactor)));
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
 
                 //update the lables for the player if the thief is stealing their cards specifically. Do not show this if a 7 was JUST rolled
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
-                    instructionLbl.setForeground(new Color(255, 100, 100));
+                    instructionLbl.setForeground(new Color(255, 175, 175));
+                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) (timesNewRoman.getSize() / scaleFactor)));
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
                 } else if (showTileHitbox) { //if a 7 was JUST rolled and the current player needs to move the thief show a specific messgae.
-                    instructionLbl.setForeground(new Color(255, 100, 100));
+                    instructionLbl.setForeground(new Color(255, 175, 175));
+                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) (timesNewRoman.getSize() / scaleFactor)));
                     instructionLbl.setText("A Thief! They will steal cards. Select a hex to move the thief.");
                     subInstructionLbl.setText("Afterwards, you can then end your turn so the thief can decide the next person to steal from");
                 }
@@ -2329,7 +2405,7 @@ public class GamePanel extends javax.swing.JPanel {
         trade3to1Btn.setEnabled(canTrade3to);                //trade 3:1
         trade2to1Btn.setEnabled(canTrade2to);                //trade 2:1
 
-        //update the colours of the radio buttons to reflect weather or not they are enabled. The stoped being done automatically when the default forground colour was changed.
+        //update the colours of the radio buttons to reflect whether or not they are enabled. The stoped being done automatically when the default forground colour was changed.
         if (canBuildRoad) {
             buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
         } else {
@@ -3977,25 +4053,65 @@ public class GamePanel extends javax.swing.JPanel {
      * first player
      */
     private void nextPlayer() {
-        currentPlayer++; //switch to the next player
+
         newestSetupSettlment = null; //remove the most recent built house as the turn just changed
-        progressPlayerTurnOrder(); //step the ArrayList to reflect the new current player
 
-        // And go back to player 1 if the number exceeds the total number of players
-        if (currentPlayer > playerCount) {
-            currentPlayer = 1;
-            // If the game was in setup, all of the turns have ended now and the normal game can begin
-            //therefore count down a setup round to get closer to that normal game
-            if (inSetup) {
-                //count the completion of a setup round
-                setupRoundsLeft--;
+        //check if the game is in setup
+        if (inSetup) {
 
-                //check if all setup rounds have been played
-                if (setupRoundsLeft < 1) {
+            try { //try progressing the setup phase
+                currentPlayer = setupTurnOrder[setupTurnOrderIndex]; //set the current player to the next one on the sequence
+
+                //progress the "cursor"
+                setupTurnOrderIndex++;
+
+                setupUpdatePlayerTurnOrder();
+
+            } catch (ArrayIndexOutOfBoundsException e) { //if there are no more prescribed turns that means setup is over
+                //ensure that it's the setupTurnOrder that is out of bounds
+                if (setupTurnOrderIndex == setupTurnOrder.length) {
                     inSetup = false;
+                    initPlayerTurnOrder(); //reset the order of the sub player in the even that they got messed up
+                    currentPlayer = 1; //make sure that player 1 is starting
                     // If enabled. give everyone their starting resources
                     if (giveStartingResources) {
                         collectMaterials(0); // 0 makes it collect everything possible
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error changing players during settup\n" + e, "Turn Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error changing players during settup\n" + e, "Turn Error", JOptionPane.ERROR_MESSAGE);
+                superFrame.setVisible(false);
+                superFrame.getMainMenu().setVisible(true);
+            }
+
+        } else { //for regular turn changing
+
+            currentPlayer++; //switch to the next player
+            progressPlayerTurnOrder(); //step the ArrayList to reflect the new current player
+
+            // And go back to player 1 if the number exceeds the total number of players
+            if (currentPlayer > playerCount) {
+                currentPlayer = 1;
+                // If the game was in setup, all of the turns have ended now and the normal game can begin
+                //therefore count down a setup round to get closer to that normal game
+                if (inSetup) {
+                    //count the completion of a setup round
+                    setupRoundsLeft--;
+
+                    //check if snake rules should apply
+                    if (doSnakeRules && setupRoundsLeft % 2 == 1) { //do a reverse round everytime the amount of setup rounds is odd. (if first round, then 2 rounds are left, not true, seconds there is only 1 left)
+
+                    }
+
+                    //check if all setup rounds have been played
+                    if (setupRoundsLeft < 1) {
+                        inSetup = false;
+                        // If enabled. give everyone their starting resources
+                        if (giveStartingResources) {
+                            collectMaterials(0); // 0 makes it collect everything possible
+                        }
                     }
                 }
             }
@@ -4014,6 +4130,17 @@ public class GamePanel extends javax.swing.JPanel {
             playerTurnOrder.remove(0);
             //add it back to the end
             playerTurnOrder.add(holdVal);
+        }
+    }
+
+    /**
+     * Setup the playerTurnOrder ArrayList
+     */
+    private void initPlayerTurnOrder() {
+        playerTurnOrder = new ArrayList<>();
+        //load the playerTurnOrder
+        for (int i = 0; i < playerCount; i++) {
+            playerTurnOrder.add(i + 1);
         }
     }
 
@@ -4130,6 +4257,31 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
+     * Update the playerTurnOrder, to represent the arrays determining the setup
+     * order in setup mode
+     */
+    private void setupUpdatePlayerTurnOrder() {
+        //get the sub players to reflect the next few turns
+        playerTurnOrder.clear(); //reset the ArrayList
+
+        int nextPlayerIfEndOfSetup = 1; //the next player to display in the sub player lineup if the setup phase is ending.
+
+        //add the amount of elements equal to the number of players minus 1
+        for (int i = 0; i < playerCount; i++) {
+
+            //check if the inxes exists
+            if ((setupTurnOrderIndex - 1) + i < setupTurnOrder.length) { //subtract 1 from setupTurnOrderIndex to the current turn, instead of where the cursor is for ready for next turn
+                playerTurnOrder.add(setupTurnOrder[(setupTurnOrderIndex - 1) + i]);
+            } else {
+                //if that index does not exist that means the setup phase is nearing its end
+                //for that reason show the standard order of players starting with player 1
+                playerTurnOrder.add(nextPlayerIfEndOfSetup);
+                nextPlayerIfEndOfSetup++; //show the next player next time
+            }
+        }
+    }
+
+    /**
      * Set the number of players playing the game
      *
      * @param playerCount
@@ -4148,7 +4300,7 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Set weather or not the players receive startup resource cards when the
+     * Set whether or not the players receive startup resource cards when the
      * game leaves setup mode
      *
      * @param giveStartingResources
@@ -4199,6 +4351,24 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public static void setFrameHeight(int frameHeight) {
         GamePanel.frameHeight = frameHeight;
+    }
+
+    /**
+     * Get whether or not the game will doSnakeRules
+     *
+     * @return
+     */
+    public static boolean getDoSnakeRules() {
+        return doSnakeRules;
+    }
+
+    /**
+     * Set whether or not the game will doSnakeRules
+     *
+     * @param doSnakeRules
+     */
+    public static void setDoSnakeRules(boolean doSnakeRules) {
+        GamePanel.doSnakeRules = doSnakeRules;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

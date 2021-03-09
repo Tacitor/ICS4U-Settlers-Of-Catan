@@ -49,6 +49,7 @@ public class NewGameSettings extends javax.swing.JFrame {
         playerNumGrp = new javax.swing.ButtonGroup();
         onlineModeGrp = new javax.swing.ButtonGroup();
         startResGrp = new javax.swing.ButtonGroup();
+        snakeRulesGrp = new javax.swing.ButtonGroup();
         startResourcesTxtAr1 = new javax.swing.JTextArea();
         backBtn = new javax.swing.JButton();
         startGameBtn = new javax.swing.JButton();
@@ -64,6 +65,10 @@ public class NewGameSettings extends javax.swing.JFrame {
         startResourcesTxtAr = new javax.swing.JTextArea();
         startResFalseRbtn = new javax.swing.JRadioButton();
         startResTrueRbtn = new javax.swing.JRadioButton();
+        snakeRulesLbl = new javax.swing.JLabel();
+        snakeRulesTxtAr = new javax.swing.JTextArea();
+        snakeRulesTrueRbtn = new javax.swing.JRadioButton();
+        snakeRulesFalseRbtn = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -142,6 +147,25 @@ public class NewGameSettings extends javax.swing.JFrame {
         startResTrueRbtn.setSelected(true);
         startResTrueRbtn.setText("Yes");
 
+        snakeRulesLbl.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        snakeRulesLbl.setText("Snake Rules:");
+
+        snakeRulesTxtAr.setBackground(new java.awt.Color(240, 240, 240));
+        snakeRulesTxtAr.setColumns(20);
+        snakeRulesTxtAr.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        snakeRulesTxtAr.setLineWrap(true);
+        snakeRulesTxtAr.setRows(5);
+        snakeRulesTxtAr.setText("Set up phase follows \"snake\" rules, (i.e. first pick also gets last pick) to make it more fair. For example, in a three player game the setup turns would go 1, 2, 3, 3, 2, 1.\n");
+        snakeRulesTxtAr.setWrapStyleWord(true);
+        snakeRulesTxtAr.setEnabled(false);
+
+        snakeRulesGrp.add(snakeRulesTrueRbtn);
+        snakeRulesTrueRbtn.setSelected(true);
+        snakeRulesTrueRbtn.setText("Yes");
+
+        snakeRulesGrp.add(snakeRulesFalseRbtn);
+        snakeRulesFalseRbtn.setText("No");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -160,26 +184,39 @@ public class NewGameSettings extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(playerNumLbl)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(playerNum2Rbtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(playerNum3Rbtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(playerNum4Rbtn))
-                            .addComponent(startResourcesLbl)
-                            .addComponent(startResourcesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(startResTrueRbtn)
+                                .addComponent(snakeRulesTrueRbtn)
                                 .addGap(10, 10, 10)
-                                .addComponent(startResFalseRbtn)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(onlinLbl)
-                            .addComponent(onlineFalseRbtn)
-                            .addComponent(onlineTrueRbtn)
-                            .addComponent(startResourcesTxtAr1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(47, 47, 47))))
+                                .addComponent(snakeRulesFalseRbtn)
+                                .addContainerGap())
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(playerNumLbl)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(playerNum2Rbtn)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(playerNum3Rbtn)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(playerNum4Rbtn))
+                                    .addComponent(startResourcesLbl)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(startResTrueRbtn)
+                                        .addGap(10, 10, 10)
+                                        .addComponent(startResFalseRbtn))
+                                    .addComponent(snakeRulesLbl)
+                                    .addComponent(snakeRulesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(startResourcesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(onlinLbl)
+                                            .addComponent(onlineFalseRbtn)
+                                            .addComponent(onlineTrueRbtn))
+                                        .addGap(102, 102, 102))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(startResourcesTxtAr1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(27, 27, 27))))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -200,18 +237,28 @@ public class NewGameSettings extends javax.swing.JFrame {
                 .addComponent(onlineTrueRbtn)
                 .addGap(5, 5, 5)
                 .addComponent(startResourcesLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(startResourcesTxtAr1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(startResourcesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(7, 7, 7)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(startResTrueRbtn)
-                            .addComponent(startResFalseRbtn))))
-                .addGap(13, 13, 13)
+                            .addComponent(startResFalseRbtn))
+                        .addGap(18, 18, 18)
+                        .addComponent(snakeRulesLbl))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(51, 51, 51)
+                        .addComponent(startResourcesTxtAr1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(snakeRulesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(snakeRulesTrueRbtn)
+                    .addComponent(snakeRulesFalseRbtn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(startGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -250,6 +297,13 @@ public class NewGameSettings extends javax.swing.JFrame {
                 GamePanel.setgiveStartingResources(false);
             }
             
+            //get and set the doSnakeRules
+            if (snakeRulesTrueRbtn.isSelected()) {
+                GamePanel.setDoSnakeRules(true);
+            } else if (snakeRulesFalseRbtn.isSelected()) {
+                GamePanel.setDoSnakeRules(false);
+            }
+            
             
         }
 
@@ -270,6 +324,11 @@ public class NewGameSettings extends javax.swing.JFrame {
     private javax.swing.JRadioButton playerNum4Rbtn;
     private javax.swing.ButtonGroup playerNumGrp;
     private javax.swing.JLabel playerNumLbl;
+    private javax.swing.JRadioButton snakeRulesFalseRbtn;
+    private javax.swing.ButtonGroup snakeRulesGrp;
+    private javax.swing.JLabel snakeRulesLbl;
+    private javax.swing.JRadioButton snakeRulesTrueRbtn;
+    private javax.swing.JTextArea snakeRulesTxtAr;
     private javax.swing.JButton startGameBtn;
     private javax.swing.JRadioButton startResFalseRbtn;
     private javax.swing.ButtonGroup startResGrp;
