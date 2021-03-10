@@ -3084,7 +3084,14 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
                 if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
-                    g2d.setColor(Color.green);
+                    //draw the high light
+                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                    g2d.fillRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
+                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
+                            getImgWidth(SMALL_PLAYER_RED),
+                            getImgHeight(SMALL_PLAYER_RED));
+                    //draw the boarder
+                    g2d.setColor(new java.awt.Color(255, 255, 225));
                     g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
                             superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
                             getImgWidth(SMALL_PLAYER_RED),
@@ -3136,6 +3143,14 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //check if that one should be drawn
                 if (drawSpecificHitbox) {
+                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                    //draw the highlight
+                    g2d.fillRect(ports.get(i).getTypePosX(),
+                            ports.get(i).getTypePosY(),
+                            getImgWidth(ports.get(i).getTypeImage()),
+                            getImgHeight(ports.get(i).getTypeImage()));
+                    //draw the boarder
+                    g2d.setColor(new java.awt.Color(255, 255, 225));
                     g2d.drawRect(ports.get(i).getTypePosX(),
                             ports.get(i).getTypePosY(),
                             getImgWidth(ports.get(i).getTypeImage()),
@@ -3218,7 +3233,14 @@ public class GamePanel extends javax.swing.JPanel {
             //draw the hitbox for the tile
             //make sure the hex fits the criteria. Thief cannot be moved to the tile where they already are.
             if (showTileHitbox && !tiles.get(tileID).hasThief()) {
-                g2d.setColor(Color.green);
+                //draw the high light
+                g2d.setColor(new java.awt.Color(255, 255, 225, 64));
+                g2d.fillRect(tiles.get(tileID).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2),
+                        (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
+                        (int) (30 / scaleFactor),
+                        (int) (30 / scaleFactor));
+                //draw the boarder
+                g2d.setColor(new java.awt.Color(255, 255, 225));
                 g2d.drawRect(tiles.get(tileID).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2),
                         (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
                         (int) (30 / scaleFactor),
@@ -3412,7 +3434,11 @@ public class GamePanel extends javax.swing.JPanel {
             //draw the hit box for the road.
             //check if it meets the can build criteria and that it is also currently not owned
             if (showRoadHitbox && canBuildRoad(road) && road.getPlayer() == 0) {
-                g2d.setColor(Color.green);
+                //draw the high light
+                g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                g2d.fillRect(road.getXPos() - getImgWidth(image) / 2, road.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
+                //draw the boarder
+                g2d.setColor(new java.awt.Color(255, 255, 225));
                 g2d.drawRect(road.getXPos() - getImgWidth(image) / 2, road.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
                 g2d.setColor(Color.black);
             }
@@ -3513,7 +3539,11 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //draw the hitbox
                 if (drawHitBox) {
-                    g2d.setColor(Color.green);
+                    //draw the high light
+                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                    g2d.fillRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
+                    //draw the boarder
+                    g2d.setColor(new java.awt.Color(255, 255, 225));
                     g2d.drawRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
                     g2d.setColor(Color.black);
                 }
@@ -3600,7 +3630,14 @@ public class GamePanel extends javax.swing.JPanel {
                         }
 
                         if (drawSpecificHitbox) {
-                            g2d.setColor(Color.green);
+                            //draw the high light
+                            g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                            g2d.fillRect(cardStackXPositions[i],
+                                    (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                    getImgWidth(image),
+                                    getImgHeight(image));
+                            //draw the boarder
+                            g2d.setColor(new java.awt.Color(102, 62, 38));
                             Stroke tempStroke = g2d.getStroke();
                             g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
                             g2d.drawRect(cardStackXPositions[i],
@@ -3670,7 +3707,14 @@ public class GamePanel extends javax.swing.JPanel {
                         }
 
                         if (drawSpecificHitbox) {
-                            g2d.setColor(Color.green);
+                            //draw the high light
+                            g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                            g2d.fillRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                                    (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                    getImgWidth(image),
+                                    getImgHeight(image));
+                            //draw the boarder
+                            g2d.setColor(new java.awt.Color(102, 62, 38));
                             Stroke tempStroke = g2d.getStroke();
                             g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
                             g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
