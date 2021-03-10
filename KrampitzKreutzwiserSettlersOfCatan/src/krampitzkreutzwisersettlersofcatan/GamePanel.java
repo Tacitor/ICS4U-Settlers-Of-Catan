@@ -3144,14 +3144,13 @@ public class GamePanel extends javax.swing.JPanel {
                 //check if that one should be drawn
                 if (drawSpecificHitbox) {
                     g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-
+                    //draw the highlight
                     g2d.fillRect(ports.get(i).getTypePosX(),
                             ports.get(i).getTypePosY(),
                             getImgWidth(ports.get(i).getTypeImage()),
                             getImgHeight(ports.get(i).getTypeImage()));
-
+                    //draw the boarder
                     g2d.setColor(new java.awt.Color(255, 255, 225));
-
                     g2d.drawRect(ports.get(i).getTypePosX(),
                             ports.get(i).getTypePosY(),
                             getImgWidth(ports.get(i).getTypeImage()),
