@@ -812,8 +812,34 @@ public class GamePanel extends javax.swing.JPanel {
             // Now the game is waiting to start the next turn
             inbetweenTurns = true;
 
-            // Select the next player
-            nextPlayer();
+            //select the next player
+            //if it is a normal round and the thief is not stealing use the regular turn progression
+            if (!thiefIsStealing) {
+                // Select the next player
+                nextPlayer();
+            } else { //if the thief is infact stealing
+                //make sure they still have stealing to do
+                int thiefLeftToRob = 0; //how many players need to get robbed still
+
+                //count how many still need to get robed
+                for (int i = 0; i < stealCardNum.length; i++) {
+                    if (stealCardNum[i] > 0) {
+                        thiefLeftToRob++;
+                    }
+                }
+
+                //if there is still robbing to be done
+                if (thiefLeftToRob > 0) {
+                    //skip any player that is not personally getting robbed
+                    while (stealCardNum[currentPlayer] <= 0) {
+                        //debug turn skipping
+                        //System.out.println("skipped player: " + currentPlayer);
+                        nextPlayer();
+                    }
+                } else { //if stealing is going on but there is noone left to rob set the player who rolled the 7 as the current player
+                    currentPlayer = playerRolled7;
+                }
+            }
 
             // If the game is still in setup, give the next player roads to place
             //set them to 1 to limit the amount they can build in each setup round
@@ -2831,7 +2857,6 @@ public class GamePanel extends javax.swing.JPanel {
             tileWithThief = random;
             // Increment the thief movement counter
             thiefMoveCounter++;
-            
              */
             //steal the cards and allow the lables to update
             thiefIsStealing = true;
@@ -2856,6 +2881,7 @@ public class GamePanel extends javax.swing.JPanel {
                     //System.out.println("I will steal " + stealCardNum[i] + " cards from player " + i);
 
                     /*
+                    Old randomization of card stealing
                     for (int j = stealCardNum[i]; j > 0; j--) {
                         cards[i].remove( (int) (Math.random()*cards[i].size()) );
                     }
