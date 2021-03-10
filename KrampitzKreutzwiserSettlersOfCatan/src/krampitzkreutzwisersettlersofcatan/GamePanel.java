@@ -1464,6 +1464,9 @@ public class GamePanel extends javax.swing.JPanel {
                         //update the instructions
                         instructionLbl.setText("You may now continue your turn.");
                         subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
+                        
+                        //since player stealing is now done now. Reset this to false
+                        subPlayersHaveEnoughcards = false;
 
                         //sort the cards first
                         quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
