@@ -7,7 +7,6 @@ package krampitzkreutzwisersettlersofcatan;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import javax.swing.JFileChooser;
 import textures.ImageRef;
 
 /**

@@ -117,6 +117,11 @@ public class GamePanel extends javax.swing.JPanel {
     //new dice roll lable
     private String[] diceRollVal;
 
+    //Object containing the data about the longest road
+    private LongestRoadData longestRoadData;
+    private ArrayList<NodeRoad> alreadyCheckedRoad; //ArrayList containing roads that have already been check for logest road. Prevents infinit feedback loop.
+    private ArrayList<NodeSettlement> alreadyCheckedSettlements;
+
     //fonts
     private final Font timesNewRoman;
     private final Font tahoma;
@@ -179,6 +184,12 @@ public class GamePanel extends javax.swing.JPanel {
         playerSetupSettlementLeft = 1;
         victoryPointsToWin = 10;
         thiefMoveCounter = 0;
+
+        //init the longestRoadData
+        longestRoadData = new LongestRoadData();
+        //init the ArrayList holding roads that have already been checked for longest road
+        alreadyCheckedRoad = new ArrayList<>();
+        alreadyCheckedSettlements = new ArrayList<>();
 
         //init the playerTurnOrder
         initPlayerTurnOrder();
@@ -1108,9 +1119,50 @@ public class GamePanel extends javax.swing.JPanel {
 
                                     // Set the road's player to the current player
                                     roadNodes.get(i).setPlayer(currentPlayer);
+                                    /*
+                                     *
+                                     *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion Start =-=-=-=-=-=-=-=-=-=-=-=-=\\
+                                     *
+                                     */
 
+                                    //remove the points from who ever has them incase it changes
+                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) { //only if the player wan't player 0
+                                        victoryPoints[longestRoadData.getPlayerNum()] -= 2;
+                                    }
+
+                                    //loop through all the roads
+                                    for (NodeRoad road : roadNodes) {
+
+                                        //check to not use the null road
+                                        if (road != null) {
+
+                                            checkForLongestRoad(road, 0, currentPlayer); //pass the road and the current branch length
+
+                                            //clear the array for checked roads
+                                            alreadyCheckedRoad.clear();
+                                            //also clear the settlments
+                                            alreadyCheckedSettlements.clear();
+                                        }
+
+                                    }
+
+                                    //add the points to who ever has the longest road
+                                    //only if the player wan't player 0
+                                    //also only if the length is greater than 5
+                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) {
+                                        victoryPoints[longestRoadData.getPlayerNum()] += 2;
+                                    }
+
+                                    //debug the longest road
+                                    //System.out.println("\n" + longestRoadData);
+                                    /*
+                                     *
+                                     *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion End =-=-=-=-=-=-=-=-=-=-=-=-=\\
+                                     *
+                                     */
                                     // Update the building buttons to reflect the player's new list of cards
                                     updateBuildButtons();
+
                                 } // If the player could not build there
                                 else {
                                     // Print out why the player could not build there
@@ -1464,7 +1516,7 @@ public class GamePanel extends javax.swing.JPanel {
                         //update the instructions
                         instructionLbl.setText("You may now continue your turn.");
                         subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
-                        
+
                         //since player stealing is now done now. Reset this to false
                         subPlayersHaveEnoughcards = false;
 
@@ -1731,7 +1783,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV8"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV9"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1763,6 +1815,11 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
             saveFile.println(playerSetupSettlementLeft);
+
+            saveFile.println("longestRoadData length:");
+            saveFile.println(longestRoadData.getLength());
+            saveFile.println("longestRoadData playerNum:");
+            saveFile.println(longestRoadData.getPlayerNum());
 
             saveFile.println("setupTurnOrder:");
             saveFile.println("length:");
@@ -1882,7 +1939,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV8")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV9")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -1982,6 +2039,20 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("playerSetupSettlementLeft:")) {
                 playerSetupSettlementLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers7");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("longestRoadData length:")) {
+                longestRoadData.setLength(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("Yuppers7.1");
+            } else {
+                throwLoadError();
+            }
+
+            if (scanner.nextLine().equals("longestRoadData playerNum:")) {
+                longestRoadData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("Yuppers7.2");
             } else {
                 throwLoadError();
             }
@@ -3071,6 +3142,16 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(MATERIAL_KEY), //scale the image
                 getImgHeight(MATERIAL_KEY),
                 null);
+
+        //draw the longest road tile if the current player has it
+        if (longestRoadData.getPlayerNum() == currentPlayer && longestRoadData.getLength() >= 5 && !inbetweenTurns) {
+            g2d.drawImage(LONGEST_ROAD,
+                    (int) (rightDrawMargin - getImgWidth(LONGEST_ROAD) - (30 / scaleFactor)),
+                    (int) (10 / scaleFactor),
+                    getImgWidth(LONGEST_ROAD),
+                    getImgHeight(LONGEST_ROAD),
+                    null);
+        }
 
         Image currentPlayerImage = getPlayerImage(currentPlayer, false);
 
@@ -4351,6 +4432,66 @@ public class GamePanel extends javax.swing.JPanel {
                 playerTurnOrder.add(nextPlayerIfEndOfSetup);
                 nextPlayerIfEndOfSetup++; //show the next player next time
             }
+        }
+    }
+
+    /**
+     * Recursively check the length of a branch of roads. If a branch is found
+     * to be longer than the current longest road overwrite the data to match
+     * the new long longest road.
+     *
+     * @param road
+     * @param branchLength
+     */
+    private void checkForLongestRoad(NodeRoad road, int branchLength, int playerNum) {
+
+        ArrayList<NodeRoad> roadsToCheck = new ArrayList<>(); //List of roads to check with recusion
+
+        //check if the given branch length is larger than the current longest road
+        if (branchLength > longestRoadData.getLength()) {
+            //if it is over write the data
+            //the length
+            longestRoadData.setLength(branchLength);
+            //set the new player 
+            longestRoadData.setPlayerNum(playerNum);
+        }
+
+        //for each of the two settlments on the end of the road 
+        for (int i = 1; i < 3; i++) {
+
+            //make sure the settlment node hasn't already been check but a call higher up on the Stack
+            if (!alreadyCheckedSettlements.contains(road.getSettlement(i))) {
+
+                //check the three roads on that settlment node
+                for (int j = 1; j < 4; j++) {
+
+                    //System.out.println(road.getSettlement(i).getRoad(j));
+                    //System.out.println(alreadyCheckedRoad.contains(road));
+                    //System.out.println("");
+                    //make sure that it isn't a null road
+                    //also ensure that the new road being checked is owned by the same player
+                    //also ensure that the new road being checked is not the road passed as a perameter
+                    //also ensure that this road has not been checked before
+                    if (road.getSettlement(i).getRoad(j) != null
+                            && road.getSettlement(i).getRoad(j).getPlayer() == playerNum
+                            && !road.equals(road.getSettlement(i).getRoad(j))
+                            && !alreadyCheckedRoad.contains(road)) {
+
+                        roadsToCheck.add(road.getSettlement(i).getRoad(j));
+                    }
+                }
+            }
+
+            //add the settlemnt to the list of already check one. This prevets directional backtracking
+            alreadyCheckedSettlements.add(road.getSettlement(i));
+        }
+
+        //save this road so that it cannot be checked again
+        alreadyCheckedRoad.add(road);
+
+        //now loop through all the roads needed to be checked and check them
+        for (int i = 0; i < roadsToCheck.size(); i++) {
+            checkForLongestRoad(roadsToCheck.get(i), branchLength + 1, playerNum);
         }
     }
 
