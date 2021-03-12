@@ -121,6 +121,8 @@ public class GamePanel extends javax.swing.JPanel {
     private LongestRoadData longestRoadData;
     private ArrayList<NodeRoad> alreadyCheckedRoad; //ArrayList containing roads that have already been check for logest road. Prevents infinit feedback loop.
     private ArrayList<NodeSettlement> alreadyCheckedSettlements;
+    private ArrayList<NodeRoad> longestRoadTerminus; //the road(s) at the end of the longest road.
+    private ArrayList<Integer> roadTerminusBranchLenght; //the lengths of all tested branches when they end
 
     //fonts
     private final Font timesNewRoman;
@@ -190,6 +192,8 @@ public class GamePanel extends javax.swing.JPanel {
         //init the ArrayList holding roads that have already been checked for longest road
         alreadyCheckedRoad = new ArrayList<>();
         alreadyCheckedSettlements = new ArrayList<>();
+        longestRoadTerminus = new ArrayList<>();
+        roadTerminusBranchLenght = new ArrayList<>();
 
         //init the playerTurnOrder
         initPlayerTurnOrder();
@@ -1122,12 +1126,48 @@ public class GamePanel extends javax.swing.JPanel {
 
                                     //run a check for any changes on the logest road with this newly built one.
                                     checkForLongestRoad(roadNodes.get(i), 1); //pass the road and the current branch length (set to 1 because only 1 road is confirmed in the brach (this one))
+                                    
+                                    int biggestNum = 0;
+                                    
+                                    //loop through the branch lengths
+                                    for (int j = 0; j < roadTerminusBranchLenght.size(); j++) {
+                                        //get the biggest value
+                                        if (roadTerminusBranchLenght.get(j) > biggestNum) {
+                                            biggestNum = roadTerminusBranchLenght.get(j);
+                                        }
+                                    }
+
+                                    //loop through the branch lengths
+                                    for (int j = 0; j < roadTerminusBranchLenght.size(); j++) {
+                                        //if a branched ended with a length the same as the longest branch store it
+                                        if (roadTerminusBranchLenght.get(j) == biggestNum) {
+                                            longestRoadTerminus.add(alreadyCheckedRoad.get(j)); //indexes from the two array match as they are written to at the same time
+                                        }
+                                    }
+                                    
+                                    System.out.println("New Set:\n" + longestRoadTerminus);
 
                                     //clear the array for checked roads
                                     alreadyCheckedRoad.clear();
                                     //also clear the settlments
                                     alreadyCheckedSettlements.clear();
-                                    
+
+                                    //for all the terminating roads beform the longest road search again.
+                                    //this is done because if a road is placed and it is in the middle of a complex and large network the algorthem could miss it
+                                    //going again from the known ends allows the algorythm to search more corectly
+                                    for (int j = 0; j < longestRoadTerminus.size(); j++) {
+                                        checkForLongestRoad(longestRoadTerminus.get(j), 1);
+
+                                    }
+
+                                    //clear the array for checked roads
+                                    alreadyCheckedRoad.clear();
+                                    //also clear the settlments
+                                    alreadyCheckedSettlements.clear();
+                                    //and now clear the longest road terminuses
+                                    longestRoadTerminus.clear();
+                                    roadTerminusBranchLenght.clear();
+
                                     //debug the longest road
                                     System.out.println("");
                                     System.out.println(longestRoadData);
@@ -1786,7 +1826,7 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
             saveFile.println(playerSetupSettlementLeft);
-            
+
             saveFile.println("longestRoadData length:");
             saveFile.println(longestRoadData.getLength());
             saveFile.println("longestRoadData playerNum:");
@@ -2013,14 +2053,14 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("longestRoadData length:")) {
                 longestRoadData.setLength(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.1");
             } else {
                 throwLoadError();
             }
-            
+
             if (scanner.nextLine().equals("longestRoadData playerNum:")) {
                 longestRoadData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.2");
@@ -3514,6 +3554,8 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setColor(Color.black);
             }
         }
+        
+        g2d.drawImage(PLAYER_DOTS[1], 906, 442, null);
 
         // Draw the 54 settlement nodes
         NodeSettlement settlement;
@@ -4449,6 +4491,8 @@ public class GamePanel extends javax.swing.JPanel {
 
         //save this road so that it cannot be checked again
         alreadyCheckedRoad.add(road);
+        //store the branch lenght when this road is restiered and completed search
+        roadTerminusBranchLenght.add(branchLength);
 
         //now loop through all the roads needed to be checked and check them
         for (int i = 0; i < roadsToCheck.size(); i++) {
