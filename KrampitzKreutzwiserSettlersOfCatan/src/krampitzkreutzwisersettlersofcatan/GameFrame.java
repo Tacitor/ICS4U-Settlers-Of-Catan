@@ -49,7 +49,7 @@ public class GameFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null); //center the frame on screen
         setResizable(false); //do not allow the user to resize the window
         //setExtendedState(JFrame.MAXIMIZED_BOTH); //this would normaly set the size to the display size but I don't want to deal with scaling elemnts nor do I have the time
-        //setUndecorated(true); //removes the boarders and control buttons, this makes it full screen for 1080p displays and just a really wierd borderless window for anything higher. Most likly broken for anything lower
+        setUndecorated(true); //removes the boarders and control buttons, this makes it full screen for 1080p displays and just a really wierd borderless window for anything higher. Most likly broken for anything lower
         setVisible(false);
         
         //debug screen size

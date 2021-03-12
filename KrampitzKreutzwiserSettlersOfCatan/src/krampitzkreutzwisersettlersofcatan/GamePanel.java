@@ -1127,69 +1127,25 @@ public class GamePanel extends javax.swing.JPanel {
                                      *
                                      */
                                     //run a check for any changes on the logest road with this newly built one.
-                                    checkForLongestRoad(roadNodes.get(i), 1); //pass the road and the current branch length (set to 1 because only 1 road is confirmed in the brach (this one))
+                                    //checkForLongestRoad(roadNodes.get(i), 1); //pass the road and the current branch length (set to 1 because only 1 road is confirmed in the brach (this one))
 
-                                    int numSidesUsed; //the number of sides of the road that have other road connections
-                                    boolean thisSideUsed; //hold the value of wheater or not a side of a road is used to connect to other roads
+                                    //loop through all the roads
+                                    for (NodeRoad road : roadNodes) {
 
-                                    //loop through the roads that were checked
-                                    for (NodeRoad road : alreadyCheckedRoad) {
-                                        //reset the var
-                                        thisSideUsed = false;
-                                        numSidesUsed = 0;
+                                        //check to not use the null road
+                                        if (road != null) {
 
-                                        //for each of the two settlments on the end of the road 
-                                        for (int j = 1; j < 3; j++) {
+                                            checkForLongestRoad(road, 0, currentPlayer);
 
-                                            //check the three roads on that settlment node
-                                            for (int k = 1; k < 4; k++) {
-                                                //see if there is another road on that settlement
-                                                if (road.getSettlement(j).getRoad(k) != null
-                                                        && road.getSettlement(j).getRoad(k).getPlayer() == road.getPlayer()
-                                                        && !road.equals(road.getSettlement(j).getRoad(k))) {
-                                                    //register that there is a seond road on this side
-                                                    thisSideUsed = true;
-
-                                                }
-                                            }
-
-                                            if (thisSideUsed) {
-                                                numSidesUsed++;
-                                                //reset for the next side
-                                                thisSideUsed = false;
-                                            }
-                                        }
-
-                                        //if there is only one side used save it
-                                        if (numSidesUsed == 1) {
-                                            longestRoadTerminus.add(road);
+                                            //clear the array for checked roads
+                                            alreadyCheckedRoad.clear();
+                                            //also clear the settlments
+                                            alreadyCheckedSettlements.clear();
+                                            //and now clear the longest road terminuses
+                                            longestRoadTerminus.clear();
                                         }
 
                                     }
-
-                                    //debug the second round of logest road checks
-                                    //System.out.println(longestRoadTerminus.contains(roadNodes.get(62)));
-                                    //System.out.println("New Set:\n" + longestRoadTerminus);
-                                    //
-                                    //clear the array for checked roads
-                                    alreadyCheckedRoad.clear();
-                                    //also clear the settlments
-                                    alreadyCheckedSettlements.clear();
-
-                                    //for all the terminating roads beform the longest road search again.
-                                    //this is done because if a road is placed and it is in the middle of a complex and large network the algorthem could miss it
-                                    //going again from the known ends allows the algorythm to search more corectly
-                                    for (NodeRoad road : longestRoadTerminus) {
-                                        checkForLongestRoad(road, 1);
-
-                                        //clear the array for checked roads
-                                        alreadyCheckedRoad.clear();
-                                        //also clear the settlments
-                                        alreadyCheckedSettlements.clear();
-                                    }
-
-                                    //and now clear the longest road terminuses
-                                    longestRoadTerminus.clear();
 
                                     //debug the longest road
                                     System.out.println("");
@@ -3582,10 +3538,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
-        g2d.drawImage(PLAYER_DOTS[1], 849, 540, null);
-        g2d.drawImage(PLAYER_DOTS[1], 682, 637, null);
-        g2d.drawImage(PLAYER_DOTS[1], 961, 345, null);
-
         // Draw the 54 settlement nodes
         NodeSettlement settlement;
         // Reuse the image variable;
@@ -4475,7 +4427,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param road
      * @param branchLength
      */
-    private void checkForLongestRoad(NodeRoad road, int branchLength) {
+    private void checkForLongestRoad(NodeRoad road, int branchLength, int playerNum) {
 
         ArrayList<NodeRoad> roadsToCheck = new ArrayList<>(); //List of roads to check with recusion
 
@@ -4485,7 +4437,7 @@ public class GamePanel extends javax.swing.JPanel {
             //the length
             longestRoadData.setLength(branchLength);
             //set the new player 
-            longestRoadData.setPlayerNum(road.getPlayer());
+            longestRoadData.setPlayerNum(playerNum);
         }
 
         //for each of the two settlments on the end of the road 
@@ -4505,7 +4457,7 @@ public class GamePanel extends javax.swing.JPanel {
                     //also ensure that the new road being checked is not the road passed as a perameter
                     //also ensure that this road has not been checked before
                     if (road.getSettlement(i).getRoad(j) != null
-                            && road.getSettlement(i).getRoad(j).getPlayer() == road.getPlayer()
+                            && road.getSettlement(i).getRoad(j).getPlayer() == playerNum
                             && !road.equals(road.getSettlement(i).getRoad(j))
                             && !alreadyCheckedRoad.contains(road)) {
 
@@ -4523,7 +4475,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //now loop through all the roads needed to be checked and check them
         for (int i = 0; i < roadsToCheck.size(); i++) {
-            checkForLongestRoad(roadsToCheck.get(i), branchLength + 1);
+            checkForLongestRoad(roadsToCheck.get(i), branchLength + 1, playerNum);
         }
     }
 
