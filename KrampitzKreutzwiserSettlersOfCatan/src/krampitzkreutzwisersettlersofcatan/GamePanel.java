@@ -1126,10 +1126,10 @@ public class GamePanel extends javax.swing.JPanel {
                                      *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion Start =-=-=-=-=-=-=-=-=-=-=-=-=\\
                                      *
                                      */
-                                    
+
                                     //remove the points from who ever has them incase it changes
                                     if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) { //only if the player wan't player 0
-                                        victoryPoints[longestRoadData.getPlayerNum()]-=2;
+                                        victoryPoints[longestRoadData.getPlayerNum()] -= 2;
                                     }
 
                                     //loop through all the roads
@@ -1149,16 +1149,16 @@ public class GamePanel extends javax.swing.JPanel {
                                         }
 
                                     }
-                                    
+
                                     //add the points to who ever has the longest road
                                     //only if the player wan't player 0
                                     //also only if the length is greater than 5
-                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) { 
-                                        victoryPoints[longestRoadData.getPlayerNum()]+=2;
+                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) {
+                                        victoryPoints[longestRoadData.getPlayerNum()] += 2;
                                     }
 
                                     //debug the longest road
-                                    System.out.println("\n" + longestRoadData);
+                                    //System.out.println("\n" + longestRoadData);
                                     /*
                                      *
                                      *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion End =-=-=-=-=-=-=-=-=-=-=-=-=\\
@@ -3146,6 +3146,16 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(MATERIAL_KEY), //scale the image
                 getImgHeight(MATERIAL_KEY),
                 null);
+
+        //draw the longest road tile if the current player has it
+        if (longestRoadData.getPlayerNum() == currentPlayer && longestRoadData.getLength() >= 5 && !inbetweenTurns) {
+            g2d.drawImage(LONGEST_ROAD,
+                    (int) (rightDrawMargin - getImgWidth(LONGEST_ROAD) - (30 / scaleFactor)),
+                    (int) (10 / scaleFactor),
+                    getImgWidth(LONGEST_ROAD),
+                    getImgHeight(LONGEST_ROAD),
+                    null);
+        }
 
         Image currentPlayerImage = getPlayerImage(currentPlayer, false);
 
