@@ -1121,7 +1121,11 @@ public class GamePanel extends javax.swing.JPanel {
 
                                     // Set the road's player to the current player
                                     roadNodes.get(i).setPlayer(currentPlayer);
-
+                                    /*
+                                     *
+                                     *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion Start =-=-=-=-=-=-=-=-=-=-=-=-=\\
+                                     *
+                                     */
                                     //run a check for any changes on the logest road with this newly built one.
                                     checkForLongestRoad(roadNodes.get(i), 1); //pass the road and the current branch length (set to 1 because only 1 road is confirmed in the brach (this one))
 
@@ -1145,14 +1149,14 @@ public class GamePanel extends javax.swing.JPanel {
                                                         && !road.equals(road.getSettlement(j).getRoad(k))) {
                                                     //register that there is a seond road on this side
                                                     thisSideUsed = true;
-                                                    
+
                                                 }
                                             }
 
                                             if (thisSideUsed) {
                                                 numSidesUsed++;
                                                 //reset for the next side
-                                                thisSideUsed = false; 
+                                                thisSideUsed = false;
                                             }
                                         }
 
@@ -1160,13 +1164,13 @@ public class GamePanel extends javax.swing.JPanel {
                                         if (numSidesUsed == 1) {
                                             longestRoadTerminus.add(road);
                                         }
-                                        
+
                                     }
-                                    
+
                                     //debug the second round of logest road checks
                                     //System.out.println(longestRoadTerminus.contains(roadNodes.get(62)));
                                     //System.out.println("New Set:\n" + longestRoadTerminus);
-                                    
+                                    //
                                     //clear the array for checked roads
                                     alreadyCheckedRoad.clear();
                                     //also clear the settlments
@@ -1190,7 +1194,11 @@ public class GamePanel extends javax.swing.JPanel {
                                     //debug the longest road
                                     System.out.println("");
                                     System.out.println(longestRoadData);
-
+                                    /*
+                                     *
+                                     *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion End =-=-=-=-=-=-=-=-=-=-=-=-=\\
+                                     *
+                                     */
                                     // Update the building buttons to reflect the player's new list of cards
                                     updateBuildButtons();
                                 } // If the player could not build there
