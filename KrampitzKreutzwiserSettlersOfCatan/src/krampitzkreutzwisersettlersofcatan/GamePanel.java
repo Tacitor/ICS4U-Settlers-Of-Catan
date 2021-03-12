@@ -1179,15 +1179,15 @@ public class GamePanel extends javax.swing.JPanel {
                                     //for all the terminating roads beform the longest road search again.
                                     //this is done because if a road is placed and it is in the middle of a complex and large network the algorthem could miss it
                                     //going again from the known ends allows the algorythm to search more corectly
-                                    for (int j = 0; j < longestRoadTerminus.size(); j++) {
-                                        checkForLongestRoad(longestRoadTerminus.get(j), 1);
+                                    for (NodeRoad road : longestRoadTerminus) {
+                                        checkForLongestRoad(road, 1);
 
+                                        //clear the array for checked roads
+                                        alreadyCheckedRoad.clear();
+                                        //also clear the settlments
+                                        alreadyCheckedSettlements.clear();
                                     }
 
-                                    //clear the array for checked roads
-                                    alreadyCheckedRoad.clear();
-                                    //also clear the settlments
-                                    alreadyCheckedSettlements.clear();
                                     //and now clear the longest road terminuses
                                     longestRoadTerminus.clear();
 
@@ -3582,7 +3582,9 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
-        g2d.drawImage(PLAYER_DOTS[1], 1185, 345, null);
+        g2d.drawImage(PLAYER_DOTS[1], 849, 540, null);
+        g2d.drawImage(PLAYER_DOTS[1], 682, 637, null);
+        g2d.drawImage(PLAYER_DOTS[1], 961, 345, null);
 
         // Draw the 54 settlement nodes
         NodeSettlement settlement;
