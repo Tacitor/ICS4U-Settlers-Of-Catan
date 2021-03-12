@@ -1126,8 +1126,11 @@ public class GamePanel extends javax.swing.JPanel {
                                      *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion Start =-=-=-=-=-=-=-=-=-=-=-=-=\\
                                      *
                                      */
-                                    //run a check for any changes on the logest road with this newly built one.
-                                    //checkForLongestRoad(roadNodes.get(i), 1); //pass the road and the current branch length (set to 1 because only 1 road is confirmed in the brach (this one))
+                                    
+                                    //remove the points from who ever has them incase it changes
+                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) { //only if the player wan't player 0
+                                        victoryPoints[longestRoadData.getPlayerNum()]-=2;
+                                    }
 
                                     //loop through all the roads
                                     for (NodeRoad road : roadNodes) {
@@ -1135,7 +1138,7 @@ public class GamePanel extends javax.swing.JPanel {
                                         //check to not use the null road
                                         if (road != null) {
 
-                                            checkForLongestRoad(road, 0, currentPlayer);
+                                            checkForLongestRoad(road, 0, currentPlayer); //pass the road and the current branch length
 
                                             //clear the array for checked roads
                                             alreadyCheckedRoad.clear();
@@ -1146,10 +1149,16 @@ public class GamePanel extends javax.swing.JPanel {
                                         }
 
                                     }
+                                    
+                                    //add the points to who ever has the longest road
+                                    //only if the player wan't player 0
+                                    //also only if the length is greater than 5
+                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) { 
+                                        victoryPoints[longestRoadData.getPlayerNum()]+=2;
+                                    }
 
                                     //debug the longest road
-                                    System.out.println("");
-                                    System.out.println(longestRoadData);
+                                    System.out.println("\n" + longestRoadData);
                                     /*
                                      *
                                      *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion End =-=-=-=-=-=-=-=-=-=-=-=-=\\
@@ -1157,6 +1166,7 @@ public class GamePanel extends javax.swing.JPanel {
                                      */
                                     // Update the building buttons to reflect the player's new list of cards
                                     updateBuildButtons();
+
                                 } // If the player could not build there
                                 else {
                                     // Print out why the player could not build there
