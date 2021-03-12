@@ -1127,7 +1127,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     alreadyCheckedRoad.clear();
                                     //also clear the settlments
                                     alreadyCheckedSettlements.clear();
-
+                                    
                                     //debug the longest road
                                     System.out.println("");
                                     System.out.println(longestRoadData);
@@ -1754,7 +1754,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV8"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV9"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -1786,6 +1786,11 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
             saveFile.println(playerSetupSettlementLeft);
+            
+            saveFile.println("longestRoadData length:");
+            saveFile.println(longestRoadData.getLength());
+            saveFile.println("longestRoadData playerNum:");
+            saveFile.println(longestRoadData.getPlayerNum());
 
             saveFile.println("setupTurnOrder:");
             saveFile.println("length:");
@@ -1905,7 +1910,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV8")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV9")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
@@ -2005,6 +2010,20 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("playerSetupSettlementLeft:")) {
                 playerSetupSettlementLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers7");
+            } else {
+                throwLoadError();
+            }
+            
+            if (scanner.nextLine().equals("longestRoadData length:")) {
+                longestRoadData.setLength(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("Yuppers7.1");
+            } else {
+                throwLoadError();
+            }
+            
+            if (scanner.nextLine().equals("longestRoadData playerNum:")) {
+                longestRoadData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("Yuppers7.2");
             } else {
                 throwLoadError();
             }
