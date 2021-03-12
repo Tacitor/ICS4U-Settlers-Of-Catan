@@ -121,7 +121,6 @@ public class GamePanel extends javax.swing.JPanel {
     private LongestRoadData longestRoadData;
     private ArrayList<NodeRoad> alreadyCheckedRoad; //ArrayList containing roads that have already been check for logest road. Prevents infinit feedback loop.
     private ArrayList<NodeSettlement> alreadyCheckedSettlements;
-    private ArrayList<NodeRoad> longestRoadTerminus; //the road(s) at the end of the longest road. These should only be connected to one other road
 
     //fonts
     private final Font timesNewRoman;
@@ -191,7 +190,6 @@ public class GamePanel extends javax.swing.JPanel {
         //init the ArrayList holding roads that have already been checked for longest road
         alreadyCheckedRoad = new ArrayList<>();
         alreadyCheckedSettlements = new ArrayList<>();
-        longestRoadTerminus = new ArrayList<>();
 
         //init the playerTurnOrder
         initPlayerTurnOrder();
@@ -1144,8 +1142,6 @@ public class GamePanel extends javax.swing.JPanel {
                                             alreadyCheckedRoad.clear();
                                             //also clear the settlments
                                             alreadyCheckedSettlements.clear();
-                                            //and now clear the longest road terminuses
-                                            longestRoadTerminus.clear();
                                         }
 
                                     }
