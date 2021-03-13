@@ -67,7 +67,8 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean thiefJustFinished; //true if the theif had just finished stealing
     private boolean thiefJustStarted; //true if the thief was just rolled
     private boolean showRoadHitbox;
-    private boolean showCardHitbox; //used for picking which cards the thief steals
+    private boolean showCardHitbox; //used for picking which cards the thief steals and for trading resource cards
+    private boolean showDevCardHitbox; //used for pick which development cards the user wants to use
     private boolean[] drawCardStacks; //controls the mode cards are drown in. Stacked or fully layout
     private boolean showSettlementHitbox;
     private boolean showTileHitbox;
@@ -86,6 +87,7 @@ public class GamePanel extends javax.swing.JPanel {
     private static boolean giveStartingResources = true; // If players get startup resources
     private static boolean doSnakeRules = true; //make the setup phase of the game more fair follow normal order fist setup round, then reverse
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
+    private final ArrayList<Integer>[] devCards;
     private final int victoryPoints[];
     private final int totalCardsCollected[];
     private final int[] cardStackXPositions; //the x positions to draw cardss when in stacked mode
@@ -154,6 +156,8 @@ public class GamePanel extends javax.swing.JPanel {
         setupTurnOrderIndex = 1; //set the "cursor" to the second position because player 1 was already set to the current player
         playerRolled7 = 0; //no player has rolled a 7 yet. So set the null player 0 to start
         cards = new ArrayList[playerCount + 1]; // Create the array of card lists
+        // the +1 allows methods to use player IDs directly without subtracting 1
+        devCards = new ArrayList[playerCount + 1]; // Create the array of develoment card lists
         // the +1 allows methods to use player IDs directly without subtracting 1
         victoryPoints = new int[playerCount + 1]; // Create the array of player's victory points
         // the +1 allows methods to use player IDs directly without subtracting 1
@@ -232,6 +236,7 @@ public class GamePanel extends javax.swing.JPanel {
         // and drawCardStacks to set up all to draw the full layout
         for (int i = 0; i < cards.length; i++) {
             cards[i] = new ArrayList(); // Cards ArrayList
+            devCards[i] = new ArrayList<>(); //dev cards arrayList
             victoryPoints[i] = 0; // Victory point counter
             drawCardStacks[i] = false;
         }
