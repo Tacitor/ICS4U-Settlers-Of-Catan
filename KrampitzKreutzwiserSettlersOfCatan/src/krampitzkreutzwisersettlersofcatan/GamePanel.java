@@ -356,6 +356,8 @@ public class GamePanel extends javax.swing.JPanel {
         turnSwitchBtn.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
         titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
+        
+        toggleCardBtn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
 
         //initialize the dice roll value
         diceRollVal = new String[]{"0", "0", ""}; //the first two indexies are the rollecd values and the third is the sum
@@ -394,6 +396,7 @@ public class GamePanel extends javax.swing.JPanel {
         trade4to1Btn = new javax.swing.JButton();
         trade2to1Btn = new javax.swing.JButton();
         tradeMenuLbl = new javax.swing.JLabel();
+        toggleCardBtn = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -512,6 +515,14 @@ public class GamePanel extends javax.swing.JPanel {
         tradeMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
         tradeMenuLbl.setText("Trade Menu:");
 
+        toggleCardBtn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        toggleCardBtn.setText("Show Development Cards");
+        toggleCardBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toggleCardBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -539,7 +550,8 @@ public class GamePanel extends javax.swing.JPanel {
                         .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(tradeMenuLbl))
+                    .addComponent(tradeMenuLbl)
+                    .addComponent(toggleCardBtn))
                 .addContainerGap(1157, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -573,7 +585,9 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(trade3to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 504, Short.MAX_VALUE)
+                .addGap(47, 47, 47)
+                .addComponent(toggleCardBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 424, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -1050,6 +1064,10 @@ public class GamePanel extends javax.swing.JPanel {
             repaint();
         }
     }//GEN-LAST:event_trade2to1BtnActionPerformed
+
+    private void toggleCardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleCardBtnActionPerformed
+        
+    }//GEN-LAST:event_toggleCardBtnActionPerformed
 
     /**
      * Handles mouse input, based on the state of the game
@@ -4603,6 +4621,7 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JLabel subInstructionLbl;
     private javax.swing.JLabel titleLbl;
+    private javax.swing.JButton toggleCardBtn;
     private javax.swing.JButton trade2to1Btn;
     private javax.swing.JButton trade3to1Btn;
     private javax.swing.JButton trade4to1Btn;
