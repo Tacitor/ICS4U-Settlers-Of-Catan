@@ -16,6 +16,9 @@ public class ImageRef {
     
     //store most of the images to reduce varable clutter in the main class (gamePanel)
     
+    //error image
+    public final static Image ERROR_IMAGE = new ImageIcon(ImageRef.class.getResource("error.png")).getImage();
+    
     //icon image for game
     public final static Image ICON = new ImageIcon(ImageRef.class.getResource("icon.png")).getImage();
     
