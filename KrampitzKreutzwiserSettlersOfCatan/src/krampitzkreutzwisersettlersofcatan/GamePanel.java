@@ -73,6 +73,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showSettlementHitbox;
     private boolean showTileHitbox;
     private boolean showPortHitbox;
+    private boolean showDevCards; //stores whether dec cards or resource cards are shown;
     private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
     private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
     private int minTradeCardsNeeded; //the number of cards needed for that tradingMode //the minimin amount of cards needed of one type to make a trade
@@ -182,6 +183,7 @@ public class GamePanel extends javax.swing.JPanel {
         showCardHitbox = false;
         showTileHitbox = false;
         showPortHitbox = false;
+        showDevCards = false;
         tradingMode = 0;
         tradeResource = 0;
         playerSetupRoadsLeft = 1;
