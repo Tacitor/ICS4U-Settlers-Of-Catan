@@ -3935,7 +3935,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
                 // Calculate where the first card must go to center the list
-                devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) * 2 + (listSize - 1) * (10 / scaleFactor)) / 2);
+                devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 // Draw the player's dev cards
                 // Reuse the image variable
@@ -3979,10 +3979,10 @@ public class GamePanel extends javax.swing.JPanel {
 
                     // Draw the card
                     g2d.drawImage(image,
-                            (devCardStartPosition + (getImgWidth(CARD_CLAY) * 2 + 10) * i),
-                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125 * 2)),
-                            getImgWidth(image) * 2,
-                            getImgHeight(image) * 2,
+                            (devCardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                            getImgWidth(image),
+                            getImgHeight(image),
                             null);
 
                     //draw the hitbox
