@@ -80,6 +80,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean[][] playerHasPort; //main array is for players, index 0 is not used, index 1-4 are the player numbers. sub arrays are of length 6. inxed 0 for 3:1 port, indexes 1-5 for 2:1 of that type
     private int[] numCardType; //the number of cards the current player has of each type. valid indexes are 0-5, but 0 never contains useful data.
     private int[] cardTypeCount; //the count of how many cards of each type the current player has valid inxies are 0-4
+    private int[] devCardTypeCount; //the count of how many dev cards of each type the current player has valid inxies are 0-4
     private int[] setupTurnOrder; //the order players take their turn during the setup phase
     private int setupTurnOrderIndex; //the position the game is currently on in the setupTurnOrder array 
     private int currentPlayer; // The player currently taking their turn
@@ -94,6 +95,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] cardStackXPositions; //the x positions to draw cardss when in stacked mode
     private int[] stealCardNum; //the number of cards to steal from each player
     private int cardStartPosition; //the xPos to start drawing cards at 
+    private int devCardStartPosition; //the xPos to start drawing dev cards at 
     private int victoryPointsToWin;
     private int thiefMoveCounter;
     private int tileWithThief; // The index of the tile with the thief
@@ -245,6 +247,17 @@ public class GamePanel extends javax.swing.JPanel {
             victoryPoints[i] = 0; // Victory point counter
             drawCardStacks[i] = false;
         }
+
+        //temp
+        devCards[1].add(1);
+        devCards[1].add(2);
+        devCards[1].add(3);
+        devCards[1].add(4);
+
+        devCards[2].add(4);
+        devCards[2].add(4);
+        devCards[2].add(4);
+        devCards[2].add(5);
 
         //fill the playerHasPort 2D array with false for all players ecxept 0 and fill all the ports they have with falses because noone has ports yet
         //skip player 0
@@ -963,7 +976,7 @@ public class GamePanel extends javax.swing.JPanel {
             //hide the hitboxes
             showPortHitbox = false;
             showCardHitbox = false;
-            
+
             //update the buildbuttons (should be renabeling them now)
             updateBuildButtons();
             repaint();
@@ -980,7 +993,7 @@ public class GamePanel extends javax.swing.JPanel {
             showPortHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
-            
+
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
             instructionLbl.setText("Please select the resource you would like to recive");
@@ -1003,7 +1016,7 @@ public class GamePanel extends javax.swing.JPanel {
             //hide the hitboxes
             showPortHitbox = false;
             showCardHitbox = false;
-            
+
             //update the buildbuttons (should be renabeling them now)
             updateBuildButtons();
             repaint();
@@ -1020,7 +1033,7 @@ public class GamePanel extends javax.swing.JPanel {
             showPortHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
-            
+
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
             instructionLbl.setText("Please select the resource you would like to recive");
@@ -1043,7 +1056,7 @@ public class GamePanel extends javax.swing.JPanel {
             //hide the hitboxes
             showPortHitbox = false;
             showCardHitbox = false;
-            
+
             //update the buildbuttons (should be renabeling them now)
             updateBuildButtons();
             repaint();
@@ -1060,7 +1073,7 @@ public class GamePanel extends javax.swing.JPanel {
             showPortHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
-            
+
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
             instructionLbl.setText("Please select the resource you would like to recive");
@@ -2575,7 +2588,7 @@ public class GamePanel extends javax.swing.JPanel {
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
-        
+
         //checks for SettlerBtns
         if (thiefIsStealing || tradingMode != 0) {
             //update the toggle card button to show the resource cards for trading
@@ -3901,9 +3914,97 @@ public class GamePanel extends javax.swing.JPanel {
 
                     }
                 }
+            } else { //if the dev cards are being drawn instead
+                
+                // Get the number of dev cards the player has
+                int listSize = devCards[currentPlayer].size();
+                
+                //get the number of each dev card type the player has
+                //setup an array to hold the results
+                devCardTypeCount = new int[5];
+
+                //loop thorugh and populate the array
+                for (int i = 0; i < listSize; i++) {
+                    devCardTypeCount[devCards[currentPlayer].get(i) - 1]++;
+                }
+
+                // Calculate where the first card must go to center the list
+                devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
+                
+                // Draw the player's dev cards
+                // Reuse the image variable
+                int type;
+                for (int i = 0; i < listSize; i++) {
+                    // Get the card type
+                    type = devCards[currentPlayer].get(i);
+                    // Get the image for that card
+                    switch (type) {
+                        case 1: // Clay card
+                            image = CARD_CLAY;
+                            break;
+                        case 2: // Word card
+                            image = CARD_WOOD;
+                            break;
+                        case 3: // Wheat card
+                            image = CARD_WHEAT;
+                            break;
+                        case 4: // Sheep card
+                            image = CARD_SHEEP;
+                            break;
+                        case 5: // 5: Ore card
+                            image = CARD_ORE;
+                            break;
+                        default: //error image
+                            image = ERROR_IMAGE; 
+                            break;
+                    }
+
+                    // Draw the card
+                    g2d.drawImage(image,
+                            (devCardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                            getImgWidth(image),
+                            getImgHeight(image),
+                            null);
+
+                    //draw the hitbox
+                    if (showDevCardHitbox) {
+                        //decide if to draw this on in the loop
+                        /*
+                        if (false) { 
+                            drawSpecificHitbox = true;
+                        }
+                        */
+                        drawSpecificHitbox = false;
+
+                        if (drawSpecificHitbox) {
+                            //draw the high light
+                            g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                            g2d.fillRect((devCardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                                    (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                    getImgWidth(image),
+                                    getImgHeight(image));
+                            //draw the boarder
+                            g2d.setColor(new java.awt.Color(102, 62, 38));
+                            Stroke tempStroke = g2d.getStroke();
+                            g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                            g2d.drawRect((devCardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                                    (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                    getImgWidth(image),
+                                    getImgHeight(image));
+                            g2d.setStroke(tempStroke);
+                            g2d.setColor(Color.black);
+                        }
+                    }
+
+                }
             }
         }
 
+        /*
+         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         *
+         */
         //check the card button and check if it needs to get it's real coords
         if (toggleCardBtn.getXPos() == -1 && toggleCardBtn.getYPos() == -1) {
             toggleCardBtn.setXPos((int) trade2to1Btn.getBounds().getX());
@@ -3922,6 +4023,10 @@ public class GamePanel extends javax.swing.JPanel {
             drawSettlerBtn(g2d, toggleCardBtn.getDisabledImage(), toggleCardBtn);
         }
 
+        /*
+         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         *
+         */
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
