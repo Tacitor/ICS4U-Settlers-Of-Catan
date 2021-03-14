@@ -32,7 +32,6 @@ public class ImageRef {
     //images for the development cards
     //place holders
     public final static Image DEV_CARD_KNIGHT = new ImageIcon(ImageRef.class.getResource("devCardKnight.png")).getImage();
-    public final static Image DEV_CARD_VP = new ImageIcon(ImageRef.class.getResource("devCardVP.png")).getImage();
     //dev card vp
     public final static Image DEV_CARD_VP_UNI = new ImageIcon(ImageRef.class.getResource("devCardVPUni.png")).getImage();
     public final static Image DEV_CARD_VP_MARKET = new ImageIcon(ImageRef.class.getResource("devCardVPMarket.png")).getImage();
