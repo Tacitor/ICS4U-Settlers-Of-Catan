@@ -190,6 +190,7 @@ public class GamePanel extends javax.swing.JPanel {
         showTileHitbox = false;
         showPortHitbox = false;
         showDevCards = false;
+        showDevCardHitbox = false;
         tradingMode = 0;
         tradeResource = 0;
         playerSetupRoadsLeft = 1;
@@ -2990,7 +2991,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // Act on the dice roll
-        if (roll == 7) { // Move the thief on a 7
+        if (false) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
@@ -3935,7 +3936,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
                 // Calculate where the first card must go to center the list
-                devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
+                devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(DEV_CARD_KNIGHT) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 // Draw the player's dev cards
                 // Reuse the image variable
@@ -3949,28 +3950,28 @@ public class GamePanel extends javax.swing.JPanel {
                             image = DEV_CARD_KNIGHT;
                             break;
                         case 2: // road building card
-                            image = DEV_CARD_PROGRESS;
+                            image = DEV_CARD_PROGRESS_ROAD;
                             break;
                         case 3: // monopoly card
-                            image = DEV_CARD_PROGRESS;
+                            image = DEV_CARD_PROGRESS_MONO;
                             break;
                         case 4: // year of pleanty card
-                            image = DEV_CARD_PROGRESS;
+                            image = DEV_CARD_PROGRESS_YOP;
                             break;
-                        case 5: // 5: VP card
-                            image = DEV_CARD_VP;
+                        case 5: // 5: VP card market
+                            image = DEV_CARD_VP_MARKET;
                             break;
-                        case 6: // 5: VP card
+                        case 6: // 5: VP card university
                             image = DEV_CARD_VP_UNI;
                             break;
-                        case 7: // 5: VP card
-                            image = DEV_CARD_VP;
+                        case 7: // 5: VP card great hall
+                            image = DEV_CARD_VP_HALL;
                             break;
-                        case 8: // 5: VP card
-                            image = DEV_CARD_VP;
+                        case 8: // 5: VP card chapel
+                            image = DEV_CARD_VP_CHAPEL;
                             break;
-                        case 9: // 5: VP card
-                            image = DEV_CARD_VP;
+                        case 9: // 5: VP card library
+                            image = DEV_CARD_VP_LIBRARY;
                             break;
                         default: //error image
                             image = ERROR_IMAGE;
@@ -3979,7 +3980,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                     // Draw the card
                     g2d.drawImage(image,
-                            (devCardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                            (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
                             (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
                             getImgWidth(image),
                             getImgHeight(image),
@@ -3993,12 +3994,12 @@ public class GamePanel extends javax.swing.JPanel {
                             drawSpecificHitbox = true;
                         }
                          */
-                        drawSpecificHitbox = false;
+                        drawSpecificHitbox = true;
 
                         if (drawSpecificHitbox) {
                             //draw the high light
                             g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                            g2d.fillRect((devCardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                            g2d.fillRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
                                     (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
                                     getImgWidth(image),
                                     getImgHeight(image));
@@ -4006,7 +4007,7 @@ public class GamePanel extends javax.swing.JPanel {
                             g2d.setColor(new java.awt.Color(102, 62, 38));
                             Stroke tempStroke = g2d.getStroke();
                             g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                            g2d.drawRect((devCardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
+                            g2d.drawRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
                                     (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
                                     getImgWidth(image),
                                     getImgHeight(image));
