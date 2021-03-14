@@ -51,23 +51,39 @@ public class SettlerBtn extends WorldObject {
     }
     
     /**
-     * Full constructor
-     * 
-     * @param xPos
-     * @param yPos
+     * Half constructor
+     *
      * @param enabled
      * @param mode
-     * @param type 
+     * @param type
      */
-    public SettlerBtn(int xPos, int yPos, boolean enabled, int mode, int type) {
+    public SettlerBtn(boolean enabled, int mode, int type) {
         this();
-        
-        this.xPos = xPos;
-        this.yPos = yPos;
+        xPos = -1; //set the coords to negative one as this constuctor is used when the coordinates cannot be known
+        yPos = -1;
 
         this.enabled = enabled;
         this.mode = mode;
         this.type = type; //set to card togggle button
+
+        updateText(); //update the text
+        updateButtonImages(); //update the base iamge and disabled images
+    }
+
+    /**
+     * Full constructor
+     *
+     * @param xPos
+     * @param yPos
+     * @param enabled
+     * @param mode
+     * @param type
+     */
+    public SettlerBtn(int xPos, int yPos, boolean enabled, int mode, int type) {
+        this();
+
+        this.xPos = xPos;
+        this.yPos = yPos;
 
         updateText(); //update the text
         updateButtonImages(); //update the base iamge and disabled images
@@ -97,7 +113,34 @@ public class SettlerBtn extends WorldObject {
             textImage = ERROR_IMAGE;
         }
     }
-    
+
+    /**
+     * Return the Image for the base of the button
+     *
+     * @return
+     */
+    public Image getBaseImage() {
+        return baseImage;
+    }
+
+    /**
+     * Return the Image for the text of the button
+     *
+     * @return
+     */
+    public Image getTextImage() {
+        return textImage;
+    }
+
+    /**
+     * Return the Image for the disable overlay of the button
+     *
+     * @return
+     */
+    public Image getDisabledImage() {
+        return disabledImage;
+    }
+
     /**
      * Access the enabled state of the button
      *
@@ -106,7 +149,7 @@ public class SettlerBtn extends WorldObject {
     public boolean getEnabled() {
         return enabled;
     }
-    
+
     /**
      * Mutate the enabled state of the button
      *
@@ -115,7 +158,7 @@ public class SettlerBtn extends WorldObject {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-    
+
     /**
      * Access the text mode of the button
      *
@@ -124,7 +167,7 @@ public class SettlerBtn extends WorldObject {
     public int getMode() {
         return mode;
     }
-    
+
     /**
      * Mutate the text mode of the button
      *
@@ -134,7 +177,7 @@ public class SettlerBtn extends WorldObject {
         this.mode = mode;
         updateText();
     }
-    
+
     /**
      * Access the button type dictating the shape and text of the button
      *
@@ -143,7 +186,7 @@ public class SettlerBtn extends WorldObject {
     public int getType() {
         return type;
     }
-    
+
     /**
      * Mutate the button type dictating the shape and text of the button
      *

@@ -125,6 +125,9 @@ public class GamePanel extends javax.swing.JPanel {
     private ArrayList<NodeRoad> alreadyCheckedRoad; //ArrayList containing roads that have already been check for logest road. Prevents infinit feedback loop.
     private ArrayList<NodeSettlement> alreadyCheckedSettlements;
 
+    //custom buttons
+    private SettlerBtn toggleCardBtn;
+
     //fonts
     private final Font timesNewRoman;
     private final Font tahoma;
@@ -336,6 +339,9 @@ public class GamePanel extends javax.swing.JPanel {
         timesNewRoman = instructionLbl.getFont();
         tahoma = buildRoadRBtn.getFont();
         dialog = buildBtn.getFont();
+
+        //setup the SettlerBtns
+        toggleCardBtn = new SettlerBtn(true, 0, 0);
 
         //scale the Swing elements
         buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
@@ -3847,6 +3853,24 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
+        //check the card button and check if it needs to get it's real coords
+        if (toggleCardBtn.getXPos() == -1 && toggleCardBtn.getYPos() == -1) {
+            toggleCardBtn.setXPos((int) trade2to1Btn.getBounds().getX());
+            toggleCardBtn.setYPos((int) (trade2to1Btn.getBounds().getY() + trade2to1Btn.getBounds().getHeight() + (20 / scaleFactor)));
+        }
+
+        //draw the custom SettlerBtns
+        //draw the base        
+        drawSettlerBtn(g2d, toggleCardBtn.getBaseImage(), toggleCardBtn);
+
+        //draw the text
+        drawSettlerBtn(g2d, toggleCardBtn.getTextImage(), toggleCardBtn);
+
+        //draw the disabled overlay if required
+        if (!toggleCardBtn.getEnabled()) {
+            drawSettlerBtn(g2d, toggleCardBtn.getDisabledImage(), toggleCardBtn);
+        }
+
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
@@ -4500,6 +4524,14 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 0; i < roadsToCheck.size(); i++) {
             checkForLongestRoad(roadsToCheck.get(i), branchLength + 1, playerNum);
         }
+    }
+
+    private void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn) {
+        g2d.drawImage(btnImage,
+                btn.xPos,
+                btn.yPos,
+                getImgWidth(btnImage),
+                getImgHeight(btnImage), null);
     }
 
     /**
