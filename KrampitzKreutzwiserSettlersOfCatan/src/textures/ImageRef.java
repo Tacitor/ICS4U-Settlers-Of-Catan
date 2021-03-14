@@ -22,12 +22,20 @@ public class ImageRef {
     //icon image for game
     public final static Image ICON = new ImageIcon(ImageRef.class.getResource("icon.png")).getImage();
     
-    //images for the cards
+    //images for the resource cards
     public final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage();
     public final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage();
     public final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cardOre.png")).getImage();
     public final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cardSheep.png")).getImage();
     public final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cardWood.png")).getImage();
+    
+    //images for the development cards
+    //place holders
+    public final static Image DEV_CARD_KNIGHT = new ImageIcon(ImageRef.class.getResource("devCardKnight.png")).getImage();
+    public final static Image DEV_CARD_PROGRESS = new ImageIcon(ImageRef.class.getResource("devCardProgress.png")).getImage();
+    public final static Image DEV_CARD_VP = new ImageIcon(ImageRef.class.getResource("devCardVP.png")).getImage();
+    
+    public final static Image DEV_CARD_VP_UNI = new ImageIcon(ImageRef.class.getResource("devCardVPUni.png")).getImage();
 
     //images for the roads
     public final static Image RED_ROAD_H = new ImageIcon(ImageRef.class.getResource("redRoadH.png")).getImage(); //horizontal road

@@ -89,7 +89,8 @@ public class GamePanel extends javax.swing.JPanel {
     private static boolean giveStartingResources = true; // If players get startup resources
     private static boolean doSnakeRules = true; //make the setup phase of the game more fair follow normal order fist setup round, then reverse
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
-    private final ArrayList<Integer>[] devCards;
+    private final ArrayList<Integer>[] devCards; //an Array of ArrayLists. Each player gets their own ArrayList for the dev cards they have.
+    // ^^^ valid number are: 1 (knight), 2 (progress card road building), 3 (progress card monolpoy), 4 (progress card year of pleanty), 5, 6, 7, 8, 9 (5-9 are vp cards)
     private final int victoryPoints[];
     private final int totalCardsCollected[];
     private final int[] cardStackXPositions; //the x positions to draw cardss when in stacked mode
@@ -253,6 +254,11 @@ public class GamePanel extends javax.swing.JPanel {
         devCards[1].add(2);
         devCards[1].add(3);
         devCards[1].add(4);
+        devCards[1].add(5);
+        devCards[1].add(6);
+        devCards[1].add(7);
+        devCards[1].add(8);
+        devCards[1].add(9);
 
         devCards[2].add(4);
         devCards[2].add(4);
@@ -3915,13 +3921,13 @@ public class GamePanel extends javax.swing.JPanel {
                     }
                 }
             } else { //if the dev cards are being drawn instead
-                
+
                 // Get the number of dev cards the player has
                 int listSize = devCards[currentPlayer].size();
-                
+
                 //get the number of each dev card type the player has
                 //setup an array to hold the results
-                devCardTypeCount = new int[5];
+                devCardTypeCount = new int[9];
 
                 //loop thorugh and populate the array
                 for (int i = 0; i < listSize; i++) {
@@ -3929,8 +3935,8 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
                 // Calculate where the first card must go to center the list
-                devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
-                
+                devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) * 2 + (listSize - 1) * (10 / scaleFactor)) / 2);
+
                 // Draw the player's dev cards
                 // Reuse the image variable
                 int type;
@@ -3939,32 +3945,44 @@ public class GamePanel extends javax.swing.JPanel {
                     type = devCards[currentPlayer].get(i);
                     // Get the image for that card
                     switch (type) {
-                        case 1: // Clay card
-                            image = CARD_CLAY;
+                        case 1: // knight card
+                            image = DEV_CARD_KNIGHT;
                             break;
-                        case 2: // Word card
-                            image = CARD_WOOD;
+                        case 2: // road building card
+                            image = DEV_CARD_PROGRESS;
                             break;
-                        case 3: // Wheat card
-                            image = CARD_WHEAT;
+                        case 3: // monopoly card
+                            image = DEV_CARD_PROGRESS;
                             break;
-                        case 4: // Sheep card
-                            image = CARD_SHEEP;
+                        case 4: // year of pleanty card
+                            image = DEV_CARD_PROGRESS;
                             break;
-                        case 5: // 5: Ore card
-                            image = CARD_ORE;
+                        case 5: // 5: VP card
+                            image = DEV_CARD_VP;
+                            break;
+                        case 6: // 5: VP card
+                            image = DEV_CARD_VP_UNI;
+                            break;
+                        case 7: // 5: VP card
+                            image = DEV_CARD_VP;
+                            break;
+                        case 8: // 5: VP card
+                            image = DEV_CARD_VP;
+                            break;
+                        case 9: // 5: VP card
+                            image = DEV_CARD_VP;
                             break;
                         default: //error image
-                            image = ERROR_IMAGE; 
+                            image = ERROR_IMAGE;
                             break;
                     }
 
                     // Draw the card
                     g2d.drawImage(image,
-                            (devCardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
-                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
-                            getImgWidth(image),
-                            getImgHeight(image),
+                            (devCardStartPosition + (getImgWidth(CARD_CLAY) * 2 + 10) * i),
+                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125 * 2)),
+                            getImgWidth(image) * 2,
+                            getImgHeight(image) * 2,
                             null);
 
                     //draw the hitbox
@@ -3974,7 +3992,7 @@ public class GamePanel extends javax.swing.JPanel {
                         if (false) { 
                             drawSpecificHitbox = true;
                         }
-                        */
+                         */
                         drawSpecificHitbox = false;
 
                         if (drawSpecificHitbox) {
