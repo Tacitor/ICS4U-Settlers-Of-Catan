@@ -767,9 +767,6 @@ public class GamePanel extends javax.swing.JPanel {
                     instructionLbl.setText("The thief is done stealing");
                     subInstructionLbl.setText("You may resume regular play");
 
-                    //renable the player to switch card modes
-                    toggleCardBtn.setEnabled(true);
-
                     //now that the thief is done stealing check if the playerRolled7 can steal cards
                     //System.out.println(canStealCardPlayers.size());
                     if (canStealCardPlayers.size() > 0) {
@@ -799,8 +796,6 @@ public class GamePanel extends javax.swing.JPanel {
 
                 }
             } else { // If a turn of the real game is starting (not setup)
-                //enable the card mode switch button
-                toggleCardBtn.setEnabled(true);
 
                 // Roll the dice and display the rolled number to the user
                 diceRoll();
@@ -969,9 +964,6 @@ public class GamePanel extends javax.swing.JPanel {
             showPortHitbox = false;
             showCardHitbox = false;
             
-            //renable the toggle card button
-            toggleCardBtn.setEnabled(true);
-            
             //update the buildbuttons (should be renabeling them now)
             updateBuildButtons();
             repaint();
@@ -988,11 +980,6 @@ public class GamePanel extends javax.swing.JPanel {
             showPortHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
-            
-            //update the toggle card button to show the resource cards for trading
-            toggleCardBtn.setEnabled(false);
-            toggleCardBtn.setMode(0);
-            showDevCards = false;
             
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
@@ -1017,9 +1004,6 @@ public class GamePanel extends javax.swing.JPanel {
             showPortHitbox = false;
             showCardHitbox = false;
             
-            //renable the toggle card button
-            toggleCardBtn.setEnabled(true);
-            
             //update the buildbuttons (should be renabeling them now)
             updateBuildButtons();
             repaint();
@@ -1036,11 +1020,6 @@ public class GamePanel extends javax.swing.JPanel {
             showPortHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
-            
-            //update the toggle card button to show the resource cards for trading
-            toggleCardBtn.setEnabled(false);
-            toggleCardBtn.setMode(0);
-            showDevCards = false;
             
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
@@ -1065,9 +1044,6 @@ public class GamePanel extends javax.swing.JPanel {
             showPortHitbox = false;
             showCardHitbox = false;
             
-            //renable the toggle card button
-            toggleCardBtn.setEnabled(true);
-            
             //update the buildbuttons (should be renabeling them now)
             updateBuildButtons();
             repaint();
@@ -1084,11 +1060,6 @@ public class GamePanel extends javax.swing.JPanel {
             showPortHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
-            
-            //update the toggle card button to show the resource cards for trading
-            toggleCardBtn.setEnabled(false);
-            toggleCardBtn.setMode(0);
-            showDevCards = false;
             
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
@@ -2604,6 +2575,18 @@ public class GamePanel extends javax.swing.JPanel {
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
+        
+        //checks for SettlerBtns
+        if (thiefIsStealing || tradingMode != 0) {
+            //update the toggle card button to show the resource cards for trading
+            toggleCardBtn.setEnabled(false);
+            toggleCardBtn.setMode(0);
+            showDevCards = false;
+        } else if (inbetweenTurns) {
+            toggleCardBtn.setEnabled(false);
+        } else {
+            toggleCardBtn.setEnabled(true);
+        }
     }
 
     /**
@@ -3005,7 +2988,6 @@ public class GamePanel extends javax.swing.JPanel {
             thiefMoveCounter++;
              */
             //prevent the player from switching away from their resource cards
-            toggleCardBtn.setEnabled(false);
             showDevCards = false; //force show the resource cards
             toggleCardBtn.setMode(0); //make sure the mode and the text don't ge out of sync
 
