@@ -21,15 +21,17 @@ public class SettlerBtn extends WorldObject {
     private int mode; //the mode the button is in. Decides what text to display
     private int type; //the type of button. (Trade button, card toggle, build, etc.)
     //image attributes
-    private static Image baseImage; //the main image of the button
-    private static Image disabledImage; //the overlay to dim the button to indecate a disabled button
-    private static Image textImage; //the text of the button
+    private Image baseImage; //the main image of the button
+    private Image disabledImage; //the overlay to dim the button to indecate a disabled button
+    private Image textImage; //the text of the button
 
     //static button images
     private final static Image CARD_BTN = new ImageIcon(ImageRef.class.getResource("cardBtn.png")).getImage();
     private final static Image CARD_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("cardBtnDisabled.png")).getImage();
     private final static Image CARD_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("cardBtnText1.png")).getImage();
     private final static Image CARD_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("cardBtnText2.png")).getImage();
+    
+    private final static Image BUY_DEV_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("buyDevBtnText.png")).getImage();
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -80,7 +82,7 @@ public class SettlerBtn extends WorldObject {
      * @param type
      */
     public SettlerBtn(int xPos, int yPos, boolean enabled, int mode, int type) {
-        this();
+        this(enabled, mode, type);
 
         this.xPos = xPos;
         this.yPos = yPos;
@@ -93,12 +95,22 @@ public class SettlerBtn extends WorldObject {
      * Update the base image and disabled image
      */
     public void updateButtonImages() {
-        if (type == 0) { //if type if card toggle button
-            baseImage = CARD_BTN;
-            disabledImage = CARD_DISABLED_BTN;
-        } else { //deflault to error images
-            baseImage = ERROR_IMAGE;
-            disabledImage = ERROR_IMAGE;
+        switch (type) {
+            case 0:
+                //if type is card toggle button
+                baseImage = CARD_BTN;
+                disabledImage = CARD_DISABLED_BTN;
+                break;
+            case 1:
+                //if type is dev card buy button
+                baseImage = CARD_BTN;
+                disabledImage = CARD_DISABLED_BTN;
+                break;
+            default:
+                //default to error images
+                baseImage = ERROR_IMAGE;
+                disabledImage = ERROR_IMAGE;
+                break;
         }
     }
 
@@ -107,10 +119,19 @@ public class SettlerBtn extends WorldObject {
      * variable
      */
     public void updateText() {
-        if (type == 0) { //if the type is card toggle button
-            textImage = CARD_BTN_TEXTS[mode];
-        } else { //deflault to error image
-            textImage = ERROR_IMAGE;
+        switch (type) {
+            case 0:
+                //if the type is card toggle button
+                textImage = CARD_BTN_TEXTS[mode];
+                break;
+            case 1:
+                //if the type is dev card buy button
+                textImage = BUY_DEV_BTN_TEXT;
+                break;
+            default:
+                //deflault to error image
+                textImage = ERROR_IMAGE;
+                break;
         }
     }
 

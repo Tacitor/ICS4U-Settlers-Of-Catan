@@ -132,6 +132,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     //custom buttons
     private SettlerBtn toggleCardBtn;
+    private SettlerBtn buyDevCardBtn;
 
     //fonts
     private final Font timesNewRoman;
@@ -376,6 +377,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //setup the SettlerBtns
         toggleCardBtn = new SettlerBtn(false, 0, 0);
+        buyDevCardBtn = new SettlerBtn(10, 10, false, 1, 1);
 
         //scale the Swing elements
         buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
@@ -928,6 +930,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //disable all the SettlerBtns
             toggleCardBtn.setEnabled(false);
+            buyDevCardBtn.setEnabled(false);
 
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
@@ -4145,18 +4148,27 @@ public class GamePanel extends javax.swing.JPanel {
         if (toggleCardBtn.getXPos() == -1 && toggleCardBtn.getYPos() == -1) {
             toggleCardBtn.setXPos((int) trade2to1Btn.getBounds().getX());
             toggleCardBtn.setYPos((int) (trade2to1Btn.getBounds().getY() + trade2to1Btn.getBounds().getHeight() + (20 / scaleFactor)));
+            
+            buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
+            buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (20 / scaleFactor)));
         }
 
         //draw the custom SettlerBtns
         //draw the base        
         drawSettlerBtn(g2d, toggleCardBtn.getBaseImage(), toggleCardBtn);
+        drawSettlerBtn(g2d, buyDevCardBtn.getBaseImage(), buyDevCardBtn);
 
         //draw the text
         drawSettlerBtn(g2d, toggleCardBtn.getTextImage(), toggleCardBtn);
+        drawSettlerBtn(g2d, buyDevCardBtn.getTextImage(), buyDevCardBtn);
 
         //draw the disabled overlay if required
         if (!toggleCardBtn.getEnabled()) {
             drawSettlerBtn(g2d, toggleCardBtn.getDisabledImage(), toggleCardBtn);
+        }
+        
+        if (!buyDevCardBtn.getEnabled()) {
+            drawSettlerBtn(g2d, buyDevCardBtn.getDisabledImage(), buyDevCardBtn);
         }
 
         /*
