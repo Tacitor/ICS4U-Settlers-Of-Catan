@@ -2461,6 +2461,8 @@ public class GamePanel extends javax.swing.JPanel {
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            
+            toggleCardBtn.setEnabled(true);
         } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
         //or if a player is trading
         else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
@@ -2470,12 +2472,22 @@ public class GamePanel extends javax.swing.JPanel {
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            
+            //update the toggle card button to show the resource cards options for stealing
+            toggleCardBtn.setEnabled(false);
+            toggleCardBtn.setMode(0);
+            showDevCards = false;
         } //else if the player is currently trading
         else if (tradingMode != 0) {
             //diable all the building
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
+            
+            //update the toggle card button to show the resource cards for trading
+            toggleCardBtn.setEnabled(false);
+            toggleCardBtn.setMode(0);
+            showDevCards = false;
 
             //check the trading type
             switch (tradingMode) { //make sure the only button active is the current trade mode. This allows the user to cancel trading.
@@ -2513,6 +2525,8 @@ public class GamePanel extends javax.swing.JPanel {
             canTrade4to = hasTradeCards(4);
             canTrade3to = hasTradeCards(3) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
             canTrade2to = hasSpecializedPort();
+            
+            toggleCardBtn.setEnabled(true);
         }
 
         // Save what button was selected before this update began
@@ -2609,18 +2623,7 @@ public class GamePanel extends javax.swing.JPanel {
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
-
-        //checks for SettlerBtns
-        if (thiefIsStealing || tradingMode != 0) {
-            //update the toggle card button to show the resource cards for trading
-            toggleCardBtn.setEnabled(false);
-            toggleCardBtn.setMode(0);
-            showDevCards = false;
-        } else if (inbetweenTurns) {
-            toggleCardBtn.setEnabled(false);
-        } else {
-            toggleCardBtn.setEnabled(true);
-        }
+        
     }
 
     /**
