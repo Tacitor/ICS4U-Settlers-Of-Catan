@@ -69,7 +69,8 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showRoadHitbox;
     private boolean showCardHitbox; //used for picking which cards the thief steals and for trading resource cards
     private boolean showDevCardHitbox; //used for pick which development cards the user wants to use
-    private boolean[] drawCardStacks; //controls the mode cards are drown in. Stacked or fully layout
+    private boolean[] drawCardStacks; //controls the mode cards are drawn in. Stacked or full layout
+    private boolean[] drawDevCardStacks; //controls the mode dev cards are drawn in. Stacked or full layout.
     private boolean showSettlementHitbox;
     private boolean showTileHitbox;
     private boolean showPortHitbox;
@@ -93,7 +94,8 @@ public class GamePanel extends javax.swing.JPanel {
     // ^^^ valid number are: 1 (knight), 2 (progress card road building), 3 (progress card monolpoy), 4 (progress card year of pleanty), 5, 6, 7, 8, 9 (5-9 are vp cards)
     private final int victoryPoints[];
     private final int totalCardsCollected[];
-    private final int[] cardStackXPositions; //the x positions to draw cardss when in stacked mode
+    private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
+    private final int[] devCardStackXPositions; //the x positions to draw dev cards when in stacked mode
     private int[] stealCardNum; //the number of cards to steal from each player
     private int cardStartPosition; //the xPos to start drawing cards at 
     private int devCardStartPosition; //the xPos to start drawing dev cards at 
@@ -172,6 +174,8 @@ public class GamePanel extends javax.swing.JPanel {
         //the +1 allows methods to use player IDs directly without subtracting 1
         drawCardStacks = new boolean[playerCount + 1];//create the array of how to draw the cards for each player
         //the +1 allows methods to use player IDs directly without subtracting 1
+        drawDevCardStacks = new boolean[playerCount + 1];//create the array of how to draw the dev cards for each player
+        //the +1 allows methods to use player IDs directly without subtracting 1
         playerHasPort = new boolean[playerCount + 1][6]; //create the array keeping track of what player has acces to what ports
         //the +1 allows methods to use player IDs directly without subtracting 1
         //the 6 is for the six types of ports ^
@@ -183,6 +187,11 @@ public class GamePanel extends javax.swing.JPanel {
             superFrame.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
+        devCardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            superFrame.getWidth() / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
         buildingObject = 0;
         showRoadHitbox = false;
         showSettlementHitbox = false;
@@ -248,9 +257,11 @@ public class GamePanel extends javax.swing.JPanel {
             devCards[i] = new ArrayList<>(); //dev cards arrayList
             victoryPoints[i] = 0; // Victory point counter
             drawCardStacks[i] = false;
+            drawDevCardStacks[i] = false;
         }
 
         //temp
+        devCards[1].add(2);
         devCards[1].add(1);
         devCards[1].add(2);
         devCards[1].add(3);
@@ -260,6 +271,9 @@ public class GamePanel extends javax.swing.JPanel {
         devCards[1].add(7);
         devCards[1].add(8);
         devCards[1].add(9);
+        devCards[1].add(2);
+        devCards[1].add(2);
+        devCards[1].add(2);
 
         devCards[2].add(4);
         devCards[2].add(4);
@@ -3938,82 +3952,182 @@ public class GamePanel extends javax.swing.JPanel {
                 // Calculate where the first card must go to center the list
                 devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(DEV_CARD_KNIGHT) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
-                // Draw the player's dev cards
-                // Reuse the image variable
-                int type;
-                for (int i = 0; i < listSize; i++) {
-                    // Get the card type
-                    type = devCards[currentPlayer].get(i);
-                    // Get the image for that card
-                    switch (type) {
-                        case 1: // knight card
-                            image = DEV_CARD_KNIGHT;
-                            break;
-                        case 2: // road building card
-                            image = DEV_CARD_PROGRESS_ROAD;
-                            break;
-                        case 3: // monopoly card
-                            image = DEV_CARD_PROGRESS_MONO;
-                            break;
-                        case 4: // year of pleanty card
-                            image = DEV_CARD_PROGRESS_YOP;
-                            break;
-                        case 5: // 5: VP card market
-                            image = DEV_CARD_VP_MARKET;
-                            break;
-                        case 6: // 5: VP card university
-                            image = DEV_CARD_VP_UNI;
-                            break;
-                        case 7: // 5: VP card great hall
-                            image = DEV_CARD_VP_HALL;
-                            break;
-                        case 8: // 5: VP card chapel
-                            image = DEV_CARD_VP_CHAPEL;
-                            break;
-                        case 9: // 5: VP card library
-                            image = DEV_CARD_VP_LIBRARY;
-                            break;
-                        default: //error image
-                            image = ERROR_IMAGE;
-                            break;
+                //check if the cards would go off the screen
+                if ((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(DEV_CARD_KNIGHT)))) {
+                    drawDevCardStacks[currentPlayer] = true;
+
+                    //draw the number of cards the payer has of each type
+                    //change the font
+                    Font tempFont = g2d.getFont(); //save the current stroke
+                    g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor))); //overwrite it      
+                    g2d.setColor(new java.awt.Color(255, 255, 225));
+
+                    //loop through and draw the stacked cards
+                    for (int i = 0; i < 5; i++) {
+
+                        switch (i) {
+                            case 0:
+                                image = DEV_CARD_KNIGHT;
+                                break;
+                            case 1:
+                                image = DEV_CARD_PROGRESS_ROAD;
+                                break;
+                            case 2:
+                                image = DEV_CARD_PROGRESS_MONO;
+                                break;
+                            case 3:
+                                image = DEV_CARD_PROGRESS_YOP;
+                                break;
+                            case 4:
+                                image = DEV_CARD_VP_MARKET;
+                                break;
+                            default:
+                                image = ERROR_IMAGE;
+                                break;
+                        }
+
+                        //draw one each of the 5 card types
+                        //draw the card image
+                        g2d.drawImage(image,
+                                devCardStackXPositions[i], //align the card to the left edge of the water ring 
+                                (int) (superFrame.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125)),
+                                getImgWidth(image),
+                                getImgHeight(image),
+                                null);
+                        
+                        
+                        String devCardNum; //the number of dev cards the player has of that catagory
+                        
+                        //get the number to write next to the card
+                        if (i < 4) {
+                            devCardNum = Integer.toString(devCardTypeCount[i]);
+                        } else if (i == 4) {
+                            devCardNum = Integer.toString(devCardTypeCount[4] + devCardTypeCount[5] + devCardTypeCount[6] + devCardTypeCount[7] + devCardTypeCount[8]);
+                        } else {
+                            devCardNum = "Error";
+                        }
+
+                        //draw the number of cards of that type
+                        g2d.drawString("x" + devCardNum,
+                                devCardStackXPositions[i] + getImgWidth(image), //align the number to the right edge of the card
+                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
+
+                        //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
+                        if (showDevCardHitbox && devCardTypeCount[i] > 0) {
+                            //decide if to draw this on in the loop
+                            /*
+                            if (false) { //if not trading draw it for theif discarding
+                                drawSpecificHitbox = true;
+                            }
+                             */
+                            drawSpecificHitbox = true;
+
+                            if (drawSpecificHitbox) {
+                                //draw the high light
+                                g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                                g2d.fillRect(devCardStackXPositions[i],
+                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                        getImgWidth(image),
+                                        getImgHeight(image));
+                                //draw the boarder
+                                g2d.setColor(new java.awt.Color(102, 62, 38));
+                                Stroke tempStroke = g2d.getStroke();
+                                g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                                g2d.drawRect(devCardStackXPositions[i],
+                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                        getImgWidth(image),
+                                        getImgHeight(image));
+                                g2d.setStroke(tempStroke);
+                                g2d.setColor(new java.awt.Color(255, 255, 225));
+                            }
+                        }
+
                     }
 
-                    // Draw the card
-                    g2d.drawImage(image,
-                            (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
-                            (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
-                            getImgWidth(image),
-                            getImgHeight(image),
-                            null);
+                    //restore the old font
+                    g2d.setFont(tempFont);
 
-                    //draw the hitbox
-                    if (showDevCardHitbox) {
-                        //decide if to draw this on in the loop
-                        /*
-                        if (false) { 
+                } else { //if the dev cards would NOT go off screen
+                    drawDevCardStacks[currentPlayer] = false;
+
+                    // Draw the player's dev cards
+                    // Reuse the image variable
+                    int type;
+                    for (int i = 0; i < listSize; i++) {
+                        // Get the card type
+                        type = devCards[currentPlayer].get(i);
+                        // Get the image for that card
+                        switch (type) {
+                            case 1: //knight card
+                                image = DEV_CARD_KNIGHT;
+                                break;
+                            case 2: //road building card
+                                image = DEV_CARD_PROGRESS_ROAD;
+                                break;
+                            case 3: //monopoly card
+                                image = DEV_CARD_PROGRESS_MONO;
+                                break;
+                            case 4: //year of pleanty card
+                                image = DEV_CARD_PROGRESS_YOP;
+                                break;
+                            case 5: //VP card market
+                                image = DEV_CARD_VP_MARKET;
+                                break;
+                            case 6: //VP card university
+                                image = DEV_CARD_VP_UNI;
+                                break;
+                            case 7: //VP card great hall
+                                image = DEV_CARD_VP_HALL;
+                                break;
+                            case 8: //VP card chapel
+                                image = DEV_CARD_VP_CHAPEL;
+                                break;
+                            case 9: //VP card library
+                                image = DEV_CARD_VP_LIBRARY;
+                                break;
+                            default: //error image
+                                image = ERROR_IMAGE;
+                                break;
+                        }
+
+                        // Draw the card
+                        g2d.drawImage(image,
+                                (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
+                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                getImgWidth(image),
+                                getImgHeight(image),
+                                null);
+
+                        //draw the hitbox
+                        if (showDevCardHitbox) {
+                            //decide if to draw this on in the loop
+                            /*
+                            if (false) { 
+                                drawSpecificHitbox = true;
+                            }
+                             */
                             drawSpecificHitbox = true;
-                        }
-                         */
-                        drawSpecificHitbox = true;
 
-                        if (drawSpecificHitbox) {
-                            //draw the high light
-                            g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                            g2d.fillRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
-                                    (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
-                                    getImgWidth(image),
-                                    getImgHeight(image));
-                            //draw the boarder
-                            g2d.setColor(new java.awt.Color(102, 62, 38));
-                            Stroke tempStroke = g2d.getStroke();
-                            g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                            g2d.drawRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
-                                    (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
-                                    getImgWidth(image),
-                                    getImgHeight(image));
-                            g2d.setStroke(tempStroke);
-                            g2d.setColor(Color.black);
+                            if (drawSpecificHitbox) {
+                                //draw the high light
+                                g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                                g2d.fillRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
+                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                        getImgWidth(image),
+                                        getImgHeight(image));
+                                //draw the boarder
+                                g2d.setColor(new java.awt.Color(102, 62, 38));
+                                Stroke tempStroke = g2d.getStroke();
+                                g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                                g2d.drawRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
+                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                        getImgWidth(image),
+                                        getImgHeight(image));
+                                g2d.setStroke(tempStroke);
+                                g2d.setColor(Color.black);
+                            }
                         }
+
                     }
 
                 }
