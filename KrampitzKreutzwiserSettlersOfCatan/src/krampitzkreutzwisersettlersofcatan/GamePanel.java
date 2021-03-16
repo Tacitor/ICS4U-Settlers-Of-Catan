@@ -1149,7 +1149,7 @@ public class GamePanel extends javax.swing.JPanel {
                     devCards[currentPlayer].add(new Integer("1"));
                     
                     //sort the dev cards
-                    //quickSortCards(ERROR, WIDTH, HEIGHT);
+                    quickSortCards(devCards[currentPlayer], 0, devCards[currentPlayer].size() - 1);
                     
                     updateBuildButtons();
                     repaint();
