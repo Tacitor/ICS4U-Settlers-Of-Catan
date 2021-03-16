@@ -1122,23 +1122,29 @@ public class GamePanel extends javax.swing.JPanel {
         //System.out.println("Click recieved");
 
         //check if the player clicked on one of the SettlerBtns
-        //check the card toggle button
-        if (event.getX() > toggleCardBtn.getXPos()
-                && event.getY() > toggleCardBtn.getYPos()
-                && event.getX() < (toggleCardBtn.getXPos() + getImgWidth(toggleCardBtn.getBaseImage()))
-                && event.getY() < (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()))
-                && toggleCardBtn.getEnabled()) { //and that it is enabled
+        //loop through all the custom buttons
+        for (SettlerBtn btn : settlerBtns) {
+            if (event.getX() > btn.getXPos()
+                    && event.getY() > btn.getYPos()
+                    && event.getX() < (btn.getXPos() + getImgWidth(btn.getBaseImage()))
+                    && event.getY() < (btn.getYPos() + getImgHeight(btn.getBaseImage()))
+                    && btn.getEnabled()) { //and that it is enabled
 
-            //check the mode
-            if (toggleCardBtn.getMode() == 0) { //if in mode 0 (switch TO dev cards)
-                toggleCardBtn.setMode(1);
-                showDevCards = true;
-            } else if (toggleCardBtn.getMode() == 1) { //if in mode to switch TO resource cards
-                toggleCardBtn.setMode(0);
-                showDevCards = false;
+                //check the button that was pressed
+                if (btn.equals(toggleCardBtn)) { //if it was the toggle button
+                    //check the mode
+                    if (toggleCardBtn.getMode() == 0) { //if in mode 0 (switch TO dev cards)
+                        toggleCardBtn.setMode(1);
+                        showDevCards = true;
+                    } else if (toggleCardBtn.getMode() == 1) { //if in mode to switch TO resource cards
+                        toggleCardBtn.setMode(0);
+                        showDevCards = false;
+                    }
+
+                    repaint();
+
+                }
             }
-
-            repaint();
         }
 
         //check if the player is building
@@ -2487,7 +2493,7 @@ public class GamePanel extends javax.swing.JPanel {
             toggleCardBtn.setEnabled(false);
             toggleCardBtn.setMode(0);
             showDevCards = false;
-            
+
             buyDevCardBtn.setEnabled(false);
         } //else if the player is currently trading
         else if (tradingMode != 0) {
@@ -2540,7 +2546,7 @@ public class GamePanel extends javax.swing.JPanel {
             canTrade2to = hasSpecializedPort();
 
             toggleCardBtn.setEnabled(true);
-            buyDevCardBtn.setEnabled(hasCards(3));
+            buyDevCardBtn.setEnabled(hasCards(3)); //check if the player has the cards to make a dev card
         }
 
         // Save what button was selected before this update began
