@@ -232,8 +232,13 @@ public class SettlerBtn extends WorldObject {
      */
     public boolean equals(SettlerBtn other) {
         // Return if the position of the objects are equal or not
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        //return super.equals(other);
+        return super.equals(other) 
+                && enabled == other.enabled
+                && mode == other.mode
+                && type == other.type
+                && baseImage == other.baseImage
+                && textImage == other.textImage
+                && disabledImage == other.disabledImage;
     }
 
     /**
