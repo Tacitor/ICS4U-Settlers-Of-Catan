@@ -134,6 +134,9 @@ public class GamePanel extends javax.swing.JPanel {
     private SettlerBtn toggleCardBtn;
     private SettlerBtn buyDevCardBtn;
 
+    //array of buttons for easy access
+    private SettlerBtn[] settlerBtns;
+
     //fonts
     private final Font timesNewRoman;
     private final Font tahoma;
@@ -378,6 +381,9 @@ public class GamePanel extends javax.swing.JPanel {
         //setup the SettlerBtns
         toggleCardBtn = new SettlerBtn(false, 0, 0);
         buyDevCardBtn = new SettlerBtn(10, 10, false, 1, 1);
+
+        //setup the button array
+        settlerBtns = new SettlerBtn[]{toggleCardBtn, buyDevCardBtn};
 
         //scale the Swing elements
         buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
@@ -2464,8 +2470,9 @@ public class GamePanel extends javax.swing.JPanel {
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
-            
+
             toggleCardBtn.setEnabled(true);
+            buyDevCardBtn.setEnabled(false);
         } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
         //or if a player is trading
         else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
@@ -2475,23 +2482,26 @@ public class GamePanel extends javax.swing.JPanel {
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
-            
+
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(false);
             toggleCardBtn.setMode(0);
             showDevCards = false;
+            
+            buyDevCardBtn.setEnabled(false);
         } //else if the player is currently trading
         else if (tradingMode != 0) {
             //diable all the building
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
-            
+
             //update the toggle card button to show the resource cards for trading
             toggleCardBtn.setEnabled(false);
             toggleCardBtn.setMode(0);
             showDevCards = false;
 
+            buyDevCardBtn.setEnabled(false);
             //check the trading type
             switch (tradingMode) { //make sure the only button active is the current trade mode. This allows the user to cancel trading.
                 case 1:
@@ -2528,8 +2538,9 @@ public class GamePanel extends javax.swing.JPanel {
             canTrade4to = hasTradeCards(4);
             canTrade3to = hasTradeCards(3) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
             canTrade2to = hasSpecializedPort();
-            
+
             toggleCardBtn.setEnabled(true);
+            buyDevCardBtn.setEnabled(hasCards(3));
         }
 
         // Save what button was selected before this update began
@@ -2626,7 +2637,7 @@ public class GamePanel extends javax.swing.JPanel {
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
-        
+
     }
 
     /**
@@ -4000,10 +4011,9 @@ public class GamePanel extends javax.swing.JPanel {
                                 getImgWidth(image),
                                 getImgHeight(image),
                                 null);
-                        
-                        
+
                         String devCardNum; //the number of dev cards the player has of that catagory
-                        
+
                         //get the number to write next to the card
                         if (i < 4) {
                             devCardNum = Integer.toString(devCardTypeCount[i]);
@@ -4148,28 +4158,27 @@ public class GamePanel extends javax.swing.JPanel {
         if (toggleCardBtn.getXPos() == -1 && toggleCardBtn.getYPos() == -1) {
             toggleCardBtn.setXPos((int) trade2to1Btn.getBounds().getX());
             toggleCardBtn.setYPos((int) (trade2to1Btn.getBounds().getY() + trade2to1Btn.getBounds().getHeight() + (20 / scaleFactor)));
-            
+
             buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
             buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (20 / scaleFactor)));
         }
 
         //draw the custom SettlerBtns
-        //draw the base        
-        drawSettlerBtn(g2d, toggleCardBtn.getBaseImage(), toggleCardBtn);
-        drawSettlerBtn(g2d, buyDevCardBtn.getBaseImage(), buyDevCardBtn);
+        //loop through the buttons
+        for (SettlerBtn btn : settlerBtns) {
+            //draw the base        
+            drawSettlerBtn(g2d, btn.getBaseImage(), btn);
 
-        //draw the text
-        drawSettlerBtn(g2d, toggleCardBtn.getTextImage(), toggleCardBtn);
-        drawSettlerBtn(g2d, buyDevCardBtn.getTextImage(), buyDevCardBtn);
+            //draw the text
+            drawSettlerBtn(g2d, btn.getTextImage(), btn);
 
-        //draw the disabled overlay if required
-        if (!toggleCardBtn.getEnabled()) {
-            drawSettlerBtn(g2d, toggleCardBtn.getDisabledImage(), toggleCardBtn);
+            //draw the disabled overlay if required
+            if (!btn.getEnabled()) {
+                drawSettlerBtn(g2d, btn.getDisabledImage(), btn);
+            }
+
         }
-        
-        if (!buyDevCardBtn.getEnabled()) {
-            drawSettlerBtn(g2d, buyDevCardBtn.getDisabledImage(), buyDevCardBtn);
-        }
+
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
