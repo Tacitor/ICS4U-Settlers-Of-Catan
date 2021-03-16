@@ -265,7 +265,6 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         //temp
-        devCards[1].add(2);
         devCards[1].add(1);
         devCards[1].add(2);
         devCards[1].add(3);
@@ -275,9 +274,6 @@ public class GamePanel extends javax.swing.JPanel {
         devCards[1].add(7);
         devCards[1].add(8);
         devCards[1].add(9);
-        devCards[1].add(2);
-        devCards[1].add(2);
-        devCards[1].add(2);
 
         devCards[2].add(4);
         devCards[2].add(4);
@@ -1143,6 +1139,20 @@ public class GamePanel extends javax.swing.JPanel {
 
                     repaint();
 
+                } else if (btn.equals(buyDevCardBtn)) { //if there was a click on the buy card button
+                    //since it was already confirmed the player has the corret amount of cards by the update build buttons method remove them
+                    cards[currentPlayer].remove(new Integer("3"));
+                    cards[currentPlayer].remove(new Integer("4"));
+                    cards[currentPlayer].remove(new Integer("5"));
+                    
+                    //give the player a dev card
+                    devCards[currentPlayer].add(new Integer("1"));
+                    
+                    //sort the dev cards
+                    //quickSortCards(ERROR, WIDTH, HEIGHT);
+                    
+                    updateBuildButtons();
+                    repaint();
                 }
             }
         }
@@ -1613,7 +1623,7 @@ public class GamePanel extends javax.swing.JPanel {
                         subPlayersHaveEnoughcards = false;
 
                         //sort the cards first
-                        quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+                        quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
                         //redraw
                         updateBuildButtons();
@@ -1730,7 +1740,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 cards[currentPlayer].add(tradeResource);
 
                                 //sort the cards so when the build button are updated they are in the correct order
-                                quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
                                 //turn off behavior as if the cancel button was pressed.
                                 turnSwitchBtn.setEnabled(true);
@@ -1796,7 +1806,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 cards[currentPlayer].add(tradeResource);
 
                                 //sort the cards so when the build button are updated they are in the correct order
-                                quickSortCards(currentPlayer, 0, cards[currentPlayer].size() - 1);
+                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
                                 //turn off behavior as if the cancel button was pressed.
                                 turnSwitchBtn.setEnabled(true);
@@ -2746,8 +2756,8 @@ public class GamePanel extends javax.swing.JPanel {
                 break;
             case 3: // Development card
                 // Making a development card requires 1 wheat, 1 sheep, and 1 ore
-                findCards[2] = 1;
                 findCards[3] = 1;
+                findCards[4] = 1;
                 findCards[5] = 1;
                 break;
         }
@@ -2803,11 +2813,11 @@ public class GamePanel extends javax.swing.JPanel {
      * set to length of array - 1)
      * @return
      */
-    private void quickSortCards(int player, int left, int right) {
+    private void quickSortCards(ArrayList<Integer> array , int left, int right) {
 
         Integer temp; // For swapping values
         // Get the player's ArrayList of cards
-        ArrayList<Integer> array = cards[player];
+        //ArrayList<Integer> array = cards[player];
 
         // If the list bounds overlap 
         if (left >= right) {
@@ -2845,9 +2855,9 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // Recursively call the algorithm on the left side of the pivot point
-        quickSortCards(player, left, j);
+        quickSortCards(array, left, j);
         // Recursively call the algorithm on the right side of the pivot point
-        quickSortCards(player, i, right);
+        quickSortCards(array, i, right);
     }
 
     /**
@@ -3138,7 +3148,7 @@ public class GamePanel extends javax.swing.JPanel {
         // Sort every player's cards
         for (int i = 1; i < cards.length; i++) {
             // Sort the player's cards using a quick sort algorithm
-            quickSortCards(i, 0, cards[i].size() - 1);
+            quickSortCards(cards[i], 0, cards[i].size() - 1);
         }
 
     }
