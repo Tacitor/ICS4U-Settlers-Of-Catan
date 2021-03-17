@@ -135,6 +135,7 @@ public class GamePanel extends javax.swing.JPanel {
     //custom buttons
     private SettlerBtn toggleCardBtn;
     private SettlerBtn buyDevCardBtn;
+    private SettlerBtn useDevCardBtn;
 
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
@@ -266,7 +267,7 @@ public class GamePanel extends javax.swing.JPanel {
             drawCardStacks[i] = false;
             drawDevCardStacks[i] = false;
         }
-        
+
         //populate the ArrayList containing all remaining dev cards. As the game is in startup fully populate it
         //add 25 cards
         for (int i = 1; i < 26; i++) {
@@ -388,10 +389,11 @@ public class GamePanel extends javax.swing.JPanel {
 
         //setup the SettlerBtns
         toggleCardBtn = new SettlerBtn(false, 0, 0); //cannot give a position yet because they need to be below the Swing buttons
-        buyDevCardBtn = new SettlerBtn(false, 1, 1); //but as of right here the Swing btns do not have coords.
+        buyDevCardBtn = new SettlerBtn(false, 0, 1); //but as of right here the Swing btns do not have coords.
+        useDevCardBtn = new SettlerBtn(false, 0, 2); //play a dev card and use it's abilities
 
         //setup the button array
-        settlerBtns = new SettlerBtn[]{toggleCardBtn, buyDevCardBtn};
+        settlerBtns = new SettlerBtn[]{toggleCardBtn, buyDevCardBtn, useDevCardBtn};
 
         //scale the Swing elements
         buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
@@ -945,6 +947,7 @@ public class GamePanel extends javax.swing.JPanel {
             //disable all the SettlerBtns
             toggleCardBtn.setEnabled(false);
             buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
 
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
@@ -1156,19 +1159,24 @@ public class GamePanel extends javax.swing.JPanel {
                     cards[currentPlayer].remove(new Integer("3"));
                     cards[currentPlayer].remove(new Integer("4"));
                     cards[currentPlayer].remove(new Integer("5"));
-                    
+
                     //select a randome dev card to give the player
                     int randCardIndex = (int) (Math.random() * availableDevCards.size());
-                    
+
                     //give the player a dev card
                     devCards[currentPlayer].add(availableDevCards.get(randCardIndex));
-                    
+
+                    //give the player a point if they got a vp card
+                    if (availableDevCards.get(randCardIndex) > 4) { //greater than 4 is 5-9
+                        victoryPoints[currentPlayer]++;
+                    }
+
                     //remove it from the ArrayList as it is no longer available
                     availableDevCards.remove(randCardIndex);
-                    
+
                     //sort the dev cards
                     quickSortCards(devCards[currentPlayer], 0, devCards[currentPlayer].size() - 1);
-                    
+
                     updateBuildButtons();
                     repaint();
                 }
@@ -2507,6 +2515,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
         } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
         //or if a player is trading
         else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
@@ -2523,6 +2532,7 @@ public class GamePanel extends javax.swing.JPanel {
             showDevCards = false;
 
             buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
         } //else if the player is currently trading
         else if (tradingMode != 0) {
             //diable all the building
@@ -2536,6 +2546,7 @@ public class GamePanel extends javax.swing.JPanel {
             showDevCards = false;
 
             buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
             //check the trading type
             switch (tradingMode) { //make sure the only button active is the current trade mode. This allows the user to cancel trading.
                 case 1:
@@ -2575,6 +2586,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
+            useDevCardBtn.setEnabled(hasDevCards());
         }
 
         // Save what button was selected before this update began
@@ -2736,6 +2748,31 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
+     * Determines if the current player has the right development cards to
+     * enable the use development cards button
+     *
+     * @param buildingType
+     * @return
+     */
+    private boolean hasDevCards() {
+        boolean hasCards = false;
+
+        //if there are any cards
+        if (devCards[currentPlayer].size() > 0) {
+
+            //loop through the first few types and see if they are contained in the list
+            for (int i = 1; i < 5; i++) { //go thorugh card types 1, 2, 3, 4
+                if (devCards[currentPlayer].contains(i)) {
+                    hasCards = true;
+                }
+            }
+
+        }
+
+        return hasCards;
+    }
+
+    /**
      * Determines if the current player has enough cards to build a type of
      * building This replaces the old findCards method, and is more efficient
      *
@@ -2831,7 +2868,7 @@ public class GamePanel extends javax.swing.JPanel {
      * set to length of array - 1)
      * @return
      */
-    private void quickSortCards(ArrayList<Integer> array , int left, int right) {
+    private void quickSortCards(ArrayList<Integer> array, int left, int right) {
 
         Integer temp; // For swapping values
         // Get the player's ArrayList of cards
@@ -4194,7 +4231,10 @@ public class GamePanel extends javax.swing.JPanel {
             toggleCardBtn.setYPos((int) (trade2to1Btn.getBounds().getY() + trade2to1Btn.getBounds().getHeight() + (20 / scaleFactor)));
 
             buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
-            buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (20 / scaleFactor)));
+            buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
+
+            useDevCardBtn.setXPos(toggleCardBtn.getXPos());
+            useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
         }
 
         //draw the custom SettlerBtns

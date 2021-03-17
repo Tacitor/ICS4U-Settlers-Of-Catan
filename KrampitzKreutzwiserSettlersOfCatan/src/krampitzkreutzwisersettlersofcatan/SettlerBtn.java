@@ -30,8 +30,10 @@ public class SettlerBtn extends WorldObject {
     private final static Image CARD_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("cardBtnDisabled.png")).getImage();
     private final static Image CARD_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("cardBtnText1.png")).getImage();
     private final static Image CARD_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("cardBtnText2.png")).getImage();
-    
+
     private final static Image BUY_DEV_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("buyDevBtnText.png")).getImage();
+
+    private final static Image USE_DEV_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("useDevBtnText.png")).getImage();
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -51,7 +53,7 @@ public class SettlerBtn extends WorldObject {
         updateText(); //update the text
         updateButtonImages(); //update the base image and disabled images
     }
-    
+
     /**
      * Half constructor
      *
@@ -106,6 +108,11 @@ public class SettlerBtn extends WorldObject {
                 baseImage = CARD_BTN;
                 disabledImage = CARD_DISABLED_BTN;
                 break;
+            case 2:
+                //if type is dev card buy button
+                baseImage = CARD_BTN;
+                disabledImage = CARD_DISABLED_BTN;
+                break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
@@ -127,6 +134,10 @@ public class SettlerBtn extends WorldObject {
             case 1:
                 //if the type is dev card buy button
                 textImage = BUY_DEV_BTN_TEXT;
+                break;
+            case 2:
+                //if the type is dev card buy button
+                textImage = USE_DEV_BTN_TEXT;
                 break;
             default:
                 //deflault to error image
@@ -232,7 +243,7 @@ public class SettlerBtn extends WorldObject {
      */
     public boolean equals(SettlerBtn other) {
         // Return if the position of the objects are equal or not
-        return super.equals(other) 
+        return super.equals(other)
                 && enabled == other.enabled
                 && mode == other.mode
                 && type == other.type
