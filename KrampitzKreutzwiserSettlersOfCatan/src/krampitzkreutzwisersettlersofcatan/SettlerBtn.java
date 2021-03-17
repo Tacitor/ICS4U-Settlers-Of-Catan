@@ -49,7 +49,7 @@ public class SettlerBtn extends WorldObject {
         type = 0; //set to card togggle button
 
         updateText(); //update the text
-        updateButtonImages(); //update the base iamge and disabled images
+        updateButtonImages(); //update the base image and disabled images
     }
     
     /**
@@ -66,10 +66,10 @@ public class SettlerBtn extends WorldObject {
 
         this.enabled = enabled;
         this.mode = mode;
-        this.type = type; //set to card togggle button
+        this.type = type; //set to the card passed in as parameter
 
         updateText(); //update the text
-        updateButtonImages(); //update the base iamge and disabled images
+        updateButtonImages(); //update the base image and disabled images
     }
 
     /**

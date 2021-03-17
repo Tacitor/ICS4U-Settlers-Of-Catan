@@ -387,8 +387,8 @@ public class GamePanel extends javax.swing.JPanel {
         dialog = buildBtn.getFont();
 
         //setup the SettlerBtns
-        toggleCardBtn = new SettlerBtn(false, 0, 0);
-        buyDevCardBtn = new SettlerBtn(10, 10, false, 1, 1);
+        toggleCardBtn = new SettlerBtn(false, 0, 0); //cannot give a position yet because they need to be below the Swing buttons
+        buyDevCardBtn = new SettlerBtn(false, 1, 1); //but as of right here the Swing btns do not have coords.
 
         //setup the button array
         settlerBtns = new SettlerBtn[]{toggleCardBtn, buyDevCardBtn};
@@ -3056,7 +3056,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // Act on the dice roll
-        if (false) { // Move the thief on a 7
+        if (roll == 7) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
