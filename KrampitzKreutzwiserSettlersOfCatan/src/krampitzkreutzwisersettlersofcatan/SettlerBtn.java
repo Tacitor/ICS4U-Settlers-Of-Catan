@@ -33,10 +33,12 @@ public class SettlerBtn extends WorldObject {
 
     private final static Image BUY_DEV_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("buyDevBtnText.png")).getImage();
 
-    private final static Image USE_DEV_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("useDevBtnText.png")).getImage();
+    private final static Image USE_DEV_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("useDevBtnText1.png")).getImage();
+    private final static Image USE_DEV_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("useDevBtnText2.png")).getImage();
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
+    private final static Image[] USE_DEV_BTN_TEXTS = new Image[]{USE_DEV_BTN_TEXT1, USE_DEV_BTN_TEXT2};
 
     //constructors
     /**
@@ -137,7 +139,7 @@ public class SettlerBtn extends WorldObject {
                 break;
             case 2:
                 //if the type is dev card buy button
-                textImage = USE_DEV_BTN_TEXT;
+                textImage = USE_DEV_BTN_TEXTS[mode];
                 break;
             default:
                 //deflault to error image

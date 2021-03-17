@@ -1179,6 +1179,13 @@ public class GamePanel extends javax.swing.JPanel {
 
                     updateBuildButtons();
                     repaint();
+                } else if (btn.equals(useDevCardBtn)) { //if the player clicked the use btn
+                    //disable the turn switch so it can't be used
+                    turnSwitchBtn.setEnabled(false);
+                    useDevCardBtn.setMode(1); //change the mode
+                    showDevCardHitbox = true;
+                    
+                    repaint();
                 }
             }
         }
