@@ -92,6 +92,8 @@ public class GamePanel extends javax.swing.JPanel {
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final ArrayList<Integer>[] devCards; //an Array of ArrayLists. Each player gets their own ArrayList for the dev cards they have.
     // ^^^ valid number are: 1 (knight), 2 (progress card road building), 3 (progress card monolpoy), 4 (progress card year of pleanty), 5, 6, 7, 8, 9 (5-9 are vp cards)
+    private final ArrayList<Integer> availableDevCards; //a list of dev cards that are still in a pile and have not been drawn. 
+    // ^^^ This ensures that the type distrobution is correct and also ensures that there will be a finite number of dev cards
     private final int victoryPoints[];
     private final int totalCardsCollected[];
     private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
@@ -180,6 +182,7 @@ public class GamePanel extends javax.swing.JPanel {
         //the +1 allows methods to use player IDs directly without subtracting 1
         drawDevCardStacks = new boolean[playerCount + 1];//create the array of how to draw the dev cards for each player
         //the +1 allows methods to use player IDs directly without subtracting 1
+        availableDevCards = new ArrayList<>(); //init the array for dev cards that will exist
         playerHasPort = new boolean[playerCount + 1][6]; //create the array keeping track of what player has acces to what ports
         //the +1 allows methods to use player IDs directly without subtracting 1
         //the 6 is for the six types of ports ^
@@ -263,22 +266,31 @@ public class GamePanel extends javax.swing.JPanel {
             drawCardStacks[i] = false;
             drawDevCardStacks[i] = false;
         }
-
-        //temp
-        devCards[1].add(1);
-        devCards[1].add(2);
-        devCards[1].add(3);
-        devCards[1].add(4);
-        devCards[1].add(5);
-        devCards[1].add(6);
-        devCards[1].add(7);
-        devCards[1].add(8);
-        devCards[1].add(9);
-
-        devCards[2].add(4);
-        devCards[2].add(4);
-        devCards[2].add(4);
-        devCards[2].add(5);
+        
+        //populate the ArrayList containing all remaining dev cards. As the game is in startup fully populate it
+        //add 25 cards
+        for (int i = 1; i < 26; i++) {
+            //add 14 knights
+            if (i <= 14) {
+                availableDevCards.add(1);
+            } else if (i <= 16) { //add two road building cards
+                availableDevCards.add(2);
+            } else if (i <= 18) { //add two monopoly cards
+                availableDevCards.add(3);
+            } else if (i <= 20) { //add two year of pleanty cards
+                availableDevCards.add(4);
+            } else if (i == 21) { //add one vp market card
+                availableDevCards.add(5);
+            } else if (i == 22) { //add one vp university card
+                availableDevCards.add(6);
+            } else if (i == 23) { //add one vp great hall card
+                availableDevCards.add(7);
+            } else if (i == 24) { //add one vp chapel card
+                availableDevCards.add(8);
+            } else if (i == 25) { //add one vp library card
+                availableDevCards.add(9);
+            }
+        }
 
         //fill the playerHasPort 2D array with false for all players ecxept 0 and fill all the ports they have with falses because noone has ports yet
         //skip player 0
@@ -1145,8 +1157,14 @@ public class GamePanel extends javax.swing.JPanel {
                     cards[currentPlayer].remove(new Integer("4"));
                     cards[currentPlayer].remove(new Integer("5"));
                     
+                    //select a randome dev card to give the player
+                    int randCardIndex = (int) (Math.random() * availableDevCards.size());
+                    
                     //give the player a dev card
-                    devCards[currentPlayer].add(new Integer("1"));
+                    devCards[currentPlayer].add(availableDevCards.get(randCardIndex));
+                    
+                    //remove it from the ArrayList as it is no longer available
+                    availableDevCards.remove(randCardIndex);
                     
                     //sort the dev cards
                     quickSortCards(devCards[currentPlayer], 0, devCards[currentPlayer].size() - 1);
@@ -2556,7 +2574,7 @@ public class GamePanel extends javax.swing.JPanel {
             canTrade2to = hasSpecializedPort();
 
             toggleCardBtn.setEnabled(true);
-            buyDevCardBtn.setEnabled(hasCards(3)); //check if the player has the cards to make a dev card
+            buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
         }
 
         // Save what button was selected before this update began
