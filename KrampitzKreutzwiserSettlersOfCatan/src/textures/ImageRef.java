@@ -16,15 +16,32 @@ public class ImageRef {
     
     //store most of the images to reduce varable clutter in the main class (gamePanel)
     
+    //error image
+    public final static Image ERROR_IMAGE = new ImageIcon(ImageRef.class.getResource("error.png")).getImage();
+    
     //icon image for game
     public final static Image ICON = new ImageIcon(ImageRef.class.getResource("icon.png")).getImage();
     
-    //images for the cards
+    //images for the resource cards
     public final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cardClay.png")).getImage();
     public final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cardWheat.png")).getImage();
     public final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cardOre.png")).getImage();
     public final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cardSheep.png")).getImage();
     public final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cardWood.png")).getImage();
+    
+    //images for the development cards
+    //place holders
+    public final static Image DEV_CARD_KNIGHT = new ImageIcon(ImageRef.class.getResource("devCardKnight.png")).getImage();
+    //dev card vp
+    public final static Image DEV_CARD_VP_UNI = new ImageIcon(ImageRef.class.getResource("devCardVPUni.png")).getImage();
+    public final static Image DEV_CARD_VP_MARKET = new ImageIcon(ImageRef.class.getResource("devCardVPMarket.png")).getImage();
+    public final static Image DEV_CARD_VP_LIBRARY = new ImageIcon(ImageRef.class.getResource("devCardVPLibrary.png")).getImage();
+    public final static Image DEV_CARD_VP_HALL = new ImageIcon(ImageRef.class.getResource("devCardVPHall.png")).getImage();
+    public final static Image DEV_CARD_VP_CHAPEL = new ImageIcon(ImageRef.class.getResource("devCardVPChapel.png")).getImage();
+    //dev card progress
+    public final static Image DEV_CARD_PROGRESS_ROAD = new ImageIcon(ImageRef.class.getResource("devCardProgressRoad.png")).getImage();
+    public final static Image DEV_CARD_PROGRESS_MONO = new ImageIcon(ImageRef.class.getResource("devCardProgressMono.png")).getImage();
+    public final static Image DEV_CARD_PROGRESS_YOP = new ImageIcon(ImageRef.class.getResource("devCardProgressYOP.png")).getImage();
 
     //images for the roads
     public final static Image RED_ROAD_H = new ImageIcon(ImageRef.class.getResource("redRoadH.png")).getImage(); //horizontal road
