@@ -4157,11 +4157,7 @@ public class GamePanel extends javax.swing.JPanel {
                         //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
                         if (showDevCardHitbox && devCardTypeCount[i] > 0) {
                             //decide if to draw this one in the loop
-                            if (i < 4) { //make sure the card is an action type card 
-                                drawSpecificHitbox = true;
-                            } else {
-                                drawSpecificHitbox = false;
-                            }
+                            drawSpecificHitbox = i < 4; //make sure the card is an action type card
 
                             if (drawSpecificHitbox) {
                                 //draw the high light
@@ -4242,11 +4238,7 @@ public class GamePanel extends javax.swing.JPanel {
                         //draw the hitbox
                         if (showDevCardHitbox) {
                             //decide if to draw this one in the loop
-                            if (type < 5) { //make sure the card is an action type card 
-                                drawSpecificHitbox = true;
-                            } else {
-                                drawSpecificHitbox = false;
-                            }
+                            drawSpecificHitbox = type < 5; //make sure the card is an action type card
 
                             if (drawSpecificHitbox) {
                                 //draw the high light
