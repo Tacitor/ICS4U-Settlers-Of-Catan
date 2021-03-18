@@ -1179,12 +1179,25 @@ public class GamePanel extends javax.swing.JPanel {
 
                     updateBuildButtons();
                     repaint();
-                } else if (btn.equals(useDevCardBtn)) { //if the player clicked the use btn
-                    //disable the turn switch so it can't be used
-                    turnSwitchBtn.setEnabled(false);
-                    useDevCardBtn.setMode(1); //change the mode
-                    showDevCardHitbox = true;
-                    
+                } else if (btn.equals(useDevCardBtn)) { //if the player clicked the use dev card btn
+                    //check the mode
+                    if (btn.getMode() == 0) { //if no card is currently being activated
+                        //disable the turn switch so it can't be used
+                        turnSwitchBtn.setEnabled(false);
+                        useDevCardBtn.setMode(1); //change the mode
+                        showDevCardHitbox = true;
+                        
+                        //force show the cards
+                        showDevCards = true;
+                        toggleCardBtn.setMode(1); //update the mode for that
+                    } else if (btn.getMode() == 1) { //if the user clicked the cancel button
+                        //disable the turn switch so it can't be used
+                        turnSwitchBtn.setEnabled(true);
+                        useDevCardBtn.setMode(0); //change the mode
+                        showDevCardHitbox = false;
+                    }
+
+                    updateBuildButtons();
                     repaint();
                 }
             }
@@ -2479,6 +2492,9 @@ public class GamePanel extends javax.swing.JPanel {
             //update the playerTurnOrder
             setupUpdatePlayerTurnOrder();
         }
+        
+        //sort the cards to ensure they have a good order
+        quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
         repaint();
         updateBuildButtons();
@@ -3100,7 +3116,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // Act on the dice roll
-        if (roll == 7) { // Move the thief on a 7
+        if (false) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
