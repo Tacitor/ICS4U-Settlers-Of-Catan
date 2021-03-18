@@ -106,6 +106,8 @@ public class GamePanel extends javax.swing.JPanel {
     private int tileWithThief; // The index of the tile with the thief
     private int buildingObject; // Indicates if/what the user is building. 
     // 0 when not placing anything, 1 for roads, 2 for settlements, and 3 for upgrading
+    private int usingDevCard; //Indecates if/what dev card the user is playing
+    //-1 for no dev card, 0 for when the game is waiting for the player to select a dev card and 1-4 for the specifc card being played
 
     private static int harvestRollNumOffset; //the number of pixels the harvest roll is ofset from. This allows both single and double diget number to be centered
 
@@ -201,6 +203,7 @@ public class GamePanel extends javax.swing.JPanel {
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
         buildingObject = 0;
+        usingDevCard = -1; //set it to normal value for when no dev card is being used
         showRoadHitbox = false;
         showSettlementHitbox = false;
         showCardHitbox = false;
@@ -1189,12 +1192,17 @@ public class GamePanel extends javax.swing.JPanel {
                         
                         //force show the cards
                         showDevCards = true;
-                        toggleCardBtn.setMode(1); //update the mode for that
+                        
+                        //register that the player wan't to use a dev card
+                        usingDevCard = 0;
                     } else if (btn.getMode() == 1) { //if the user clicked the cancel button
                         //disable the turn switch so it can't be used
                         turnSwitchBtn.setEnabled(true);
                         useDevCardBtn.setMode(0); //change the mode
                         showDevCardHitbox = false;
+                        
+                        //reset the dev card being used to no card
+                        usingDevCard = -1;
                     }
 
                     updateBuildButtons();
@@ -2598,6 +2606,23 @@ public class GamePanel extends javax.swing.JPanel {
                     break;
             }
 
+        } else if (usingDevCard > -1) { //if the game is in a mode for using dev cards
+            // ^^^ -1 because that is the neutral/resting value. 0 is for when a card is being selected but its unkown which one
+            canBuildRoad = false;
+            canBuildSettlement = false;
+            canBuildCity = false;
+            canTrade4to = false;
+            canTrade3to = false;
+            canTrade2to = false;
+
+            //update the toggle card button to show the dev cards options for using
+            toggleCardBtn.setEnabled(false);
+            toggleCardBtn.setMode(1);
+            showDevCards = true;
+
+            buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(true);
+            
         } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
             canBuildRoad = hasCards(0); // Roads
@@ -2610,6 +2635,13 @@ public class GamePanel extends javax.swing.JPanel {
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
             useDevCardBtn.setEnabled(hasDevCards());
+        }
+        
+        //if the user can build tell them that. (may be overwitten by following instructions
+        if (canBuildRoad || canBuildCity || canBuildSettlement || canTrade4to || canTrade3to || canTrade2to) {
+            // Set the instruction labels to tell the user they can build
+            instructionLbl.setText("Use your cards to trade or build roads or settlements");
+            subInstructionLbl.setText("Or end your turn to continue the game");
         }
 
         // Save what button was selected before this update began
