@@ -1569,6 +1569,106 @@ public class GamePanel extends javax.swing.JPanel {
 
             }
 
+        } else if (showDevCardHitbox && usingDevCard == 0) { //check if the player clicked on a dev card to actiavet it and use it
+            //get the y position for the cards
+            int devCardYPos = (int) (superFrame.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125));
+
+            //check what mode the card drawing is in
+            if (drawDevCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
+
+                //loop though four of the 5 stacks. They last one doesn't need to be checked as it isn't playable
+                for (int i = 0; i < 4; i++) {
+                    //check for a click
+                    if (event.getX() > devCardStackXPositions[i]
+                            && event.getX() < (devCardStackXPositions[i] + getImgWidth(DEV_CARD_KNIGHT))
+                            && event.getY() > devCardYPos
+                            && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                        //debug click detection
+                        //System.out.println("Stack Dev Card Clicked!");
+                        
+                        //make sure there is atleast one card in the stack
+                        if (devCardTypeCount[i] > 0) {
+                        
+                        //get the type of dev card clicked
+                        switch (i) {
+                            case 0:
+                                //if knight
+                                System.out.println("Knight Clicked");
+                                break;
+                            case 1:
+                                //if vp road
+                                System.out.println("Road Clicked");
+                                break; 
+                            case 2:
+                                //if vp monopoly
+                                System.out.println("Monopoly Clicked");
+                                break;
+                            case 3:
+                                //if vp YOP
+                                System.out.println("YOP Clicked");
+                                break;
+                            default: 
+                                //if anything else
+                                System.out.println("Invalid card clicked");
+                                break;
+                        }
+
+                        //updateBuildButtons();
+                        //repaint();
+                        }
+                    }
+                }
+
+            } else { //check for a click on a card in the full layout mode
+
+                //check if the user clicked on any card
+                for (int i = 0; i < devCards[currentPlayer].size(); i++) {
+                    //get the x position for that card
+                    int cardXPos = (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i);
+
+                    //check if there was a click on a card
+                    if (event.getX() > cardXPos
+                            && event.getY() > devCardYPos
+                            && event.getX() < (cardXPos + getImgWidth(DEV_CARD_KNIGHT))
+                            && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                        //debug click detection
+                        //System.out.println("Dev Card Clicked!");
+                        
+                        //save the card type
+                        int devCardType = devCards[currentPlayer].get(i);
+                        
+                        //get the type of dev card clicked
+                        switch (devCardType) {
+                            case 1:
+                                //if knight
+                                System.out.println("Knight Clicked");
+                                break;
+                            case 2:
+                                //if vp road
+                                System.out.println("Road Clicked");
+                                break; 
+                            case 3:
+                                //if vp monopoly
+                                System.out.println("Monopoly Clicked");
+                                break;
+                            case 4:
+                                //if vp YOP
+                                System.out.println("YOP Clicked");
+                                break;
+                            default: 
+                                //if anything else
+                                //System.out.println("Invalid card clicked");
+                                break;
+                        }
+
+                        //updateBuildButtons();
+                        //repaint();
+
+                    }
+                }
+
+            }
+            
         } else if (thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) { //check if the player clicked on a Tile to move the thief
             //loop through the Tiles. Ignore the null Tile at the end
             for (int i = 0; i < tiles.size() - 1; i++) {
