@@ -1189,10 +1189,10 @@ public class GamePanel extends javax.swing.JPanel {
                         turnSwitchBtn.setEnabled(false);
                         useDevCardBtn.setMode(1); //change the mode
                         showDevCardHitbox = true;
-                        
+
                         //force show the cards
                         showDevCards = true;
-                        
+
                         //register that the player wan't to use a dev card
                         usingDevCard = 0;
                     } else if (btn.getMode() == 1) { //if the user clicked the cancel button
@@ -1200,7 +1200,8 @@ public class GamePanel extends javax.swing.JPanel {
                         turnSwitchBtn.setEnabled(true);
                         useDevCardBtn.setMode(0); //change the mode
                         showDevCardHitbox = false;
-                        
+                        showTileHitbox = false;
+
                         //reset the dev card being used to no card
                         usingDevCard = -1;
                     }
@@ -1585,36 +1586,45 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
                         //debug click detection
                         //System.out.println("Stack Dev Card Clicked!");
-                        
+
+                        usingDevCard = i + 1;
+
                         //make sure there is atleast one card in the stack
                         if (devCardTypeCount[i] > 0) {
-                        
-                        //get the type of dev card clicked
-                        switch (i) {
-                            case 0:
-                                //if knight
-                                System.out.println("Knight Clicked");
-                                break;
-                            case 1:
-                                //if vp road
-                                System.out.println("Road Clicked");
-                                break; 
-                            case 2:
-                                //if vp monopoly
-                                System.out.println("Monopoly Clicked");
-                                break;
-                            case 3:
-                                //if vp YOP
-                                System.out.println("YOP Clicked");
-                                break;
-                            default: 
-                                //if anything else
-                                System.out.println("Invalid card clicked");
-                                break;
-                        }
 
-                        //updateBuildButtons();
-                        //repaint();
+                            //get the type of dev card clicked
+                            switch (i) {
+                                case 0:
+                                    //if knight
+                                    //System.out.println("Knight Clicked");
+
+                                    //show the tile hitboxes to move robber
+                                    showTileHitbox = true;
+                                    
+                                    break;
+                                case 1:
+                                    //if vp road
+                                    //System.out.println("Road Clicked");
+                                    break;
+                                case 2:
+                                    //if vp monopoly
+                                    //System.out.println("Monopoly Clicked");
+                                    break;
+                                case 3:
+                                    //if vp YOP
+                                    //System.out.println("YOP Clicked");
+                                    break;
+                                default:
+                                    //if anything else
+                                    //System.out.println("Invalid card clicked");
+                                    break;
+                            }
+
+                            //hide dev card hitbox
+                            showDevCardHitbox = false;
+
+                            updateBuildButtons();
+                            repaint();
                         }
                     }
                 }
@@ -1633,42 +1643,50 @@ public class GamePanel extends javax.swing.JPanel {
                             && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
                         //debug click detection
                         //System.out.println("Dev Card Clicked!");
-                        
+
                         //save the card type
                         int devCardType = devCards[currentPlayer].get(i);
-                        
+
+                        usingDevCard = devCardType;
+
                         //get the type of dev card clicked
                         switch (devCardType) {
                             case 1:
                                 //if knight
-                                System.out.println("Knight Clicked");
+                                //System.out.println("Knight Clicked");
+
+                                //show the tile hitboxes to move robber
+                                showTileHitbox = true;
+
                                 break;
                             case 2:
                                 //if vp road
-                                System.out.println("Road Clicked");
-                                break; 
+                                //System.out.println("Road Clicked");
+                                break;
                             case 3:
                                 //if vp monopoly
-                                System.out.println("Monopoly Clicked");
+                                //System.out.println("Monopoly Clicked");
                                 break;
                             case 4:
                                 //if vp YOP
-                                System.out.println("YOP Clicked");
+                                //System.out.println("YOP Clicked");
                                 break;
-                            default: 
+                            default:
                                 //if anything else
                                 //System.out.println("Invalid card clicked");
                                 break;
                         }
 
-                        //updateBuildButtons();
-                        //repaint();
+                        //hide dev card hitbox
+                        showDevCardHitbox = false;
 
+                        updateBuildButtons();
+                        repaint();
                     }
                 }
 
             }
-            
+
         } else if (thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) { //check if the player clicked on a Tile to move the thief
             //loop through the Tiles. Ignore the null Tile at the end
             for (int i = 0; i < tiles.size() - 1; i++) {
@@ -2600,7 +2618,7 @@ public class GamePanel extends javax.swing.JPanel {
             //update the playerTurnOrder
             setupUpdatePlayerTurnOrder();
         }
-        
+
         //sort the cards to ensure they have a good order
         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
@@ -2722,7 +2740,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(true);
-            
+
         } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
             canBuildRoad = hasCards(0); // Roads
@@ -2736,7 +2754,7 @@ public class GamePanel extends javax.swing.JPanel {
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
             useDevCardBtn.setEnabled(hasDevCards());
         }
-        
+
         //if the user can build tell them that. (may be overwitten by following instructions
         if (canBuildRoad || canBuildCity || canBuildSettlement || canTrade4to || canTrade3to || canTrade2to) {
             // Set the instruction labels to tell the user they can build
