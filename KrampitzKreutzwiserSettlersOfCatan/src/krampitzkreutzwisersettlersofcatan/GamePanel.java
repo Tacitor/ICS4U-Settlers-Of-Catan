@@ -1651,7 +1651,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //make sure the dev card type is a useable one and not VP
                         if (devCardType < 5) {
-                            
+
                             usingDevCard = devCardType;
 
                             //get the type of dev card clicked
@@ -1745,7 +1745,14 @@ public class GamePanel extends javax.swing.JPanel {
                         //System.out.println(canStealCardPlayers);
                         //decide how the rest will continue depending on if whether or not a knight card was used
                         if (usingDevCard == 1) {
-                            showSubPlayerHitbox = true;
+
+                            //check if there are any players to steal from
+                            if (canStealCardPlayers.size() > 0) {
+                                showSubPlayerHitbox = true;
+                            } else {
+                                resetUsingDevCards();
+                            }
+
                         } else {
                             //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
                             //onto slecting the cards they would like to discard if the requirements are met.
@@ -1816,13 +1823,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //if this was tiggered by a dev knight card
                         if (usingDevCard == 1) {
-                            //reset all the use dev card vars
-                            usingDevCard = -1;
-
-                            useDevCardBtn.setMode(0);
-
-                            //remove a knight card
-                            devCards[currentPlayer].remove(new Integer("1"));
+                            resetUsingDevCards();
                         }
 
                         //redraw
@@ -5110,12 +5111,39 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Draw a SettlerBtn with Graphics 2D
+     *
+     * @param g2d
+     * @param btnImage
+     * @param btn
+     */
     private void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn) {
         g2d.drawImage(btnImage,
                 btn.xPos,
                 btn.yPos,
                 getImgWidth(btnImage),
                 getImgHeight(btnImage), null);
+    }
+
+    /**
+     * Return all variables using in controlling development card usage to
+     * resting state.
+     */
+    private void resetUsingDevCards() {
+        //reenable the turn switch button
+        turnSwitchBtn.setEnabled(true);
+
+        //hide the hitbox again
+        showSubPlayerHitbox = false;
+
+        useDevCardBtn.setMode(0);
+
+        //remove a dev card
+        devCards[currentPlayer].remove(new Integer(usingDevCard));
+
+        //reset all the use dev card vars
+        usingDevCard = -1;
     }
 
     /**
