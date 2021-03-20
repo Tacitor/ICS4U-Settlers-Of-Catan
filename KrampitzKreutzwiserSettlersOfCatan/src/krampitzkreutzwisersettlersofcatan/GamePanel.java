@@ -1269,12 +1269,26 @@ public class GamePanel extends javax.swing.JPanel {
 
                                 } // If the real game is in progress and the player can build there
                                 else if (canBuildRoad(roadNodes.get(i))) {
-                                    // The card check has already been made, and the user has the right cards
 
-                                    // Remove the cards from the player's deck
-                                    // Remove 1 clay and 1 wood
-                                    cards[currentPlayer].remove(new Integer(1));
-                                    cards[currentPlayer].remove(new Integer(2));
+                                    //check if the user built roads given from the progress card
+                                    if (usingDevCard == 2 && playerSetupRoadsLeft > 0) { //these aren't actually setup roads. They just dont require resources
+                                        
+                                        //cout a free road
+                                        playerSetupRoadsLeft--;
+                                        
+                                        //check if the player is done now
+                                        if (playerSetupRoadsLeft == 0) {
+                                            resetUsingDevCards();
+                                        }
+
+                                    } else { //for normally bought roads
+
+                                        // The card check has already been made, and the user has the right cards
+                                        // Remove the cards from the player's deck
+                                        // Remove 1 clay and 1 wood
+                                        cards[currentPlayer].remove(new Integer(1));
+                                        cards[currentPlayer].remove(new Integer(2));
+                                    }
 
                                     // Set the road's player to the current player
                                     roadNodes.get(i).setPlayer(currentPlayer);
