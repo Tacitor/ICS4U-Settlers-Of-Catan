@@ -74,6 +74,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showSettlementHitbox;
     private boolean showTileHitbox;
     private boolean showPortHitbox;
+    private boolean showSubPlayerHitbox;
     private boolean showDevCards; //stores whether dec cards or resource cards are shown;
     private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
     private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
@@ -209,6 +210,7 @@ public class GamePanel extends javax.swing.JPanel {
         showCardHitbox = false;
         showTileHitbox = false;
         showPortHitbox = false;
+        showSubPlayerHitbox = false;
         showDevCards = false;
         showDevCardHitbox = false;
         tradingMode = 0;
@@ -1600,7 +1602,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                                     //show the tile hitboxes to move robber
                                     showTileHitbox = true;
-                                    
+
                                     break;
                                 case 1:
                                     //if vp road
@@ -1687,7 +1689,9 @@ public class GamePanel extends javax.swing.JPanel {
 
             }
 
-        } else if (thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) { //check if the player clicked on a Tile to move the thief
+        } else if ((thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) || (usingDevCard == 1 && showTileHitbox)) { //check if the player clicked on a Tile to move the thief
+            // ^^^ either for when a 7 is rolled or when a knight card is used.
+
             //loop through the Tiles. Ignore the null Tile at the end
             for (int i = 0; i < tiles.size() - 1; i++) {
 
@@ -1734,9 +1738,15 @@ public class GamePanel extends javax.swing.JPanel {
                         }
 
                         //System.out.println(canStealCardPlayers);
-                        //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
-                        //onto slecting the cards they would like to discard if the requirements are met.
-                        turnSwitchBtn.setEnabled(true);
+
+                        //decide how the rest will continue depending on if whether or not a knight card was used
+                        if (usingDevCard == 1) {
+                            showSubPlayerHitbox = true;
+                        } else {
+                            //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
+                            //onto slecting the cards they would like to discard if the requirements are met.
+                            turnSwitchBtn.setEnabled(true);
+                        }
                     }
 
                     updateBuildButtons();
@@ -1744,7 +1754,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
 
-        } else if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) { //check if the player just clicked to select another player to seal from
+        } else if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) || (showSubPlayerHitbox && usingDevCard == 1)) { //check if the player just clicked to select another player to seal from
             //debug
             //System.out.println("Got a steal click");
 
@@ -1786,6 +1796,9 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //clear the canStealCardPlayers ArrayList
                         canStealCardPlayers.clear();
+                        
+                        //hide the hitbox again
+                        showSubPlayerHitbox = false;
 
                         //update the instructions
                         instructionLbl.setText("You may now continue your turn.");
@@ -1796,6 +1809,17 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //sort the cards first
                         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+                        
+                        //if this was tiggered by a dev knight card
+                        if (usingDevCard == 1) {
+                            //reset all the use dev card vars
+                            usingDevCard = -1;
+                            
+                            useDevCardBtn.setMode(0);
+                            
+                            //remove a knight card
+                            devCards[currentPlayer].remove(new Integer("1"));
+                        }
 
                         //redraw
                         updateBuildButtons();
@@ -3462,6 +3486,7 @@ public class GamePanel extends javax.swing.JPanel {
     private void draw(Graphics g) {
         //start local vars
         int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
+        boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
 
         //end local vars
         //the Graphics2D class is the class that handles all the drawing
@@ -3544,10 +3569,16 @@ public class GamePanel extends javax.swing.JPanel {
 
             //draw the hitbox for the subsequent players
             //make sure the criteria is met before drawing.
-            if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) {
+            if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) || showSubPlayerHitbox) {
+                
+                if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
+                    drawSpecificHitbox = true;
+                } else {
+                    drawSpecificHitbox = false;
+                }
 
                 //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
-                if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
+                if (drawSpecificHitbox) {
                     //draw the high light
                     g2d.setColor(new java.awt.Color(255, 255, 225, 128));
                     g2d.fillRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
@@ -3575,7 +3606,6 @@ public class GamePanel extends javax.swing.JPanel {
         Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage();
 
         //draw the ports
-        boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
         for (int i = 0; i < ports.size(); i++) {
             g2d.drawImage(ports.get(i).getImage(),
                     ports.get(i).getXPos(),
