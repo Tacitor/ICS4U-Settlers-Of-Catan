@@ -1598,15 +1598,13 @@ public class GamePanel extends javax.swing.JPanel {
                             switch (i) {
                                 case 0:
                                     //if knight
-                                    //System.out.println("Knight Clicked");
-
-                                    //show the tile hitboxes to move robber
-                                    showTileHitbox = true;
+                                    clickedKnightCard();
 
                                     break;
                                 case 1:
                                     //if vp road
-                                    //System.out.println("Road Clicked");
+                                    clickedRoadCard();
+
                                     break;
                                 case 2:
                                     //if vp monopoly
@@ -1658,15 +1656,13 @@ public class GamePanel extends javax.swing.JPanel {
                             switch (devCardType) {
                                 case 1:
                                     //if knight
-                                    //System.out.println("Knight Clicked");
-
-                                    //show the tile hitboxes to move robber
-                                    showTileHitbox = true;
+                                    clickedKnightCard();
 
                                     break;
                                 case 2:
                                     //if vp road
-                                    //System.out.println("Road Clicked");
+                                    clickedRoadCard();
+
                                     break;
                                 case 3:
                                     //if vp monopoly
@@ -2038,6 +2034,44 @@ public class GamePanel extends javax.swing.JPanel {
             //update the screen
             repaint();
         }
+    }
+
+    /**
+     * Actions taken when a knight card is clicked
+     */
+    public void clickedKnightCard() {
+        //if knight
+        //System.out.println("Knight Clicked");
+
+        //show the tile hitboxes to move robber
+        showTileHitbox = true;
+    }
+
+    /**
+     * Actions taken when a road building development card is clicked
+     */
+    public void clickedRoadCard() {
+        //System.out.println("Road Clicked");
+
+        //give the player two manditory roads
+        playerSetupRoadsLeft = 2;
+
+        //no longer able to cancel
+        useDevCardBtn.setEnabled(false);
+    }
+
+    /**
+     * Actions taken when a monopoly development card is clicked
+     */
+    public void clickedMonopolyCard() {
+
+    }
+
+    /**
+     * Actions taken when a year of plenty development card is clicked
+     */
+    public void clickedYOPCard() {
+
     }
 
     /**
@@ -2755,7 +2789,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         } else if (usingDevCard > -1) { //if the game is in a mode for using dev cards
             // ^^^ -1 because that is the neutral/resting value. 0 is for when a card is being selected but its unkown which one
-            canBuildRoad = false;
+            canBuildRoad = (playerSetupRoadsLeft > 0); //if the player clicked the road building card allow them to build roads
             canBuildSettlement = false;
             canBuildCity = false;
             canTrade4to = false;
@@ -2768,7 +2802,7 @@ public class GamePanel extends javax.swing.JPanel {
             showDevCards = true;
 
             buyDevCardBtn.setEnabled(false);
-            useDevCardBtn.setEnabled(true);
+            useDevCardBtn.setEnabled(!(usingDevCard == 2)); //do not allow the user to cancel if they used a road building card
 
         } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
