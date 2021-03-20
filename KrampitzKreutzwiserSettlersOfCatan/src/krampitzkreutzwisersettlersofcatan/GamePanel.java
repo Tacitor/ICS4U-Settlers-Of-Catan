@@ -74,6 +74,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showSettlementHitbox;
     private boolean showTileHitbox;
     private boolean showPortHitbox;
+    private boolean showSubPlayerHitbox;
     private boolean showDevCards; //stores whether dec cards or resource cards are shown;
     private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
     private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
@@ -106,6 +107,8 @@ public class GamePanel extends javax.swing.JPanel {
     private int tileWithThief; // The index of the tile with the thief
     private int buildingObject; // Indicates if/what the user is building. 
     // 0 when not placing anything, 1 for roads, 2 for settlements, and 3 for upgrading
+    private int usingDevCard; //Indecates if/what dev card the user is playing
+    //-1 for no dev card, 0 for when the game is waiting for the player to select a dev card and 1-4 for the specifc card being played
 
     private static int harvestRollNumOffset; //the number of pixels the harvest roll is ofset from. This allows both single and double diget number to be centered
 
@@ -135,6 +138,7 @@ public class GamePanel extends javax.swing.JPanel {
     //custom buttons
     private SettlerBtn toggleCardBtn;
     private SettlerBtn buyDevCardBtn;
+    private SettlerBtn useDevCardBtn;
 
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
@@ -200,11 +204,13 @@ public class GamePanel extends javax.swing.JPanel {
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
         buildingObject = 0;
+        usingDevCard = -1; //set it to normal value for when no dev card is being used
         showRoadHitbox = false;
         showSettlementHitbox = false;
         showCardHitbox = false;
         showTileHitbox = false;
         showPortHitbox = false;
+        showSubPlayerHitbox = false;
         showDevCards = false;
         showDevCardHitbox = false;
         tradingMode = 0;
@@ -266,7 +272,7 @@ public class GamePanel extends javax.swing.JPanel {
             drawCardStacks[i] = false;
             drawDevCardStacks[i] = false;
         }
-        
+
         //populate the ArrayList containing all remaining dev cards. As the game is in startup fully populate it
         //add 25 cards
         for (int i = 1; i < 26; i++) {
@@ -388,10 +394,11 @@ public class GamePanel extends javax.swing.JPanel {
 
         //setup the SettlerBtns
         toggleCardBtn = new SettlerBtn(false, 0, 0); //cannot give a position yet because they need to be below the Swing buttons
-        buyDevCardBtn = new SettlerBtn(false, 1, 1); //but as of right here the Swing btns do not have coords.
+        buyDevCardBtn = new SettlerBtn(false, 0, 1); //but as of right here the Swing btns do not have coords.
+        useDevCardBtn = new SettlerBtn(false, 0, 2); //play a dev card and use it's abilities
 
         //setup the button array
-        settlerBtns = new SettlerBtn[]{toggleCardBtn, buyDevCardBtn};
+        settlerBtns = new SettlerBtn[]{toggleCardBtn, buyDevCardBtn, useDevCardBtn};
 
         //scale the Swing elements
         buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
@@ -945,6 +952,7 @@ public class GamePanel extends javax.swing.JPanel {
             //disable all the SettlerBtns
             toggleCardBtn.setEnabled(false);
             buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
 
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
@@ -1156,19 +1164,50 @@ public class GamePanel extends javax.swing.JPanel {
                     cards[currentPlayer].remove(new Integer("3"));
                     cards[currentPlayer].remove(new Integer("4"));
                     cards[currentPlayer].remove(new Integer("5"));
-                    
+
                     //select a randome dev card to give the player
                     int randCardIndex = (int) (Math.random() * availableDevCards.size());
-                    
+
                     //give the player a dev card
                     devCards[currentPlayer].add(availableDevCards.get(randCardIndex));
-                    
+
+                    //give the player a point if they got a vp card
+                    if (availableDevCards.get(randCardIndex) > 4) { //greater than 4 is 5-9
+                        victoryPoints[currentPlayer]++;
+                    }
+
                     //remove it from the ArrayList as it is no longer available
                     availableDevCards.remove(randCardIndex);
-                    
+
                     //sort the dev cards
                     quickSortCards(devCards[currentPlayer], 0, devCards[currentPlayer].size() - 1);
-                    
+
+                    updateBuildButtons();
+                    repaint();
+                } else if (btn.equals(useDevCardBtn)) { //if the player clicked the use dev card btn
+                    //check the mode
+                    if (btn.getMode() == 0) { //if no card is currently being activated
+                        //disable the turn switch so it can't be used
+                        turnSwitchBtn.setEnabled(false);
+                        useDevCardBtn.setMode(1); //change the mode
+                        showDevCardHitbox = true;
+
+                        //force show the cards
+                        showDevCards = true;
+
+                        //register that the player wan't to use a dev card
+                        usingDevCard = 0;
+                    } else if (btn.getMode() == 1) { //if the user clicked the cancel button
+                        //disable the turn switch so it can't be used
+                        turnSwitchBtn.setEnabled(true);
+                        useDevCardBtn.setMode(0); //change the mode
+                        showDevCardHitbox = false;
+                        showTileHitbox = false;
+
+                        //reset the dev card being used to no card
+                        usingDevCard = -1;
+                    }
+
                     updateBuildButtons();
                     repaint();
                 }
@@ -1533,7 +1572,131 @@ public class GamePanel extends javax.swing.JPanel {
 
             }
 
-        } else if (thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) { //check if the player clicked on a Tile to move the thief
+        } else if (showDevCardHitbox && usingDevCard == 0) { //check if the player clicked on a dev card to actiavet it and use it
+            //get the y position for the cards
+            int devCardYPos = (int) (superFrame.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125));
+
+            //check what mode the card drawing is in
+            if (drawDevCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
+
+                //loop though four of the 5 stacks. They last one doesn't need to be checked as it isn't playable
+                for (int i = 0; i < 4; i++) {
+                    //check for a click
+                    if (event.getX() > devCardStackXPositions[i]
+                            && event.getX() < (devCardStackXPositions[i] + getImgWidth(DEV_CARD_KNIGHT))
+                            && event.getY() > devCardYPos
+                            && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                        //debug click detection
+                        //System.out.println("Stack Dev Card Clicked!");
+
+                        usingDevCard = i + 1;
+
+                        //make sure there is atleast one card in the stack
+                        if (devCardTypeCount[i] > 0) {
+
+                            //get the type of dev card clicked
+                            switch (i) {
+                                case 0:
+                                    //if knight
+                                    //System.out.println("Knight Clicked");
+
+                                    //show the tile hitboxes to move robber
+                                    showTileHitbox = true;
+
+                                    break;
+                                case 1:
+                                    //if vp road
+                                    //System.out.println("Road Clicked");
+                                    break;
+                                case 2:
+                                    //if vp monopoly
+                                    //System.out.println("Monopoly Clicked");
+                                    break;
+                                case 3:
+                                    //if vp YOP
+                                    //System.out.println("YOP Clicked");
+                                    break;
+                                default:
+                                    //if anything else
+                                    //System.out.println("Invalid card clicked");
+                                    break;
+                            }
+
+                            //hide dev card hitbox
+                            showDevCardHitbox = false;
+
+                            updateBuildButtons();
+                            repaint();
+                        }
+                    }
+                }
+
+            } else { //check for a click on a card in the full layout mode
+
+                //check if the user clicked on any card
+                for (int i = 0; i < devCards[currentPlayer].size(); i++) {
+                    //get the x position for that card
+                    int cardXPos = (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i);
+
+                    //check if there was a click on a card
+                    if (event.getX() > cardXPos
+                            && event.getY() > devCardYPos
+                            && event.getX() < (cardXPos + getImgWidth(DEV_CARD_KNIGHT))
+                            && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                        //debug click detection
+                        //System.out.println("Dev Card Clicked!");
+
+                        //save the card type
+                        int devCardType = devCards[currentPlayer].get(i);
+
+                        //make sure the dev card type is a useable one and not VP
+                        if (devCardType < 5) {
+
+                            usingDevCard = devCardType;
+
+                            //get the type of dev card clicked
+                            switch (devCardType) {
+                                case 1:
+                                    //if knight
+                                    //System.out.println("Knight Clicked");
+
+                                    //show the tile hitboxes to move robber
+                                    showTileHitbox = true;
+
+                                    break;
+                                case 2:
+                                    //if vp road
+                                    //System.out.println("Road Clicked");
+                                    break;
+                                case 3:
+                                    //if vp monopoly
+                                    //System.out.println("Monopoly Clicked");
+                                    break;
+                                case 4:
+                                    //if vp YOP
+                                    //System.out.println("YOP Clicked");
+                                    break;
+                                default:
+                                    //if anything else
+                                    System.out.println("Invalid card clicked");
+                                    break;
+                            }
+
+                            //hide dev card hitbox
+                            showDevCardHitbox = false;
+
+                        }
+
+                        updateBuildButtons();
+                        repaint();
+                    }
+                }
+
+            }
+
+        } else if ((thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) || (usingDevCard == 1 && showTileHitbox)) { //check if the player clicked on a Tile to move the thief
+            // ^^^ either for when a 7 is rolled or when a knight card is used.
+
             //loop through the Tiles. Ignore the null Tile at the end
             for (int i = 0; i < tiles.size() - 1; i++) {
 
@@ -1580,9 +1743,21 @@ public class GamePanel extends javax.swing.JPanel {
                         }
 
                         //System.out.println(canStealCardPlayers);
-                        //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
-                        //onto slecting the cards they would like to discard if the requirements are met.
-                        turnSwitchBtn.setEnabled(true);
+                        //decide how the rest will continue depending on if whether or not a knight card was used
+                        if (usingDevCard == 1) {
+
+                            //check if there are any players to steal from
+                            if (canStealCardPlayers.size() > 0) {
+                                showSubPlayerHitbox = true;
+                            } else {
+                                resetUsingDevCards();
+                            }
+
+                        } else {
+                            //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
+                            //onto slecting the cards they would like to discard if the requirements are met.
+                            turnSwitchBtn.setEnabled(true);
+                        }
                     }
 
                     updateBuildButtons();
@@ -1590,7 +1765,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
 
-        } else if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) { //check if the player just clicked to select another player to seal from
+        } else if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) || (showSubPlayerHitbox && usingDevCard == 1)) { //check if the player just clicked to select another player to seal from
             //debug
             //System.out.println("Got a steal click");
 
@@ -1633,6 +1808,9 @@ public class GamePanel extends javax.swing.JPanel {
                         //clear the canStealCardPlayers ArrayList
                         canStealCardPlayers.clear();
 
+                        //hide the hitbox again
+                        showSubPlayerHitbox = false;
+
                         //update the instructions
                         instructionLbl.setText("You may now continue your turn.");
                         subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
@@ -1642,6 +1820,11 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //sort the cards first
                         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+
+                        //if this was tiggered by a dev knight card
+                        if (usingDevCard == 1) {
+                            resetUsingDevCards();
+                        }
 
                         //redraw
                         updateBuildButtons();
@@ -2465,6 +2648,9 @@ public class GamePanel extends javax.swing.JPanel {
             setupUpdatePlayerTurnOrder();
         }
 
+        //sort the cards to ensure they have a good order
+        quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+
         repaint();
         updateBuildButtons();
     }
@@ -2507,6 +2693,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
         } //if the theif is stealing player's cards or the player is selecting another player to steal one card from.
         //or if a player is trading
         else if (thiefIsStealing || (thiefJustFinished && currentPlayer != playerRolled7) || canStealCardPlayers.size() > 0) {
@@ -2523,6 +2710,7 @@ public class GamePanel extends javax.swing.JPanel {
             showDevCards = false;
 
             buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
         } //else if the player is currently trading
         else if (tradingMode != 0) {
             //diable all the building
@@ -2536,6 +2724,7 @@ public class GamePanel extends javax.swing.JPanel {
             showDevCards = false;
 
             buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
             //check the trading type
             switch (tradingMode) { //make sure the only button active is the current trade mode. This allows the user to cancel trading.
                 case 1:
@@ -2564,6 +2753,23 @@ public class GamePanel extends javax.swing.JPanel {
                     break;
             }
 
+        } else if (usingDevCard > -1) { //if the game is in a mode for using dev cards
+            // ^^^ -1 because that is the neutral/resting value. 0 is for when a card is being selected but its unkown which one
+            canBuildRoad = false;
+            canBuildSettlement = false;
+            canBuildCity = false;
+            canTrade4to = false;
+            canTrade3to = false;
+            canTrade2to = false;
+
+            //update the toggle card button to show the dev cards options for using
+            toggleCardBtn.setEnabled(false);
+            toggleCardBtn.setMode(1);
+            showDevCards = true;
+
+            buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(true);
+
         } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
             canBuildRoad = hasCards(0); // Roads
@@ -2575,6 +2781,14 @@ public class GamePanel extends javax.swing.JPanel {
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
+            useDevCardBtn.setEnabled(hasDevCards());
+        }
+
+        //if the user can build tell them that. (may be overwitten by following instructions
+        if (canBuildRoad || canBuildCity || canBuildSettlement || canTrade4to || canTrade3to || canTrade2to) {
+            // Set the instruction labels to tell the user they can build
+            instructionLbl.setText("Use your cards to trade or build roads or settlements");
+            subInstructionLbl.setText("Or end your turn to continue the game");
         }
 
         // Save what button was selected before this update began
@@ -2736,6 +2950,31 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
+     * Determines if the current player has the right development cards to
+     * enable the use development cards button
+     *
+     * @param buildingType
+     * @return
+     */
+    private boolean hasDevCards() {
+        boolean hasCards = false;
+
+        //if there are any cards
+        if (devCards[currentPlayer].size() > 0) {
+
+            //loop through the first few types and see if they are contained in the list
+            for (int i = 1; i < 5; i++) { //go thorugh card types 1, 2, 3, 4
+                if (devCards[currentPlayer].contains(i)) {
+                    hasCards = true;
+                }
+            }
+
+        }
+
+        return hasCards;
+    }
+
+    /**
      * Determines if the current player has enough cards to build a type of
      * building This replaces the old findCards method, and is more efficient
      *
@@ -2831,7 +3070,7 @@ public class GamePanel extends javax.swing.JPanel {
      * set to length of array - 1)
      * @return
      */
-    private void quickSortCards(ArrayList<Integer> array , int left, int right) {
+    private void quickSortCards(ArrayList<Integer> array, int left, int right) {
 
         Integer temp; // For swapping values
         // Get the player's ArrayList of cards
@@ -3056,7 +3295,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // Act on the dice roll
-        if (roll == 7) { // Move the thief on a 7
+        if (false) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
@@ -3252,6 +3491,7 @@ public class GamePanel extends javax.swing.JPanel {
     private void draw(Graphics g) {
         //start local vars
         int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
+        boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
 
         //end local vars
         //the Graphics2D class is the class that handles all the drawing
@@ -3334,10 +3574,16 @@ public class GamePanel extends javax.swing.JPanel {
 
             //draw the hitbox for the subsequent players
             //make sure the criteria is met before drawing.
-            if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) {
+            if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) || showSubPlayerHitbox) {
+
+                if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
+                    drawSpecificHitbox = true;
+                } else {
+                    drawSpecificHitbox = false;
+                }
 
                 //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
-                if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
+                if (drawSpecificHitbox) {
                     //draw the high light
                     g2d.setColor(new java.awt.Color(255, 255, 225, 128));
                     g2d.fillRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
@@ -3365,7 +3611,6 @@ public class GamePanel extends javax.swing.JPanel {
         Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage();
 
         //draw the ports
-        boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
         for (int i = 0; i < ports.size(); i++) {
             g2d.drawImage(ports.get(i).getImage(),
                     ports.get(i).getXPos(),
@@ -4064,13 +4309,8 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
                         if (showDevCardHitbox && devCardTypeCount[i] > 0) {
-                            //decide if to draw this on in the loop
-                            /*
-                            if (false) { //if not trading draw it for theif discarding
-                                drawSpecificHitbox = true;
-                            }
-                             */
-                            drawSpecificHitbox = true;
+                            //decide if to draw this one in the loop
+                            drawSpecificHitbox = i < 4; //make sure the card is an action type card
 
                             if (drawSpecificHitbox) {
                                 //draw the high light
@@ -4150,13 +4390,8 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //draw the hitbox
                         if (showDevCardHitbox) {
-                            //decide if to draw this on in the loop
-                            /*
-                            if (false) { 
-                                drawSpecificHitbox = true;
-                            }
-                             */
-                            drawSpecificHitbox = true;
+                            //decide if to draw this one in the loop
+                            drawSpecificHitbox = type < 5; //make sure the card is an action type card
 
                             if (drawSpecificHitbox) {
                                 //draw the high light
@@ -4194,7 +4429,10 @@ public class GamePanel extends javax.swing.JPanel {
             toggleCardBtn.setYPos((int) (trade2to1Btn.getBounds().getY() + trade2to1Btn.getBounds().getHeight() + (20 / scaleFactor)));
 
             buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
-            buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (20 / scaleFactor)));
+            buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
+
+            useDevCardBtn.setXPos(toggleCardBtn.getXPos());
+            useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
         }
 
         //draw the custom SettlerBtns
@@ -4873,12 +5111,39 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Draw a SettlerBtn with Graphics 2D
+     *
+     * @param g2d
+     * @param btnImage
+     * @param btn
+     */
     private void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn) {
         g2d.drawImage(btnImage,
                 btn.xPos,
                 btn.yPos,
                 getImgWidth(btnImage),
                 getImgHeight(btnImage), null);
+    }
+
+    /**
+     * Return all variables using in controlling development card usage to
+     * resting state.
+     */
+    private void resetUsingDevCards() {
+        //reenable the turn switch button
+        turnSwitchBtn.setEnabled(true);
+
+        //hide the hitbox again
+        showSubPlayerHitbox = false;
+
+        useDevCardBtn.setMode(0);
+
+        //remove a dev card
+        devCards[currentPlayer].remove(new Integer(usingDevCard));
+
+        //reset all the use dev card vars
+        usingDevCard = -1;
     }
 
     /**
