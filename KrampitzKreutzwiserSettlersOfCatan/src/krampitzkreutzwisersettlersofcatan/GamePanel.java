@@ -1649,38 +1649,43 @@ public class GamePanel extends javax.swing.JPanel {
                         //save the card type
                         int devCardType = devCards[currentPlayer].get(i);
 
-                        usingDevCard = devCardType;
+                        //make sure the dev card type is a useable one and not VP
+                        if (devCardType < 5) {
+                            
+                            usingDevCard = devCardType;
 
-                        //get the type of dev card clicked
-                        switch (devCardType) {
-                            case 1:
-                                //if knight
-                                //System.out.println("Knight Clicked");
+                            //get the type of dev card clicked
+                            switch (devCardType) {
+                                case 1:
+                                    //if knight
+                                    //System.out.println("Knight Clicked");
 
-                                //show the tile hitboxes to move robber
-                                showTileHitbox = true;
+                                    //show the tile hitboxes to move robber
+                                    showTileHitbox = true;
 
-                                break;
-                            case 2:
-                                //if vp road
-                                //System.out.println("Road Clicked");
-                                break;
-                            case 3:
-                                //if vp monopoly
-                                //System.out.println("Monopoly Clicked");
-                                break;
-                            case 4:
-                                //if vp YOP
-                                //System.out.println("YOP Clicked");
-                                break;
-                            default:
-                                //if anything else
-                                //System.out.println("Invalid card clicked");
-                                break;
+                                    break;
+                                case 2:
+                                    //if vp road
+                                    //System.out.println("Road Clicked");
+                                    break;
+                                case 3:
+                                    //if vp monopoly
+                                    //System.out.println("Monopoly Clicked");
+                                    break;
+                                case 4:
+                                    //if vp YOP
+                                    //System.out.println("YOP Clicked");
+                                    break;
+                                default:
+                                    //if anything else
+                                    System.out.println("Invalid card clicked");
+                                    break;
+                            }
+
+                            //hide dev card hitbox
+                            showDevCardHitbox = false;
+
                         }
-
-                        //hide dev card hitbox
-                        showDevCardHitbox = false;
 
                         updateBuildButtons();
                         repaint();
@@ -1738,7 +1743,6 @@ public class GamePanel extends javax.swing.JPanel {
                         }
 
                         //System.out.println(canStealCardPlayers);
-
                         //decide how the rest will continue depending on if whether or not a knight card was used
                         if (usingDevCard == 1) {
                             showSubPlayerHitbox = true;
@@ -1796,7 +1800,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //clear the canStealCardPlayers ArrayList
                         canStealCardPlayers.clear();
-                        
+
                         //hide the hitbox again
                         showSubPlayerHitbox = false;
 
@@ -1809,14 +1813,14 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //sort the cards first
                         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
-                        
+
                         //if this was tiggered by a dev knight card
                         if (usingDevCard == 1) {
                             //reset all the use dev card vars
                             usingDevCard = -1;
-                            
+
                             useDevCardBtn.setMode(0);
-                            
+
                             //remove a knight card
                             devCards[currentPlayer].remove(new Integer("1"));
                         }
@@ -3570,7 +3574,7 @@ public class GamePanel extends javax.swing.JPanel {
             //draw the hitbox for the subsequent players
             //make sure the criteria is met before drawing.
             if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) || showSubPlayerHitbox) {
-                
+
                 if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
                     drawSpecificHitbox = true;
                 } else {
