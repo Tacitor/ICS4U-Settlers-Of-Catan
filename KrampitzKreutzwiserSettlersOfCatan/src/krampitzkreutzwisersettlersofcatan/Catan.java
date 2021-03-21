@@ -14,7 +14,7 @@ public class Catan {
     public static int clock = 0;
     
     public static void main(String[] args) throws InterruptedException {
-        System.out.println("Hi");
+        System.out.println("Catan startup");
         
         /* Set the Windows 10 look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

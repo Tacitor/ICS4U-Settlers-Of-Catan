@@ -249,7 +249,7 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void loadAutosaveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadAutosaveBtnActionPerformed
         String autosaveLocation = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan";
-        
+
         //test if it is a vailid autosave file
         try {
             //use the predetermined auto save file location

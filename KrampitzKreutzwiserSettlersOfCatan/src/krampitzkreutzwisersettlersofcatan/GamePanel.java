@@ -955,7 +955,7 @@ public class GamePanel extends javax.swing.JPanel {
             toggleCardBtn.setEnabled(false);
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(false);
-            
+
             //reset the boolean to false because the turn just ended and the user hasn't used a card yet
             userPlayedDevCard = false;
 
@@ -1140,7 +1140,7 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public void mouseClick(MouseEvent event) {
         // debug click listener
-        //System.out.println("Click recieved");
+        //System.out.println("Click recieved at clock: " + Catan.clock);
 
         //check if the player clicked on one of the SettlerBtns
         //loop through all the custom buttons
@@ -1277,10 +1277,10 @@ public class GamePanel extends javax.swing.JPanel {
 
                                     //check if the user built roads given from the progress card
                                     if (usingDevCard == 2 && playerSetupRoadsLeft > 0) { //these aren't actually setup roads. They just dont require resources
-                                        
+
                                         //cout a free road
                                         playerSetupRoadsLeft--;
-                                        
+
                                         //check if the player is done now
                                         if (playerSetupRoadsLeft == 0) {
                                             resetUsingDevCards();
@@ -1631,7 +1631,8 @@ public class GamePanel extends javax.swing.JPanel {
                                     break;
                                 case 3:
                                     //if vp YOP
-                                    //System.out.println("YOP Clicked");
+                                    clickedYOPCard();
+
                                     break;
                                 default:
                                     //if anything else
@@ -1689,7 +1690,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     break;
                                 case 4:
                                     //if vp YOP
-                                    //System.out.println("YOP Clicked");
+                                    clickedYOPCard();
                                     break;
                                 default:
                                     //if anything else
@@ -1860,7 +1861,8 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setColor(Color.black);
             }
              */
-        } else if (showPortHitbox && tradingMode != 0 && tradeResource == 0) { //check if the player is clicking a port to select a resource type to trade to
+        } else if ((showPortHitbox && tradingMode != 0 && tradeResource == 0) || (usingDevCard == 4 && showPortHitbox)) { //check if the player is clicking a port to select a resource type to trade to
+            //or if the player clicked the port to select a resource type for a dev card
 
             int portPosX;
             int portPosY;
@@ -1878,35 +1880,52 @@ public class GamePanel extends javax.swing.JPanel {
                         && event.getX() < (portPosX + getImgWidth(ports.get(i).getTypeImage()))
                         && event.getY() < (portPosY + getImgHeight(ports.get(i).getTypeImage()))) {
 
-                    //check if its a non general port and also if clicking that port would leave the player with no options for cards to trade away
-                    //split up into generic 4:1 or 3:1, and specialized 2:1 trades
+                    //check if its a non general port
                     if (ports.get(i).getType() != 0) {
 
-                        //4:1 or 3:1 tradng
-                        if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(ports.get(i).getType(), tradingMode)) {
-                            validPort = true;
-                        } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) { //2:1 tradng
-                            validPort = true;
+                        //check if the player clicked the port for trading or dev card
+                        if (usingDevCard == 4) { //YOP card
+
+                            //give the player two of the resource
+                            for (int j = 0; j < 2; j++) {
+                                cards[currentPlayer].add(ports.get(i).getType());
+                            }
+
+                            //finish using the dev card
+                            resetUsingDevCards();
+                            updateBuildButtons();
+
+                        } else { //if its for trading
+
+                            //also if clicking that port would leave the player with no options for cards to trade away
+                            //split up into generic 4:1 or 3:1, and specialized 2:1 trades
+                            //4:1 or 3:1 tradng
+                            if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(ports.get(i).getType(), tradingMode)) {
+                                validPort = true;
+                            } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) { //2:1 tradng
+                                validPort = true;
+                            }
+
+                            //only make the selection if its a valid port selection
+                            if (validPort) {
+                                //register the type the player want to trade TO
+                                tradeResource = ports.get(i).getType();
+
+                                //update the instructions for the next trading step
+                                instructionLbl.setText("Now select a card");
+                                subInstructionLbl.setText("This card should be of the type you would like to trade away");
+
+                                //show the card hitboxes
+                                showCardHitbox = true;
+                            }
                         }
 
-                        //only make the selection if its a valid port selection
-                        if (validPort) {
-                            //register the type the player want to trade TO
-                            tradeResource = ports.get(i).getType();
+                        //turn off the hitboxes
+                        showPortHitbox = false;
 
-                            //turn off the hitboxes
-                            showPortHitbox = false;
+                        //update the screen
+                        repaint();
 
-                            //update the instructions for the next trading step
-                            instructionLbl.setText("Now select a card");
-                            subInstructionLbl.setText("This card should be of the type you would like to trade away");
-
-                            //show the card hitboxes
-                            showCardHitbox = true;
-
-                            //update the screen
-                            repaint();
-                        }
                     }
                 }
 
@@ -2090,7 +2109,10 @@ public class GamePanel extends javax.swing.JPanel {
      * Actions taken when a year of plenty development card is clicked
      */
     public void clickedYOPCard() {
+        //System.out.println("YOP Clicked");
 
+        //show the port hitboxes so the player can select a resource
+        showPortHitbox = true;
     }
 
     /**
@@ -3689,6 +3711,8 @@ public class GamePanel extends javax.swing.JPanel {
                     drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
                 } else if (tradingMode == 3) { //if its a specialized 2:1
                     drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType());
+                } else if (usingDevCard == 4) { //if the player is selecting a resource type for a YOP dev card
+                    drawSpecificHitbox = true;
                 } else {
                     drawSpecificHitbox = false;
                 }
@@ -5197,7 +5221,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //reset all the use dev card vars
         usingDevCard = -1;
-        
+
         //register the user using a dev card
         userPlayedDevCard = true;
     }
