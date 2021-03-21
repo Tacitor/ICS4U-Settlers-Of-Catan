@@ -3466,7 +3466,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // Act on the dice roll
-        if (false) { // Move the thief on a 7
+        if (roll == 7) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
@@ -3747,11 +3747,7 @@ public class GamePanel extends javax.swing.JPanel {
             //make sure the criteria is met before drawing.
             if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) || showSubPlayerHitbox) {
 
-                if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
-                    drawSpecificHitbox = true;
-                } else {
-                    drawSpecificHitbox = false;
-                }
+                drawSpecificHitbox = cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i));
 
                 //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
                 if (drawSpecificHitbox) {
@@ -3807,11 +3803,8 @@ public class GamePanel extends javax.swing.JPanel {
                     drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
                 } else if (tradingMode == 3) { //if its a specialized 2:1
                     drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType());
-                } else if (usingDevCard == 4 || usingDevCard == 3) { //if the player is selecting a resource type for a YOP or Monopoly dev card
-                    drawSpecificHitbox = true;
-                } else {
-                    drawSpecificHitbox = false;
-                }
+                } else drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
+                
 
                 //check if that one should be drawn
                 if (drawSpecificHitbox) {
