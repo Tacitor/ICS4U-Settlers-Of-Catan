@@ -71,8 +71,8 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showDevCardHitbox; //used for pick which development cards the user wants to use
     private boolean[] drawCardStacks; //controls the mode cards are drawn in. Stacked or full layout
     private boolean[] drawDevCardStacks; //controls the mode dev cards are drawn in. Stacked or full layout.
-    private boolean showSettlementHitbox;
-    private boolean showTileHitbox;
+    private boolean showSettlementHitbox; //toggle for whether or not the hitboxes are shown.
+    private boolean showTileHitbox; //      ^^^
     private boolean showPortHitbox;
     private boolean showSubPlayerHitbox;
     private boolean showDevCards; //stores whether dec cards or resource cards are shown;
