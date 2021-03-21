@@ -76,6 +76,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showPortHitbox;
     private boolean showSubPlayerHitbox;
     private boolean showDevCards; //stores whether dec cards or resource cards are shown;
+    private boolean userPlayedDevCard; //boolean to store whether or not the current player has used a dev card yet this round
     private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
     private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
     private int minTradeCardsNeeded; //the number of cards needed for that tradingMode //the minimin amount of cards needed of one type to make a trade
@@ -213,6 +214,7 @@ public class GamePanel extends javax.swing.JPanel {
         showSubPlayerHitbox = false;
         showDevCards = false;
         showDevCardHitbox = false;
+        userPlayedDevCard = false;
         tradingMode = 0;
         tradeResource = 0;
         playerSetupRoadsLeft = 1;
@@ -954,6 +956,9 @@ public class GamePanel extends javax.swing.JPanel {
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(false);
 
+            //reset the boolean to false because the turn just ended and the user hasn't used a card yet
+            userPlayedDevCard = false;
+
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
 
@@ -1135,7 +1140,7 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public void mouseClick(MouseEvent event) {
         // debug click listener
-        //System.out.println("Click recieved");
+        //System.out.println("Click recieved at clock: " + Catan.clock);
 
         //check if the player clicked on one of the SettlerBtns
         //loop through all the custom buttons
@@ -1272,10 +1277,10 @@ public class GamePanel extends javax.swing.JPanel {
 
                                     //check if the user built roads given from the progress card
                                     if (usingDevCard == 2 && playerSetupRoadsLeft > 0) { //these aren't actually setup roads. They just dont require resources
-                                        
+
                                         //cout a free road
                                         playerSetupRoadsLeft--;
-                                        
+
                                         //check if the player is done now
                                         if (playerSetupRoadsLeft == 0) {
                                             resetUsingDevCards();
@@ -1622,11 +1627,13 @@ public class GamePanel extends javax.swing.JPanel {
                                     break;
                                 case 2:
                                     //if vp monopoly
-                                    //System.out.println("Monopoly Clicked");
+                                    clickedMonopolyCard();
+
                                     break;
                                 case 3:
                                     //if vp YOP
-                                    //System.out.println("YOP Clicked");
+                                    clickedYOPCard();
+
                                     break;
                                 default:
                                     //if anything else
@@ -1680,11 +1687,13 @@ public class GamePanel extends javax.swing.JPanel {
                                     break;
                                 case 3:
                                     //if vp monopoly
-                                    //System.out.println("Monopoly Clicked");
+                                    clickedMonopolyCard();
+
                                     break;
                                 case 4:
                                     //if vp YOP
-                                    //System.out.println("YOP Clicked");
+                                    clickedYOPCard();
+
                                     break;
                                 default:
                                     //if anything else
@@ -1855,7 +1864,9 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setColor(Color.black);
             }
              */
-        } else if (showPortHitbox && tradingMode != 0 && tradeResource == 0) { //check if the player is clicking a port to select a resource type to trade to
+        } else if ((showPortHitbox && tradingMode != 0 && tradeResource == 0) //check if the player is clicking a port to select a resource type to trade to
+                || ((usingDevCard == 4 || usingDevCard == 3) && showPortHitbox)) {
+            //or if the player clicked the port to select a resource type for a dev card
 
             int portPosX;
             int portPosY;
@@ -1873,35 +1884,105 @@ public class GamePanel extends javax.swing.JPanel {
                         && event.getX() < (portPosX + getImgWidth(ports.get(i).getTypeImage()))
                         && event.getY() < (portPosY + getImgHeight(ports.get(i).getTypeImage()))) {
 
-                    //check if its a non general port and also if clicking that port would leave the player with no options for cards to trade away
-                    //split up into generic 4:1 or 3:1, and specialized 2:1 trades
+                    //check if its a non general port
                     if (ports.get(i).getType() != 0) {
 
-                        //4:1 or 3:1 tradng
-                        if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(ports.get(i).getType(), tradingMode)) {
-                            validPort = true;
-                        } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) { //2:1 tradng
-                            validPort = true;
+                        //check if the player clicked the port for trading or dev card
+                        switch (usingDevCard) {
+                            case 4:
+                                //YOP card
+
+                                //give the player two of the resource
+                                for (int j = 0; j < 2; j++) {
+                                    cards[currentPlayer].add(ports.get(i).getType());
+                                }
+
+                                //sort the card
+                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+
+                                //finish using the dev card
+                                resetUsingDevCards();
+                                updateBuildButtons();
+
+                                break;
+                            case 3:
+                                //Monopoly card
+
+                                //save the resource type the player wants
+                                int resourceType = ports.get(i).getType();
+
+                                //loop through all the cards.
+                                //Go through each players ArrayList
+                                for (ArrayList<Integer> cardDeck : cards) {
+
+                                    //make sure the current players deck isn't searched
+                                    //or the null player
+                                    if (cardDeck != cards[currentPlayer] && cardDeck != cards[0]) {
+
+                                        //now go through the indevidual cards
+                                        for (Integer cardID : cardDeck) {
+                                            //debug
+                                            //System.out.println("Checking at: " + ", Val: " + cardID);
+
+                                            //if that card type is the wanted card type remove it 
+                                            if (cardID == resourceType) {
+
+                                                //then give it to the player that used the monopoly card
+                                                cards[currentPlayer].add(cardID);
+                                            }
+                                        }
+
+                                        //now go through the player being stolen from and remove all the cards
+                                        while (cardDeck.contains(resourceType)) {
+                                            cardDeck.remove(new Integer(resourceType));
+                                        }
+
+                                    }
+
+                                }
+
+                                //sort the current players card
+                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+
+                                //finish using the dev card
+                                resetUsingDevCards();
+                                updateBuildButtons();
+
+                                break;
+                            default:
+                                //if its for trading
+
+                                //also if clicking that port would leave the player with no options for cards to trade away
+                                //split up into generic 4:1 or 3:1, and specialized 2:1 trades
+                                //4:1 or 3:1 tradng
+                                if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(ports.get(i).getType(), tradingMode)) {
+                                    validPort = true;
+                                } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) { //2:1 tradng
+                                    validPort = true;
+                                }
+
+                                //only make the selection if its a valid port selection
+                                if (validPort) {
+                                    //register the type the player want to trade TO
+                                    tradeResource = ports.get(i).getType();
+
+                                    //update the instructions for the next trading step
+                                    instructionLbl.setText("Now select a card");
+                                    subInstructionLbl.setText("This card should be of the type you would like to trade away");
+
+                                    //show the card hitboxes
+                                    showCardHitbox = true;
+                                }
+
+                                break;
                         }
 
-                        //only make the selection if its a valid port selection
-                        if (validPort) {
-                            //register the type the player want to trade TO
-                            tradeResource = ports.get(i).getType();
+                        //turn off the hitboxes
+                        showPortHitbox = false;
 
-                            //turn off the hitboxes
-                            showPortHitbox = false;
+                        //update the screen
+                        repaint();
 
-                            //update the instructions for the next trading step
-                            instructionLbl.setText("Now select a card");
-                            subInstructionLbl.setText("This card should be of the type you would like to trade away");
-
-                            //show the card hitboxes
-                            showCardHitbox = true;
-
-                            //update the screen
-                            repaint();
-                        }
                     }
                 }
 
@@ -2078,6 +2159,10 @@ public class GamePanel extends javax.swing.JPanel {
      * Actions taken when a monopoly development card is clicked
      */
     public void clickedMonopolyCard() {
+        //System.out.println("Monopoly Clicked");
+
+        //show the port hitboxes so the player can select a resource
+        showPortHitbox = true;
 
     }
 
@@ -2085,7 +2170,10 @@ public class GamePanel extends javax.swing.JPanel {
      * Actions taken when a year of plenty development card is clicked
      */
     public void clickedYOPCard() {
+        //System.out.println("YOP Clicked");
 
+        //show the port hitboxes so the player can select a resource
+        showPortHitbox = true;
     }
 
     /**
@@ -2829,7 +2917,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
-            useDevCardBtn.setEnabled(hasDevCards());
+            useDevCardBtn.setEnabled(hasDevCards() && !userPlayedDevCard); //only if the user has dev cards and hasn't already used oene this turn
         }
 
         //if the user can build tell them that. (may be overwitten by following instructions
@@ -2837,6 +2925,14 @@ public class GamePanel extends javax.swing.JPanel {
             // Set the instruction labels to tell the user they can build
             instructionLbl.setText("Use your cards to trade or build roads or settlements");
             subInstructionLbl.setText("Or end your turn to continue the game");
+        }
+
+        //Update lables for when the player CAN build. (CANT build is below)
+        //check for free roads from dev card
+        if (usingDevCard == 2 && playerSetupRoadsLeft > 0) {
+            instructionLbl.setText("You have " + playerSetupRoadsLeft + " free road(s) from the development card");
+            subInstructionLbl.setText("Please build them in order to continue your turn.");
+
         }
 
         // Save what button was selected before this update began
@@ -2882,6 +2978,33 @@ public class GamePanel extends javax.swing.JPanel {
                 // Set the instruction labels to tell the player that they need to select a play to steal from
                 instructionLbl.setText("The thief is done stealing. But you are not!");
                 subInstructionLbl.setText("Select one of your fellow players to take one of their cards at random");
+
+            } else if (usingDevCard > -1) { // check if the player is using a dev card
+                //check which dev card
+                switch (usingDevCard) {
+                    case 0:
+                        //if there isn't actually a dev card yet and the player is just selecting
+                        instructionLbl.setText("Please select a development card");
+                        subInstructionLbl.setText("Hover over the card to get a description (coming soon)");
+                        break;
+                    case 1:
+                        //knight card
+                        instructionLbl.setText("Please select a new tile for the thief");
+                        subInstructionLbl.setText("Then if available, select a player to steal 1 card from");
+                        break;
+                    case 3:
+                        //monopoly card
+                        instructionLbl.setText("Please select a resource type");
+                        subInstructionLbl.setText("Any resource of that type owned by any player, will then be given to you");
+                        break;
+                    case 4:
+                        //YOP card
+                        instructionLbl.setText("Please select a resource type");
+                        subInstructionLbl.setText("You will then recive 2 cards of that type.");
+                        break;
+                    default:
+                        break;
+                }
 
             } else {
                 // Set the instruction labels to tell the player they dont have enough cards
@@ -3343,7 +3466,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // Act on the dice roll
-        if (false) { // Move the thief on a 7
+        if (roll == 7) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
@@ -3624,11 +3747,7 @@ public class GamePanel extends javax.swing.JPanel {
             //make sure the criteria is met before drawing.
             if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) || showSubPlayerHitbox) {
 
-                if (cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i))) {
-                    drawSpecificHitbox = true;
-                } else {
-                    drawSpecificHitbox = false;
-                }
+                drawSpecificHitbox = cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i));
 
                 //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
                 if (drawSpecificHitbox) {
@@ -3684,9 +3803,8 @@ public class GamePanel extends javax.swing.JPanel {
                     drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
                 } else if (tradingMode == 3) { //if its a specialized 2:1
                     drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType());
-                } else {
-                    drawSpecificHitbox = false;
-                }
+                } else drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
+                
 
                 //check if that one should be drawn
                 if (drawSpecificHitbox) {
@@ -5192,6 +5310,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         //reset all the use dev card vars
         usingDevCard = -1;
+
+        //register the user using a dev card
+        userPlayedDevCard = true;
     }
 
     /**
