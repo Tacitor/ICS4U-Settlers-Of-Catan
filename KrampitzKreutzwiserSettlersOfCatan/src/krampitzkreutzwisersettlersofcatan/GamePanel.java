@@ -76,6 +76,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showPortHitbox;
     private boolean showSubPlayerHitbox;
     private boolean showDevCards; //stores whether dec cards or resource cards are shown;
+    private boolean userPlayedDevCard; //boolean to store whether or not the current player has used a dev card yet this round
     private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
     private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
     private int minTradeCardsNeeded; //the number of cards needed for that tradingMode //the minimin amount of cards needed of one type to make a trade
@@ -213,6 +214,7 @@ public class GamePanel extends javax.swing.JPanel {
         showSubPlayerHitbox = false;
         showDevCards = false;
         showDevCardHitbox = false;
+        userPlayedDevCard = false;
         tradingMode = 0;
         tradeResource = 0;
         playerSetupRoadsLeft = 1;
@@ -953,6 +955,9 @@ public class GamePanel extends javax.swing.JPanel {
             toggleCardBtn.setEnabled(false);
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(false);
+            
+            //reset the boolean to false because the turn just ended and the user hasn't used a card yet
+            userPlayedDevCard = false;
 
             // Change the button to the Start Next Turn button
             turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
@@ -2829,7 +2834,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
-            useDevCardBtn.setEnabled(hasDevCards());
+            useDevCardBtn.setEnabled(hasDevCards() && !userPlayedDevCard); //only if the user has dev cards and hasn't already used oene this turn
         }
 
         //if the user can build tell them that. (may be overwitten by following instructions
@@ -5192,6 +5197,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         //reset all the use dev card vars
         usingDevCard = -1;
+        
+        //register the user using a dev card
+        userPlayedDevCard = true;
     }
 
     /**
