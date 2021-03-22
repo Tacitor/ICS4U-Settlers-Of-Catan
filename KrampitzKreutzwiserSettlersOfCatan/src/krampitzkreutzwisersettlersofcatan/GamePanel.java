@@ -349,7 +349,7 @@ public class GamePanel extends javax.swing.JPanel {
              * @param evt The event representing the mouse click
              */
             @Override
-            public final void mouseClicked(MouseEvent evt) {
+            public final void mouseReleased(MouseEvent evt) {
                 // Send the mouse event over to the game panel's click handlers
                 mouseClick(evt);
             }
