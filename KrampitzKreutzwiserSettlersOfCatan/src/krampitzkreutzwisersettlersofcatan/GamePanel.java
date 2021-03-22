@@ -883,7 +883,7 @@ public class GamePanel extends javax.swing.JPanel {
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
             //reset the font
-            instructionLbl.setFont(timesNewRoman);
+            instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
@@ -2808,7 +2808,7 @@ public class GamePanel extends javax.swing.JPanel {
         //reset the colour
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         //reset the font
-        instructionLbl.setFont(timesNewRoman);
+        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
