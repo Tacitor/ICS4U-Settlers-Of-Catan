@@ -2222,7 +2222,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV9"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV10"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -2378,7 +2378,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV9")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV10")) {
                 //System.out.println("Yuppers");
             } else {
                 throwLoadError();
