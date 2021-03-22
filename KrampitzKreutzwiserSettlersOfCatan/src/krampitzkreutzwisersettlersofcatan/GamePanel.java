@@ -2357,12 +2357,16 @@ public class GamePanel extends javax.swing.JPanel {
                 }
                 saveFile.println();
             }
-            
+
             //add the userPlayedDevCard boolean
             saveFile.println("userPlayedDevCard:");
             saveFile.println(userPlayedDevCard);
-            saveFile.println(); //add line break
             
+            //add the usingDevCard int
+            saveFile.println("usingDevCard:");
+            saveFile.println(usingDevCard);
+            saveFile.println(); //add line break
+
             //add the dev card data
             saveFile.println("Dev Cards:");
             for (int i = 1; i < devCards.length; i++) {
@@ -2375,13 +2379,15 @@ public class GamePanel extends javax.swing.JPanel {
                 }
                 saveFile.println();
             }
-            
+
             //available dev card data
             saveFile.println("availableDevCards:");
+            saveFile.println("size:");
+            saveFile.println(availableDevCards.size());
+            saveFile.println("available cards:");
             for (int i = 0; i < availableDevCards.size(); i++) {
                 saveFile.println(availableDevCards.get(i));
             }
-            
 
             //add the close
             saveFile.close();
@@ -2781,15 +2787,108 @@ public class GamePanel extends javax.swing.JPanel {
 
                 }
 
-                //close the scanner
-                scanner.close();
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            //get the userPlayedDevCard data
+            if (scanner.nextLine().equals("userPlayedDevCard:")) {
+                //System.out.println("Yes");
+                userPlayedDevCard = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            //get the usingDevCard data
+            if (scanner.nextLine().equals("usingDevCard:")) {
+                usingDevCard = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the dev cards owned
+            //but first skip a line
+            scanner.nextLine();
+            if (scanner.nextLine().equals("Dev Cards:")) {                
+
+                //System.out.println("Yuppers10");
+                for (int i = 1; i < playerCount + 1; i++) {
+                    if (scanner.nextLine().equals("Player: " + (i))) {
+                        //System.out.println("Yuppers10.1");
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                    if (scanner.nextLine().equals("size:")) {
+                        tempScannerVal = Integer.parseInt(scanner.nextLine());
+                        //System.out.println("Yuppers10.2");
+
+                        if (scanner.nextLine().equals("dev cards:")) {
+
+                            for (int j = 0; j < tempScannerVal; j++) {
+                                devCards[i].add(Integer.parseInt(scanner.nextLine()));
+                            }
+
+                            //skip a line
+                            scanner.nextLine();
+
+                            //System.out.println("Yuppers10.3");
+                        } else {
+                            thrownLoadError = throwLoadError(thrownLoadError);
+                            //System.out.println("Its me");
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                        //System.out.println("no me");
+                    }
+
+                }
 
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
+            //get the availableDevCards data
+            if (scanner.nextLine().equals("availableDevCards:")) {
+
+                if (scanner.nextLine().equals("size:")) {
+
+                    tempScannerVal = Integer.parseInt(scanner.nextLine());
+
+                    //remove any cards in there
+                    availableDevCards.clear();
+
+                    if (scanner.nextLine().equals("available cards:")) {
+
+                        //then add back the ones that are in the save file
+                        for (int i = 0; i < tempScannerVal; i++) {
+                            availableDevCards.add(Integer.parseInt(scanner.nextLine()));
+                        }
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            /*
+            
+            //available dev card data
+            saveFile.println("availableDevCards:");
+            for (int i = 0; i < availableDevCards.size(); i++) {
+                saveFile.println(availableDevCards.get(i));
+            }
+             */
+            //close the scanner
+            scanner.close();
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nError: " + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
 
         //update the instructions
@@ -2809,13 +2908,18 @@ public class GamePanel extends javax.swing.JPanel {
             //update the playerTurnOrder
             setupUpdatePlayerTurnOrder();
         }
+        
+        //if the player created the save file while using a dev card update the btn
+        if (usingDevCard != -1) {
+            useDevCardBtn.setMode(1);
+        }
 
         //sort the cards to ensure they have a good order
         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
         repaint();
         updateBuildButtons();
-        
+
         return !thrownLoadError; //return the success of loading. If no error was thrown then the load was a success.
     }
 
@@ -2828,7 +2932,7 @@ public class GamePanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Error loading the save file.\nThere may be file corruptions.", "Bad File", JOptionPane.ERROR_MESSAGE);
             hasThrownLoadError = true;
         }
-        
+
         return hasThrownLoadError;
     }
 
