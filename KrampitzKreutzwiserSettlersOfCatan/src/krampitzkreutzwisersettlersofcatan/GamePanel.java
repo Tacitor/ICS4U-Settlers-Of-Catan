@@ -2367,10 +2367,11 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
-    public void load(String filePathString) {
+    public boolean load(String filePathString) {
         //System.out.println("Yupp");
 
         int tempScannerVal;
+        boolean thrownLoadError = false;
 
         //load the save file 
         try {
@@ -2381,77 +2382,77 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("SettlersOfCatanSaveV10")) {
                 //System.out.println("Yuppers");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("playerCount:")) {
                 playerCount = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers1");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("thiefMoveCounter:")) {
                 thiefMoveCounter = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers2");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("tileWithThief:")) {
                 tileWithThief = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers2.5");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("victoryPointsToWin:")) {
                 victoryPointsToWin = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers3");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("currentPlayer:")) {
                 currentPlayer = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers4");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("giveStartingResources:")) {
                 giveStartingResources = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers4.5");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("doSnakeRules:")) {
                 doSnakeRules = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers4.6");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("setupTurnOrderIndex:")) {
                 setupTurnOrderIndex = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers4.7");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("inSetup:")) {
                 inSetup = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("setupRoundsLeft:")) {
                 setupRoundsLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("YuppersSetupRounds");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("newestSetupSettlmentRefNum:")) {
@@ -2465,35 +2466,35 @@ public class GamePanel extends javax.swing.JPanel {
                     newestSetupSettlment = null;
                 }
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("playerSetupRoadsLeft:")) {
                 playerSetupRoadsLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers6");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("playerSetupSettlementLeft:")) {
                 playerSetupSettlementLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers7");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("longestRoadData length:")) {
                 longestRoadData.setLength(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.1");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("longestRoadData playerNum:")) {
                 longestRoadData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.2");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("setupTurnOrder:") && scanner.nextLine().equals("length:")) {
@@ -2510,7 +2511,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             scanner.nextLine();
@@ -2524,7 +2525,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //System.out.println("Yuppers8");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             //get the VP collected
@@ -2538,7 +2539,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //System.out.println("Yuppers8");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             //get the resource cards collected
@@ -2551,7 +2552,7 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Player: " + (i))) {
                         //System.out.println("Yuppers10.1");
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("size:")) {
@@ -2569,19 +2570,19 @@ public class GamePanel extends javax.swing.JPanel {
 
                             //System.out.println("Yuppers10.3");
                         } else {
-                            throwLoadError();
+                            thrownLoadError = throwLoadError(thrownLoadError);
                             //System.out.println("Its me");
                         }
 
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                         //System.out.println("no me");
                     }
 
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("Tiles:")) {
@@ -2594,25 +2595,25 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Tile number:")) {
                         tileNum = Integer.parseInt(scanner.nextLine());
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Type:")) {
                         tiles.get(tileNum).setType(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Has Thief:")) {
                         tiles.get(tileNum).setThief(Boolean.parseBoolean(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Harvesting Dice Roll:")) {
                         tiles.get(tileNum).setHarvestRollNum(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     //skip a line
@@ -2620,7 +2621,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("NodeRoads:")) {
@@ -2633,13 +2634,13 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Road node number:")) {
                         roadNodeNum = Integer.parseInt(scanner.nextLine());
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Player ID:")) {
                         roadNodes.get(roadNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     //skip a line
@@ -2647,7 +2648,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("NodeSettlements:")) {
@@ -2660,19 +2661,19 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Settlement node number:")) {
                         settlementNodeNum = Integer.parseInt(scanner.nextLine());
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Player ID:")) {
                         settlementNodes.get(settlementNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Is Large:")) {
                         settlementNodes.get(settlementNodeNum).setLarge(Boolean.parseBoolean(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     //skip a line
@@ -2680,7 +2681,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("Ports:")) {
@@ -2693,25 +2694,25 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Port number:")) {
                         portNum = Integer.parseInt(scanner.nextLine());
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("LinkedTile:")) {
                         ports.get(portNum).setLinkedTile(tiles.get(Integer.parseInt(scanner.nextLine())));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Orientation:")) {
                         ports.get(portNum).setOrientation(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Type:")) {
                         ports.get(portNum).setType(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     //skip a line
@@ -2723,7 +2724,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             //get the playerHasPort data
@@ -2735,7 +2736,7 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Player: " + (i))) {
                         //System.out.println("Yuppers10.1");
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("hasPorts:")) {
@@ -2749,7 +2750,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //System.out.println("Yuppers10.3");
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                         //System.out.println("uh oh");
                     }
 
@@ -2759,7 +2760,7 @@ public class GamePanel extends javax.swing.JPanel {
                 scanner.close();
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
         } catch (Exception e) {
@@ -2789,13 +2790,21 @@ public class GamePanel extends javax.swing.JPanel {
 
         repaint();
         updateBuildButtons();
+        
+        return !thrownLoadError; //return the success of loading. If no error was thrown then the load was a success.
     }
 
     /**
      * Displays an error to the user about loading a bad file
      */
-    private void throwLoadError() {
-        JOptionPane.showMessageDialog(null, "Error loading the save file.\nThere may be file corruptions.", "Bad File", JOptionPane.ERROR_MESSAGE);
+    private boolean throwLoadError(boolean hasThrownLoadError) {
+        //check to see if a load error has been thrown
+        if (!hasThrownLoadError) {
+            JOptionPane.showMessageDialog(null, "Error loading the save file.\nThere may be file corruptions.", "Bad File", JOptionPane.ERROR_MESSAGE);
+            hasThrownLoadError = true;
+        }
+        
+        return hasThrownLoadError;
     }
 
     /**
@@ -3803,8 +3812,9 @@ public class GamePanel extends javax.swing.JPanel {
                     drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
                 } else if (tradingMode == 3) { //if its a specialized 2:1
                     drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType());
-                } else drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
-                
+                } else {
+                    drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
+                }
 
                 //check if that one should be drawn
                 if (drawSpecificHitbox) {
