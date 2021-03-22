@@ -3888,10 +3888,10 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //draw the thief
                 g2d.drawImage(THIEF,
-                        tiles.get(tileID).getXPos() + newTileWidth / 2 - (int) (imageWidth / scaleFactor) / 2,
-                        tiles.get(tileID).getYPos() + newTileHeight / 2 - (int) (imageHeight / scaleFactor) / 2 + threeDTileOffset,
-                        (int) (imageWidth / scaleFactor),
-                        (int) (imageHeight / scaleFactor),
+                        tiles.get(tileID).getXPos() + newTileWidth / 2 - (imageWidth / 2),
+                        tiles.get(tileID).getYPos() + newTileHeight / 2 - (imageHeight / 2) + threeDTileOffset,
+                        imageWidth,
+                        imageHeight,
                         null);
             }
 
