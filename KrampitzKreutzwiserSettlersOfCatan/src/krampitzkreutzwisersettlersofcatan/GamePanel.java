@@ -2357,6 +2357,31 @@ public class GamePanel extends javax.swing.JPanel {
                 }
                 saveFile.println();
             }
+            
+            //add the userPlayedDevCard boolean
+            saveFile.println("userPlayedDevCard:");
+            saveFile.println(userPlayedDevCard);
+            saveFile.println(); //add line break
+            
+            //add the dev card data
+            saveFile.println("Dev Cards:");
+            for (int i = 1; i < devCards.length; i++) {
+                saveFile.println("Player: " + i);
+                saveFile.println("size:");
+                saveFile.println(devCards[i].size());
+                saveFile.println("dev cards:");
+                for (int j = 0; j < devCards[i].size(); j++) {
+                    saveFile.println(devCards[i].get(j));
+                }
+                saveFile.println();
+            }
+            
+            //available dev card data
+            saveFile.println("availableDevCards:");
+            for (int i = 0; i < availableDevCards.size(); i++) {
+                saveFile.println(availableDevCards.get(i));
+            }
+            
 
             //add the close
             saveFile.close();
