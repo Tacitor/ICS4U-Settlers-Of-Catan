@@ -2361,7 +2361,7 @@ public class GamePanel extends javax.swing.JPanel {
             //add the userPlayedDevCard boolean
             saveFile.println("userPlayedDevCard:");
             saveFile.println(userPlayedDevCard);
-            
+
             //add the usingDevCard int
             saveFile.println("usingDevCard:");
             saveFile.println(usingDevCard);
@@ -2388,6 +2388,51 @@ public class GamePanel extends javax.swing.JPanel {
             for (int i = 0; i < availableDevCards.size(); i++) {
                 saveFile.println(availableDevCards.get(i));
             }
+
+            //add all the show hitbox booleans
+            saveFile.println("showRoadHitbox:");
+            saveFile.println(showRoadHitbox);
+            saveFile.println("showCardHitbox:");
+            saveFile.println(showCardHitbox);
+            saveFile.println("showDevCardHitbox:");
+            saveFile.println(showDevCardHitbox);
+            saveFile.println("showSettlementHitbox:");
+            saveFile.println(showSettlementHitbox);
+            saveFile.println("showTileHitbox:");
+            saveFile.println(showTileHitbox);
+            saveFile.println("showPortHitbox:");
+            saveFile.println(showPortHitbox);
+            saveFile.println("showSubPlayerHitbox:");
+            saveFile.println(showSubPlayerHitbox);
+
+            //show the dev cards
+            saveFile.println("showDevCards:");
+            saveFile.println(showDevCards);
+
+            //save the instructions
+            saveFile.println("instructionLbl text:");
+            saveFile.println(instructionLbl.getText());
+            saveFile.println("subInstructionLbl text:");
+            saveFile.println(subInstructionLbl.getText());
+            
+            //save the button states
+            //turn switch
+            saveFile.println("turnSwitchBtn.isEnabled");
+            saveFile.println(turnSwitchBtn.isEnabled());
+            //Settler buttons
+            //toggleCardBtn
+            saveFile.println("toggleCardBtn.getEnabled");
+            saveFile.println(toggleCardBtn.getEnabled());
+            saveFile.println("toggleCardBtn.getMode");
+            saveFile.println(toggleCardBtn.getMode());
+            //buyDevCardBtn
+            saveFile.println("buyDevCardBtn.getEnabled");
+            saveFile.println(buyDevCardBtn.getEnabled());
+            //useDevCardBtn
+            saveFile.println("useDevCardBtn.getEnabled");
+            saveFile.println(useDevCardBtn.getEnabled());
+            saveFile.println("useDevCardBtn.getMode");
+            saveFile.println(useDevCardBtn.getMode());
 
             //add the close
             saveFile.close();
@@ -2790,7 +2835,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //get the userPlayedDevCard data
             if (scanner.nextLine().equals("userPlayedDevCard:")) {
                 //System.out.println("Yes");
@@ -2798,7 +2843,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //get the usingDevCard data
             if (scanner.nextLine().equals("usingDevCard:")) {
                 usingDevCard = Integer.parseInt(scanner.nextLine());
@@ -2809,7 +2854,7 @@ public class GamePanel extends javax.swing.JPanel {
             //get the dev cards owned
             //but first skip a line
             scanner.nextLine();
-            if (scanner.nextLine().equals("Dev Cards:")) {                
+            if (scanner.nextLine().equals("Dev Cards:")) {
 
                 //System.out.println("Yuppers10");
                 for (int i = 1; i < playerCount + 1; i++) {
@@ -2875,15 +2920,127 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
-            /*
             
-            //available dev card data
-            saveFile.println("availableDevCards:");
-            for (int i = 0; i < availableDevCards.size(); i++) {
-                saveFile.println(availableDevCards.get(i));
+            //load the hitbox data
+            //get the showRoadHitbox data
+            if (scanner.nextLine().equals("showRoadHitbox:")) {
+                //System.out.println("Yes1");
+                showRoadHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
-             */
+            //get the showCardHitbox data
+            if (scanner.nextLine().equals("showCardHitbox:")) {
+                //System.out.println("Yes2");
+                showCardHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showDevCardHitbox data
+            if (scanner.nextLine().equals("showDevCardHitbox:")) {
+                //System.out.println("Yes3");
+                showDevCardHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showSettlementHitbox data
+            if (scanner.nextLine().equals("showSettlementHitbox:")) {
+                //System.out.println("Yes4");
+                showSettlementHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showTileHitbox data
+            if (scanner.nextLine().equals("showTileHitbox:")) {
+                //System.out.println("Yes");
+                showTileHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showPortHitbox data
+            if (scanner.nextLine().equals("showPortHitbox:")) {
+                //System.out.println("Yes");
+                showPortHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showSubPlayerHitbox data
+            if (scanner.nextLine().equals("showSubPlayerHitbox:")) {
+                //System.out.println("Yes");
+                showSubPlayerHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            //get the showDevCards data
+            if (scanner.nextLine().equals("showDevCards:")) {
+                //System.out.println("Yes");
+                showDevCards = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            //get the instructions
+            //main
+            if (scanner.nextLine().equals("instructionLbl text:")) {
+                //System.out.println("Yes");
+                instructionLbl.setText(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //sub
+            if (scanner.nextLine().equals("subInstructionLbl text:")) {
+                //System.out.println("Yes");
+                subInstructionLbl.setText(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            
+            //get the button states
+            //turn switch btn
+            if (scanner.nextLine().equals("turnSwitchBtn.isEnabled")) {
+                //System.out.println("Got it");
+                turnSwitchBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            //SettlerBtns
+            //toggleCardBtn
+            if (scanner.nextLine().equals("toggleCardBtn.getEnabled")) {
+                //System.out.println("Got it");
+                toggleCardBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            if (scanner.nextLine().equals("toggleCardBtn.getMode")) {
+                //System.out.println("Got it");
+                toggleCardBtn.setMode(Integer.parseInt(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //buyDevCardBtn
+            if (scanner.nextLine().equals("buyDevCardBtn.getEnabled")) {
+                //System.out.println("Got it");
+                buyDevCardBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //useDevCardBtn
+            if (scanner.nextLine().equals("useDevCardBtn.getEnabled")) {
+                //System.out.println("Got it");
+                useDevCardBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            if (scanner.nextLine().equals("useDevCardBtn.getMode")) {
+                //System.out.println("Got it");
+                useDevCardBtn.setMode(Integer.parseInt(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
             //close the scanner
             scanner.close();
 
@@ -2907,11 +3064,6 @@ public class GamePanel extends javax.swing.JPanel {
         if (doSnakeRules && inSetup) {
             //update the playerTurnOrder
             setupUpdatePlayerTurnOrder();
-        }
-        
-        //if the player created the save file while using a dev card update the btn
-        if (usingDevCard != -1) {
-            useDevCardBtn.setMode(1);
         }
 
         //sort the cards to ensure they have a good order
@@ -3042,7 +3194,9 @@ public class GamePanel extends javax.swing.JPanel {
             showDevCards = true;
 
             buyDevCardBtn.setEnabled(false);
-            useDevCardBtn.setEnabled(!(usingDevCard == 2)); //do not allow the user to cancel if they used a road building card
+            //do not allow the user to cancel if they used a road building card
+            //of if it's the knight card and the user is selecting a sub player
+            useDevCardBtn.setEnabled(!(usingDevCard == 2 || (usingDevCard == 1 && showSubPlayerHitbox))); 
 
         } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
