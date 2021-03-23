@@ -3876,7 +3876,7 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
                 g2d.drawString(Integer.toString(tiles.get(tileID).getHarvestRollNum()),
                         tiles.get(tileID).getXPos() + newTileWidth / 2 - harvestRollNumOffset,
-                        tiles.get(tileID).getYPos() + newTileHeight / 2 + 5 + threeDTileOffset);
+                        (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 + (6 / scaleFactor) + threeDTileOffset));
                 g2d.setColor(Color.black);
             }
 
