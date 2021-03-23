@@ -2457,8 +2457,6 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println("tradeResource:");
             saveFile.println(tradeResource);
 
-            
-
             //add the close
             saveFile.close();
             return true;
@@ -3126,19 +3124,6 @@ public class GamePanel extends javax.swing.JPanel {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
-            /*
-            saveFile.println();//add linebreak
-            
-            //save the building object
-            saveFile.println("buildingObject:");
-            saveFile.println(buildingObject);
-            //save tradingMode
-            saveFile.println("tradingMode:");
-            saveFile.println(tradingMode);
-            //save tradeResource
-            saveFile.println("tradeResource:");
-            saveFile.println(tradeResource);
-             */
             //close the scanner
             scanner.close();
 
@@ -3166,6 +3151,10 @@ public class GamePanel extends javax.swing.JPanel {
 
         //sort the cards to ensure they have a good order
         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+
+        //get the number of each card type the player has
+        countCardTypes(cards[currentPlayer].size());
+        countNumCardTypes();
 
         repaint();
         updateBuildButtons();
@@ -3459,12 +3448,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean has2to1 = false;
 
         //create an array to store how many cards of each type the player has
-        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
-
-        //sum up the cards of each type
-        for (int i = 0; i < cards[currentPlayer].size(); i++) {
-            numCardType[cards[currentPlayer].get(i)]++;
-        }
+        countNumCardTypes();
 
         for (int i = 1; i < 6; i++) { //loop thorugh indexes 1-5
             if (playerHasPort[currentPlayer][i] && numCardType[i] >= 2) { //check if the player has that port and atleast 2 cards of that type
@@ -3490,12 +3474,7 @@ public class GamePanel extends javax.swing.JPanel {
             System.out.println("Error: hasTradeCards out of bounds with value: " + tradingType);
         } else { //check the current players cards
             //create an array to store how many cards of each type the player has
-            numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
-
-            //sum up the cards of each type
-            for (int i = 0; i < cards[currentPlayer].size(); i++) {
-                numCardType[cards[currentPlayer].get(i)]++;
-            }
+            countNumCardTypes();
 
             //check if there is the required amount of each type
             for (int i = 1; i < numCardType.length; i++) {
@@ -4616,13 +4595,7 @@ public class GamePanel extends javax.swing.JPanel {
                 int listSize = cards[currentPlayer].size();
 
                 //get the number of each card type the player has
-                //setup an array to hold the results
-                cardTypeCount = new int[5];
-
-                //loop thorugh and populate the array
-                for (int i = 0; i < listSize; i++) {
-                    cardTypeCount[cards[currentPlayer].get(i) - 1]++;
-                }
+                countCardTypes(listSize);
 
                 // Calculate where the first card must go to center the list
                 cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
@@ -5551,12 +5524,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean showPort = false;
 
         //create an array to store how many cards of each type the player has
-        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
-
-        //sum up the cards of each type
-        for (int i = 0; i < cards[currentPlayer].size(); i++) {
-            numCardType[cards[currentPlayer].get(i)]++;
-        }
+        countNumCardTypes();
 
         //do not show the port if it is the 2:1 port that the player has. This prevents trading wood for wood.
         if (!playerHasPort[currentPlayer][resourceType]) {
@@ -5705,6 +5673,33 @@ public class GamePanel extends javax.swing.JPanel {
 
         //register the user using a dev card
         userPlayedDevCard = true;
+    }
+
+    /**
+     * Initialize cardTypeCount and assign it values.
+     *
+     * @param listSize
+     */
+    private void countCardTypes(int listSize) {
+        //setup an array to hold the results
+        cardTypeCount = new int[5];
+
+        //loop thorugh and populate the array
+        for (int i = 0; i < listSize; i++) {
+            cardTypeCount[cards[currentPlayer].get(i) - 1]++;
+        }
+    }
+
+    /**
+     * Initialize numCardType and assign it values.
+     */
+    private void countNumCardTypes() {
+        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
+
+        //sum up the cards of each type
+        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+            numCardType[cards[currentPlayer].get(i)]++;
+        }
     }
 
     /**
