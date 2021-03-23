@@ -2456,6 +2456,9 @@ public class GamePanel extends javax.swing.JPanel {
             //save tradeResource
             saveFile.println("tradeResource:");
             saveFile.println(tradeResource);
+            //save the minTradeCardsNeeded
+            saveFile.println("minTradeCardsNeeded:");
+            saveFile.println(minTradeCardsNeeded);
 
             //add the close
             saveFile.close();
@@ -3124,6 +3127,14 @@ public class GamePanel extends javax.swing.JPanel {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
+            //get the minTradeCardsNeeded
+            if (scanner.nextLine().equals("minTradeCardsNeeded:")) {
+                //System.out.println("Got it");
+                minTradeCardsNeeded = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
             //close the scanner
             scanner.close();
 
