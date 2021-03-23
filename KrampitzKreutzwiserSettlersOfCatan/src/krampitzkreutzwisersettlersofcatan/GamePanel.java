@@ -2222,7 +2222,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV10"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV11"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -2445,6 +2445,20 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println(playerNum);
             }
 
+            saveFile.println();//add linebreak
+
+            //save the building object
+            saveFile.println("buildingObject:");
+            saveFile.println(buildingObject);
+            //save tradingMode
+            saveFile.println("tradingMode:");
+            saveFile.println(tradingMode);
+            //save tradeResource
+            saveFile.println("tradeResource:");
+            saveFile.println(tradeResource);
+
+            
+
             //add the close
             saveFile.close();
             return true;
@@ -2456,7 +2470,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Load a game state from a data file
-     * 
+     *
      * @param filePathString
      * @return if the operation was successful
      */
@@ -2472,7 +2486,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV10")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV11")) {
                 //System.out.println("Yuppers");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
@@ -3068,7 +3082,7 @@ public class GamePanel extends javax.swing.JPanel {
                     tempScannerVal = Integer.parseInt(scanner.nextLine());
 
                     if (scanner.nextLine().equals("players:")) {
-                        
+
                         for (int i = 0; i < tempScannerVal; i++) {
                             canStealCardPlayers.add(Integer.parseInt(scanner.nextLine()));
                         }
@@ -3085,6 +3099,46 @@ public class GamePanel extends javax.swing.JPanel {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
+            //skip line
+            scanner.nextLine();
+
+            //get the buildingObject
+            if (scanner.nextLine().equals("buildingObject:")) {
+                //System.out.println("Got it");
+                buildingObject = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the tradingMode
+            if (scanner.nextLine().equals("tradingMode:")) {
+                //System.out.println("Got it");
+                tradingMode = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the tradeResource
+            if (scanner.nextLine().equals("tradeResource:")) {
+                //System.out.println("Got it");
+                tradeResource = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            /*
+            saveFile.println();//add linebreak
+            
+            //save the building object
+            saveFile.println("buildingObject:");
+            saveFile.println(buildingObject);
+            //save tradingMode
+            saveFile.println("tradingMode:");
+            saveFile.println(tradingMode);
+            //save tradeResource
+            saveFile.println("tradeResource:");
+            saveFile.println(tradeResource);
+             */
             //close the scanner
             scanner.close();
 
@@ -4745,7 +4799,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //loop thorugh and populate the array
                 for (int i = 0; i < listSize; i++) {
-                    
+
                     devCardTypeCount[devCards[currentPlayer].get(i) - 1]++;
                 }
 
