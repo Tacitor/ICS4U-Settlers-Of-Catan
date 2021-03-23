@@ -3286,8 +3286,8 @@ public class GamePanel extends javax.swing.JPanel {
         countCardTypes(cards[currentPlayer].size());
         countNumCardTypes();
 
-        repaint();
         updateBuildButtons();
+        repaint();        
 
         return !thrownLoadError; //return the success of loading. If no error was thrown then the load was a success.
     }
