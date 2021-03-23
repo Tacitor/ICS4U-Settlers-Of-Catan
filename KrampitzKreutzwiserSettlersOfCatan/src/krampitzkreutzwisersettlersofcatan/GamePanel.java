@@ -2460,6 +2460,42 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println("minTradeCardsNeeded:");
             saveFile.println(minTradeCardsNeeded);
 
+            //save the vars for theif stealing
+            //save the thiefIsStealing
+            saveFile.println("thiefIsStealing:");
+            saveFile.println(thiefIsStealing);
+            //save the thiefJustFinished
+            saveFile.println("thiefJustFinished:");
+            saveFile.println(thiefJustFinished);
+            //save the thiefJustStarted
+            saveFile.println("thiefJustStarted:");
+            saveFile.println(thiefJustStarted);
+            //save the player who rolled a 7
+            saveFile.println("playerRolled7:");
+            saveFile.println(playerRolled7);
+
+            saveFile.println();//add linebreak
+
+            //save the playerTurnOrder
+            //available dev card data
+            saveFile.println("playerTurnOrder:");
+            saveFile.println("size:");
+            saveFile.println(playerTurnOrder.size());
+            saveFile.println("order:");
+            for (int i = 0; i < playerTurnOrder.size(); i++) {
+                saveFile.println(playerTurnOrder.get(i));
+            }
+            
+            //save the playerTurnOrder
+            //available dev card data
+            saveFile.println("stealCardNum:");
+            saveFile.println("size:");
+            saveFile.println(stealCardNum.length);
+            saveFile.println("players:");
+            for (int i = 0; i < stealCardNum.length; i++) {
+                saveFile.println(stealCardNum[i]);
+            }
+
             //add the close
             saveFile.close();
             return true;
@@ -3134,7 +3170,95 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
+
+            //get the thiefIsStealing
+            if (scanner.nextLine().equals("thiefIsStealing:")) {
+                //System.out.println("Got it1");
+                thiefIsStealing = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the thiefJustFinished
+            if (scanner.nextLine().equals("thiefJustFinished:")) {
+                //System.out.println("Got it2");
+                thiefJustFinished = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the thiefJustStarted
+            if (scanner.nextLine().equals("thiefJustStarted:")) {
+                //System.out.println("Got it3");
+                thiefJustStarted = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the playerRolled7
+            if (scanner.nextLine().equals("playerRolled7:")) {
+                //System.out.println("Got it4");
+                playerRolled7 = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //skip line
+            scanner.nextLine();
+
+            //load in the playerTurnOrder
+            if (scanner.nextLine().equals("playerTurnOrder:")) {
+
+                //clear the current order
+                playerTurnOrder.clear();
+
+                if (scanner.nextLine().equals("size:")) {
+
+                    tempScannerVal = Integer.parseInt(scanner.nextLine());
+
+                    if (scanner.nextLine().equals("order:")) {
+
+                        for (int i = 0; i < tempScannerVal; i++) {
+                            playerTurnOrder.add(Integer.parseInt(scanner.nextLine()));
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
             
+            //load in the stealCardNum
+            if (scanner.nextLine().equals("stealCardNum:")) {
+
+                if (scanner.nextLine().equals("size:")) {
+
+                    tempScannerVal = Integer.parseInt(scanner.nextLine());
+
+                    if (scanner.nextLine().equals("players:")) {
+
+                        for (int i = 0; i < tempScannerVal; i++) {
+                            stealCardNum[i] = Integer.parseInt(scanner.nextLine());
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
             //close the scanner
             scanner.close();
 
@@ -3148,12 +3272,7 @@ public class GamePanel extends javax.swing.JPanel {
             instructionLbl.setText("Use your cards to build roads or settlements");
             subInstructionLbl.setText("Or end your turn to continue the game");
         }
-
-        //bring the playerTurnOrder Array to match the state it was when saving
-        while (playerTurnOrder.get(0) != currentPlayer) {
-            progressPlayerTurnOrder();
-        }
-
+        
         //if doing snake rules update the sub plays to match what it's supposed to be
         if (doSnakeRules && inSetup) {
             //update the playerTurnOrder
