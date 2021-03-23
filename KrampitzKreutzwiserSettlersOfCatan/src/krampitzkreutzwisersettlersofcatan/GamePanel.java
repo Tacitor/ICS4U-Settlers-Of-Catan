@@ -2414,7 +2414,7 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(instructionLbl.getText());
             saveFile.println("subInstructionLbl text:");
             saveFile.println(subInstructionLbl.getText());
-            
+
             //save the button states
             //turn switch
             saveFile.println("turnSwitchBtn.isEnabled");
@@ -2433,6 +2433,17 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(useDevCardBtn.getEnabled());
             saveFile.println("useDevCardBtn.getMode");
             saveFile.println(useDevCardBtn.getMode());
+
+            saveFile.println();//add linebreak
+
+            //save the players that can be stolen from
+            saveFile.println("canStealCardPlayers:");
+            saveFile.println("size:");
+            saveFile.println(canStealCardPlayers.size());
+            saveFile.println("players:");
+            for (Integer playerNum : canStealCardPlayers) {
+                saveFile.println(playerNum);
+            }
 
             //add the close
             saveFile.close();
@@ -2920,7 +2931,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //load the hitbox data
             //get the showRoadHitbox data
             if (scanner.nextLine().equals("showRoadHitbox:")) {
@@ -2971,7 +2982,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //get the showDevCards data
             if (scanner.nextLine().equals("showDevCards:")) {
                 //System.out.println("Yes");
@@ -2979,7 +2990,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //get the instructions
             //main
             if (scanner.nextLine().equals("instructionLbl text:")) {
@@ -2995,8 +3006,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
-            
+
             //get the button states
             //turn switch btn
             if (scanner.nextLine().equals("turnSwitchBtn.isEnabled")) {
@@ -3005,7 +3015,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //SettlerBtns
             //toggleCardBtn
             if (scanner.nextLine().equals("toggleCardBtn.getEnabled")) {
@@ -3040,7 +3050,35 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
+            //skip line
+            scanner.nextLine();
+
+            //load in the players that can be stolen from
+            if (scanner.nextLine().equals("canStealCardPlayers:")) {
+
+                if (scanner.nextLine().equals("size:")) {
+
+                    tempScannerVal = Integer.parseInt(scanner.nextLine());
+
+                    if (scanner.nextLine().equals("players:")) {
+                        
+                        for (int i = 0; i < tempScannerVal; i++) {
+                            canStealCardPlayers.add(Integer.parseInt(scanner.nextLine()));
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
             //close the scanner
             scanner.close();
 
@@ -3196,7 +3234,7 @@ public class GamePanel extends javax.swing.JPanel {
             buyDevCardBtn.setEnabled(false);
             //do not allow the user to cancel if they used a road building card
             //of if it's the knight card and the user is selecting a sub player
-            useDevCardBtn.setEnabled(!(usingDevCard == 2 || (usingDevCard == 1 && showSubPlayerHitbox))); 
+            useDevCardBtn.setEnabled(!(usingDevCard == 2 || (usingDevCard == 1 && showSubPlayerHitbox)));
 
         } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
