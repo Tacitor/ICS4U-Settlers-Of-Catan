@@ -4736,18 +4736,12 @@ public class GamePanel extends javax.swing.JPanel {
                 //get the number of each dev card type the player has
                 //setup an array to hold the results
                 devCardTypeCount = new int[9];
-                
-                
-                System.out.println(devCards[currentPlayer]);
 
                 //loop thorugh and populate the array
                 for (int i = 0; i < listSize; i++) {
-                    System.out.println("i: " + i + " val: " + devCards[currentPlayer].get(i));
                     
                     devCardTypeCount[devCards[currentPlayer].get(i) - 1]++;
                 }
-                
-                System.out.println("");
 
                 // Calculate where the first card must go to center the list
                 devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(DEV_CARD_KNIGHT) + (listSize - 1) * (10 / scaleFactor)) / 2);
