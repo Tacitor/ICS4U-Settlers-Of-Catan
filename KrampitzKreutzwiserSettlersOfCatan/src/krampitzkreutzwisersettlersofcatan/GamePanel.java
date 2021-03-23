@@ -2222,7 +2222,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV9"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV10"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -2358,6 +2358,93 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println();
             }
 
+            //add the userPlayedDevCard boolean
+            saveFile.println("userPlayedDevCard:");
+            saveFile.println(userPlayedDevCard);
+
+            //add the usingDevCard int
+            saveFile.println("usingDevCard:");
+            saveFile.println(usingDevCard);
+            saveFile.println(); //add line break
+
+            //add the dev card data
+            saveFile.println("Dev Cards:");
+            for (int i = 1; i < devCards.length; i++) {
+                saveFile.println("Player: " + i);
+                saveFile.println("size:");
+                saveFile.println(devCards[i].size());
+                saveFile.println("dev cards:");
+                for (int j = 0; j < devCards[i].size(); j++) {
+                    saveFile.println(devCards[i].get(j));
+                }
+                saveFile.println();
+            }
+
+            //available dev card data
+            saveFile.println("availableDevCards:");
+            saveFile.println("size:");
+            saveFile.println(availableDevCards.size());
+            saveFile.println("available cards:");
+            for (int i = 0; i < availableDevCards.size(); i++) {
+                saveFile.println(availableDevCards.get(i));
+            }
+
+            //add all the show hitbox booleans
+            saveFile.println("showRoadHitbox:");
+            saveFile.println(showRoadHitbox);
+            saveFile.println("showCardHitbox:");
+            saveFile.println(showCardHitbox);
+            saveFile.println("showDevCardHitbox:");
+            saveFile.println(showDevCardHitbox);
+            saveFile.println("showSettlementHitbox:");
+            saveFile.println(showSettlementHitbox);
+            saveFile.println("showTileHitbox:");
+            saveFile.println(showTileHitbox);
+            saveFile.println("showPortHitbox:");
+            saveFile.println(showPortHitbox);
+            saveFile.println("showSubPlayerHitbox:");
+            saveFile.println(showSubPlayerHitbox);
+
+            //show the dev cards
+            saveFile.println("showDevCards:");
+            saveFile.println(showDevCards);
+
+            //save the instructions
+            saveFile.println("instructionLbl text:");
+            saveFile.println(instructionLbl.getText());
+            saveFile.println("subInstructionLbl text:");
+            saveFile.println(subInstructionLbl.getText());
+
+            //save the button states
+            //turn switch
+            saveFile.println("turnSwitchBtn.isEnabled");
+            saveFile.println(turnSwitchBtn.isEnabled());
+            //Settler buttons
+            //toggleCardBtn
+            saveFile.println("toggleCardBtn.getEnabled");
+            saveFile.println(toggleCardBtn.getEnabled());
+            saveFile.println("toggleCardBtn.getMode");
+            saveFile.println(toggleCardBtn.getMode());
+            //buyDevCardBtn
+            saveFile.println("buyDevCardBtn.getEnabled");
+            saveFile.println(buyDevCardBtn.getEnabled());
+            //useDevCardBtn
+            saveFile.println("useDevCardBtn.getEnabled");
+            saveFile.println(useDevCardBtn.getEnabled());
+            saveFile.println("useDevCardBtn.getMode");
+            saveFile.println(useDevCardBtn.getMode());
+
+            saveFile.println();//add linebreak
+
+            //save the players that can be stolen from
+            saveFile.println("canStealCardPlayers:");
+            saveFile.println("size:");
+            saveFile.println(canStealCardPlayers.size());
+            saveFile.println("players:");
+            for (Integer playerNum : canStealCardPlayers) {
+                saveFile.println(playerNum);
+            }
+
             //add the close
             saveFile.close();
             return true;
@@ -2367,10 +2454,17 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
-    public void load(String filePathString) {
+    /**
+     * Load a game state from a data file
+     * 
+     * @param filePathString
+     * @return if the operation was successful
+     */
+    public boolean load(String filePathString) {
         //System.out.println("Yupp");
 
         int tempScannerVal;
+        boolean thrownLoadError = false;
 
         //load the save file 
         try {
@@ -2378,80 +2472,80 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV9")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV10")) {
                 //System.out.println("Yuppers");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("playerCount:")) {
                 playerCount = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers1");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("thiefMoveCounter:")) {
                 thiefMoveCounter = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers2");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("tileWithThief:")) {
                 tileWithThief = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers2.5");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("victoryPointsToWin:")) {
                 victoryPointsToWin = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers3");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("currentPlayer:")) {
                 currentPlayer = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers4");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("giveStartingResources:")) {
                 giveStartingResources = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers4.5");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("doSnakeRules:")) {
                 doSnakeRules = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers4.6");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("setupTurnOrderIndex:")) {
                 setupTurnOrderIndex = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers4.7");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("inSetup:")) {
                 inSetup = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("setupRoundsLeft:")) {
                 setupRoundsLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("YuppersSetupRounds");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("newestSetupSettlmentRefNum:")) {
@@ -2465,35 +2559,35 @@ public class GamePanel extends javax.swing.JPanel {
                     newestSetupSettlment = null;
                 }
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("playerSetupRoadsLeft:")) {
                 playerSetupRoadsLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers6");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("playerSetupSettlementLeft:")) {
                 playerSetupSettlementLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers7");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("longestRoadData length:")) {
                 longestRoadData.setLength(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.1");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("longestRoadData playerNum:")) {
                 longestRoadData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.2");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("setupTurnOrder:") && scanner.nextLine().equals("length:")) {
@@ -2510,7 +2604,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             scanner.nextLine();
@@ -2524,7 +2618,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //System.out.println("Yuppers8");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             //get the VP collected
@@ -2538,7 +2632,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //System.out.println("Yuppers8");
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             //get the resource cards collected
@@ -2551,7 +2645,7 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Player: " + (i))) {
                         //System.out.println("Yuppers10.1");
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("size:")) {
@@ -2569,19 +2663,19 @@ public class GamePanel extends javax.swing.JPanel {
 
                             //System.out.println("Yuppers10.3");
                         } else {
-                            throwLoadError();
+                            thrownLoadError = throwLoadError(thrownLoadError);
                             //System.out.println("Its me");
                         }
 
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                         //System.out.println("no me");
                     }
 
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("Tiles:")) {
@@ -2594,25 +2688,25 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Tile number:")) {
                         tileNum = Integer.parseInt(scanner.nextLine());
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Type:")) {
                         tiles.get(tileNum).setType(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Has Thief:")) {
                         tiles.get(tileNum).setThief(Boolean.parseBoolean(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Harvesting Dice Roll:")) {
                         tiles.get(tileNum).setHarvestRollNum(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     //skip a line
@@ -2620,7 +2714,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("NodeRoads:")) {
@@ -2633,13 +2727,13 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Road node number:")) {
                         roadNodeNum = Integer.parseInt(scanner.nextLine());
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Player ID:")) {
                         roadNodes.get(roadNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     //skip a line
@@ -2647,7 +2741,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("NodeSettlements:")) {
@@ -2660,19 +2754,19 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Settlement node number:")) {
                         settlementNodeNum = Integer.parseInt(scanner.nextLine());
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Player ID:")) {
                         settlementNodes.get(settlementNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Is Large:")) {
                         settlementNodes.get(settlementNodeNum).setLarge(Boolean.parseBoolean(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     //skip a line
@@ -2680,7 +2774,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             if (scanner.nextLine().equals("Ports:")) {
@@ -2693,25 +2787,25 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Port number:")) {
                         portNum = Integer.parseInt(scanner.nextLine());
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("LinkedTile:")) {
                         ports.get(portNum).setLinkedTile(tiles.get(Integer.parseInt(scanner.nextLine())));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Orientation:")) {
                         ports.get(portNum).setOrientation(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("Type:")) {
                         ports.get(portNum).setType(Integer.parseInt(scanner.nextLine()));
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     //skip a line
@@ -2723,7 +2817,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
 
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             //get the playerHasPort data
@@ -2735,7 +2829,7 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("Player: " + (i))) {
                         //System.out.println("Yuppers10.1");
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                     }
 
                     if (scanner.nextLine().equals("hasPorts:")) {
@@ -2749,21 +2843,253 @@ public class GamePanel extends javax.swing.JPanel {
 
                         //System.out.println("Yuppers10.3");
                     } else {
-                        throwLoadError();
+                        thrownLoadError = throwLoadError(thrownLoadError);
                         //System.out.println("uh oh");
                     }
 
                 }
 
-                //close the scanner
-                scanner.close();
-
             } else {
-                throwLoadError();
+                thrownLoadError = throwLoadError(thrownLoadError);
             }
 
+            //get the userPlayedDevCard data
+            if (scanner.nextLine().equals("userPlayedDevCard:")) {
+                //System.out.println("Yes");
+                userPlayedDevCard = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the usingDevCard data
+            if (scanner.nextLine().equals("usingDevCard:")) {
+                usingDevCard = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the dev cards owned
+            //but first skip a line
+            scanner.nextLine();
+            if (scanner.nextLine().equals("Dev Cards:")) {
+
+                //System.out.println("Yuppers10");
+                for (int i = 1; i < playerCount + 1; i++) {
+                    if (scanner.nextLine().equals("Player: " + (i))) {
+                        //System.out.println("Yuppers10.1");
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                    if (scanner.nextLine().equals("size:")) {
+                        tempScannerVal = Integer.parseInt(scanner.nextLine());
+                        //System.out.println("Yuppers10.2");
+
+                        if (scanner.nextLine().equals("dev cards:")) {
+
+                            for (int j = 0; j < tempScannerVal; j++) {
+                                devCards[i].add(Integer.parseInt(scanner.nextLine()));
+                            }
+
+                            //skip a line
+                            scanner.nextLine();
+
+                            //System.out.println("Yuppers10.3");
+                        } else {
+                            thrownLoadError = throwLoadError(thrownLoadError);
+                            //System.out.println("Its me");
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                        //System.out.println("no me");
+                    }
+
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the availableDevCards data
+            if (scanner.nextLine().equals("availableDevCards:")) {
+
+                if (scanner.nextLine().equals("size:")) {
+
+                    tempScannerVal = Integer.parseInt(scanner.nextLine());
+
+                    //remove any cards in there
+                    availableDevCards.clear();
+
+                    if (scanner.nextLine().equals("available cards:")) {
+
+                        //then add back the ones that are in the save file
+                        for (int i = 0; i < tempScannerVal; i++) {
+                            availableDevCards.add(Integer.parseInt(scanner.nextLine()));
+                        }
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //load the hitbox data
+            //get the showRoadHitbox data
+            if (scanner.nextLine().equals("showRoadHitbox:")) {
+                //System.out.println("Yes1");
+                showRoadHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showCardHitbox data
+            if (scanner.nextLine().equals("showCardHitbox:")) {
+                //System.out.println("Yes2");
+                showCardHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showDevCardHitbox data
+            if (scanner.nextLine().equals("showDevCardHitbox:")) {
+                //System.out.println("Yes3");
+                showDevCardHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showSettlementHitbox data
+            if (scanner.nextLine().equals("showSettlementHitbox:")) {
+                //System.out.println("Yes4");
+                showSettlementHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showTileHitbox data
+            if (scanner.nextLine().equals("showTileHitbox:")) {
+                //System.out.println("Yes");
+                showTileHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showPortHitbox data
+            if (scanner.nextLine().equals("showPortHitbox:")) {
+                //System.out.println("Yes");
+                showPortHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //get the showSubPlayerHitbox data
+            if (scanner.nextLine().equals("showSubPlayerHitbox:")) {
+                //System.out.println("Yes");
+                showSubPlayerHitbox = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the showDevCards data
+            if (scanner.nextLine().equals("showDevCards:")) {
+                //System.out.println("Yes");
+                showDevCards = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the instructions
+            //main
+            if (scanner.nextLine().equals("instructionLbl text:")) {
+                //System.out.println("Yes");
+                instructionLbl.setText(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //sub
+            if (scanner.nextLine().equals("subInstructionLbl text:")) {
+                //System.out.println("Yes");
+                subInstructionLbl.setText(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the button states
+            //turn switch btn
+            if (scanner.nextLine().equals("turnSwitchBtn.isEnabled")) {
+                //System.out.println("Got it");
+                turnSwitchBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //SettlerBtns
+            //toggleCardBtn
+            if (scanner.nextLine().equals("toggleCardBtn.getEnabled")) {
+                //System.out.println("Got it");
+                toggleCardBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            if (scanner.nextLine().equals("toggleCardBtn.getMode")) {
+                //System.out.println("Got it");
+                toggleCardBtn.setMode(Integer.parseInt(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //buyDevCardBtn
+            if (scanner.nextLine().equals("buyDevCardBtn.getEnabled")) {
+                //System.out.println("Got it");
+                buyDevCardBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            //useDevCardBtn
+            if (scanner.nextLine().equals("useDevCardBtn.getEnabled")) {
+                //System.out.println("Got it");
+                useDevCardBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            if (scanner.nextLine().equals("useDevCardBtn.getMode")) {
+                //System.out.println("Got it");
+                useDevCardBtn.setMode(Integer.parseInt(scanner.nextLine()));
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //skip line
+            scanner.nextLine();
+
+            //load in the players that can be stolen from
+            if (scanner.nextLine().equals("canStealCardPlayers:")) {
+
+                if (scanner.nextLine().equals("size:")) {
+
+                    tempScannerVal = Integer.parseInt(scanner.nextLine());
+
+                    if (scanner.nextLine().equals("players:")) {
+                        
+                        for (int i = 0; i < tempScannerVal; i++) {
+                            canStealCardPlayers.add(Integer.parseInt(scanner.nextLine()));
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //close the scanner
+            scanner.close();
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nPlease try again.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nError: " + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
 
         //update the instructions
@@ -2789,13 +3115,21 @@ public class GamePanel extends javax.swing.JPanel {
 
         repaint();
         updateBuildButtons();
+
+        return !thrownLoadError; //return the success of loading. If no error was thrown then the load was a success.
     }
 
     /**
      * Displays an error to the user about loading a bad file
      */
-    private void throwLoadError() {
-        JOptionPane.showMessageDialog(null, "Error loading the save file.\nThere may be file corruptions.", "Bad File", JOptionPane.ERROR_MESSAGE);
+    private boolean throwLoadError(boolean hasThrownLoadError) {
+        //check to see if a load error has been thrown
+        if (!hasThrownLoadError) {
+            JOptionPane.showMessageDialog(null, "Error loading the save file.\nThere may be file corruptions.", "Bad File", JOptionPane.ERROR_MESSAGE);
+            hasThrownLoadError = true;
+        }
+
+        return hasThrownLoadError;
     }
 
     /**
@@ -2904,7 +3238,9 @@ public class GamePanel extends javax.swing.JPanel {
             showDevCards = true;
 
             buyDevCardBtn.setEnabled(false);
-            useDevCardBtn.setEnabled(!(usingDevCard == 2)); //do not allow the user to cancel if they used a road building card
+            //do not allow the user to cancel if they used a road building card
+            //of if it's the knight card and the user is selecting a sub player
+            useDevCardBtn.setEnabled(!(usingDevCard == 2 || (usingDevCard == 1 && showSubPlayerHitbox)));
 
         } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
@@ -3803,8 +4139,9 @@ public class GamePanel extends javax.swing.JPanel {
                     drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
                 } else if (tradingMode == 3) { //if its a specialized 2:1
                     drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType());
-                } else drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
-                
+                } else {
+                    drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
+                }
 
                 //check if that one should be drawn
                 if (drawSpecificHitbox) {
@@ -4408,6 +4745,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //loop thorugh and populate the array
                 for (int i = 0; i < listSize; i++) {
+                    
                     devCardTypeCount[devCards[currentPlayer].get(i) - 1]++;
                 }
 
