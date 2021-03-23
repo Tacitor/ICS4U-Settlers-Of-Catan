@@ -2222,7 +2222,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV10"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV11"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -2445,6 +2445,55 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println(playerNum);
             }
 
+            saveFile.println();//add linebreak
+
+            //save the building object
+            saveFile.println("buildingObject:");
+            saveFile.println(buildingObject);
+            //save tradingMode
+            saveFile.println("tradingMode:");
+            saveFile.println(tradingMode);
+            //save tradeResource
+            saveFile.println("tradeResource:");
+            saveFile.println(tradeResource);
+            //save the minTradeCardsNeeded
+            saveFile.println("minTradeCardsNeeded:");
+            saveFile.println(minTradeCardsNeeded);
+
+            //save the vars for thief stealing
+            //save the thiefIsStealing
+            saveFile.println("thiefIsStealing:");
+            saveFile.println(thiefIsStealing);
+            //save the thiefJustFinished
+            saveFile.println("thiefJustFinished:");
+            saveFile.println(thiefJustFinished);
+            //save the thiefJustStarted
+            saveFile.println("thiefJustStarted:");
+            saveFile.println(thiefJustStarted);
+            //save the player who rolled a 7
+            saveFile.println("playerRolled7:");
+            saveFile.println(playerRolled7);
+
+            saveFile.println();//add linebreak
+
+            //save the playerTurnOrder
+            saveFile.println("playerTurnOrder:");
+            saveFile.println("size:");
+            saveFile.println(playerTurnOrder.size());
+            saveFile.println("order:");
+            for (int i = 0; i < playerTurnOrder.size(); i++) {
+                saveFile.println(playerTurnOrder.get(i));
+            }
+            
+            //save the stealCardNum
+            saveFile.println("stealCardNum:");
+            saveFile.println("size:");
+            saveFile.println(stealCardNum.length);
+            saveFile.println("players:");
+            for (int i = 0; i < stealCardNum.length; i++) {
+                saveFile.println(stealCardNum[i]);
+            }
+
             //add the close
             saveFile.close();
             return true;
@@ -2456,7 +2505,7 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Load a game state from a data file
-     * 
+     *
      * @param filePathString
      * @return if the operation was successful
      */
@@ -2472,7 +2521,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV10")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV11")) {
                 //System.out.println("Yuppers");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
@@ -3068,9 +3117,132 @@ public class GamePanel extends javax.swing.JPanel {
                     tempScannerVal = Integer.parseInt(scanner.nextLine());
 
                     if (scanner.nextLine().equals("players:")) {
-                        
+
                         for (int i = 0; i < tempScannerVal; i++) {
                             canStealCardPlayers.add(Integer.parseInt(scanner.nextLine()));
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //skip line
+            scanner.nextLine();
+
+            //get the buildingObject
+            if (scanner.nextLine().equals("buildingObject:")) {
+                //System.out.println("Got it");
+                buildingObject = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the tradingMode
+            if (scanner.nextLine().equals("tradingMode:")) {
+                //System.out.println("Got it");
+                tradingMode = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the tradeResource
+            if (scanner.nextLine().equals("tradeResource:")) {
+                //System.out.println("Got it");
+                tradeResource = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the minTradeCardsNeeded
+            if (scanner.nextLine().equals("minTradeCardsNeeded:")) {
+                //System.out.println("Got it");
+                minTradeCardsNeeded = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the thiefIsStealing
+            if (scanner.nextLine().equals("thiefIsStealing:")) {
+                //System.out.println("Got it1");
+                thiefIsStealing = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the thiefJustFinished
+            if (scanner.nextLine().equals("thiefJustFinished:")) {
+                //System.out.println("Got it2");
+                thiefJustFinished = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the thiefJustStarted
+            if (scanner.nextLine().equals("thiefJustStarted:")) {
+                //System.out.println("Got it3");
+                thiefJustStarted = Boolean.parseBoolean(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the playerRolled7
+            if (scanner.nextLine().equals("playerRolled7:")) {
+                //System.out.println("Got it4");
+                playerRolled7 = Integer.parseInt(scanner.nextLine());
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //skip line
+            scanner.nextLine();
+
+            //load in the playerTurnOrder
+            if (scanner.nextLine().equals("playerTurnOrder:")) {
+
+                //clear the current order
+                playerTurnOrder.clear();
+
+                if (scanner.nextLine().equals("size:")) {
+
+                    tempScannerVal = Integer.parseInt(scanner.nextLine());
+
+                    if (scanner.nextLine().equals("order:")) {
+
+                        for (int i = 0; i < tempScannerVal; i++) {
+                            playerTurnOrder.add(Integer.parseInt(scanner.nextLine()));
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            //load in the stealCardNum
+            if (scanner.nextLine().equals("stealCardNum:")) {
+
+                if (scanner.nextLine().equals("size:")) {
+
+                    tempScannerVal = Integer.parseInt(scanner.nextLine());
+
+                    if (scanner.nextLine().equals("players:")) {
+
+                        for (int i = 0; i < tempScannerVal; i++) {
+                            stealCardNum[i] = Integer.parseInt(scanner.nextLine());
                         }
 
                     } else {
@@ -3098,12 +3270,7 @@ public class GamePanel extends javax.swing.JPanel {
             instructionLbl.setText("Use your cards to build roads or settlements");
             subInstructionLbl.setText("Or end your turn to continue the game");
         }
-
-        //bring the playerTurnOrder Array to match the state it was when saving
-        while (playerTurnOrder.get(0) != currentPlayer) {
-            progressPlayerTurnOrder();
-        }
-
+        
         //if doing snake rules update the sub plays to match what it's supposed to be
         if (doSnakeRules && inSetup) {
             //update the playerTurnOrder
@@ -3113,8 +3280,35 @@ public class GamePanel extends javax.swing.JPanel {
         //sort the cards to ensure they have a good order
         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
-        repaint();
+        //get the number of each card type the player has
+        countCardTypes(cards[currentPlayer].size());
+        countNumCardTypes();
+        
+        //update the text of the Swing buttons
+        //check if building
+        if (buildingObject != 0) {
+            buildBtn.setText("Cancel");
+        }
+        //check if trading
+        if (tradingMode != 0) {
+            //check which button needs to say cancel
+            switch (tradingMode) {
+                case 1:
+                    trade4to1Btn.setText("Cancel");
+                    break;
+                case 2:
+                    trade3to1Btn.setText("Cancel");
+                    break;
+                case 3:
+                    trade2to1Btn.setText("Cancel");
+                    break;
+                default:
+                    break;
+            }
+        }
+
         updateBuildButtons();
+        repaint();        
 
         return !thrownLoadError; //return the success of loading. If no error was thrown then the load was a success.
     }
@@ -3405,12 +3599,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean has2to1 = false;
 
         //create an array to store how many cards of each type the player has
-        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
-
-        //sum up the cards of each type
-        for (int i = 0; i < cards[currentPlayer].size(); i++) {
-            numCardType[cards[currentPlayer].get(i)]++;
-        }
+        countNumCardTypes();
 
         for (int i = 1; i < 6; i++) { //loop thorugh indexes 1-5
             if (playerHasPort[currentPlayer][i] && numCardType[i] >= 2) { //check if the player has that port and atleast 2 cards of that type
@@ -3436,12 +3625,7 @@ public class GamePanel extends javax.swing.JPanel {
             System.out.println("Error: hasTradeCards out of bounds with value: " + tradingType);
         } else { //check the current players cards
             //create an array to store how many cards of each type the player has
-            numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
-
-            //sum up the cards of each type
-            for (int i = 0; i < cards[currentPlayer].size(); i++) {
-                numCardType[cards[currentPlayer].get(i)]++;
-            }
+            countNumCardTypes();
 
             //check if there is the required amount of each type
             for (int i = 1; i < numCardType.length; i++) {
@@ -4562,13 +4746,7 @@ public class GamePanel extends javax.swing.JPanel {
                 int listSize = cards[currentPlayer].size();
 
                 //get the number of each card type the player has
-                //setup an array to hold the results
-                cardTypeCount = new int[5];
-
-                //loop thorugh and populate the array
-                for (int i = 0; i < listSize; i++) {
-                    cardTypeCount[cards[currentPlayer].get(i) - 1]++;
-                }
+                countCardTypes(listSize);
 
                 // Calculate where the first card must go to center the list
                 cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
@@ -4745,7 +4923,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //loop thorugh and populate the array
                 for (int i = 0; i < listSize; i++) {
-                    
+
                     devCardTypeCount[devCards[currentPlayer].get(i) - 1]++;
                 }
 
@@ -5497,12 +5675,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean showPort = false;
 
         //create an array to store how many cards of each type the player has
-        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
-
-        //sum up the cards of each type
-        for (int i = 0; i < cards[currentPlayer].size(); i++) {
-            numCardType[cards[currentPlayer].get(i)]++;
-        }
+        countNumCardTypes();
 
         //do not show the port if it is the 2:1 port that the player has. This prevents trading wood for wood.
         if (!playerHasPort[currentPlayer][resourceType]) {
@@ -5651,6 +5824,33 @@ public class GamePanel extends javax.swing.JPanel {
 
         //register the user using a dev card
         userPlayedDevCard = true;
+    }
+
+    /**
+     * Initialize cardTypeCount and assign it values.
+     *
+     * @param listSize
+     */
+    private void countCardTypes(int listSize) {
+        //setup an array to hold the results
+        cardTypeCount = new int[5];
+
+        //loop thorugh and populate the array
+        for (int i = 0; i < listSize; i++) {
+            cardTypeCount[cards[currentPlayer].get(i) - 1]++;
+        }
+    }
+
+    /**
+     * Initialize numCardType and assign it values.
+     */
+    private void countNumCardTypes() {
+        numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
+
+        //sum up the cards of each type
+        for (int i = 0; i < cards[currentPlayer].size(); i++) {
+            numCardType[cards[currentPlayer].get(i)]++;
+        }
     }
 
     /**
