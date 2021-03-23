@@ -2460,7 +2460,7 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println("minTradeCardsNeeded:");
             saveFile.println(minTradeCardsNeeded);
 
-            //save the vars for theif stealing
+            //save the vars for thief stealing
             //save the thiefIsStealing
             saveFile.println("thiefIsStealing:");
             saveFile.println(thiefIsStealing);
@@ -2477,7 +2477,6 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println();//add linebreak
 
             //save the playerTurnOrder
-            //available dev card data
             saveFile.println("playerTurnOrder:");
             saveFile.println("size:");
             saveFile.println(playerTurnOrder.size());
@@ -2486,8 +2485,7 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println(playerTurnOrder.get(i));
             }
             
-            //save the playerTurnOrder
-            //available dev card data
+            //save the stealCardNum
             saveFile.println("stealCardNum:");
             saveFile.println("size:");
             saveFile.println(stealCardNum.length);
