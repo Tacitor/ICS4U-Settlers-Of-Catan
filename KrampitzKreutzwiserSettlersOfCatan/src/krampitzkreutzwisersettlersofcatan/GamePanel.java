@@ -3285,6 +3285,29 @@ public class GamePanel extends javax.swing.JPanel {
         //get the number of each card type the player has
         countCardTypes(cards[currentPlayer].size());
         countNumCardTypes();
+        
+        //update the text of the Swing buttons
+        //check if building
+        if (buildingObject != 0) {
+            buildBtn.setText("Cancel");
+        }
+        //check if trading
+        if (tradingMode != 0) {
+            //check which button needs to say cancel
+            switch (tradingMode) {
+                case 1:
+                    trade4to1Btn.setText("Cancel");
+                    break;
+                case 2:
+                    trade3to1Btn.setText("Cancel");
+                    break;
+                case 3:
+                    trade2to1Btn.setText("Cancel");
+                    break;
+                default:
+                    break;
+            }
+        }
 
         updateBuildButtons();
         repaint();        
