@@ -2454,6 +2454,12 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Load a game state from a data file
+     * 
+     * @param filePathString
+     * @return if the operation was successful
+     */
     public boolean load(String filePathString) {
         //System.out.println("Yupp");
 
