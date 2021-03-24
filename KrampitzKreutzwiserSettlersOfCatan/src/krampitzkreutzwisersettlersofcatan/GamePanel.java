@@ -3298,6 +3298,18 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
+        //update the subPlayersHaveEnoughcards boolean
+        if (canStealCardPlayers.size() > 0) {
+            //does atleast one of the targetable sub players have more than one card to steal
+            subPlayersHaveEnoughcards = false; //checks for this so that the game does not softlock when the current player need to choose but has 0 options
+
+            for (int i = 0; i < canStealCardPlayers.size(); i++) {
+                if (cards[canStealCardPlayers.get(i)].size() > 0) {
+                    subPlayersHaveEnoughcards = true;
+                }
+            }
+        }
+
         updateBuildButtons();
         repaint();
 
