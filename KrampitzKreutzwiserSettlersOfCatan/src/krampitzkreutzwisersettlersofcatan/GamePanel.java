@@ -1415,13 +1415,13 @@ public class GamePanel extends javax.swing.JPanel {
                                     //check to see if that settlment is on a port
                                     //loop thorugh the ports and see if the settlement just built is on a port
                                     for (int j = 0; j < ports.size(); j++) {
-                                        
+
                                         //check to see if that port contains this settlemnt
                                         if (portSettlements[j].contains(settlementNodes.get(i))) {
                                             //save that the new settlement is on a port and which one
                                             playerHasPort[currentPlayer][ports.get(j).getType()] = true;
                                         }
-                                        
+
                                     }
 
                                     //save the settelment just built
@@ -4725,7 +4725,7 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
         }
-
+        /*
         //temp draw settlemt ports
         for (int i = 0; i < portSettlements.length; i++) {
 
@@ -4740,7 +4740,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             }
 
-        }
+        }*/
 
         // If a turn is currently going on, render the current player's cards
         if (!inbetweenTurns) {
@@ -5952,12 +5952,13 @@ public class GamePanel extends javax.swing.JPanel {
                             case 0:
                             case 3:
                                 //for top and bottom
-                                
+
                                 //preform the check
                                 if (node1.getXPos() != node2.getXPos() && node1.getYPos() == node2.getYPos()) {
                                     safe1 = node1;
                                     safe2 = node2;
-                                }   break;
+                                }
+                                break;
                             case 1:
                                 //side
                                 //just select the first two
@@ -5970,14 +5971,16 @@ public class GamePanel extends javax.swing.JPanel {
                                 if (node1.getXPos() > node2.getXPos() && node1.getYPos() < node2.getYPos()) {
                                     safe1 = node1;
                                     safe2 = node2;
-                                }   break;
+                                }
+                                break;
                             case 4:
                                 //side
                                 //preform the check
                                 if (node1.getXPos() < node2.getXPos() && node1.getYPos() < node2.getYPos()) {
                                     safe1 = node1;
                                     safe2 = node2;
-                                }   break;
+                                }
+                                break;
                             case 5:
                                 //side
                                 //just select the first two
