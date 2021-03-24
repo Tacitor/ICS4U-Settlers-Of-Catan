@@ -5895,6 +5895,7 @@ public class GamePanel extends javax.swing.JPanel {
             portTiles.add(port.getLinkedTile());
         }
 
+        //do a first rough pass getting every node it should but also some more
         //loop through the settlements
         for (NodeSettlement node : settlementNodes) {
 
@@ -5907,7 +5908,6 @@ public class GamePanel extends javax.swing.JPanel {
             altPortNum = 0;
 
             //loop through the 3 tile the settlement is on use int range 1-3
-            //go through backwards
             for (int k = 1; k < 4; k++) {
                 //check if this tile is the same as a port's tile
                 if (portTiles.contains(node.getTile(k))) {
@@ -5928,11 +5928,12 @@ public class GamePanel extends javax.swing.JPanel {
                 }
             }
 
-            //only register the port as owned if the conditions are met
+            //only add that node it is meets the first round of selection
             //also only add it if there are less than 3 settlements. Limitiing a port to having max 3
             if (onCoast && onPortTile) {
 
                 //check how many settlemtnts that port already has
+                //only add it to a port if that port has less than 2 nodes
                 if (portSettlements[portNum].size() < 3) {
 
                     //save that the new settlement is on a port and which one
@@ -5940,6 +5941,89 @@ public class GamePanel extends javax.swing.JPanel {
                 } else if (portSettlements[altPortNum].size() < 3) {
                     portSettlements[altPortNum].add(node);
                 }
+            }
+
+        }
+
+        //of the max three settlements elimite the one that is not for that port
+        //only run the emimination if that port has three
+        for (int i = 0; i < portSettlements.length; i++) {
+
+            if (portSettlements[i].size() > 3) {
+                System.out.println("ERROR SETTING UP PORT SETTLEMENTS. More than 3 settlemtns");
+                instructionLbl.setText("ERROR SETTING UP PORT SETTLEMENTS. More than 3 settlemtns");
+            } else if (portSettlements[i].size() == 3) {
+
+                //get the port orientation
+                int orientation = ports.get(i).getOrientation();
+                NodeSettlement safe1 = null;
+                NodeSettlement safe2 = null; // ^^ the two nodes that are safe and the ones for that port
+                NodeSettlement markedForRemoval = null; //the node to remove
+
+                //for these since they are at the top and bottom the x have to be differant and the y have to be the same
+                //loop through the nodes
+                for (NodeSettlement node1 : portSettlements[i]) {
+
+                    //go through them again to match everyone against every other one
+                    for (NodeSettlement node2 : portSettlements[i]) {
+
+                        //decide which method to use to find the one to elimate
+                        switch (orientation) {
+                            case 0:
+                            case 3:
+                                //for top and bottom
+                                
+                                //preform the check
+                                if (node1.getXPos() != node2.getXPos() && node1.getYPos() == node2.getYPos()) {
+                                    safe1 = node1;
+                                    safe2 = node2;
+                                }   break;
+                            case 1:
+                                //side
+                                //just select the first two
+                                safe1 = portSettlements[i].get(0);
+                                safe2 = portSettlements[i].get(1);
+                                break;
+                            case 2:
+                                //side
+                                //preform the check
+                                if (node1.getXPos() > node2.getXPos() && node1.getYPos() < node2.getYPos()) {
+                                    safe1 = node1;
+                                    safe2 = node2;
+                                }   break;
+                            case 4:
+                                //side
+                                //preform the check
+                                if (node1.getXPos() < node2.getXPos() && node1.getYPos() < node2.getYPos()) {
+                                    safe1 = node1;
+                                    safe2 = node2;
+                                }   break;
+                            case 5:
+                                //side
+                                //just select the first two
+                                safe1 = portSettlements[i].get(0);
+                                safe2 = portSettlements[i].get(1);
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+
+                }
+
+                if (safe1 != null) {
+                    //elimate the incorrect one
+                    for (NodeSettlement node : portSettlements[i]) {
+                        if (node != safe1 && node != safe2) {
+                            markedForRemoval = node;
+                        }
+                    }
+                }
+                portSettlements[i].remove(markedForRemoval);
+            } else {
+                System.out.println("ERROR SETTING UP PORT SETTLEMENTS. Less than 2 settlemtns");
+                instructionLbl.setText("ERROR SETTING UP PORT SETTLEMENTS. Less than 2 settlemtns");
             }
 
         }
