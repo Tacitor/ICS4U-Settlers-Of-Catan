@@ -1412,36 +1412,16 @@ public class GamePanel extends javax.swing.JPanel {
                                     // Set the settlement's player to the current player
                                     settlementNodes.get(i).setPlayer(currentPlayer);
 
-                                    Tile portLinkedTile; //the tile linked to the port to check against
-                                    boolean onCoast; //whether or not the node is on the coast (on the null tile)
-                                    boolean onPortTile; //whether or not the node is on a tile that is the linkedTile for a port
-
+                                    //check to see if that settlment is on a port
                                     //loop thorugh the ports and see if the settlement just built is on a port
                                     for (int j = 0; j < ports.size(); j++) {
-                                        //save the Tile
-                                        portLinkedTile = ports.get(j).getLinkedTile();
-                                        //reset the bool vars
-                                        onCoast = false;
-                                        onPortTile = false;
-
-                                        //loop through the 3 tile the settlement is on use int range 1-3
-                                        for (int k = 1; k < 4; k++) {
-                                            //check if this tile is the same as a port's tile
-                                            if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
-                                                onPortTile = true;
-                                            }
-
-                                            //also check if this tile is the null tile meaning the settlemnt is on the coast
-                                            if (settlementNodes.get(i).getTile(k) == null) {
-                                                onCoast = true;
-                                            }
-                                        }
-
-                                        //only register the port as owned if the conditions are met
-                                        if (onCoast && onPortTile) {
+                                        
+                                        //check to see if that port contains this settlemnt
+                                        if (portSettlements[j].contains(settlementNodes.get(i))) {
                                             //save that the new settlement is on a port and which one
                                             playerHasPort[currentPlayer][ports.get(j).getType()] = true;
                                         }
+                                        
                                     }
 
                                     //save the settelment just built
@@ -6021,8 +6001,8 @@ public class GamePanel extends javax.swing.JPanel {
                     }
                 }
                 portSettlements[i].remove(markedForRemoval);
-            } else {
-                System.out.println("ERROR SETTING UP PORT SETTLEMENTS. Less than 2 settlemtns");
+            } else if (portSettlements[i].size() < 2) { //if it's less than 2
+                System.out.println("ERROR SETTING UP PORT SETTLEMENTS. Less than 2 settlemtns. Port: " + i);
                 instructionLbl.setText("ERROR SETTING UP PORT SETTLEMENTS. Less than 2 settlemtns");
             }
 
