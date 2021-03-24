@@ -96,6 +96,7 @@ public class GamePanel extends javax.swing.JPanel {
     // ^^^ valid number are: 1 (knight), 2 (progress card road building), 3 (progress card monolpoy), 4 (progress card year of pleanty), 5, 6, 7, 8, 9 (5-9 are vp cards)
     private final ArrayList<Integer> availableDevCards; //a list of dev cards that are still in a pile and have not been drawn. 
     // ^^^ This ensures that the type distrobution is correct and also ensures that there will be a finite number of dev cards
+    private ArrayList<NodeSettlement>[] portSettlements; //Contains settlments that are on ports. One arrayList for each of the 9 ports.
     private final int victoryPoints[];
     private final int totalCardsCollected[];
     private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
@@ -340,6 +341,16 @@ public class GamePanel extends javax.swing.JPanel {
         loadNodes(); // Create and link all of the board's settlement and road nodes
         loadPorts(); //read in all the data about the ports and populate the Array List with Ports
 
+        //port supporting vars
+        portSettlements = new ArrayList[ports.size()]; //create the same amount of ArrayLists as there are ports
+
+        //fill the array of ports settlements with new arrayLists
+        for (int i = 0; i < portSettlements.length; i++) {
+            portSettlements[i] = new ArrayList<>();
+        }
+
+        generatePortSettlements(); //Get a list of the settlements that allow access to each port
+
         // Add the mouse listener that calls the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
@@ -349,7 +360,7 @@ public class GamePanel extends javax.swing.JPanel {
              * @param evt The event representing the mouse click
              */
             @Override
-            public final void mouseClicked(MouseEvent evt) {
+            public final void mouseReleased(MouseEvent evt) {
                 // Send the mouse event over to the game panel's click handlers
                 mouseClick(evt);
             }
@@ -883,7 +894,7 @@ public class GamePanel extends javax.swing.JPanel {
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
             //reset the font
-            instructionLbl.setFont(timesNewRoman);
+            instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
@@ -1401,36 +1412,16 @@ public class GamePanel extends javax.swing.JPanel {
                                     // Set the settlement's player to the current player
                                     settlementNodes.get(i).setPlayer(currentPlayer);
 
-                                    Tile portLinkedTile; //the tile linked to the port to check agaist
-                                    boolean onCoast; //whether or not the node is on the coast (on the null tile)
-                                    boolean onPortTile; //whether or not the node is on a tile that is the linkedTile for a port
-
+                                    //check to see if that settlment is on a port
                                     //loop thorugh the ports and see if the settlement just built is on a port
                                     for (int j = 0; j < ports.size(); j++) {
-                                        //save the Tile
-                                        portLinkedTile = ports.get(j).getLinkedTile();
-                                        //reset the bool vars
-                                        onCoast = false;
-                                        onPortTile = false;
 
-                                        //loop through the 3 tile the settlement is on use int range 1-3
-                                        for (int k = 1; k < 4; k++) {
-                                            //check if this tile is the same as a port's tile
-                                            if (portLinkedTile == settlementNodes.get(i).getTile(k)) {
-                                                onPortTile = true;
-                                            }
-
-                                            //also check if this tile is the null tile meaning the settlemnt is on the coast
-                                            if (settlementNodes.get(i).getTile(k) == null) {
-                                                onCoast = true;
-                                            }
-                                        }
-
-                                        //only register the port as owned if the conditions are met
-                                        if (onCoast && onPortTile) {
+                                        //check to see if that port contains this settlemnt
+                                        if (portSettlements[j].contains(settlementNodes.get(i))) {
                                             //save that the new settlement is on a port and which one
                                             playerHasPort[currentPlayer][ports.get(j).getType()] = true;
                                         }
+
                                     }
 
                                     //save the settelment just built
@@ -2484,7 +2475,7 @@ public class GamePanel extends javax.swing.JPanel {
             for (int i = 0; i < playerTurnOrder.size(); i++) {
                 saveFile.println(playerTurnOrder.get(i));
             }
-            
+
             //save the stealCardNum
             saveFile.println("stealCardNum:");
             saveFile.println("size:");
@@ -3231,7 +3222,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //load in the stealCardNum
             if (scanner.nextLine().equals("stealCardNum:")) {
 
@@ -3270,7 +3261,7 @@ public class GamePanel extends javax.swing.JPanel {
             instructionLbl.setText("Use your cards to build roads or settlements");
             subInstructionLbl.setText("Or end your turn to continue the game");
         }
-        
+
         //if doing snake rules update the sub plays to match what it's supposed to be
         if (doSnakeRules && inSetup) {
             //update the playerTurnOrder
@@ -3283,7 +3274,7 @@ public class GamePanel extends javax.swing.JPanel {
         //get the number of each card type the player has
         countCardTypes(cards[currentPlayer].size());
         countNumCardTypes();
-        
+
         //update the text of the Swing buttons
         //check if building
         if (buildingObject != 0) {
@@ -3308,7 +3299,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         updateBuildButtons();
-        repaint();        
+        repaint();
 
         return !thrownLoadError; //return the success of loading. If no error was thrown then the load was a success.
     }
@@ -3336,7 +3327,7 @@ public class GamePanel extends javax.swing.JPanel {
         //reset the colour
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         //reset the font
-        instructionLbl.setFont(timesNewRoman);
+        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
@@ -4397,7 +4388,7 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
                 g2d.drawString(Integer.toString(tiles.get(tileID).getHarvestRollNum()),
                         tiles.get(tileID).getXPos() + newTileWidth / 2 - harvestRollNumOffset,
-                        tiles.get(tileID).getYPos() + newTileHeight / 2 + 5 + threeDTileOffset);
+                        (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 + (6 / scaleFactor) + threeDTileOffset));
                 g2d.setColor(Color.black);
             }
 
@@ -4409,10 +4400,10 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //draw the thief
                 g2d.drawImage(THIEF,
-                        tiles.get(tileID).getXPos() + newTileWidth / 2 - (int) (imageWidth / scaleFactor) / 2,
-                        tiles.get(tileID).getYPos() + newTileHeight / 2 - (int) (imageHeight / scaleFactor) / 2 + threeDTileOffset,
-                        (int) (imageWidth / scaleFactor),
-                        (int) (imageHeight / scaleFactor),
+                        tiles.get(tileID).getXPos() + newTileWidth / 2 - (imageWidth / 2),
+                        tiles.get(tileID).getYPos() + newTileHeight / 2 - (imageHeight / 2) + threeDTileOffset,
+                        imageWidth,
+                        imageHeight,
                         null);
             }
 
@@ -4731,10 +4722,25 @@ public class GamePanel extends javax.swing.JPanel {
                     //draw the boarder
                     g2d.setColor(new java.awt.Color(255, 255, 225));
                     g2d.drawRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
-                    g2d.setColor(Color.black);
                 }
             }
         }
+        /*
+        //temp draw settlemt ports
+        for (int i = 0; i < portSettlements.length; i++) {
+
+            for (NodeSettlement node : portSettlements[i]) {
+
+                g2d.drawRect(node.getXPos() - getImgWidth(RED_HOUSE_S) / 2,
+                        node.getYPos() - getImgHeight(RED_HOUSE_S) / 2,
+                        getImgWidth(RED_HOUSE_S),
+                        getImgHeight(RED_HOUSE_S));
+
+                g2d.drawString(Integer.toString(i), node.getXPos(), node.getYPos());
+
+            }
+
+        }*/
 
         // If a turn is currently going on, render the current player's cards
         if (!inbetweenTurns) {
@@ -5851,6 +5857,160 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 0; i < cards[currentPlayer].size(); i++) {
             numCardType[cards[currentPlayer].get(i)]++;
         }
+    }
+
+    /**
+     * Get a list of the settlements that allow access to each port.
+     */
+    private void generatePortSettlements() {
+
+        ArrayList<Tile> portTiles = new ArrayList<>();
+        boolean onCoast;
+        boolean onPortTile;
+        int portNum;
+        int altPortNum; //if there is another portnum
+
+        //loop through the ports and get a list of their Tiles
+        for (Port port : ports) {
+            portTiles.add(port.getLinkedTile());
+        }
+
+        //do a first rough pass getting every node it should but also some more
+        //loop through the settlements
+        for (NodeSettlement node : settlementNodes) {
+
+            //reset the bool vars
+            onCoast = false;
+            onPortTile = false;
+
+            //reset the ints
+            portNum = 0;
+            altPortNum = 0;
+
+            //loop through the 3 tile the settlement is on use int range 1-3
+            for (int k = 1; k < 4; k++) {
+                //check if this tile is the same as a port's tile
+                if (portTiles.contains(node.getTile(k))) {
+                    onPortTile = true;
+
+                    //save the port num
+                    //only use the alt if the main is already used
+                    if (portNum == 0) {
+                        portNum = portTiles.indexOf(node.getTile(k));
+                    } else {
+                        altPortNum = portTiles.indexOf(node.getTile(k));
+                    }
+                }
+
+                //also check if this tile is the null tile meaning the settlemnt is on the coast
+                if (node.getTile(k) == null) {
+                    onCoast = true;
+                }
+            }
+
+            //only add that node it is meets the first round of selection
+            //also only add it if there are less than 3 settlements. Limitiing a port to having max 3
+            if (onCoast && onPortTile) {
+
+                //check how many settlemtnts that port already has
+                //only add it to a port if that port has less than 2 nodes
+                if (portSettlements[portNum].size() < 3) {
+
+                    //save that the new settlement is on a port and which one
+                    portSettlements[portNum].add(node);
+                } else if (portSettlements[altPortNum].size() < 3) {
+                    portSettlements[altPortNum].add(node);
+                }
+            }
+
+        }
+
+        //of the max three settlements elimite the one that is not for that port
+        //only run the emimination if that port has three
+        for (int i = 0; i < portSettlements.length; i++) {
+
+            if (portSettlements[i].size() > 3) {
+                System.out.println("ERROR SETTING UP PORT SETTLEMENTS. More than 3 settlemtns");
+                instructionLbl.setText("ERROR SETTING UP PORT SETTLEMENTS. More than 3 settlemtns");
+            } else if (portSettlements[i].size() == 3) {
+
+                //get the port orientation
+                int orientation = ports.get(i).getOrientation();
+                NodeSettlement safe1 = null;
+                NodeSettlement safe2 = null; // ^^ the two nodes that are safe and the ones for that port
+                NodeSettlement markedForRemoval = null; //the node to remove
+
+                //for these since they are at the top and bottom the x have to be differant and the y have to be the same
+                //loop through the nodes
+                for (NodeSettlement node1 : portSettlements[i]) {
+
+                    //go through them again to match everyone against every other one
+                    for (NodeSettlement node2 : portSettlements[i]) {
+
+                        //decide which method to use to find the one to elimate
+                        switch (orientation) {
+                            case 0:
+                            case 3:
+                                //for top and bottom
+
+                                //preform the check
+                                if (node1.getXPos() != node2.getXPos() && node1.getYPos() == node2.getYPos()) {
+                                    safe1 = node1;
+                                    safe2 = node2;
+                                }
+                                break;
+                            case 1:
+                                //side
+                                //just select the first two
+                                safe1 = portSettlements[i].get(0);
+                                safe2 = portSettlements[i].get(1);
+                                break;
+                            case 2:
+                                //side
+                                //preform the check
+                                if (node1.getXPos() > node2.getXPos() && node1.getYPos() < node2.getYPos()) {
+                                    safe1 = node1;
+                                    safe2 = node2;
+                                }
+                                break;
+                            case 4:
+                                //side
+                                //preform the check
+                                if (node1.getXPos() < node2.getXPos() && node1.getYPos() < node2.getYPos()) {
+                                    safe1 = node1;
+                                    safe2 = node2;
+                                }
+                                break;
+                            case 5:
+                                //side
+                                //just select the first two
+                                safe1 = portSettlements[i].get(0);
+                                safe2 = portSettlements[i].get(1);
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+
+                }
+
+                if (safe1 != null) {
+                    //elimate the incorrect one
+                    for (NodeSettlement node : portSettlements[i]) {
+                        if (node != safe1 && node != safe2) {
+                            markedForRemoval = node;
+                        }
+                    }
+                }
+                portSettlements[i].remove(markedForRemoval);
+            } else if (portSettlements[i].size() < 2) { //if it's less than 2
+                System.out.println("ERROR SETTING UP PORT SETTLEMENTS. Less than 2 settlemtns. Port: " + i);
+                instructionLbl.setText("ERROR SETTING UP PORT SETTLEMENTS. Less than 2 settlemtns");
+            }
+
+        }
+
     }
 
     /**
