@@ -1058,7 +1058,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
-            instructionLbl.setText("Please select the resource you would like to recive");
+            instructionLbl.setText("Please select the resource you would like to receive");
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
