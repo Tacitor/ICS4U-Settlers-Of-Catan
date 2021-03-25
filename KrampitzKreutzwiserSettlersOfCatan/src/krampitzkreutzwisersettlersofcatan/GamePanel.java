@@ -4494,7 +4494,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         g2d.drawString("Current player: " + currentPlayerString,
                 rightDrawMargin,
-                (int) (550 / scaleFactor));
+                (int) (530 / scaleFactor));
 
         //draw the VP and resource card start table
         //draw the player header
@@ -4526,8 +4526,8 @@ public class GamePanel extends javax.swing.JPanel {
                     scaleInt(670));
             //draw the player's indecator dot
             g2d.drawImage(PLAYER_DOTS[i],
-                    rightDrawMargin + (int) ((65 * i) / scaleFactor) + getImgWidth(PLAYER_DOTS[i]),
-                    (int) (578 / scaleFactor),
+                    rightDrawMargin + scaleInt(65 * i) + scaleInt(5),
+                    (int) (550 / scaleFactor),
                     getImgWidth(PLAYER_DOTS[i]),
                     getImgHeight(PLAYER_DOTS[i]), null);
         }
