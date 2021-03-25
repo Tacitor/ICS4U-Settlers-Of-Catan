@@ -4499,35 +4499,35 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the VP and resource card start table
         //draw the player header
         g2d.drawString("Player:",
-                rightDrawMargin,
+                rightDrawMargin - scaleInt(60),
                 (int) (600 / scaleFactor));
         //draw the victory points header
         g2d.drawString("VP:",
-                rightDrawMargin + (int) (100 / scaleFactor),
-                (int) (600 / scaleFactor));
+                rightDrawMargin - scaleInt(60),
+                scaleInt(635));
         //draw the Resource Cards header
         g2d.drawString("Resource Cards:",
-                rightDrawMargin + (int) (180 / scaleFactor),
-                (int) (600 / scaleFactor));
-
+                rightDrawMargin - scaleInt(60),
+                scaleInt(670));
+        
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
             //draw the player number
             g2d.drawString("" + i,
-                    rightDrawMargin,
-                    (int) ((600 + (30 * i)) / scaleFactor));
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i),
+                    (int) (600 / scaleFactor));
             //draw the players VPs
             g2d.drawString("" + victoryPoints[i],
-                    rightDrawMargin + (int) (100 / scaleFactor),
-                    (int) ((600 + (30 * i)) / scaleFactor));
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i),
+                    scaleInt(635));
             //draw the players number of resource cards
             g2d.drawString("" + cards[i].size(),
-                    rightDrawMargin + (int) (180 / scaleFactor),
-                    (int) ((600 + (30 * i)) / scaleFactor));
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i),
+                    scaleInt(670));
             //draw the player's indecator dot
             g2d.drawImage(PLAYER_DOTS[i],
-                    rightDrawMargin + getImgWidth(PLAYER_DOTS[i]),
-                    (int) ((580 + (30 * i)) / scaleFactor),
+                    rightDrawMargin + (int) ((65 * i) / scaleFactor) + getImgWidth(PLAYER_DOTS[i]),
+                    (int) (578 / scaleFactor),
                     getImgWidth(PLAYER_DOTS[i]),
                     getImgHeight(PLAYER_DOTS[i]), null);
         }
@@ -5271,6 +5271,16 @@ public class GamePanel extends javax.swing.JPanel {
         } else {
             return (int) (getImgWidth(image) / ((float) image.getWidth(null) / image.getHeight(null)));
         }
+    }
+    
+    /**
+     * Scale a number to match the resolution of the screen
+     * 
+     * @param num
+     * @return 
+     */
+    public int scaleInt(int num) {
+        return (int) (num / scaleFactor);
     }
 
     /**
