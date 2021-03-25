@@ -5892,7 +5892,7 @@ public class GamePanel extends javax.swing.JPanel {
      * resting state.
      */
     private void resetUsingDevCards() {
-        //reenable the turn switch button
+        //re-enable the turn switch button
         turnSwitchBtn.setEnabled(true);
 
         //hide the hitbox again
@@ -5902,6 +5902,12 @@ public class GamePanel extends javax.swing.JPanel {
 
         //remove a dev card
         devCards[currentPlayer].remove(new Integer(usingDevCard));
+        
+        //if the dev card that was just remove was a knight card
+        if (usingDevCard == 1) {
+            //add to the player's army size
+            playerArmySize[currentPlayer]++;
+        }
 
         //reset all the use dev card vars
         usingDevCard = -1;
