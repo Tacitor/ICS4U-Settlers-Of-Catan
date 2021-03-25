@@ -98,8 +98,6 @@ public class GamePanel extends javax.swing.JPanel {
     // ^^^ This ensures that the type distrobution is correct and also ensures that there will be a finite number of dev cards
     private ArrayList<NodeSettlement>[] portSettlements; //Contains settlments that are on ports. One arrayList for each of the 9 ports.
     private final int victoryPoints[];
-    private int[] playerLongestRoadSegments; //the length of the longest road segment each player owns
-    private int[] playerArmySize; //the size of each player's army
     private final int totalCardsCollected[];
     private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
     private final int[] devCardStackXPositions; //the x positions to draw dev cards when in stacked mode
@@ -138,6 +136,11 @@ public class GamePanel extends javax.swing.JPanel {
     private GlobalDataRecord longestRoadData;
     private ArrayList<NodeRoad> alreadyCheckedRoad; //ArrayList containing roads that have already been check for logest road. Prevents infinit feedback loop.
     private ArrayList<NodeSettlement> alreadyCheckedSettlements;
+    private int[] playerLongestRoadSegments; //the length of the longest road segment each player owns
+    
+    //Object for Largest Army
+    private GlobalDataRecord largestArmyData;
+    private int[] playerArmySize; //the size of each player's army
 
     //custom buttons
     private SettlerBtn toggleCardBtn;
@@ -232,6 +235,7 @@ public class GamePanel extends javax.swing.JPanel {
         //init the ArrayList holding roads that have already been checked for longest road
         alreadyCheckedRoad = new ArrayList<>();
         alreadyCheckedSettlements = new ArrayList<>();
+        largestArmyData = new GlobalDataRecord();
 
         //init the playerTurnOrder
         initPlayerTurnOrder();
@@ -5907,6 +5911,21 @@ public class GamePanel extends javax.swing.JPanel {
         if (usingDevCard == 1) {
             //add to the player's army size
             playerArmySize[currentPlayer]++;
+            
+            //check if that addition changed the player with the largest army
+            if (playerArmySize[currentPlayer] > largestArmyData.getSize() && playerArmySize[currentPlayer] >= 3) { //must also have 3 or more cards
+                //remove point from the old player who had the largest army
+                if (largestArmyData.getPlayerNum() != 0) { //don't remove point from player 0
+                    victoryPoints[largestArmyData.getPlayerNum()]-=2;
+                }
+                
+                //update the player with the largest army
+                largestArmyData.setPlayerNum(currentPlayer);
+                largestArmyData.setSize(playerArmySize[currentPlayer]);
+                
+                //give that player 2 VP
+                victoryPoints[currentPlayer]+=2;
+            }
         }
 
         //reset all the use dev card vars
