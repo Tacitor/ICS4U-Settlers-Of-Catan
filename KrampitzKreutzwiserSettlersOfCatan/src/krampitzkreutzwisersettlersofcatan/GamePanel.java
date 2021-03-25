@@ -99,6 +99,7 @@ public class GamePanel extends javax.swing.JPanel {
     private ArrayList<NodeSettlement>[] portSettlements; //Contains settlments that are on ports. One arrayList for each of the 9 ports.
     private final int victoryPoints[];
     private int[] playerLongestRoadSegments; //the length of the longest road segment each player owns
+    private int[] playerArmySize; //the size of each player's army
     private final int totalCardsCollected[];
     private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
     private final int[] devCardStackXPositions; //the x positions to draw dev cards when in stacked mode
@@ -184,6 +185,7 @@ public class GamePanel extends javax.swing.JPanel {
         victoryPoints = new int[playerCount + 1]; // Create the array of player's victory points
         // the +1 allows methods to use player IDs directly without subtracting 1
         playerLongestRoadSegments = new int[playerCount + 1];
+        playerArmySize = new int[playerCount + 1];
         stealCardNum = new int[playerCount + 1]; //create the array of how many cards need to be stolen
         //the +1 allows methods to use player IDs directly without subtracting 1
         drawCardStacks = new boolean[playerCount + 1];//create the array of how to draw the cards for each player
@@ -277,6 +279,7 @@ public class GamePanel extends javax.swing.JPanel {
             drawCardStacks[i] = false;
             drawDevCardStacks[i] = false;
             playerLongestRoadSegments[i] = 0; //that players longest road segment
+            playerArmySize[i] = 0;
         }
 
         //populate the ArrayList containing all remaining dev cards. As the game is in startup fully populate it
@@ -4543,6 +4546,10 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("Road Length:",
                 rightDrawMargin - scaleInt(60) + playerNumOffset,
                 scaleInt(705));
+        //draw playerArmySize header
+        g2d.drawString("Size of Army:",
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
+                scaleInt(740));
 
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
@@ -4564,6 +4571,10 @@ public class GamePanel extends javax.swing.JPanel {
             g2d.drawString("" + playerLongestRoadSegments[i],
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     scaleInt(705));
+            //draw the players playerArmySize
+            g2d.drawString("" + playerArmySize[i],
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
+                    scaleInt(740));
         }
 
         // Draw the 72 road nodes
