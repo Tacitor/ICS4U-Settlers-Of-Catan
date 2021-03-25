@@ -98,6 +98,7 @@ public class GamePanel extends javax.swing.JPanel {
     // ^^^ This ensures that the type distrobution is correct and also ensures that there will be a finite number of dev cards
     private ArrayList<NodeSettlement>[] portSettlements; //Contains settlments that are on ports. One arrayList for each of the 9 ports.
     private final int victoryPoints[];
+    private int[] playerLongestRoadSegments; //the length of the longest road segment each player owns
     private final int totalCardsCollected[];
     private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
     private final int[] devCardStackXPositions; //the x positions to draw dev cards when in stacked mode
@@ -182,6 +183,7 @@ public class GamePanel extends javax.swing.JPanel {
         // the +1 allows methods to use player IDs directly without subtracting 1
         victoryPoints = new int[playerCount + 1]; // Create the array of player's victory points
         // the +1 allows methods to use player IDs directly without subtracting 1
+        playerLongestRoadSegments = new int[playerCount + 1];
         stealCardNum = new int[playerCount + 1]; //create the array of how many cards need to be stolen
         //the +1 allows methods to use player IDs directly without subtracting 1
         drawCardStacks = new boolean[playerCount + 1];//create the array of how to draw the cards for each player
@@ -274,6 +276,7 @@ public class GamePanel extends javax.swing.JPanel {
             victoryPoints[i] = 0; // Victory point counter
             drawCardStacks[i] = false;
             drawDevCardStacks[i] = false;
+            playerLongestRoadSegments[i] = 0; //that players longest road segment
         }
 
         //populate the ArrayList containing all remaining dev cards. As the game is in startup fully populate it
@@ -4509,6 +4512,10 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("Resource Cards:",
                 rightDrawMargin - scaleInt(60),
                 scaleInt(670));
+        //draw playerLongestRoadSegments header
+        g2d.drawString("Road Length:",
+                rightDrawMargin - scaleInt(60),
+                scaleInt(705));
         
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
@@ -4530,6 +4537,10 @@ public class GamePanel extends javax.swing.JPanel {
                     (int) (550 / scaleFactor),
                     getImgWidth(PLAYER_DOTS[i]),
                     getImgHeight(PLAYER_DOTS[i]), null);
+            //draw the players playerLongestRoadSegment
+            g2d.drawString("" + playerLongestRoadSegments[i],
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i),
+                    scaleInt(705));
         }
 
         // Draw the 72 road nodes
@@ -5781,6 +5792,11 @@ public class GamePanel extends javax.swing.JPanel {
             longestRoadData.setLength(branchLength);
             //set the new player 
             longestRoadData.setPlayerNum(playerNum);
+        }
+        
+        //check if this branch is longer than the specifica players longest road
+        if (branchLength > playerLongestRoadSegments[playerNum]) {
+            playerLongestRoadSegments[playerNum] = branchLength;
         }
 
         //for each of the two settlments on the end of the road 
