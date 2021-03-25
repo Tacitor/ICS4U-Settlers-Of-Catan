@@ -1,7 +1,7 @@
 /*
  * Lukas Krampitz
  * Mar 11, 2021
- * Object that contains all the nessiarry information about the logest road in a game.
+ * Object that contains all the nessiarry information about any global datums. Can be used for storeing the longest road or largets army
  */
 package krampitzkreutzwisersettlersofcatan;
 
@@ -9,29 +9,29 @@ package krampitzkreutzwisersettlersofcatan;
  *
  * @author Tacitor
  */
-public class LongestRoadData {
+public class GlobalDataRecord {
 
     //attributes
     private int playerNum; //the id number of the player that owns the longest road
-    private int length; //the number of road nodes in the longest road
+    private int size; //the number of road nodes in the longest road
 
     /**
      * Blank default constructor.
      */
-    public LongestRoadData() {
+    public GlobalDataRecord() {
         playerNum = 0; //set the player to the unowned player
-        length = 0; //set the road to length 0
+        size = 0; //set the road to size 0
     }
 
     /**
      * Full constructor containing all attributes.
      *
      * @param playerNum
-     * @param length
+     * @param size
      */
-    public LongestRoadData(int playerNum, int length) {
+    public GlobalDataRecord(int playerNum, int size) {
         this.playerNum = playerNum;
-        this.length = length;
+        this.size = size;
     }
 
     //Accesors and Mutators
@@ -54,53 +54,53 @@ public class LongestRoadData {
     }
 
     /**
-     * Mutate the stored length of the longest road
+     * Mutate the stored size of the longest road
      *
-     * @param length the length
+     * @param size
      */
-    public void setLength(int length) {
-        this.length = length;
+    public void setSize(int size) {
+        this.size = size;
     }
 
     /**
-     * Access the stored length of the longest road
+     * Access the stored size of the longest road
      *
-     * @return the length
+     * @return the size
      */
-    public int getLength() {
-        return length;
+    public int getSize() {
+        return size;
     }
 
     /**
-     * Create an exact copy of a LongestRoadData
+     * Create an exact copy of a GlobalDataRecord
      *
      * @return the copy
      */
     @Override
-    public LongestRoadData clone() {
-        return new LongestRoadData(playerNum, length);
+    public GlobalDataRecord clone() {
+        return new GlobalDataRecord(playerNum, size);
     }
 
     /**
-     * Check equality of two LongestRoadData objects
+     * Check equality of two GlobalDataRecord objects
      *
      * @param other
      * @return the boolean result
      */
-    public boolean equals(LongestRoadData other) {
-        return (other.length == this.length && other.playerNum == this.playerNum);
+    public boolean equals(GlobalDataRecord other) {
+        return (other.size == this.size && other.playerNum == this.playerNum);
     }
 
     /**
-     * Create a string representation of the LongestRoadData
+     * Create a string representation of the GlobalDataRecord
      *
      * @return the string
      */
     @Override
     public String toString() {
-        return "LongestRoadData:\n" + 
+        return "GlobalDataRecord:\n" + 
                 "PlayerNum:" + playerNum + 
-                "\nLength: " + length;
+                "\nSize: " + size;
     }
 
 }

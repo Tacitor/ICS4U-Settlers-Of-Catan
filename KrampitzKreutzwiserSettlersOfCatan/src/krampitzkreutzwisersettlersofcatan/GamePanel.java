@@ -135,7 +135,7 @@ public class GamePanel extends javax.swing.JPanel {
     private String[] diceRollVal;
 
     //Object containing the data about the longest road
-    private LongestRoadData longestRoadData;
+    private GlobalDataRecord longestRoadData;
     private ArrayList<NodeRoad> alreadyCheckedRoad; //ArrayList containing roads that have already been check for logest road. Prevents infinit feedback loop.
     private ArrayList<NodeSettlement> alreadyCheckedSettlements;
 
@@ -228,7 +228,7 @@ public class GamePanel extends javax.swing.JPanel {
         thiefMoveCounter = 0;
 
         //init the longestRoadData
-        longestRoadData = new LongestRoadData();
+        longestRoadData = new GlobalDataRecord();
         //init the ArrayList holding roads that have already been checked for longest road
         alreadyCheckedRoad = new ArrayList<>();
         alreadyCheckedSettlements = new ArrayList<>();
@@ -1321,7 +1321,7 @@ public class GamePanel extends javax.swing.JPanel {
                                      */
 
                                     //remove the points from who ever has them incase it changes
-                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) { //only if the player wan't player 0
+                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getSize() >= 5) { //only if the player wan't player 0
                                         victoryPoints[longestRoadData.getPlayerNum()] -= 2;
                                     }
 
@@ -1344,7 +1344,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     //add the points to who ever has the longest road
                                     //only if the player wan't player 0
                                     //also only if the length is greater than 5
-                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) {
+                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getSize() >= 5) {
                                         victoryPoints[longestRoadData.getPlayerNum()] += 2;
                                     }
 
@@ -2253,7 +2253,7 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(playerSetupSettlementLeft);
 
             saveFile.println("longestRoadData length:");
-            saveFile.println(longestRoadData.getLength());
+            saveFile.println(longestRoadData.getSize());
             saveFile.println("longestRoadData playerNum:");
             saveFile.println(longestRoadData.getPlayerNum());
 
@@ -2623,7 +2623,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             if (scanner.nextLine().equals("longestRoadData length:")) {
-                longestRoadData.setLength(Integer.parseInt(scanner.nextLine()));
+                longestRoadData.setSize(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.1");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
@@ -4248,7 +4248,7 @@ public class GamePanel extends javax.swing.JPanel {
                 null);
 
         //draw the longest road tile if the current player has it
-        if (longestRoadData.getPlayerNum() == currentPlayer && longestRoadData.getLength() >= 5 && !inbetweenTurns) {
+        if (longestRoadData.getPlayerNum() == currentPlayer && longestRoadData.getSize() >= 5 && !inbetweenTurns) {
             g2d.drawImage(LONGEST_ROAD,
                     (int) (rightDrawMargin - getImgWidth(LONGEST_ROAD) - (30 / scaleFactor)),
                     (int) (10 / scaleFactor),
@@ -5820,10 +5820,10 @@ public class GamePanel extends javax.swing.JPanel {
         ArrayList<NodeRoad> roadsToCheck = new ArrayList<>(); //List of roads to check with recusion
 
         //check if the given branch length is larger than the current longest road
-        if (branchLength > longestRoadData.getLength()) {
+        if (branchLength > longestRoadData.getSize()) {
             //if it is over write the data
             //the length
-            longestRoadData.setLength(branchLength);
+            longestRoadData.setSize(branchLength);
             //set the new player 
             longestRoadData.setPlayerNum(playerNum);
         }
