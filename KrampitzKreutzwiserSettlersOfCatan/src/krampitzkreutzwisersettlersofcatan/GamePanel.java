@@ -3313,6 +3313,26 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
+        //update each player's road length
+        for (int i = 1; i < playerCount + 1; i++) {
+
+            //loop through all the roads
+            for (NodeRoad road : roadNodes) {
+
+                //check to not use the null road
+                if (road != null) {
+
+                    checkForLongestRoad(road, 0, i); //pass the road and the current branch length
+
+                    //clear the array for checked roads
+                    alreadyCheckedRoad.clear();
+                    //also clear the settlments
+                    alreadyCheckedSettlements.clear();
+                }
+
+            }
+        }
+
         updateBuildButtons();
         repaint();
 
@@ -4498,7 +4518,7 @@ public class GamePanel extends javax.swing.JPanel {
         g2d.drawString("Current player: " + currentPlayerString,
                 rightDrawMargin,
                 (int) (530 / scaleFactor));
-        
+
         int playerNumOffset;
         if (playerCount > 3) {
             playerNumOffset = 0;
@@ -4509,44 +4529,44 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the VP and resource card start table
         //draw the player header
         g2d.drawString("Player:",
-                rightDrawMargin - scaleInt(60)+ playerNumOffset,
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
                 (int) (600 / scaleFactor));
         //draw the victory points header
         g2d.drawString("VP:",
-                rightDrawMargin - scaleInt(60)+ playerNumOffset,
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
                 scaleInt(635));
         //draw the Resource Cards header
         g2d.drawString("Resource Cards:",
-                rightDrawMargin - scaleInt(60)+ playerNumOffset,
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
                 scaleInt(670));
         //draw playerLongestRoadSegments header
         g2d.drawString("Road Length:",
-                rightDrawMargin - scaleInt(60)+ playerNumOffset,
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
                 scaleInt(705));
-        
+
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
             //draw the player number
             g2d.drawString("" + i,
-                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i)+ playerNumOffset,
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     (int) (600 / scaleFactor));
             //draw the players VPs
             g2d.drawString("" + victoryPoints[i],
-                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i)+ playerNumOffset,
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     scaleInt(635));
             //draw the players number of resource cards
             g2d.drawString("" + cards[i].size(),
-                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i)+ playerNumOffset,
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     scaleInt(670));
             //draw the player's indecator dot
             g2d.drawImage(PLAYER_DOTS[i],
-                    rightDrawMargin + scaleInt(65 * i) + scaleInt(5)+ playerNumOffset,
+                    rightDrawMargin + scaleInt(65 * i) + scaleInt(5) + playerNumOffset,
                     (int) (550 / scaleFactor),
                     getImgWidth(PLAYER_DOTS[i]),
                     getImgHeight(PLAYER_DOTS[i]), null);
             //draw the players playerLongestRoadSegment
             g2d.drawString("" + playerLongestRoadSegments[i],
-                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i)+ playerNumOffset,
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     scaleInt(705));
         }
 
@@ -5187,7 +5207,7 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgHeight(WATER_RING_OVERLAY), null);
          */
     }
-    
+
     public void fire() {
         //debugs. Proof the game is actually redrawing.
         //showRoadHitbox = true;
@@ -5296,12 +5316,12 @@ public class GamePanel extends javax.swing.JPanel {
             return (int) (getImgWidth(image) / ((float) image.getWidth(null) / image.getHeight(null)));
         }
     }
-    
+
     /**
      * Scale a number to match the resolution of the screen
-     * 
+     *
      * @param num
-     * @return 
+     * @return
      */
     public int scaleInt(int num) {
         return (int) (num / scaleFactor);
@@ -5800,7 +5820,7 @@ public class GamePanel extends javax.swing.JPanel {
             //set the new player 
             longestRoadData.setPlayerNum(playerNum);
         }
-        
+
         //check if this branch is longer than the specifica players longest road
         if (branchLength > playerLongestRoadSegments[playerNum]) {
             playerLongestRoadSegments[playerNum] = branchLength;
