@@ -4528,11 +4528,11 @@ public class GamePanel extends javax.swing.JPanel {
 
         //draw the VP and resource card start table
         //draw the player header
-        g2d.drawString("Player:",
+        g2d.drawString("Player Colour:",
                 rightDrawMargin - scaleInt(60) + playerNumOffset,
                 (int) (600 / scaleFactor));
         //draw the victory points header
-        g2d.drawString("VP:",
+        g2d.drawString("Victory Points:",
                 rightDrawMargin - scaleInt(60) + playerNumOffset,
                 scaleInt(635));
         //draw the Resource Cards header
@@ -4546,10 +4546,12 @@ public class GamePanel extends javax.swing.JPanel {
 
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
-            //draw the player number
-            g2d.drawString("" + i,
-                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
-                    (int) (600 / scaleFactor));
+            //draw the player's indecator dot
+            g2d.drawImage(PLAYER_DOTS[i],
+                    rightDrawMargin + scaleInt(65 * i) + scaleInt(5) + playerNumOffset,
+                    scaleInt(580),
+                    getImgWidth(PLAYER_DOTS[i]),
+                    getImgHeight(PLAYER_DOTS[i]), null);
             //draw the players VPs
             g2d.drawString("" + victoryPoints[i],
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
@@ -4558,12 +4560,6 @@ public class GamePanel extends javax.swing.JPanel {
             g2d.drawString("" + cards[i].size(),
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     scaleInt(670));
-            //draw the player's indecator dot
-            g2d.drawImage(PLAYER_DOTS[i],
-                    rightDrawMargin + scaleInt(65 * i) + scaleInt(5) + playerNumOffset,
-                    (int) (550 / scaleFactor),
-                    getImgWidth(PLAYER_DOTS[i]),
-                    getImgHeight(PLAYER_DOTS[i]), null);
             //draw the players playerLongestRoadSegment
             g2d.drawString("" + playerLongestRoadSegments[i],
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
