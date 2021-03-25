@@ -1098,7 +1098,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
-            instructionLbl.setText("Please select the resource you would like to recive");
+            instructionLbl.setText("Please select the resource you would like to receive");
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
@@ -1138,7 +1138,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
-            instructionLbl.setText("Please select the resource you would like to recive");
+            instructionLbl.setText("Please select the resource you would like to receive");
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
@@ -3533,7 +3533,7 @@ public class GamePanel extends javax.swing.JPanel {
                     case 4:
                         //YOP card
                         instructionLbl.setText("Please select a resource type");
-                        subInstructionLbl.setText("You will then recive 2 cards of that type.");
+                        subInstructionLbl.setText("You will then receive 2 cards of that type.");
                         break;
                     default:
                         break;
