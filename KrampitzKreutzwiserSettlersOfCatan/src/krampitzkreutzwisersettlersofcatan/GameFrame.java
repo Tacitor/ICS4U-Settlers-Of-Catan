@@ -74,12 +74,24 @@ public class GameFrame extends javax.swing.JFrame {
     }
     
     /**
+     * Return the game panel
+     * 
+     * @return 
+     */
+    public GamePanel getGamePanel() {
+        return theGamePanel;
+    }
+    
+    /**
      * Removes the old game and replaces it with a new one
      */
     public void resetGamePanel() {
         remove(theGamePanel);
         theGamePanel = new GamePanel(this);
         add(theGamePanel);
+        
+        //update the gamepanel in the main method
+        Catan.updateGamePanel();
     }
     
     /**

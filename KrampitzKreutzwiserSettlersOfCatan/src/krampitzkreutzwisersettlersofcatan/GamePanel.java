@@ -5169,6 +5169,12 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgHeight(WATER_RING_OVERLAY), null);
          */
     }
+    
+    public void fire() {
+        //debugs. Proof the game is actually redrawing.
+        //showRoadHitbox = true;
+        repaint();
+    }
 
     /**
      * Return the Image object of a player turn indicator

@@ -327,6 +327,15 @@ public class MainMenu extends javax.swing.JFrame {
     private void setIcon() {
         this.setIconImage(ImageRef.ICON);
     }
+    
+    /**
+     * Return the game frame
+     * 
+     * @return 
+     */
+    public GameFrame getGameFrame() {
+        return gameJFrame;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton creditsBtn;
