@@ -436,6 +436,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
         instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
@@ -482,6 +483,7 @@ public class GamePanel extends javax.swing.JPanel {
         trade4to1Btn = new javax.swing.JButton();
         trade2to1Btn = new javax.swing.JButton();
         tradeMenuLbl = new javax.swing.JLabel();
+        devCardMenuLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -600,6 +602,10 @@ public class GamePanel extends javax.swing.JPanel {
         tradeMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
         tradeMenuLbl.setText("Trade Menu:");
 
+        devCardMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        devCardMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
+        devCardMenuLbl.setText("Development Card Menu:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -627,7 +633,8 @@ public class GamePanel extends javax.swing.JPanel {
                         .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(tradeMenuLbl))
+                    .addComponent(tradeMenuLbl)
+                    .addComponent(devCardMenuLbl))
                 .addContainerGap(1157, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -661,7 +668,9 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(trade3to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 504, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(devCardMenuLbl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 464, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -5222,7 +5231,7 @@ public class GamePanel extends javax.swing.JPanel {
         //check the card button and check if it needs to get it's real coords
         if (toggleCardBtn.getXPos() == -1 && toggleCardBtn.getYPos() == -1) {
             toggleCardBtn.setXPos((int) trade2to1Btn.getBounds().getX());
-            toggleCardBtn.setYPos((int) (trade2to1Btn.getBounds().getY() + trade2to1Btn.getBounds().getHeight() + (20 / scaleFactor)));
+            toggleCardBtn.setYPos((int) (devCardMenuLbl.getBounds().getY() + devCardMenuLbl.getBounds().getHeight() + (10 / scaleFactor)));
 
             buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
             buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
@@ -5246,6 +5255,25 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
         }
+        
+        
+        //draw the separator boxes around the UI elements
+        g2d.setStroke(new BasicStroke(scaleInt(2))); //make the stroke a little thicker
+        //the trade box
+        g2d.drawRect(tradeMenuLbl.getX() - scaleInt(5), 
+                tradeMenuLbl.getY() - scaleInt(5), 
+                trade4to1Btn.getWidth() + scaleInt(10), 
+                (trade2to1Btn.getY() + trade2to1Btn.getHeight()) - tradeMenuLbl.getY() + scaleInt(10));
+        //the build box
+        g2d.drawRect(buildMenuLbl.getX() - scaleInt(5), 
+                buildMenuLbl.getY() - scaleInt(5), 
+                buildBtn.getWidth() + scaleInt(10), 
+                (buildBtn.getY() + buildBtn.getHeight()) - buildMenuLbl.getY() + scaleInt(10));
+        //the dev card box
+        g2d.drawRect(devCardMenuLbl.getX() - scaleInt(5), 
+                devCardMenuLbl.getY() - scaleInt(5), 
+                getImgWidth(toggleCardBtn.getBaseImage() ) + scaleInt(10), 
+                (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getY() + scaleInt(10));
 
 
         /*
@@ -6262,6 +6290,7 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton buildRoadRBtn;
     private javax.swing.JRadioButton buildSettlementLRBtn;
     private javax.swing.JRadioButton buildSettlementSRBtn;
+    private javax.swing.JLabel devCardMenuLbl;
     private javax.swing.JLabel instructionLbl;
     private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JLabel subInstructionLbl;
