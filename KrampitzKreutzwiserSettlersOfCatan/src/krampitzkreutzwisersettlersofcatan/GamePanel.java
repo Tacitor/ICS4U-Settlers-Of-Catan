@@ -102,6 +102,8 @@ public class GamePanel extends javax.swing.JPanel {
     private final int totalCardsCollected[];
     private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
     private final int[] devCardStackXPositions; //the x positions to draw dev cards when in stacked mode
+    private final int[] resourceStackXPositions; //the x coords for the resource type stacks
+    private final int[] resourceStackYPositions; //the y coords for the resource type stacks
     private int[] stealCardNum; //the number of cards to steal from each player
     private int cardStartPosition; //the xPos to start drawing cards at 
     private int devCardStartPosition; //the xPos to start drawing dev cards at 
@@ -208,11 +210,27 @@ public class GamePanel extends javax.swing.JPanel {
             superFrame.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
+        //and now the dev cards
         devCardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
+        //and simularly the resouce stacks
+        resourceStackXPositions = new int[]{0, //have the first index be a position of 0
+            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
+            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[2]) / 2,
+            superFrame.getWidth() / 2 - getImgWidth(RES_STACKS[3]) / 2,
+            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[4]) / 2,
+            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(RES_STACKS[5])};
+        //and the Y positions
+        resourceStackYPositions = new int[]{0, //have the first index be a position of 0
+            scaleInt(10),
+            scaleInt(10),
+            0,
+            scaleInt(10),
+            scaleInt(10)};
+
         buildingObject = 0;
         usingDevCard = -1; //set it to normal value for when no dev card is being used
         showRoadHitbox = false;
@@ -4525,6 +4543,16 @@ public class GamePanel extends javax.swing.JPanel {
             }
         } //end tile drawing loop
 
+        //draw the resouce stacks at the top of the board
+        for (int i = 1; i < 6; i++) { //loop through 1-5 for teh 5 resouce types
+            g2d.drawImage(RES_STACKS[i], 
+                    resourceStackXPositions[i], 
+                    resourceStackYPositions[i], //since 
+                    getImgWidth(RES_STACKS[i]),
+                    getImgHeight(RES_STACKS[i]),
+                    null);
+        }
+
         //set the font for the dice roll indecator
         g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
         g2d.setColor(new java.awt.Color(255, 255, 225));
@@ -5266,7 +5294,7 @@ public class GamePanel extends javax.swing.JPanel {
                     getImgWidth(MATERIAL_KEY) + (60 - playerNumOffset) + scaleInt(5),
                     (scaleInt(740)) - scaleInt(580) + scaleInt(10));
         }
-        
+
         //draw the game version info
         g2d.drawString("pre-v4.3.0", rightDrawMargin - scaleInt(90), scaleInt(20));
 
