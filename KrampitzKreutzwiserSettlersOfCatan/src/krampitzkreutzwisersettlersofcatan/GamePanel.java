@@ -2287,6 +2287,11 @@ public class GamePanel extends javax.swing.JPanel {
             for (int i = 1; i < victoryPoints.length; i++) {
                 saveFile.println(victoryPoints[i]);
             }
+            
+            saveFile.println("playerArmySize:");
+            for (int i = 1; i < playerArmySize.length; i++) {
+                saveFile.println(playerArmySize[i]);
+            }
 
             saveFile.println();
 
@@ -2698,6 +2703,18 @@ public class GamePanel extends javax.swing.JPanel {
 
                 for (int i = 0; i < playerCount; i++) {
                     victoryPoints[i + 1] = Integer.parseInt(scanner.nextLine());
+                }
+
+                //System.out.println("Yuppers8");
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            //get the playerArmySize
+            if (scanner.nextLine().equals("playerArmySize:")) {
+
+                for (int i = 0; i < playerCount; i++) {
+                    playerArmySize[i + 1] = Integer.parseInt(scanner.nextLine());
                 }
 
                 //System.out.println("Yuppers8");
