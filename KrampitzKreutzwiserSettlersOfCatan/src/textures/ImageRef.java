@@ -122,6 +122,9 @@ public class ImageRef {
     
     //longest road tile thing
     public final static Image LONGEST_ROAD = new ImageIcon(ImageRef.class.getResource("longestRoad.png")).getImage();
+    
+    //largest army tile thing
+    public final static Image LARGEST_ARMY = new ImageIcon(ImageRef.class.getResource("largestArmy.png")).getImage();
 
     public ImageRef() {
     }

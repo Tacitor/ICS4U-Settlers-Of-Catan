@@ -2223,7 +2223,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV11"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV12"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -2260,7 +2260,12 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(longestRoadData.getSize());
             saveFile.println("longestRoadData playerNum:");
             saveFile.println(longestRoadData.getPlayerNum());
-
+            
+            saveFile.println("largestArmyData size:");
+            saveFile.println(largestArmyData.getSize());
+            saveFile.println("largestArmyData playerNum:");
+            saveFile.println(largestArmyData.getPlayerNum());
+            
             saveFile.println("setupTurnOrder:");
             saveFile.println("length:");
             saveFile.println(setupTurnOrder.length);
@@ -2522,7 +2527,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV11")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV12")) {
                 //System.out.println("Yuppers");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
@@ -2636,6 +2641,21 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("longestRoadData playerNum:")) {
                 longestRoadData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.2");
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            //load in the data for largest army
+            if (scanner.nextLine().equals("largestArmyData size:")) {
+                largestArmyData.setSize(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("Yuppers7.3");
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            if (scanner.nextLine().equals("largestArmyData playerNum:")) {
+                largestArmyData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("Yuppers7.4");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -4258,6 +4278,16 @@ public class GamePanel extends javax.swing.JPanel {
                     (int) (10 / scaleFactor),
                     getImgWidth(LONGEST_ROAD),
                     getImgHeight(LONGEST_ROAD),
+                    null);
+        }
+        
+        //draw the largest army tile if the current player has it
+        if (largestArmyData.getPlayerNum() == currentPlayer && largestArmyData.getSize() >= 3 && !inbetweenTurns) {
+            g2d.drawImage(LARGEST_ARMY,
+                    (int) (rightDrawMargin - getImgWidth(LARGEST_ARMY) - scaleInt(30)),
+                    getImgHeight(MATERIAL_KEY) + scaleInt(10) - getImgHeight(LARGEST_ARMY),
+                    getImgWidth(LARGEST_ARMY),
+                    getImgHeight(LARGEST_ARMY),
                     null);
         }
 
