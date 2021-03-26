@@ -4586,7 +4586,7 @@ public class GamePanel extends javax.swing.JPanel {
         if (playerCount > 3) {
             playerNumOffset = 0;
         } else {
-            playerNumOffset = 60;
+            playerNumOffset = scaleInt(60);
         }
 
         //draw the VP and resource card start table
