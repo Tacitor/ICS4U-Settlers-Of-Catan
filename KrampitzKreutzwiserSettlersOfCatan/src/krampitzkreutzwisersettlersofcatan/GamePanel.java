@@ -137,7 +137,7 @@ public class GamePanel extends javax.swing.JPanel {
     private ArrayList<NodeRoad> alreadyCheckedRoad; //ArrayList containing roads that have already been check for logest road. Prevents infinit feedback loop.
     private ArrayList<NodeSettlement> alreadyCheckedSettlements;
     private int[] playerLongestRoadSegments; //the length of the longest road segment each player owns
-    
+
     //Object for Largest Army
     private GlobalDataRecord largestArmyData;
     private int[] playerArmySize; //the size of each player's army
@@ -2269,12 +2269,12 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(longestRoadData.getSize());
             saveFile.println("longestRoadData playerNum:");
             saveFile.println(longestRoadData.getPlayerNum());
-            
+
             saveFile.println("largestArmyData size:");
             saveFile.println(largestArmyData.getSize());
             saveFile.println("largestArmyData playerNum:");
             saveFile.println(largestArmyData.getPlayerNum());
-            
+
             saveFile.println("setupTurnOrder:");
             saveFile.println("length:");
             saveFile.println(setupTurnOrder.length);
@@ -2296,7 +2296,7 @@ public class GamePanel extends javax.swing.JPanel {
             for (int i = 1; i < victoryPoints.length; i++) {
                 saveFile.println(victoryPoints[i]);
             }
-            
+
             saveFile.println("playerArmySize:");
             for (int i = 1; i < playerArmySize.length; i++) {
                 saveFile.println(playerArmySize[i]);
@@ -2658,7 +2658,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //load in the data for largest army
             if (scanner.nextLine().equals("largestArmyData size:")) {
                 largestArmyData.setSize(Integer.parseInt(scanner.nextLine()));
@@ -2718,7 +2718,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //get the playerArmySize
             if (scanner.nextLine().equals("playerArmySize:")) {
 
@@ -4306,7 +4306,7 @@ public class GamePanel extends javax.swing.JPanel {
                     getImgHeight(LONGEST_ROAD),
                     null);
         }
-        
+
         //draw the largest army tile if the current player has it
         if (largestArmyData.getPlayerNum() == currentPlayer && largestArmyData.getSize() >= 3 && !inbetweenTurns) {
             g2d.drawImage(LARGEST_ARMY,
@@ -5234,26 +5234,34 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
         }
-        
-        
+
         //draw the separator boxes around the UI elements
         g2d.setStroke(new BasicStroke(scaleInt(2))); //make the stroke a little thicker
         //the trade box
-        g2d.drawRect(tradeMenuLbl.getX() - scaleInt(5), 
-                tradeMenuLbl.getY() - scaleInt(5), 
-                trade4to1Btn.getWidth() + scaleInt(10), 
+        g2d.drawRect(tradeMenuLbl.getX() - scaleInt(5),
+                tradeMenuLbl.getY() - scaleInt(5),
+                trade4to1Btn.getWidth() + scaleInt(10),
                 (trade2to1Btn.getY() + trade2to1Btn.getHeight()) - tradeMenuLbl.getY() + scaleInt(10));
         //the build box
-        g2d.drawRect(buildMenuLbl.getX() - scaleInt(5), 
-                buildMenuLbl.getY() - scaleInt(5), 
-                buildBtn.getWidth() + scaleInt(10), 
+        g2d.drawRect(buildMenuLbl.getX() - scaleInt(5),
+                buildMenuLbl.getY() - scaleInt(5),
+                buildBtn.getWidth() + scaleInt(10),
                 (buildBtn.getY() + buildBtn.getHeight()) - buildMenuLbl.getY() + scaleInt(10));
         //the dev card box
-        g2d.drawRect(devCardMenuLbl.getX() - scaleInt(5), 
-                devCardMenuLbl.getY() - scaleInt(5), 
-                getImgWidth(toggleCardBtn.getBaseImage() ) + scaleInt(10), 
+        g2d.drawRect(devCardMenuLbl.getX() - scaleInt(5),
+                devCardMenuLbl.getY() - scaleInt(5),
+                getImgWidth(toggleCardBtn.getBaseImage()) + scaleInt(10),
                 (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getY() + scaleInt(10));
-        
+        //the dice menu box
+        g2d.drawRect(rightDrawMargin - scaleInt(5),
+                scaleInt(385) - scaleInt(5),
+                getImgWidth(MATERIAL_KEY) + scaleInt(5),
+                (scaleInt(400) + getImgHeight(DICE_GRAY)) - scaleInt(385) + scaleInt(10));
+        //the score board box
+        g2d.drawRect(rightDrawMargin - scaleInt(60) + playerNumOffset - scaleInt(5),
+                scaleInt(580) - scaleInt(5),
+                getImgWidth(MATERIAL_KEY) + (60 - playerNumOffset) + scaleInt(5),
+                (scaleInt(740)) - scaleInt(580) + scaleInt(10));
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -5960,25 +5968,25 @@ public class GamePanel extends javax.swing.JPanel {
 
         //remove a dev card
         devCards[currentPlayer].remove(new Integer(usingDevCard));
-        
+
         //if the dev card that was just remove was a knight card
         if (usingDevCard == 1) {
             //add to the player's army size
             playerArmySize[currentPlayer]++;
-            
+
             //check if that addition changed the player with the largest army
             if (playerArmySize[currentPlayer] > largestArmyData.getSize() && playerArmySize[currentPlayer] >= 3) { //must also have 3 or more cards
                 //remove point from the old player who had the largest army
                 if (largestArmyData.getPlayerNum() != 0) { //don't remove point from player 0
-                    victoryPoints[largestArmyData.getPlayerNum()]-=2;
+                    victoryPoints[largestArmyData.getPlayerNum()] -= 2;
                 }
-                
+
                 //update the player with the largest army
                 largestArmyData.setPlayerNum(currentPlayer);
                 largestArmyData.setSize(playerArmySize[currentPlayer]);
-                
+
                 //give that player 2 VP
-                victoryPoints[currentPlayer]+=2;
+                victoryPoints[currentPlayer] += 2;
             }
         }
 
