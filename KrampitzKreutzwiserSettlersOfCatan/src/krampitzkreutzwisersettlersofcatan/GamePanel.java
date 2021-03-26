@@ -5266,6 +5266,9 @@ public class GamePanel extends javax.swing.JPanel {
                     getImgWidth(MATERIAL_KEY) + (60 - playerNumOffset) + scaleInt(5),
                     (scaleInt(740)) - scaleInt(580) + scaleInt(10));
         }
+        
+        //draw the game version info
+        g2d.drawString("pre-v4.3.0", rightDrawMargin - scaleInt(90), scaleInt(20));
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
