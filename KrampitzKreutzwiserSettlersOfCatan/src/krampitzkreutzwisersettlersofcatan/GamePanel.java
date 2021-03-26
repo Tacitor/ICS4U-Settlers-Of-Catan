@@ -91,6 +91,7 @@ public class GamePanel extends javax.swing.JPanel {
     private static int playerCount = 2; // The number of players in the game
     private static boolean giveStartingResources = true; // If players get startup resources
     private static boolean doSnakeRules = true; //make the setup phase of the game more fair follow normal order fist setup round, then reverse
+    private static boolean showMenuBoarder = false; //will a boarder be drawn aorund the menus
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final ArrayList<Integer>[] devCards; //an Array of ArrayLists. Each player gets their own ArrayList for the dev cards they have.
     // ^^^ valid number are: 1 (knight), 2 (progress card road building), 3 (progress card monolpoy), 4 (progress card year of pleanty), 5, 6, 7, 8, 9 (5-9 are vp cards)
@@ -5236,32 +5237,35 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         //draw the separator boxes around the UI elements
-        g2d.setStroke(new BasicStroke(scaleInt(2))); //make the stroke a little thicker
-        //the trade box
-        g2d.drawRect(tradeMenuLbl.getX() - scaleInt(5),
-                tradeMenuLbl.getY() - scaleInt(5),
-                trade4to1Btn.getWidth() + scaleInt(10),
-                (trade2to1Btn.getY() + trade2to1Btn.getHeight()) - tradeMenuLbl.getY() + scaleInt(10));
-        //the build box
-        g2d.drawRect(buildMenuLbl.getX() - scaleInt(5),
-                buildMenuLbl.getY() - scaleInt(5),
-                buildBtn.getWidth() + scaleInt(10),
-                (buildBtn.getY() + buildBtn.getHeight()) - buildMenuLbl.getY() + scaleInt(10));
-        //the dev card box
-        g2d.drawRect(devCardMenuLbl.getX() - scaleInt(5),
-                devCardMenuLbl.getY() - scaleInt(5),
-                getImgWidth(toggleCardBtn.getBaseImage()) + scaleInt(10),
-                (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getY() + scaleInt(10));
-        //the dice menu box
-        g2d.drawRect(rightDrawMargin - scaleInt(5),
-                scaleInt(385) - scaleInt(5),
-                getImgWidth(MATERIAL_KEY) + scaleInt(5),
-                (scaleInt(400) + getImgHeight(DICE_GRAY)) - scaleInt(385) + scaleInt(10));
-        //the score board box
-        g2d.drawRect(rightDrawMargin - scaleInt(60) + playerNumOffset - scaleInt(5),
-                scaleInt(580) - scaleInt(5),
-                getImgWidth(MATERIAL_KEY) + (60 - playerNumOffset) + scaleInt(5),
-                (scaleInt(740)) - scaleInt(580) + scaleInt(10));
+        //only if the user want to
+        if (showMenuBoarder) {
+            g2d.setStroke(new BasicStroke(scaleInt(2))); //make the stroke a little thicker
+            //the trade box
+            g2d.drawRect(tradeMenuLbl.getX() - scaleInt(5),
+                    tradeMenuLbl.getY() - scaleInt(5),
+                    trade4to1Btn.getWidth() + scaleInt(10),
+                    (trade2to1Btn.getY() + trade2to1Btn.getHeight()) - tradeMenuLbl.getY() + scaleInt(10));
+            //the build box
+            g2d.drawRect(buildMenuLbl.getX() - scaleInt(5),
+                    buildMenuLbl.getY() - scaleInt(5),
+                    buildBtn.getWidth() + scaleInt(10),
+                    (buildBtn.getY() + buildBtn.getHeight()) - buildMenuLbl.getY() + scaleInt(10));
+            //the dev card box
+            g2d.drawRect(devCardMenuLbl.getX() - scaleInt(5),
+                    devCardMenuLbl.getY() - scaleInt(5),
+                    getImgWidth(toggleCardBtn.getBaseImage()) + scaleInt(10),
+                    (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getY() + scaleInt(10));
+            //the dice menu box
+            g2d.drawRect(rightDrawMargin - scaleInt(5),
+                    scaleInt(385) - scaleInt(5),
+                    getImgWidth(MATERIAL_KEY) + scaleInt(5),
+                    (scaleInt(400) + getImgHeight(DICE_GRAY)) - scaleInt(385) + scaleInt(10));
+            //the score board box
+            g2d.drawRect(rightDrawMargin - scaleInt(60) + playerNumOffset - scaleInt(5),
+                    scaleInt(580) - scaleInt(5),
+                    getImgWidth(MATERIAL_KEY) + (60 - playerNumOffset) + scaleInt(5),
+                    (scaleInt(740)) - scaleInt(580) + scaleInt(10));
+        }
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -6212,6 +6216,27 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public static boolean getgiveStartingResources() {
         return giveStartingResources;
+    }
+
+    /**
+     * Set whether or not the the game will draw borders around the menus
+     * grouping them together
+     *
+     * @param showMenuBoarder
+     */
+    public static void setShowMenuBoarder(boolean showMenuBoarder) {
+        GamePanel.showMenuBoarder = showMenuBoarder;
+        System.out.println(GamePanel.showMenuBoarder);
+    }
+
+    /**
+     * Get whether or not the the game will draw borders around the menus
+     * grouping them together
+     *
+     * @return
+     */
+    public static boolean getShowMenuBoarder() {
+        return showMenuBoarder;
     }
 
     /**
