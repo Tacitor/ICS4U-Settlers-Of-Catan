@@ -4561,27 +4561,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
-        //basic turn indecator
-        String currentPlayerString;
-
-        if (inbetweenTurns) {
-            currentPlayerString = "none";
-        } else if (this.currentPlayer == 1) {
-            currentPlayerString = "1, Red";
-        } else if (this.currentPlayer == 2) {
-            currentPlayerString = "2, Blue";
-        } else if (this.currentPlayer == 3) {
-            currentPlayerString = "3, Orange";
-        } else if (this.currentPlayer == 4) {
-            currentPlayerString = "4, White";
-        } else {
-            currentPlayerString = "0, Error";
-        }
-
-        g2d.drawString("Current player: " + currentPlayerString,
-                rightDrawMargin,
-                (int) (530 / scaleFactor));
-
         int playerNumOffset;
         if (playerCount > 3) {
             playerNumOffset = 0;
@@ -5274,7 +5253,7 @@ public class GamePanel extends javax.swing.JPanel {
                 devCardMenuLbl.getY() - scaleInt(5), 
                 getImgWidth(toggleCardBtn.getBaseImage() ) + scaleInt(10), 
                 (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getY() + scaleInt(10));
-
+        
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
