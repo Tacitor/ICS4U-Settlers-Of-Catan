@@ -4263,8 +4263,6 @@ public class GamePanel extends javax.swing.JPanel {
         //start local vars
         int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
         boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
-        
-        System.out.println("Width: " + superFrame.getWidth() + " Hight: " + superFrame.getHeight());
 
         //end local vars
         //the Graphics2D class is the class that handles all the drawing
@@ -4329,8 +4327,6 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(PLAYER_RED), //scale the image
                 getImgHeight(PLAYER_RED),
                 null);
-        
-        System.out.println("Player Image hight: " + (superFrame.getHeight() - getImgHeight(PLAYER_RED) - (int) (10 / scaleFactor) + getImgHeight(PLAYER_RED)));
 
         //draw the current player icon header
         g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
