@@ -218,9 +218,9 @@ public class GamePanel extends javax.swing.JPanel {
         //and simularly the resouce stacks
         resourceStackXPositions = new int[]{0, //have the first index be a position of 0
             superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
-            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[2]) / 2,
+            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[2]) / 4,
             superFrame.getWidth() / 2 - getImgWidth(RES_STACKS[3]) / 2,
-            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[4]) / 2,
+            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - ((getImgWidth(RES_STACKS[4]) / 4) * 3),
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(RES_STACKS[5])};
 
         buildingObject = 0;
