@@ -73,7 +73,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean[] drawDevCardStacks; //controls the mode dev cards are drawn in. Stacked or full layout.
     private boolean showSettlementHitbox; //toggle for whether or not the hitboxes are shown.
     private boolean showTileHitbox; //      ^^^
-    private boolean showPortHitbox;
+    private boolean showResStackHitbox;
     private boolean showSubPlayerHitbox;
     private boolean showDevCards; //stores whether dec cards or resource cards are shown;
     private boolean userPlayedDevCard; //boolean to store whether or not the current player has used a dev card yet this round
@@ -229,7 +229,7 @@ public class GamePanel extends javax.swing.JPanel {
         showSettlementHitbox = false;
         showCardHitbox = false;
         showTileHitbox = false;
-        showPortHitbox = false;
+        showResStackHitbox = false;
         showSubPlayerHitbox = false;
         showDevCards = false;
         showDevCardHitbox = false;
@@ -1066,7 +1066,7 @@ public class GamePanel extends javax.swing.JPanel {
             //clear the resource if there was one
             tradeResource = 0;
             //hide the hitboxes
-            showPortHitbox = false;
+            showResStackHitbox = false;
             showCardHitbox = false;
 
             //update the buildbuttons (should be renabeling them now)
@@ -1082,7 +1082,7 @@ public class GamePanel extends javax.swing.JPanel {
             //update the text of the button
             trade3to1Btn.setText("Cancel");
             //show the hitboxes
-            showPortHitbox = true;
+            showResStackHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
 
@@ -1106,7 +1106,7 @@ public class GamePanel extends javax.swing.JPanel {
             //clear the resource if there was one
             tradeResource = 0;
             //hide the hitboxes
-            showPortHitbox = false;
+            showResStackHitbox = false;
             showCardHitbox = false;
 
             //update the buildbuttons (should be renabeling them now)
@@ -1122,7 +1122,7 @@ public class GamePanel extends javax.swing.JPanel {
             //update the text of the button
             trade4to1Btn.setText("Cancel");
             //show the hitboxes
-            showPortHitbox = true;
+            showResStackHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
 
@@ -1146,7 +1146,7 @@ public class GamePanel extends javax.swing.JPanel {
             //clear the resource if there was one
             tradeResource = 0;
             //hide the hitboxes
-            showPortHitbox = false;
+            showResStackHitbox = false;
             showCardHitbox = false;
 
             //update the buildbuttons (should be renabeling them now)
@@ -1162,7 +1162,7 @@ public class GamePanel extends javax.swing.JPanel {
             //update the text of the button
             trade2to1Btn.setText("Cancel");
             //show the hitboxes
-            showPortHitbox = true;
+            showResStackHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
 
@@ -1885,128 +1885,134 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setColor(Color.black);
             }
              */
-        } else if ((showPortHitbox && tradingMode != 0 && tradeResource == 0) //check if the player is clicking a port to select a resource type to trade to
-                || ((usingDevCard == 4 || usingDevCard == 3) && showPortHitbox)) {
+        } //but it's not really a port. Now its a resource stack
+        else if ((showResStackHitbox && tradingMode != 0 && tradeResource == 0) //check if the player is clicking a port to select a resource type to trade to
+                || ((usingDevCard == 4 || usingDevCard == 3) && showResStackHitbox)) {
             //or if the player clicked the port to select a resource type for a dev card
 
-            int portPosX;
-            int portPosY;
-            boolean validPort;
+            int stackPosX;
+            int stackPosY = 1;
+            boolean validResource;
 
-            //loop through the ports
-            for (int i = 0; i < ports.size(); i++) {
-                portPosX = ports.get(i).getTypePosX();
-                portPosY = ports.get(i).getTypePosY();
-                validPort = false;
+            //loop through the resource stacks
+            for (int i = 1; i < 6; i++) {
+                stackPosX = resourceStackXPositions[i];
+                validResource = false;
 
                 //check if there was a click on a port
-                if (event.getX() > portPosX
-                        && event.getY() > portPosY
-                        && event.getX() < (portPosX + getImgWidth(ports.get(i).getTypeImage()))
-                        && event.getY() < (portPosY + getImgHeight(ports.get(i).getTypeImage()))) {
+                if (event.getX() > stackPosX
+                        && event.getY() > stackPosY
+                        && event.getX() < (stackPosX + getImgWidth(RES_STACKS[i]))
+                        && event.getY() < (stackPosY + getImgHeight(RES_STACKS[i]))) {
 
-                    //check if its a non general port
-                    if (ports.get(i).getType() != 0) {
+                    //check if the player clicked the port for trading or dev card
+                    switch (usingDevCard) {
+                        case 4:
+                            //YOP card
 
-                        //check if the player clicked the port for trading or dev card
-                        switch (usingDevCard) {
-                            case 4:
-                                //YOP card
+                            //give the player two of the resource
+                            for (int j = 0; j < 2; j++) {
+                                cards[currentPlayer].add(i);
+                            }
 
-                                //give the player two of the resource
-                                for (int j = 0; j < 2; j++) {
-                                    cards[currentPlayer].add(ports.get(i).getType());
-                                }
+                            //sort the card
+                            quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
-                                //sort the card
-                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+                            //finish using the dev card
+                            resetUsingDevCards();
+                            updateBuildButtons();
 
-                                //finish using the dev card
-                                resetUsingDevCards();
-                                updateBuildButtons();
+                            //turn off the hitboxes
+                            showResStackHitbox = false;
 
-                                break;
-                            case 3:
-                                //Monopoly card
+                            //update the screen
+                            repaint();
 
-                                //save the resource type the player wants
-                                int resourceType = ports.get(i).getType();
+                            break;
+                        case 3:
+                            //Monopoly card
 
-                                //loop through all the cards.
-                                //Go through each players ArrayList
-                                for (ArrayList<Integer> cardDeck : cards) {
+                            //save the resource type the player wants
+                            int resourceType = i;
 
-                                    //make sure the current players deck isn't searched
-                                    //or the null player
-                                    if (cardDeck != cards[currentPlayer] && cardDeck != cards[0]) {
+                            //loop through all the cards.
+                            //Go through each players ArrayList
+                            for (ArrayList<Integer> cardDeck : cards) {
 
-                                        //now go through the indevidual cards
-                                        for (Integer cardID : cardDeck) {
-                                            //debug
-                                            //System.out.println("Checking at: " + ", Val: " + cardID);
+                                //make sure the current players deck isn't searched
+                                //or the null player
+                                if (cardDeck != cards[currentPlayer] && cardDeck != cards[0]) {
 
-                                            //if that card type is the wanted card type remove it 
-                                            if (cardID == resourceType) {
+                                    //now go through the indevidual cards
+                                    for (Integer cardID : cardDeck) {
+                                        //debug
+                                        //System.out.println("Checking at: " + ", Val: " + cardID);
 
-                                                //then give it to the player that used the monopoly card
-                                                cards[currentPlayer].add(cardID);
-                                            }
+                                        //if that card type is the wanted card type remove it 
+                                        if (cardID == resourceType) {
+
+                                            //then give it to the player that used the monopoly card
+                                            cards[currentPlayer].add(cardID);
                                         }
+                                    }
 
-                                        //now go through the player being stolen from and remove all the cards
-                                        while (cardDeck.contains(resourceType)) {
-                                            cardDeck.remove(new Integer(resourceType));
-                                        }
-
+                                    //now go through the player being stolen from and remove all the cards
+                                    while (cardDeck.contains(resourceType)) {
+                                        cardDeck.remove(new Integer(resourceType));
                                     }
 
                                 }
 
-                                //sort the current players card
-                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+                            }
 
-                                //finish using the dev card
-                                resetUsingDevCards();
-                                updateBuildButtons();
+                            //sort the current players card
+                            quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
-                                break;
-                            default:
-                                //if its for trading
+                            //finish using the dev card
+                            resetUsingDevCards();
+                            updateBuildButtons();
 
-                                //also if clicking that port would leave the player with no options for cards to trade away
-                                //split up into generic 4:1 or 3:1, and specialized 2:1 trades
-                                //4:1 or 3:1 tradng
-                                if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(ports.get(i).getType(), tradingMode)) {
-                                    validPort = true;
-                                } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) { //2:1 tradng
-                                    validPort = true;
-                                }
+                            //turn off the hitboxes
+                            showResStackHitbox = false;
 
-                                //only make the selection if its a valid port selection
-                                if (validPort) {
-                                    //register the type the player want to trade TO
-                                    tradeResource = ports.get(i).getType();
+                            //update the screen
+                            repaint();
 
-                                    //update the instructions for the next trading step
-                                    instructionLbl.setText("Now select a card");
-                                    subInstructionLbl.setText("This card should be of the type you would like to trade away");
+                            break;
+                        default:
+                            //if its for trading
 
-                                    //show the card hitboxes
-                                    showCardHitbox = true;
-                                }
+                            //also if clicking that port would leave the player with no options for cards to trade away
+                            //split up into generic 4:1 or 3:1, and specialized 2:1 trades
+                            //4:1 or 3:1 tradng
+                            if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(i, tradingMode)) {
+                                validResource = true;
+                            } else if (tradingMode == 3 && canTradeSecializedTo(i)) { //2:1 tradng
+                                validResource = true;
+                            }
 
-                                break;
-                        }
+                            //only make the selection if its a valid port selection
+                            if (validResource) {
+                                //register the type the player want to trade TO
+                                tradeResource = i;
 
-                        //turn off the hitboxes
-                        showPortHitbox = false;
+                                //update the instructions for the next trading step
+                                instructionLbl.setText("Now select a card");
+                                subInstructionLbl.setText("This card should be of the type you would like to trade away");
 
-                        //update the screen
-                        repaint();
+                                //show the card hitboxes
+                                showCardHitbox = true;
 
+                                //turn off the hitboxes
+                                showResStackHitbox = false;
+
+                                //update the screen
+                                repaint();
+                            }
+
+                            break;
                     }
                 }
-
             }
 
         } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
@@ -2066,7 +2072,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 //clear the resource if there was one
                                 tradeResource = 0;
                                 //hide the hitboxes
-                                showPortHitbox = false;
+                                showResStackHitbox = false;
                                 showCardHitbox = false;
                                 //update the buildbuttons (should be renabeling them now)
                                 updateBuildButtons();
@@ -2132,7 +2138,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 //clear the resource if there was one
                                 tradeResource = 0;
                                 //hide the hitboxes
-                                showPortHitbox = false;
+                                showResStackHitbox = false;
                                 showCardHitbox = false;
                                 //update the buildbuttons (should be renabeling them now)
                                 updateBuildButtons();
@@ -2183,7 +2189,7 @@ public class GamePanel extends javax.swing.JPanel {
         //System.out.println("Monopoly Clicked");
 
         //show the port hitboxes so the player can select a resource
-        showPortHitbox = true;
+        showResStackHitbox = true;
 
     }
 
@@ -2194,7 +2200,7 @@ public class GamePanel extends javax.swing.JPanel {
         //System.out.println("YOP Clicked");
 
         //show the port hitboxes so the player can select a resource
-        showPortHitbox = true;
+        showResStackHitbox = true;
     }
 
     /**
@@ -2432,7 +2438,7 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println("showTileHitbox:");
             saveFile.println(showTileHitbox);
             saveFile.println("showPortHitbox:");
-            saveFile.println(showPortHitbox);
+            saveFile.println(showResStackHitbox);
             saveFile.println("showSubPlayerHitbox:");
             saveFile.println(showSubPlayerHitbox);
 
@@ -3084,7 +3090,7 @@ public class GamePanel extends javax.swing.JPanel {
             //get the showPortHitbox data
             if (scanner.nextLine().equals("showPortHitbox:")) {
                 //System.out.println("Yes");
-                showPortHitbox = Boolean.parseBoolean(scanner.nextLine());
+                showResStackHitbox = Boolean.parseBoolean(scanner.nextLine());
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -4507,22 +4513,28 @@ public class GamePanel extends javax.swing.JPanel {
 
         //draw the resouce stacks at the top of the board
         for (int i = 1; i < 6; i++) { //loop through 1-5 for teh 5 resouce types
-            g2d.drawImage(RES_STACKS[i], 
-                    resourceStackXPositions[i], 
+            g2d.drawImage(RES_STACKS[i],
+                    resourceStackXPositions[i],
                     1, //since 
                     getImgWidth(RES_STACKS[i]),
                     getImgHeight(RES_STACKS[i]),
                     null);
-            
+
             //draw the hitbox
-            if (showPortHitbox) {
+            if (showResStackHitbox) {
                 //decide if that specif box should be drawn
-                if (tradingMode == 1 || tradingMode == 2) {
-                    drawSpecificHitbox = canTradeTo(i, tradingMode); //
-                } else if (tradingMode == 3) { //if its a specialized 2:1
-                    drawSpecificHitbox = canTradeSecializedTo(i);
-                } else {
-                    drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
+                switch (tradingMode) {
+                    case 1:
+                    case 2:
+                        drawSpecificHitbox = canTradeTo(i, tradingMode); //
+                        break;
+                    case 3:
+                        //if its a specialized 2:1
+                        drawSpecificHitbox = canTradeSecializedTo(i);
+                        break;
+                    default:
+                        drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
+                        break;
                 }
 
                 //check if that one should be drawn
