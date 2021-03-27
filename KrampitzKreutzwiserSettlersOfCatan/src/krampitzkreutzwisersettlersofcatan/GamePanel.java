@@ -4389,7 +4389,6 @@ public class GamePanel extends javax.swing.JPanel {
                             superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
                             getImgWidth(SMALL_PLAYER_RED),
                             getImgHeight(SMALL_PLAYER_RED));
-                    g2d.setColor(Color.black);
                 }
             }
 
@@ -4474,7 +4473,6 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.drawString(Integer.toString(tiles.get(tileID).getHarvestRollNum()),
                         tiles.get(tileID).getXPos() + newTileWidth / 2 - harvestRollNumOffset,
                         (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 + (6 / scaleFactor) + threeDTileOffset));
-                g2d.setColor(Color.black);
             }
 
             //check where the thief is and draw it there
@@ -4507,7 +4505,6 @@ public class GamePanel extends javax.swing.JPanel {
                         (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
                         (int) (30 / scaleFactor),
                         (int) (30 / scaleFactor));
-                g2d.setColor(Color.black);
             }
         } //end tile drawing loop
 
@@ -4744,7 +4741,6 @@ public class GamePanel extends javax.swing.JPanel {
                 //draw the boarder
                 g2d.setColor(new java.awt.Color(255, 255, 225));
                 g2d.drawRect(road.getXPos() - getImgWidth(image) / 2, road.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
-                g2d.setColor(Color.black);
             }
         }
 
@@ -5039,7 +5035,6 @@ public class GamePanel extends javax.swing.JPanel {
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 g2d.setStroke(tempStroke);
-                                g2d.setColor(Color.black);
                             }
                         }
 
@@ -5224,7 +5219,6 @@ public class GamePanel extends javax.swing.JPanel {
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 g2d.setStroke(tempStroke);
-                                g2d.setColor(Color.black);
                             }
                         }
 
@@ -5298,6 +5292,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         //draw the game version info
+        g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("pre-v4.3.0", rightDrawMargin - scaleInt(90), scaleInt(20));
 
         /*
