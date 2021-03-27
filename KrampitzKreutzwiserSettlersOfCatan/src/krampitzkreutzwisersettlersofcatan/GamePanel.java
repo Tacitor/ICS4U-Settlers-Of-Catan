@@ -103,7 +103,6 @@ public class GamePanel extends javax.swing.JPanel {
     private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
     private final int[] devCardStackXPositions; //the x positions to draw dev cards when in stacked mode
     private final int[] resourceStackXPositions; //the x coords for the resource type stacks
-    private final int[] resourceStackYPositions; //the y coords for the resource type stacks
     private int[] stealCardNum; //the number of cards to steal from each player
     private int cardStartPosition; //the xPos to start drawing cards at 
     private int devCardStartPosition; //the xPos to start drawing dev cards at 
@@ -223,13 +222,6 @@ public class GamePanel extends javax.swing.JPanel {
             superFrame.getWidth() / 2 - getImgWidth(RES_STACKS[3]) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[4]) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(RES_STACKS[5])};
-        //and the Y positions
-        resourceStackYPositions = new int[]{0, //have the first index be a position of 0
-            scaleInt(10),
-            scaleInt(10),
-            0,
-            scaleInt(10),
-            scaleInt(10)};
 
         buildingObject = 0;
         usingDevCard = -1; //set it to normal value for when no dev card is being used
@@ -4421,36 +4413,6 @@ public class GamePanel extends javax.swing.JPanel {
                     getImgWidth(ports.get(i).getTypeImage()),
                     getImgHeight(ports.get(i).getTypeImage()),
                     null);
-
-            //draw the hitbox
-            if (showPortHitbox) {
-                //decide if that specif box should be drawn
-                if (ports.get(i).getType() == 0) {
-                    drawSpecificHitbox = false;
-                } else if (tradingMode == 1 || tradingMode == 2) {
-                    drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
-                } else if (tradingMode == 3) { //if its a specialized 2:1
-                    drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType());
-                } else {
-                    drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
-                }
-
-                //check if that one should be drawn
-                if (drawSpecificHitbox) {
-                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                    //draw the highlight
-                    g2d.fillRect(ports.get(i).getTypePosX(),
-                            ports.get(i).getTypePosY(),
-                            getImgWidth(ports.get(i).getTypeImage()),
-                            getImgHeight(ports.get(i).getTypeImage()));
-                    //draw the boarder
-                    g2d.setColor(new java.awt.Color(255, 255, 225));
-                    g2d.drawRect(ports.get(i).getTypePosX(),
-                            ports.get(i).getTypePosY(),
-                            getImgWidth(ports.get(i).getTypeImage()),
-                            getImgHeight(ports.get(i).getTypeImage()));
-                }
-            }
         }
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
@@ -4547,10 +4509,38 @@ public class GamePanel extends javax.swing.JPanel {
         for (int i = 1; i < 6; i++) { //loop through 1-5 for teh 5 resouce types
             g2d.drawImage(RES_STACKS[i], 
                     resourceStackXPositions[i], 
-                    resourceStackYPositions[i], //since 
+                    1, //since 
                     getImgWidth(RES_STACKS[i]),
                     getImgHeight(RES_STACKS[i]),
                     null);
+            
+            //draw the hitbox
+            if (showPortHitbox) {
+                //decide if that specif box should be drawn
+                if (tradingMode == 1 || tradingMode == 2) {
+                    drawSpecificHitbox = canTradeTo(i, tradingMode); //
+                } else if (tradingMode == 3) { //if its a specialized 2:1
+                    drawSpecificHitbox = canTradeSecializedTo(i);
+                } else {
+                    drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
+                }
+
+                //check if that one should be drawn
+                if (drawSpecificHitbox) {
+                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                    //draw the highlight
+                    g2d.fillRect(resourceStackXPositions[i],
+                            1,
+                            getImgWidth(RES_STACKS[i]),
+                            getImgHeight(RES_STACKS[i]));
+                    //draw the boarder
+                    g2d.setColor(new java.awt.Color(255, 255, 225));
+                    g2d.drawRect(resourceStackXPositions[i],
+                            1,
+                            getImgWidth(RES_STACKS[i]),
+                            getImgHeight(RES_STACKS[i]));
+                }
+            }
         }
 
         //set the font for the dice roll indecator
