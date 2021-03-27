@@ -73,7 +73,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean[] drawDevCardStacks; //controls the mode dev cards are drawn in. Stacked or full layout.
     private boolean showSettlementHitbox; //toggle for whether or not the hitboxes are shown.
     private boolean showTileHitbox; //      ^^^
-    private boolean showPortHitbox;
+    private boolean showResStackHitbox;
     private boolean showSubPlayerHitbox;
     private boolean showDevCards; //stores whether dec cards or resource cards are shown;
     private boolean userPlayedDevCard; //boolean to store whether or not the current player has used a dev card yet this round
@@ -91,6 +91,7 @@ public class GamePanel extends javax.swing.JPanel {
     private static int playerCount = 2; // The number of players in the game
     private static boolean giveStartingResources = true; // If players get startup resources
     private static boolean doSnakeRules = true; //make the setup phase of the game more fair follow normal order fist setup round, then reverse
+    private static boolean showMenuBoarder = false; //will a boarder be drawn aorund the menus
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final ArrayList<Integer>[] devCards; //an Array of ArrayLists. Each player gets their own ArrayList for the dev cards they have.
     // ^^^ valid number are: 1 (knight), 2 (progress card road building), 3 (progress card monolpoy), 4 (progress card year of pleanty), 5, 6, 7, 8, 9 (5-9 are vp cards)
@@ -101,6 +102,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final int totalCardsCollected[];
     private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
     private final int[] devCardStackXPositions; //the x positions to draw dev cards when in stacked mode
+    private final int[] resourceStackXPositions; //the x coords for the resource type stacks
     private int[] stealCardNum; //the number of cards to steal from each player
     private int cardStartPosition; //the xPos to start drawing cards at 
     private int devCardStartPosition; //the xPos to start drawing dev cards at 
@@ -133,9 +135,14 @@ public class GamePanel extends javax.swing.JPanel {
     private String[] diceRollVal;
 
     //Object containing the data about the longest road
-    private LongestRoadData longestRoadData;
+    private GlobalDataRecord longestRoadData;
     private ArrayList<NodeRoad> alreadyCheckedRoad; //ArrayList containing roads that have already been check for logest road. Prevents infinit feedback loop.
     private ArrayList<NodeSettlement> alreadyCheckedSettlements;
+    private int[] playerLongestRoadSegments; //the length of the longest road segment each player owns
+
+    //Object for Largest Army
+    private GlobalDataRecord largestArmyData;
+    private int[] playerArmySize; //the size of each player's army
 
     //custom buttons
     private SettlerBtn toggleCardBtn;
@@ -182,6 +189,8 @@ public class GamePanel extends javax.swing.JPanel {
         // the +1 allows methods to use player IDs directly without subtracting 1
         victoryPoints = new int[playerCount + 1]; // Create the array of player's victory points
         // the +1 allows methods to use player IDs directly without subtracting 1
+        playerLongestRoadSegments = new int[playerCount + 1];
+        playerArmySize = new int[playerCount + 1];
         stealCardNum = new int[playerCount + 1]; //create the array of how many cards need to be stolen
         //the +1 allows methods to use player IDs directly without subtracting 1
         drawCardStacks = new boolean[playerCount + 1];//create the array of how to draw the cards for each player
@@ -200,18 +209,27 @@ public class GamePanel extends javax.swing.JPanel {
             superFrame.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
+        //and now the dev cards
         devCardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
             superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
+        //and simularly the resouce stacks
+        resourceStackXPositions = new int[]{0, //have the first index be a position of 0
+            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
+            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[2]) / 4,
+            superFrame.getWidth() / 2 - getImgWidth(RES_STACKS[3]) / 2,
+            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - ((getImgWidth(RES_STACKS[4]) / 4) * 3),
+            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(RES_STACKS[5])};
+
         buildingObject = 0;
         usingDevCard = -1; //set it to normal value for when no dev card is being used
         showRoadHitbox = false;
         showSettlementHitbox = false;
         showCardHitbox = false;
         showTileHitbox = false;
-        showPortHitbox = false;
+        showResStackHitbox = false;
         showSubPlayerHitbox = false;
         showDevCards = false;
         showDevCardHitbox = false;
@@ -224,10 +242,11 @@ public class GamePanel extends javax.swing.JPanel {
         thiefMoveCounter = 0;
 
         //init the longestRoadData
-        longestRoadData = new LongestRoadData();
+        longestRoadData = new GlobalDataRecord();
         //init the ArrayList holding roads that have already been checked for longest road
         alreadyCheckedRoad = new ArrayList<>();
         alreadyCheckedSettlements = new ArrayList<>();
+        largestArmyData = new GlobalDataRecord();
 
         //init the playerTurnOrder
         initPlayerTurnOrder();
@@ -274,6 +293,8 @@ public class GamePanel extends javax.swing.JPanel {
             victoryPoints[i] = 0; // Victory point counter
             drawCardStacks[i] = false;
             drawDevCardStacks[i] = false;
+            playerLongestRoadSegments[i] = 0; //that players longest road segment
+            playerArmySize[i] = 0;
         }
 
         //populate the ArrayList containing all remaining dev cards. As the game is in startup fully populate it
@@ -426,6 +447,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
         instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
@@ -472,6 +494,7 @@ public class GamePanel extends javax.swing.JPanel {
         trade4to1Btn = new javax.swing.JButton();
         trade2to1Btn = new javax.swing.JButton();
         tradeMenuLbl = new javax.swing.JLabel();
+        devCardMenuLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -590,6 +613,10 @@ public class GamePanel extends javax.swing.JPanel {
         tradeMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
         tradeMenuLbl.setText("Trade Menu:");
 
+        devCardMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        devCardMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
+        devCardMenuLbl.setText("Development Card Menu:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -617,7 +644,8 @@ public class GamePanel extends javax.swing.JPanel {
                         .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(tradeMenuLbl))
+                    .addComponent(tradeMenuLbl)
+                    .addComponent(devCardMenuLbl))
                 .addContainerGap(1157, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -651,7 +679,9 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(trade3to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 504, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(devCardMenuLbl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 464, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -1036,7 +1066,7 @@ public class GamePanel extends javax.swing.JPanel {
             //clear the resource if there was one
             tradeResource = 0;
             //hide the hitboxes
-            showPortHitbox = false;
+            showResStackHitbox = false;
             showCardHitbox = false;
 
             //update the buildbuttons (should be renabeling them now)
@@ -1052,13 +1082,13 @@ public class GamePanel extends javax.swing.JPanel {
             //update the text of the button
             trade3to1Btn.setText("Cancel");
             //show the hitboxes
-            showPortHitbox = true;
+            showResStackHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
 
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
-            instructionLbl.setText("Please select the resource you would like to recive");
+            instructionLbl.setText("Please select the resource you would like to receive");
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
@@ -1076,7 +1106,7 @@ public class GamePanel extends javax.swing.JPanel {
             //clear the resource if there was one
             tradeResource = 0;
             //hide the hitboxes
-            showPortHitbox = false;
+            showResStackHitbox = false;
             showCardHitbox = false;
 
             //update the buildbuttons (should be renabeling them now)
@@ -1092,13 +1122,13 @@ public class GamePanel extends javax.swing.JPanel {
             //update the text of the button
             trade4to1Btn.setText("Cancel");
             //show the hitboxes
-            showPortHitbox = true;
+            showResStackHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
 
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
-            instructionLbl.setText("Please select the resource you would like to recive");
+            instructionLbl.setText("Please select the resource you would like to receive");
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
@@ -1116,7 +1146,7 @@ public class GamePanel extends javax.swing.JPanel {
             //clear the resource if there was one
             tradeResource = 0;
             //hide the hitboxes
-            showPortHitbox = false;
+            showResStackHitbox = false;
             showCardHitbox = false;
 
             //update the buildbuttons (should be renabeling them now)
@@ -1132,13 +1162,13 @@ public class GamePanel extends javax.swing.JPanel {
             //update the text of the button
             trade2to1Btn.setText("Cancel");
             //show the hitboxes
-            showPortHitbox = true;
+            showResStackHitbox = true;
             //canbel any building if there is any
             cancelBuilding();
 
             //update the buildbuttons (should be disables for trading mode)
             updateBuildButtons();
-            instructionLbl.setText("Please select the resource you would like to recive");
+            instructionLbl.setText("Please select the resource you would like to receive");
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
@@ -1315,7 +1345,7 @@ public class GamePanel extends javax.swing.JPanel {
                                      */
 
                                     //remove the points from who ever has them incase it changes
-                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) { //only if the player wan't player 0
+                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getSize() >= 5) { //only if the player wan't player 0
                                         victoryPoints[longestRoadData.getPlayerNum()] -= 2;
                                     }
 
@@ -1338,7 +1368,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     //add the points to who ever has the longest road
                                     //only if the player wan't player 0
                                     //also only if the length is greater than 5
-                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getLength() >= 5) {
+                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getSize() >= 5) {
                                         victoryPoints[longestRoadData.getPlayerNum()] += 2;
                                     }
 
@@ -1855,128 +1885,134 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.setColor(Color.black);
             }
              */
-        } else if ((showPortHitbox && tradingMode != 0 && tradeResource == 0) //check if the player is clicking a port to select a resource type to trade to
-                || ((usingDevCard == 4 || usingDevCard == 3) && showPortHitbox)) {
+        } //but it's not really a port. Now its a resource stack
+        else if ((showResStackHitbox && tradingMode != 0 && tradeResource == 0) //check if the player is clicking a port to select a resource type to trade to
+                || ((usingDevCard == 4 || usingDevCard == 3) && showResStackHitbox)) {
             //or if the player clicked the port to select a resource type for a dev card
 
-            int portPosX;
-            int portPosY;
-            boolean validPort;
+            int stackPosX;
+            int stackPosY = 1;
+            boolean validResource;
 
-            //loop through the ports
-            for (int i = 0; i < ports.size(); i++) {
-                portPosX = ports.get(i).getTypePosX();
-                portPosY = ports.get(i).getTypePosY();
-                validPort = false;
+            //loop through the resource stacks
+            for (int i = 1; i < 6; i++) {
+                stackPosX = resourceStackXPositions[i];
+                validResource = false;
 
                 //check if there was a click on a port
-                if (event.getX() > portPosX
-                        && event.getY() > portPosY
-                        && event.getX() < (portPosX + getImgWidth(ports.get(i).getTypeImage()))
-                        && event.getY() < (portPosY + getImgHeight(ports.get(i).getTypeImage()))) {
+                if (event.getX() > stackPosX
+                        && event.getY() > stackPosY
+                        && event.getX() < (stackPosX + getImgWidth(RES_STACKS[i]))
+                        && event.getY() < (stackPosY + getImgHeight(RES_STACKS[i]))) {
 
-                    //check if its a non general port
-                    if (ports.get(i).getType() != 0) {
+                    //check if the player clicked the port for trading or dev card
+                    switch (usingDevCard) {
+                        case 4:
+                            //YOP card
 
-                        //check if the player clicked the port for trading or dev card
-                        switch (usingDevCard) {
-                            case 4:
-                                //YOP card
+                            //give the player two of the resource
+                            for (int j = 0; j < 2; j++) {
+                                cards[currentPlayer].add(i);
+                            }
 
-                                //give the player two of the resource
-                                for (int j = 0; j < 2; j++) {
-                                    cards[currentPlayer].add(ports.get(i).getType());
-                                }
+                            //sort the card
+                            quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
-                                //sort the card
-                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+                            //finish using the dev card
+                            resetUsingDevCards();
+                            updateBuildButtons();
 
-                                //finish using the dev card
-                                resetUsingDevCards();
-                                updateBuildButtons();
+                            //turn off the hitboxes
+                            showResStackHitbox = false;
 
-                                break;
-                            case 3:
-                                //Monopoly card
+                            //update the screen
+                            repaint();
 
-                                //save the resource type the player wants
-                                int resourceType = ports.get(i).getType();
+                            break;
+                        case 3:
+                            //Monopoly card
 
-                                //loop through all the cards.
-                                //Go through each players ArrayList
-                                for (ArrayList<Integer> cardDeck : cards) {
+                            //save the resource type the player wants
+                            int resourceType = i;
 
-                                    //make sure the current players deck isn't searched
-                                    //or the null player
-                                    if (cardDeck != cards[currentPlayer] && cardDeck != cards[0]) {
+                            //loop through all the cards.
+                            //Go through each players ArrayList
+                            for (ArrayList<Integer> cardDeck : cards) {
 
-                                        //now go through the indevidual cards
-                                        for (Integer cardID : cardDeck) {
-                                            //debug
-                                            //System.out.println("Checking at: " + ", Val: " + cardID);
+                                //make sure the current players deck isn't searched
+                                //or the null player
+                                if (cardDeck != cards[currentPlayer] && cardDeck != cards[0]) {
 
-                                            //if that card type is the wanted card type remove it 
-                                            if (cardID == resourceType) {
+                                    //now go through the indevidual cards
+                                    for (Integer cardID : cardDeck) {
+                                        //debug
+                                        //System.out.println("Checking at: " + ", Val: " + cardID);
 
-                                                //then give it to the player that used the monopoly card
-                                                cards[currentPlayer].add(cardID);
-                                            }
+                                        //if that card type is the wanted card type remove it 
+                                        if (cardID == resourceType) {
+
+                                            //then give it to the player that used the monopoly card
+                                            cards[currentPlayer].add(cardID);
                                         }
+                                    }
 
-                                        //now go through the player being stolen from and remove all the cards
-                                        while (cardDeck.contains(resourceType)) {
-                                            cardDeck.remove(new Integer(resourceType));
-                                        }
-
+                                    //now go through the player being stolen from and remove all the cards
+                                    while (cardDeck.contains(resourceType)) {
+                                        cardDeck.remove(new Integer(resourceType));
                                     }
 
                                 }
 
-                                //sort the current players card
-                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+                            }
 
-                                //finish using the dev card
-                                resetUsingDevCards();
-                                updateBuildButtons();
+                            //sort the current players card
+                            quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
-                                break;
-                            default:
-                                //if its for trading
+                            //finish using the dev card
+                            resetUsingDevCards();
+                            updateBuildButtons();
 
-                                //also if clicking that port would leave the player with no options for cards to trade away
-                                //split up into generic 4:1 or 3:1, and specialized 2:1 trades
-                                //4:1 or 3:1 tradng
-                                if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(ports.get(i).getType(), tradingMode)) {
-                                    validPort = true;
-                                } else if (tradingMode == 3 && canTradeSecializedTo(ports.get(i).getType())) { //2:1 tradng
-                                    validPort = true;
-                                }
+                            //turn off the hitboxes
+                            showResStackHitbox = false;
 
-                                //only make the selection if its a valid port selection
-                                if (validPort) {
-                                    //register the type the player want to trade TO
-                                    tradeResource = ports.get(i).getType();
+                            //update the screen
+                            repaint();
 
-                                    //update the instructions for the next trading step
-                                    instructionLbl.setText("Now select a card");
-                                    subInstructionLbl.setText("This card should be of the type you would like to trade away");
+                            break;
+                        default:
+                            //if its for trading
 
-                                    //show the card hitboxes
-                                    showCardHitbox = true;
-                                }
+                            //also if clicking that port would leave the player with no options for cards to trade away
+                            //split up into generic 4:1 or 3:1, and specialized 2:1 trades
+                            //4:1 or 3:1 tradng
+                            if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(i, tradingMode)) {
+                                validResource = true;
+                            } else if (tradingMode == 3 && canTradeSecializedTo(i)) { //2:1 tradng
+                                validResource = true;
+                            }
 
-                                break;
-                        }
+                            //only make the selection if its a valid port selection
+                            if (validResource) {
+                                //register the type the player want to trade TO
+                                tradeResource = i;
 
-                        //turn off the hitboxes
-                        showPortHitbox = false;
+                                //update the instructions for the next trading step
+                                instructionLbl.setText("Now select a card");
+                                subInstructionLbl.setText("This card should be of the type you would like to trade away");
 
-                        //update the screen
-                        repaint();
+                                //show the card hitboxes
+                                showCardHitbox = true;
 
+                                //turn off the hitboxes
+                                showResStackHitbox = false;
+
+                                //update the screen
+                                repaint();
+                            }
+
+                            break;
                     }
                 }
-
             }
 
         } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
@@ -2036,7 +2072,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 //clear the resource if there was one
                                 tradeResource = 0;
                                 //hide the hitboxes
-                                showPortHitbox = false;
+                                showResStackHitbox = false;
                                 showCardHitbox = false;
                                 //update the buildbuttons (should be renabeling them now)
                                 updateBuildButtons();
@@ -2102,7 +2138,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 //clear the resource if there was one
                                 tradeResource = 0;
                                 //hide the hitboxes
-                                showPortHitbox = false;
+                                showResStackHitbox = false;
                                 showCardHitbox = false;
                                 //update the buildbuttons (should be renabeling them now)
                                 updateBuildButtons();
@@ -2153,7 +2189,7 @@ public class GamePanel extends javax.swing.JPanel {
         //System.out.println("Monopoly Clicked");
 
         //show the port hitboxes so the player can select a resource
-        showPortHitbox = true;
+        showResStackHitbox = true;
 
     }
 
@@ -2164,7 +2200,7 @@ public class GamePanel extends javax.swing.JPanel {
         //System.out.println("YOP Clicked");
 
         //show the port hitboxes so the player can select a resource
-        showPortHitbox = true;
+        showResStackHitbox = true;
     }
 
     /**
@@ -2213,7 +2249,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV11"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV12"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -2247,9 +2283,14 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(playerSetupSettlementLeft);
 
             saveFile.println("longestRoadData length:");
-            saveFile.println(longestRoadData.getLength());
+            saveFile.println(longestRoadData.getSize());
             saveFile.println("longestRoadData playerNum:");
             saveFile.println(longestRoadData.getPlayerNum());
+
+            saveFile.println("largestArmyData size:");
+            saveFile.println(largestArmyData.getSize());
+            saveFile.println("largestArmyData playerNum:");
+            saveFile.println(largestArmyData.getPlayerNum());
 
             saveFile.println("setupTurnOrder:");
             saveFile.println("length:");
@@ -2271,6 +2312,11 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println("victoryPoints:");
             for (int i = 1; i < victoryPoints.length; i++) {
                 saveFile.println(victoryPoints[i]);
+            }
+
+            saveFile.println("playerArmySize:");
+            for (int i = 1; i < playerArmySize.length; i++) {
+                saveFile.println(playerArmySize[i]);
             }
 
             saveFile.println();
@@ -2392,7 +2438,7 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println("showTileHitbox:");
             saveFile.println(showTileHitbox);
             saveFile.println("showPortHitbox:");
-            saveFile.println(showPortHitbox);
+            saveFile.println(showResStackHitbox);
             saveFile.println("showSubPlayerHitbox:");
             saveFile.println(showSubPlayerHitbox);
 
@@ -2512,7 +2558,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV11")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV12")) {
                 //System.out.println("Yuppers");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
@@ -2617,7 +2663,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             if (scanner.nextLine().equals("longestRoadData length:")) {
-                longestRoadData.setLength(Integer.parseInt(scanner.nextLine()));
+                longestRoadData.setSize(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.1");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
@@ -2626,6 +2672,21 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("longestRoadData playerNum:")) {
                 longestRoadData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.2");
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //load in the data for largest army
+            if (scanner.nextLine().equals("largestArmyData size:")) {
+                largestArmyData.setSize(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("Yuppers7.3");
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            if (scanner.nextLine().equals("largestArmyData playerNum:")) {
+                largestArmyData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
+                //System.out.println("Yuppers7.4");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -2668,6 +2729,18 @@ public class GamePanel extends javax.swing.JPanel {
 
                 for (int i = 0; i < playerCount; i++) {
                     victoryPoints[i + 1] = Integer.parseInt(scanner.nextLine());
+                }
+
+                //System.out.println("Yuppers8");
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            //get the playerArmySize
+            if (scanner.nextLine().equals("playerArmySize:")) {
+
+                for (int i = 0; i < playerCount; i++) {
+                    playerArmySize[i + 1] = Integer.parseInt(scanner.nextLine());
                 }
 
                 //System.out.println("Yuppers8");
@@ -3017,7 +3090,7 @@ public class GamePanel extends javax.swing.JPanel {
             //get the showPortHitbox data
             if (scanner.nextLine().equals("showPortHitbox:")) {
                 //System.out.println("Yes");
-                showPortHitbox = Boolean.parseBoolean(scanner.nextLine());
+                showResStackHitbox = Boolean.parseBoolean(scanner.nextLine());
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -3310,6 +3383,26 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
+        //update each player's road length
+        for (int i = 1; i < playerCount + 1; i++) {
+
+            //loop through all the roads
+            for (NodeRoad road : roadNodes) {
+
+                //check to not use the null road
+                if (road != null) {
+
+                    checkForLongestRoad(road, 0, i); //pass the road and the current branch length
+
+                    //clear the array for checked roads
+                    alreadyCheckedRoad.clear();
+                    //also clear the settlments
+                    alreadyCheckedSettlements.clear();
+                }
+
+            }
+        }
+
         updateBuildButtons();
         repaint();
 
@@ -3533,7 +3626,7 @@ public class GamePanel extends javax.swing.JPanel {
                     case 4:
                         //YOP card
                         instructionLbl.setText("Please select a resource type");
-                        subInstructionLbl.setText("You will then recive 2 cards of that type.");
+                        subInstructionLbl.setText("You will then receive 2 cards of that type.");
                         break;
                     default:
                         break;
@@ -4222,12 +4315,22 @@ public class GamePanel extends javax.swing.JPanel {
                 null);
 
         //draw the longest road tile if the current player has it
-        if (longestRoadData.getPlayerNum() == currentPlayer && longestRoadData.getLength() >= 5 && !inbetweenTurns) {
+        if (longestRoadData.getPlayerNum() == currentPlayer && longestRoadData.getSize() >= 5 && !inbetweenTurns) {
             g2d.drawImage(LONGEST_ROAD,
                     (int) (rightDrawMargin - getImgWidth(LONGEST_ROAD) - (30 / scaleFactor)),
                     (int) (10 / scaleFactor),
                     getImgWidth(LONGEST_ROAD),
                     getImgHeight(LONGEST_ROAD),
+                    null);
+        }
+
+        //draw the largest army tile if the current player has it
+        if (largestArmyData.getPlayerNum() == currentPlayer && largestArmyData.getSize() >= 3 && !inbetweenTurns) {
+            g2d.drawImage(LARGEST_ARMY,
+                    (int) (rightDrawMargin - getImgWidth(LARGEST_ARMY) - scaleInt(30)),
+                    getImgHeight(MATERIAL_KEY) + scaleInt(10) - getImgHeight(LARGEST_ARMY),
+                    getImgWidth(LARGEST_ARMY),
+                    getImgHeight(LARGEST_ARMY),
                     null);
         }
 
@@ -4286,7 +4389,6 @@ public class GamePanel extends javax.swing.JPanel {
                             superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
                             getImgWidth(SMALL_PLAYER_RED),
                             getImgHeight(SMALL_PLAYER_RED));
-                    g2d.setColor(Color.black);
                 }
             }
 
@@ -4316,36 +4418,6 @@ public class GamePanel extends javax.swing.JPanel {
                     getImgWidth(ports.get(i).getTypeImage()),
                     getImgHeight(ports.get(i).getTypeImage()),
                     null);
-
-            //draw the hitbox
-            if (showPortHitbox) {
-                //decide if that specif box should be drawn
-                if (ports.get(i).getType() == 0) {
-                    drawSpecificHitbox = false;
-                } else if (tradingMode == 1 || tradingMode == 2) {
-                    drawSpecificHitbox = canTradeTo(ports.get(i).getType(), tradingMode); //
-                } else if (tradingMode == 3) { //if its a specialized 2:1
-                    drawSpecificHitbox = canTradeSecializedTo(ports.get(i).getType());
-                } else {
-                    drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
-                }
-
-                //check if that one should be drawn
-                if (drawSpecificHitbox) {
-                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                    //draw the highlight
-                    g2d.fillRect(ports.get(i).getTypePosX(),
-                            ports.get(i).getTypePosY(),
-                            getImgWidth(ports.get(i).getTypeImage()),
-                            getImgHeight(ports.get(i).getTypeImage()));
-                    //draw the boarder
-                    g2d.setColor(new java.awt.Color(255, 255, 225));
-                    g2d.drawRect(ports.get(i).getTypePosX(),
-                            ports.get(i).getTypePosY(),
-                            getImgWidth(ports.get(i).getTypeImage()),
-                            getImgHeight(ports.get(i).getTypeImage()));
-                }
-            }
         }
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
@@ -4401,7 +4473,6 @@ public class GamePanel extends javax.swing.JPanel {
                 g2d.drawString(Integer.toString(tiles.get(tileID).getHarvestRollNum()),
                         tiles.get(tileID).getXPos() + newTileWidth / 2 - harvestRollNumOffset,
                         (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 + (6 / scaleFactor) + threeDTileOffset));
-                g2d.setColor(Color.black);
             }
 
             //check where the thief is and draw it there
@@ -4434,9 +4505,52 @@ public class GamePanel extends javax.swing.JPanel {
                         (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset),
                         (int) (30 / scaleFactor),
                         (int) (30 / scaleFactor));
-                g2d.setColor(Color.black);
             }
         } //end tile drawing loop
+
+        //draw the resouce stacks at the top of the board
+        for (int i = 1; i < 6; i++) { //loop through 1-5 for teh 5 resouce types
+            g2d.drawImage(RES_STACKS[i],
+                    resourceStackXPositions[i],
+                    1, //since 
+                    getImgWidth(RES_STACKS[i]),
+                    getImgHeight(RES_STACKS[i]),
+                    null);
+
+            //draw the hitbox
+            if (showResStackHitbox) {
+                //decide if that specif box should be drawn
+                switch (tradingMode) {
+                    case 1:
+                    case 2:
+                        drawSpecificHitbox = canTradeTo(i, tradingMode); //
+                        break;
+                    case 3:
+                        //if its a specialized 2:1
+                        drawSpecificHitbox = canTradeSecializedTo(i);
+                        break;
+                    default:
+                        drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
+                        break;
+                }
+
+                //check if that one should be drawn
+                if (drawSpecificHitbox) {
+                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                    //draw the highlight
+                    g2d.fillRect(resourceStackXPositions[i],
+                            1,
+                            getImgWidth(RES_STACKS[i]),
+                            getImgHeight(RES_STACKS[i]));
+                    //draw the boarder
+                    g2d.setColor(new java.awt.Color(255, 255, 225));
+                    g2d.drawRect(resourceStackXPositions[i],
+                            1,
+                            getImgWidth(RES_STACKS[i]),
+                            getImgHeight(RES_STACKS[i]));
+                }
+            }
+        }
 
         //set the font for the dice roll indecator
         g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
@@ -4475,61 +4589,59 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
-        //basic turn indecator
-        String currentPlayerString;
-
-        if (inbetweenTurns) {
-            currentPlayerString = "none";
-        } else if (this.currentPlayer == 1) {
-            currentPlayerString = "1, Red";
-        } else if (this.currentPlayer == 2) {
-            currentPlayerString = "2, Blue";
-        } else if (this.currentPlayer == 3) {
-            currentPlayerString = "3, Orange";
-        } else if (this.currentPlayer == 4) {
-            currentPlayerString = "4, White";
+        int playerNumOffset;
+        if (playerCount > 3) {
+            playerNumOffset = 0;
         } else {
-            currentPlayerString = "0, Error";
+            playerNumOffset = scaleInt(60);
         }
-
-        g2d.drawString("Current player: " + currentPlayerString,
-                rightDrawMargin,
-                (int) (550 / scaleFactor));
 
         //draw the VP and resource card start table
         //draw the player header
-        g2d.drawString("Player:",
-                rightDrawMargin,
+        g2d.drawString("Player Colour:",
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
                 (int) (600 / scaleFactor));
         //draw the victory points header
-        g2d.drawString("VP:",
-                rightDrawMargin + (int) (100 / scaleFactor),
-                (int) (600 / scaleFactor));
+        g2d.drawString("Victory Points:",
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
+                scaleInt(635));
         //draw the Resource Cards header
         g2d.drawString("Resource Cards:",
-                rightDrawMargin + (int) (180 / scaleFactor),
-                (int) (600 / scaleFactor));
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
+                scaleInt(670));
+        //draw playerLongestRoadSegments header
+        g2d.drawString("Road Length:",
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
+                scaleInt(705));
+        //draw playerArmySize header
+        g2d.drawString("Size of Army:",
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
+                scaleInt(740));
 
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
-            //draw the player number
-            g2d.drawString("" + i,
-                    rightDrawMargin,
-                    (int) ((600 + (30 * i)) / scaleFactor));
-            //draw the players VPs
-            g2d.drawString("" + victoryPoints[i],
-                    rightDrawMargin + (int) (100 / scaleFactor),
-                    (int) ((600 + (30 * i)) / scaleFactor));
-            //draw the players number of resource cards
-            g2d.drawString("" + cards[i].size(),
-                    rightDrawMargin + (int) (180 / scaleFactor),
-                    (int) ((600 + (30 * i)) / scaleFactor));
             //draw the player's indecator dot
             g2d.drawImage(PLAYER_DOTS[i],
-                    rightDrawMargin + getImgWidth(PLAYER_DOTS[i]),
-                    (int) ((580 + (30 * i)) / scaleFactor),
+                    rightDrawMargin + scaleInt(65 * i) + scaleInt(5) + playerNumOffset,
+                    scaleInt(580),
                     getImgWidth(PLAYER_DOTS[i]),
                     getImgHeight(PLAYER_DOTS[i]), null);
+            //draw the players VPs
+            g2d.drawString("" + victoryPoints[i],
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
+                    scaleInt(635));
+            //draw the players number of resource cards
+            g2d.drawString("" + cards[i].size(),
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
+                    scaleInt(670));
+            //draw the players playerLongestRoadSegment
+            g2d.drawString("" + playerLongestRoadSegments[i],
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
+                    scaleInt(705));
+            //draw the players playerArmySize
+            g2d.drawString("" + playerArmySize[i],
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
+                    scaleInt(740));
         }
 
         // Draw the 72 road nodes
@@ -4629,7 +4741,6 @@ public class GamePanel extends javax.swing.JPanel {
                 //draw the boarder
                 g2d.setColor(new java.awt.Color(255, 255, 225));
                 g2d.drawRect(road.getXPos() - getImgWidth(image) / 2, road.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
-                g2d.setColor(Color.black);
             }
         }
 
@@ -4924,7 +5035,6 @@ public class GamePanel extends javax.swing.JPanel {
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 g2d.setStroke(tempStroke);
-                                g2d.setColor(Color.black);
                             }
                         }
 
@@ -5109,7 +5219,6 @@ public class GamePanel extends javax.swing.JPanel {
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 g2d.setStroke(tempStroke);
-                                g2d.setColor(Color.black);
                             }
                         }
 
@@ -5126,7 +5235,7 @@ public class GamePanel extends javax.swing.JPanel {
         //check the card button and check if it needs to get it's real coords
         if (toggleCardBtn.getXPos() == -1 && toggleCardBtn.getYPos() == -1) {
             toggleCardBtn.setXPos((int) trade2to1Btn.getBounds().getX());
-            toggleCardBtn.setYPos((int) (trade2to1Btn.getBounds().getY() + trade2to1Btn.getBounds().getHeight() + (20 / scaleFactor)));
+            toggleCardBtn.setYPos((int) (devCardMenuLbl.getBounds().getY() + devCardMenuLbl.getBounds().getHeight() + (10 / scaleFactor)));
 
             buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
             buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
@@ -5151,6 +5260,40 @@ public class GamePanel extends javax.swing.JPanel {
 
         }
 
+        //draw the separator boxes around the UI elements
+        //only if the user want to
+        if (showMenuBoarder) {
+            g2d.setStroke(new BasicStroke(scaleInt(2))); //make the stroke a little thicker
+            //the trade box
+            g2d.drawRect(tradeMenuLbl.getX() - scaleInt(5),
+                    tradeMenuLbl.getY() - scaleInt(5),
+                    trade4to1Btn.getWidth() + scaleInt(10),
+                    (trade2to1Btn.getY() + trade2to1Btn.getHeight()) - tradeMenuLbl.getY() + scaleInt(10));
+            //the build box
+            g2d.drawRect(buildMenuLbl.getX() - scaleInt(5),
+                    buildMenuLbl.getY() - scaleInt(5),
+                    buildBtn.getWidth() + scaleInt(10),
+                    (buildBtn.getY() + buildBtn.getHeight()) - buildMenuLbl.getY() + scaleInt(10));
+            //the dev card box
+            g2d.drawRect(devCardMenuLbl.getX() - scaleInt(5),
+                    devCardMenuLbl.getY() - scaleInt(5),
+                    getImgWidth(toggleCardBtn.getBaseImage()) + scaleInt(10),
+                    (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getY() + scaleInt(10));
+            //the dice menu box
+            g2d.drawRect(rightDrawMargin - scaleInt(5),
+                    scaleInt(385) - scaleInt(5),
+                    getImgWidth(MATERIAL_KEY) + scaleInt(5),
+                    (scaleInt(400) + getImgHeight(DICE_GRAY)) - scaleInt(385) + scaleInt(10));
+            //the score board box
+            g2d.drawRect(rightDrawMargin - scaleInt(60) + playerNumOffset - scaleInt(5),
+                    scaleInt(580) - scaleInt(5),
+                    getImgWidth(MATERIAL_KEY) + (60 - playerNumOffset) + scaleInt(5),
+                    (scaleInt(740)) - scaleInt(580) + scaleInt(10));
+        }
+
+        //draw the game version info
+        g2d.setColor(new java.awt.Color(255, 255, 225));
+        g2d.drawString("pre-v4.3.0", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -5168,6 +5311,12 @@ public class GamePanel extends javax.swing.JPanel {
                 getImgWidth(WATER_RING_OVERLAY), 
                 getImgHeight(WATER_RING_OVERLAY), null);
          */
+    }
+
+    public void fire() {
+        //debugs. Proof the game is actually redrawing.
+        //showRoadHitbox = true;
+        repaint();
     }
 
     /**
@@ -5271,6 +5420,16 @@ public class GamePanel extends javax.swing.JPanel {
         } else {
             return (int) (getImgWidth(image) / ((float) image.getWidth(null) / image.getHeight(null)));
         }
+    }
+
+    /**
+     * Scale a number to match the resolution of the screen
+     *
+     * @param num
+     * @return
+     */
+    public int scaleInt(int num) {
+        return (int) (num / scaleFactor);
     }
 
     /**
@@ -5759,12 +5918,17 @@ public class GamePanel extends javax.swing.JPanel {
         ArrayList<NodeRoad> roadsToCheck = new ArrayList<>(); //List of roads to check with recusion
 
         //check if the given branch length is larger than the current longest road
-        if (branchLength > longestRoadData.getLength()) {
+        if (branchLength > longestRoadData.getSize()) {
             //if it is over write the data
             //the length
-            longestRoadData.setLength(branchLength);
+            longestRoadData.setSize(branchLength);
             //set the new player 
             longestRoadData.setPlayerNum(playerNum);
+        }
+
+        //check if this branch is longer than the specifica players longest road
+        if (branchLength > playerLongestRoadSegments[playerNum]) {
+            playerLongestRoadSegments[playerNum] = branchLength;
         }
 
         //for each of the two settlments on the end of the road 
@@ -5826,7 +5990,7 @@ public class GamePanel extends javax.swing.JPanel {
      * resting state.
      */
     private void resetUsingDevCards() {
-        //reenable the turn switch button
+        //re-enable the turn switch button
         turnSwitchBtn.setEnabled(true);
 
         //hide the hitbox again
@@ -5836,6 +6000,27 @@ public class GamePanel extends javax.swing.JPanel {
 
         //remove a dev card
         devCards[currentPlayer].remove(new Integer(usingDevCard));
+
+        //if the dev card that was just remove was a knight card
+        if (usingDevCard == 1) {
+            //add to the player's army size
+            playerArmySize[currentPlayer]++;
+
+            //check if that addition changed the player with the largest army
+            if (playerArmySize[currentPlayer] > largestArmyData.getSize() && playerArmySize[currentPlayer] >= 3) { //must also have 3 or more cards
+                //remove point from the old player who had the largest army
+                if (largestArmyData.getPlayerNum() != 0) { //don't remove point from player 0
+                    victoryPoints[largestArmyData.getPlayerNum()] -= 2;
+                }
+
+                //update the player with the largest army
+                largestArmyData.setPlayerNum(currentPlayer);
+                largestArmyData.setSize(playerArmySize[currentPlayer]);
+
+                //give that player 2 VP
+                victoryPoints[currentPlayer] += 2;
+            }
+        }
 
         //reset all the use dev card vars
         usingDevCard = -1;
@@ -6062,6 +6247,27 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
+     * Set whether or not the the game will draw borders around the menus
+     * grouping them together
+     *
+     * @param showMenuBoarder
+     */
+    public static void setShowMenuBoarder(boolean showMenuBoarder) {
+        GamePanel.showMenuBoarder = showMenuBoarder;
+        System.out.println(GamePanel.showMenuBoarder);
+    }
+
+    /**
+     * Get whether or not the the game will draw borders around the menus
+     * grouping them together
+     *
+     * @return
+     */
+    public static boolean getShowMenuBoarder() {
+        return showMenuBoarder;
+    }
+
+    /**
      * Get the width of the JFrame holding the GamePanel
      *
      * @return
@@ -6124,6 +6330,7 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton buildRoadRBtn;
     private javax.swing.JRadioButton buildSettlementLRBtn;
     private javax.swing.JRadioButton buildSettlementSRBtn;
+    private javax.swing.JLabel devCardMenuLbl;
     private javax.swing.JLabel instructionLbl;
     private javax.swing.JLabel instructionPromptLbl;
     private javax.swing.JLabel subInstructionLbl;

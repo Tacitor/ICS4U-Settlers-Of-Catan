@@ -122,6 +122,18 @@ public class ImageRef {
     
     //longest road tile thing
     public final static Image LONGEST_ROAD = new ImageIcon(ImageRef.class.getResource("longestRoad.png")).getImage();
+    
+    //largest army tile thing
+    public final static Image LARGEST_ARMY = new ImageIcon(ImageRef.class.getResource("largestArmy.png")).getImage();
+    
+    //image files for the resource stacks
+    private final static Image CLAY_STACK = new ImageIcon(ImageRef.class.getResource("clayStack.png")).getImage();
+    private final static Image WOOD_STACK = new ImageIcon(ImageRef.class.getResource("woodStack.png")).getImage();
+    private final static Image WHEAT_STACK = new ImageIcon(ImageRef.class.getResource("wheatStack.png")).getImage();
+    private final static Image SHEEP_STACK = new ImageIcon(ImageRef.class.getResource("sheepStack.png")).getImage();
+    private final static Image ORE_STACK = new ImageIcon(ImageRef.class.getResource("oreStack.png")).getImage();
+    //the public array to acces those images
+    public final static Image[] RES_STACKS = new Image[]{ERROR_IMAGE, CLAY_STACK, WOOD_STACK, WHEAT_STACK, SHEEP_STACK, ORE_STACK};
 
     public ImageRef() {
     }

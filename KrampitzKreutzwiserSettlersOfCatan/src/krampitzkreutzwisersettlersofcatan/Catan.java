@@ -10,12 +10,14 @@ package krampitzkreutzwisersettlersofcatan;
  * @author Tacitor
  */
 public class Catan {
-    
+
     public static int clock = 0;
-    
+    public static GamePanel gamePanel;
+    public static MainMenu menu;
+
     public static void main(String[] args) throws InterruptedException {
         System.out.println("Catan startup");
-        
+
         /* Set the Windows 10 look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -38,19 +40,22 @@ public class Catan {
             java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainMenu().setVisible(true);
-            }
-        });
-        
+
+        menu = new MainMenu();
+        menu.setVisible(true);
+        updateGamePanel();
+
         while (true) {
             clock++;
+            gamePanel.fire();
+            //gamePanel.fire();
             Thread.sleep(1000); //time a spent sleeping is subject to change
             //the way sleep is envoked is also subject to change.
         }
     }
     
+    public static void updateGamePanel() {
+        gamePanel = menu.getGameFrame().getGamePanel();
+    }
+
 }
