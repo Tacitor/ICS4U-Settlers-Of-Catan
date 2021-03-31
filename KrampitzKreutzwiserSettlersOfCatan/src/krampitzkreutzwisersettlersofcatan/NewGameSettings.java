@@ -16,20 +16,23 @@ public class NewGameSettings extends javax.swing.JFrame {
 
     private final MainMenu mainMenuFrame;
     private final GameFrame gameFrame;
+    private final NewOnlineGameMenu newOnlineGameMenu;
 
     /**
      * Creates new form CreditsUI
      *
      * @param m The main menu JFrame this returns to on exit
+     * @param g
      */
-    public NewGameSettings(MainMenu m, GameFrame g) {
+    public NewGameSettings(MainMenu m, GameFrame g, NewOnlineGameMenu n) {
         setIcon();
-        
+
         initComponents();
         mainMenuFrame = m;
         gameFrame = g;
+        newOnlineGameMenu = n;
     }
-    
+
     /**
      * Set the icon for the JFRame
      */
@@ -126,7 +129,6 @@ public class NewGameSettings extends javax.swing.JFrame {
 
         onlineModeGrp.add(onlineTrueRbtn);
         onlineTrueRbtn.setText("Online");
-        onlineTrueRbtn.setEnabled(false);
 
         startResourcesLbl.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         startResourcesLbl.setText("Starting Resources:");
@@ -278,39 +280,43 @@ public class NewGameSettings extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void startGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startGameBtnActionPerformed
-        //get the online play mode
-        if (onlineFalseRbtn.isSelected()) {
-            
-            //get and set the player number selected
-            if (playerNum2Rbtn.isSelected()) {
-                GamePanel.setPlayerCount(2);
-            } else if (playerNum3Rbtn.isSelected()) {
-                GamePanel.setPlayerCount(3);
-            } else if (playerNum4Rbtn.isSelected()) {
-                GamePanel.setPlayerCount(4);
-            }
-            
-            //get and set the giveStartingResources
-            if (startResTrueRbtn.isSelected()) {
-                GamePanel.setgiveStartingResources(true);
-            } else if (startResFalseRbtn.isSelected()) {
-                GamePanel.setgiveStartingResources(false);
-            }
-            
-            //get and set the doSnakeRules
-            if (snakeRulesTrueRbtn.isSelected()) {
-                GamePanel.setDoSnakeRules(true);
-            } else if (snakeRulesFalseRbtn.isSelected()) {
-                GamePanel.setDoSnakeRules(false);
-            }
-            
-            
+
+        //get and set the player number selected
+        if (playerNum2Rbtn.isSelected()) {
+            GamePanel.setPlayerCount(2);
+        } else if (playerNum3Rbtn.isSelected()) {
+            GamePanel.setPlayerCount(3);
+        } else if (playerNum4Rbtn.isSelected()) {
+            GamePanel.setPlayerCount(4);
         }
 
-        // Hide this window and show the game
-        this.setVisible(false);
-        gameFrame.resetGamePanel();
-        gameFrame.setVisible(true);
+        //get and set the giveStartingResources
+        if (startResTrueRbtn.isSelected()) {
+            GamePanel.setgiveStartingResources(true);
+        } else if (startResFalseRbtn.isSelected()) {
+            GamePanel.setgiveStartingResources(false);
+        }
+
+        //get and set the doSnakeRules
+        if (snakeRulesTrueRbtn.isSelected()) {
+            GamePanel.setDoSnakeRules(true);
+        } else if (snakeRulesFalseRbtn.isSelected()) {
+            GamePanel.setDoSnakeRules(false);
+        }
+
+        //get the online play mode
+        if (onlineFalseRbtn.isSelected()) {
+
+            // Hide this window and show the game
+            this.setVisible(false);
+            gameFrame.resetGamePanel();
+            gameFrame.setVisible(true);
+        } else {
+            // Hide this window and show the next screen
+            this.setVisible(false);
+            newOnlineGameMenu.setVisible(true);
+            newOnlineGameMenu.runSetup();
+        }
     }//GEN-LAST:event_startGameBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -263,7 +263,6 @@
           <ComponentRef name="onlineModeGrp"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Online"/>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="startResourcesLbl">

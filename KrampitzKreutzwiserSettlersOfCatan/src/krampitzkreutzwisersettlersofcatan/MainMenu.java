@@ -25,6 +25,7 @@ public class MainMenu extends javax.swing.JFrame {
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final NewGameSettings newGameSettingsFrame;
     private final ClientSettings clientSettings;
+    private final NewOnlineGameMenu newOnlineGameMenu;
 
     /**
      * Creates new form MainMenu
@@ -38,8 +39,9 @@ public class MainMenu extends javax.swing.JFrame {
         userManualUIFrame = new UserManualUI(this);
         creditsUIFrame = new CreditsUI(this);
         gameJFrame = new GameFrame(this);
-        newGameSettingsFrame = new NewGameSettings(this, gameJFrame);
         clientSettings = new ClientSettings(this);
+        newOnlineGameMenu = new NewOnlineGameMenu(this);
+        newGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
 
     }
 
