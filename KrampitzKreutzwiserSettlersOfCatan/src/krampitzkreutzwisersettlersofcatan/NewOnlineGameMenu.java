@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import javax.swing.JOptionPane;
 import textures.ImageRef;
 
 /**
@@ -30,7 +31,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         mainMenuFrame = m;
 
     }
-    
+
     /**
      * Sets everything up for other player to join over a network
      */
@@ -59,7 +60,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
      */
     private void createFirstClient() {
 
-        client = new CatanClient(700, 200);
+        client = new CatanClient(700, 200, "localhost", mainMenuFrame.getGameFrame());
         client.connectToServer();
         client.setUpGUI();
         client.setUpButton();

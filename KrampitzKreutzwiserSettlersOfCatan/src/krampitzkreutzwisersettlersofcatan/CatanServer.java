@@ -47,7 +47,7 @@ public class CatanServer {
 
         //create the socket to listen 
         try {
-            serverSocket = new ServerSocket(25569);
+            serverSocket = new ServerSocket(25570);
         } catch (IOException e) {
             System.out.println("[Server] " + "IOException from server contructor");
         }

@@ -37,6 +37,8 @@ public class CatanClient extends JFrame {
 
     private int clientID;
     private int totalClientNum; //the number of total clients that will be connected to the server
+    private String ip; //the ip adress the client will try to connect to
+    private GameFrame theGameFrame;
 
     private String chat;
     private boolean buttonEnabled;
@@ -49,8 +51,10 @@ public class CatanClient extends JFrame {
      *
      * @param width
      * @param height
+     * @param ip
+     * @param gameFrame
      */
-    public CatanClient(int width, int height) {
+    public CatanClient(int width, int height, String ip, GameFrame gameFrame) {
         /* Set the Windows 10 look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -75,6 +79,8 @@ public class CatanClient extends JFrame {
         messageToSend = new JTextArea();
         sendBtn = new JButton();
         fileBtn = new JButton();
+        this.ip = ip;
+        theGameFrame = gameFrame;
     }
 
     public void setUpGUI() {
@@ -229,6 +235,12 @@ public class CatanClient extends JFrame {
         //set the button to the value
         buttonEnabled = recivedBoolean;
         updateButtons();
+        
+        //setup the game that will be played
+        theGameFrame.resetGamePanel();
+        //make it visible
+        theGameFrame.setVisible(true);
+        theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
 
         //start listening
         //never stop listening
@@ -342,7 +354,7 @@ public class CatanClient extends JFrame {
             System.out.println("----Client----");
             try {
                 //establic connection
-                socket = new Socket("donau.ca", 25569);
+                socket = new Socket(ip, 25570);
                 dataIn = new DataInputStream(socket.getInputStream());
                 dataOut = new DataOutputStream(socket.getOutputStream());
                 //now that a connection has been establichsed get the number for this client
@@ -452,10 +464,10 @@ public class CatanClient extends JFrame {
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println("[Client] " + "Hello World: Client");
-        CatanClient client = new CatanClient(700, 200);
-        client.connectToServer();
-        client.setUpGUI();
-        client.setUpButton();
+        //CatanClient client = new CatanClient(700, 200, "localhost");
+        //client.connectToServer();
+        //client.setUpGUI();
+        //client.setUpButton();
     }
 
 }
