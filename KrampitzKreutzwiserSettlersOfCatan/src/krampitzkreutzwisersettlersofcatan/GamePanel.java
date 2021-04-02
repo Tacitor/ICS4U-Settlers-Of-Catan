@@ -2577,6 +2577,12 @@ public class GamePanel extends javax.swing.JPanel {
         //load the save file 
         try {
             File savefile = new File(filePathString);
+            
+            //ensure the correct permisions
+            savefile.setExecutable(true);
+            savefile.setWritable(true);
+            savefile.setReadable(true);
+            
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
@@ -4308,6 +4314,8 @@ public class GamePanel extends javax.swing.JPanel {
         //start local vars
         int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
         boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
+        
+        titleLbl.setText("Setterls of Catan: " + onlineMode);
 
         //end local vars
         //the Graphics2D class is the class that handles all the drawing

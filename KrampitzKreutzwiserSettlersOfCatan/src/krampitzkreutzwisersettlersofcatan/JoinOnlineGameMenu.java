@@ -5,9 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import textures.ImageRef;
 
 /**
@@ -35,48 +32,6 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
         //no failed attempts yet
         failCounter = 0;
-
-    }
-
-    /**
-     * Sets everything up for other player to join over a network
-     */
-    public void runSetup() {
-        serverStartUp();
-        createFirstClient();
-
-        /*
-         * TODO
-         * 
-         * Auto send the save file to the server when all clients have connected.
-         * Add option to the main menu to join a server
-         */
-    }
-
-    /**
-     * Create the local server
-     */
-    private void serverStartUp() {
-        server = new CatanServer(GamePanel.getPlayerCount());
-
-        //create a new thread for the server
-        Thread t = new Thread(() -> {
-            server.acceptConnections();
-        });
-
-        //start running the server
-        t.start();
-    }
-
-    /**
-     * Creates a client to connect to the local server
-     */
-    private void createFirstClient() {
-
-        client = new CatanClient(700, 200, "localhost", mainMenuFrame.getGameFrame());
-        client.connectToServer();
-        client.setUpGUI();
-        client.setUpButton();
 
     }
 
@@ -205,7 +160,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
         connectBtn.setEnabled(false);
         connectBtn.setText("Connecting...");
-        
+
         FindServerRunnable findServerRunnable = new FindServerRunnable();
         findServerRunnable.setDaemon(true);
         findServerRunnable.start();
@@ -221,7 +176,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
         //create a CatanClient and connect to the ip specified
         try {
 
-            //uddate the ip
+            //update the ip
             client.setIp(ipTxtFld.getText());
 
             //try to connect
@@ -232,6 +187,11 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
                 client.setUpGUI();
                 client.setUpButton();
+
+                //once the client has been set up save it to the game panel
+                GamePanel.setOnlineMode(client.getClientID());
+                GamePanel.setCatanClient(client);
+
             } else {
                 //count a fail
                 failCounter++;
@@ -243,31 +203,31 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
             System.out.println("Error connecting to server: \n" + e);
         }
     }
-    
+
     private class FindServerRunnable extends Thread implements Runnable {
-        
+
         private boolean stopRequested = false;
-        
+
         public synchronized void requestStop() {
             stopRequested = true;
         }
-        
+
         @Override
         public void run() {
             //debug the life of the thread and how long it lives for
             //System.out.println("Started connectio attempt");
-            
+
             //check if this thread should stop
-            while(!stopRequested) {
+            while (!stopRequested) {
                 //try to connect
                 findServer();
                 //only run once
                 stopRequested = true;
             }
-            
+
             //System.out.println("done connection attempt");
         }
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

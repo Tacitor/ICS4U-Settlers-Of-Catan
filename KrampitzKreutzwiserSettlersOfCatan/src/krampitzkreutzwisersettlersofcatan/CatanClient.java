@@ -338,14 +338,20 @@ public class CatanClient extends JFrame {
 
                         //ensure the directory is there
                         Files.createDirectories(Paths.get(ONLINE_SAVE_LOCATION));
+                        
+                        //create a file to save it to
+                        File file  = new File(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
+                        
+                        //take read and write acess
+                        file.setExecutable(true);
+                        file.setReadable(true);
+                        file.setWritable(true);
 
                         //Create and output stream at the directory
-                        FileOutputStream fos = new FileOutputStream(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
+                        FileOutputStream fos = new FileOutputStream(file);
 
                         //write the file
                         fos.write(fileTypeRecieve.getFile(), 0, fileTypeRecieve.getFile().length);
-
-                        fos.flush();
 
                         //close it
                         fos.close();
