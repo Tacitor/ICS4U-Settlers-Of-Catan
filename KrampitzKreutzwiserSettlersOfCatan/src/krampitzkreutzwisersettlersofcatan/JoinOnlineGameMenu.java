@@ -254,7 +254,8 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
         
         @Override
         public void run() {
-            System.out.println("Started connectio attempt");
+            //debug the life of the thread and how long it lives for
+            //System.out.println("Started connectio attempt");
             
             //check if this thread should stop
             while(!stopRequested) {
@@ -264,7 +265,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
                 stopRequested = true;
             }
             
-            System.out.println("done connection attempt");
+            //System.out.println("done connection attempt");
         }
         
     }

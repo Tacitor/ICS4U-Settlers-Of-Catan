@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.swing.*;
+import textures.ImageRef;
 
 /**
  *
@@ -83,6 +84,13 @@ public class CatanClient extends JFrame {
         this.ip = ip;
         theGameFrame = gameFrame;
     }
+    
+    /**
+     * Set the icon for the JFRame
+     */
+    private void setIcon() {
+        this.setIconImage(ImageRef.ICON);
+    }
 
     public void setUpGUI() {
         //get up the GUI
@@ -113,6 +121,7 @@ public class CatanClient extends JFrame {
         fileBtn.setText("Send File");
         contentPane.setForeground(Color.green);
         contentPane.setBackground(Color.gray);
+        setIcon();
 
         //specific behaviour for the client numbers
         if (clientID == 1) {
