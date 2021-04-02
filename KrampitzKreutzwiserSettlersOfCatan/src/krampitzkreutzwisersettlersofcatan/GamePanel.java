@@ -985,6 +985,7 @@ public class GamePanel extends javax.swing.JPanel {
                 buildBtn.setText("Build");
             }
 
+            /* Old code. This is done in the udpateBuildButton method now
             // Disable all of the building buttons
             buildBtn.setEnabled(false);
             buildRoadRBtn.setEnabled(false);
@@ -997,17 +998,14 @@ public class GamePanel extends javax.swing.JPanel {
             //disable all the SettlerBtns
             toggleCardBtn.setEnabled(false);
             buyDevCardBtn.setEnabled(false);
-            useDevCardBtn.setEnabled(false);
-
+            useDevCardBtn.setEnabled(false);*/
             //reset the boolean to false because the turn just ended and the user hasn't used a card yet
             userPlayedDevCard = false;
 
             // Change the button to the Start Next Turn button
             setTurnBtnTextStart();
 
-            //update the instruction
-            instructionLbl.setText("Please allow the next player to use the mouse");
-            subInstructionLbl.setText("Then start the next turn");
+            updateBuildButtons();
 
             // Redraw the board so the next player doesnt see the other player's cards
             repaint();
@@ -1027,7 +1025,7 @@ public class GamePanel extends javax.swing.JPanel {
             } catch (IOException ex) {
                 Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             //check if the game is for online play
             if (onlineMode != -1) {
                 //if it is send the save file to the server
@@ -2238,7 +2236,7 @@ public class GamePanel extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(null, "File overwritten: " + myObj.getName(), "Save Success", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
-            
+
             myObj.setReadOnly();
             myObj.setExecutable(true);
 
@@ -2254,18 +2252,18 @@ public class GamePanel extends javax.swing.JPanel {
      * Write to the save file
      *
      * @param writeAdress
-     * @return 
+     * @return
      * @throws FileNotFoundException
      */
     public boolean writeToFile(String writeAdress) throws FileNotFoundException {
-        
+
         try {
             //try to create the file
             File file = new File(writeAdress);
             //ensure it is mutable
             file.setExecutable(true);
-            file.setWritable(true);            
-            
+            file.setWritable(true);
+
             PrintWriter saveFile = new PrintWriter(file); //begin writting to the file
             saveFile.println("SettlersOfCatanSaveV13"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
@@ -2550,9 +2548,8 @@ public class GamePanel extends javax.swing.JPanel {
             for (int i = 0; i < stealCardNum.length; i++) {
                 saveFile.println(stealCardNum[i]);
             }
-            
-            //saveFile.flush();
 
+            //saveFile.flush();
             //add the close
             saveFile.close();
             return true;
@@ -2577,12 +2574,12 @@ public class GamePanel extends javax.swing.JPanel {
         //load the save file 
         try {
             File savefile = new File(filePathString);
-            
+
             //ensure the correct permisions
             savefile.setExecutable(true);
             savefile.setWritable(true);
             savefile.setReadable(true);
-            
+
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
@@ -2654,7 +2651,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             if (scanner.nextLine().equals("inbetweenTurns:")) {
                 inbetweenTurns = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
@@ -3405,16 +3402,12 @@ public class GamePanel extends javax.swing.JPanel {
                     break;
             }
         }
-        
-        //check if the game is in online mode
-        if (onlineMode != -1) {
-            //if it is online and inbetween turn make sure the button has the right text
-            if (inbetweenTurns) {
-                setTurnBtnTextStart();
-            } else {
-                setTurnBtbTextEnd();
-            }
-            
+
+        //if it is inbetween turn make sure the button has the right text
+        if (inbetweenTurns) {
+            setTurnBtnTextStart();
+        } else {
+            setTurnBtbTextEnd();
         }
 
         //update the subPlayersHaveEnoughcards boolean
@@ -3488,8 +3481,25 @@ public class GamePanel extends javax.swing.JPanel {
         boolean canTrade2to;
         ButtonModel oldSelection; // The button selected before this update began
 
-        // If the game is in setup
-        if (inSetup) {
+        //first check if the game is inbetween turns
+        if (inbetweenTurns) {
+            canBuildRoad = false;
+            canBuildSettlement = false;
+            canBuildCity = false;
+            canTrade4to = false;
+            canTrade3to = false;
+            canTrade2to = false;
+
+            //update the toggle card button to show the resource cards options for stealing
+            toggleCardBtn.setEnabled(false);
+            toggleCardBtn.setMode(0);
+            showDevCards = false;
+
+            buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
+
+        } // If the game is in setup
+        else if (inSetup) {
             canBuildRoad = (playerSetupRoadsLeft > 0) && newestSetupSettlment != null;
             canBuildSettlement = (playerSetupSettlementLeft > 0);
             canBuildCity = false; // No settlement upgrades during setup
@@ -3625,7 +3635,10 @@ public class GamePanel extends javax.swing.JPanel {
             // If no buttons are enabled clear the selection
             buildBtnGroup.clearSelection();
 
-            //set the instructions 
+            if (inbetweenTurns) {
+                instructionLbl.setText("Please allow the next player to use the mouse");
+                subInstructionLbl.setText("Then start the next turn");
+            } else //set the instructions 
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
                 instructionLbl.setForeground(new Color(255, 175, 175));
@@ -4325,7 +4338,7 @@ public class GamePanel extends javax.swing.JPanel {
         //start local vars
         int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
         boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
-        
+
         titleLbl.setText("Setterls of Catan: " + onlineMode);
 
         //end local vars
@@ -6257,14 +6270,14 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
     }
-    
+
     /**
      * Set the turn button text to show the "End player turn"
      */
     private void setTurnBtbTextEnd() {
         turnSwitchBtn.setText("End Current Player's Turn");
     }
-    
+
     /**
      * Set the turn button text to show the "Start player turn"
      */
@@ -6328,7 +6341,7 @@ public class GamePanel extends javax.swing.JPanel {
     public static boolean getShowMenuBoarder() {
         return showMenuBoarder;
     }
-    
+
     /**
      * Get the CatanClient responsible for interfacing with the server.
      *
@@ -6346,7 +6359,7 @@ public class GamePanel extends javax.swing.JPanel {
     public static void setCatanClient(CatanClient onlineClient) {
         GamePanel.onlineClient = onlineClient;
     }
-    
+
     /**
      * Set the mode the game is in regarding online play
      *
