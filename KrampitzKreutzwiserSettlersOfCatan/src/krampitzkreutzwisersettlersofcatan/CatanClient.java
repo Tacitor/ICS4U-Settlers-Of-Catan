@@ -38,6 +38,7 @@ public class CatanClient extends JFrame {
     private int clientID;
     private int totalClientNum; //the number of total clients that will be connected to the server
     private String ip; //the ip adress the client will try to connect to
+    private boolean successfulConnect = false; //did this client successfully connect to the server
     private GameFrame theGameFrame;
 
     private String chat;
@@ -138,9 +139,15 @@ public class CatanClient extends JFrame {
         this.setVisible(true);
     }
 
-    public void connectToServer() {
+    public boolean connectToServer() {
         //set up the socket
         csc = new ClientSideConnection();
+        
+        return successfulConnect;
+    }
+    
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public void setUpButton() {
@@ -365,8 +372,15 @@ public class CatanClient extends JFrame {
                 chat = dataIn.readUTF();
                 System.out.println("[Client " + clientID + "] " + "Connected to a server as Client #" + clientID);
                 messageRecived.setText(chat);
+                
+                //if everything else was able to be done save the success
+                successfulConnect = true;
+                
             } catch (IOException e) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC contructor ");
+                
+                //save the failed connection
+                successfulConnect = false;
             }
         }
 

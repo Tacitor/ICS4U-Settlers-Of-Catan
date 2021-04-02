@@ -5,6 +5,8 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import textures.ImageRef;
 
@@ -13,22 +15,26 @@ import textures.ImageRef;
  * @author Tacitor
  * @author Evan
  */
-public class NewOnlineGameMenu extends javax.swing.JFrame {
+public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
     private final MainMenu mainMenuFrame;
     private CatanServer server;
     private CatanClient client;
+    private int failCounter; //keeps track of how many failed connection attempts there have been
 
     /**
      * Creates new form CreditsUI
      *
      * @param m The main menu JFrame this returns to on exit
      */
-    public NewOnlineGameMenu(MainMenu m) {
+    public JoinOnlineGameMenu(MainMenu m) {
         setIcon();
 
         initComponents();
         mainMenuFrame = m;
+
+        //no failed attempts yet
+        failCounter = 0;
 
     }
 
@@ -38,14 +44,13 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
     public void runSetup() {
         serverStartUp();
         createFirstClient();
-        
+
         /*
          * TODO
          * 
          * Auto send the save file to the server when all clients have connected.
          * Add option to the main menu to join a server
          */
-        
     }
 
     /**
@@ -94,9 +99,12 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         borderGrp = new javax.swing.ButtonGroup();
         windowedGrp = new javax.swing.ButtonGroup();
         backBtn = new javax.swing.JButton();
+        connectBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        ipLbl = new javax.swing.JLabel();
+        ipTxtFld = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -108,18 +116,35 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
             }
         });
 
+        connectBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
+        connectBtn.setText("Connect");
+        connectBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                connectBtnActionPerformed(evt);
+            }
+        });
+
         titleLbl.setFont(new java.awt.Font("MV Boli", 0, 24)); // NOI18N
         titleLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        titleLbl.setText("New Online Game");
+        titleLbl.setText("Join Online Game Server");
 
         jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("You have created a new Online Catan Game! A server has been started on you local machine and the first client has automatically connected you as player 1 (Red). For the other players to connect you must open port 25570 to you local machine. Then the players can connect over your IP using port 25570.");
+        jTextArea1.setText("To join an online game please ensure the folowing:\n 1) You have a connection to the Internet\n 2) You have another player hosting the server on their local machine and they also have a connection to the Internet.\n     2.5) This player must also port forward port number 25570 using TCP\n\nThen connect to the Catan server using the public IP of the host and the port 25570.\n\nOnce all the players have connected the game will begin.");
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setEnabled(false);
         jTextArea1.setOpaque(false);
         jScrollPane1.setViewportView(jTextArea1);
+
+        ipLbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        ipLbl.setText("Destination IP Address or server URL:");
+
+        ipTxtFld.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ipTxtFldActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -129,10 +154,14 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(titleLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 615, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(backBtn)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(backBtn)
+                            .addComponent(ipLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ipTxtFld))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(connectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -141,9 +170,16 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(titleLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(backBtn)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ipLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ipTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(backBtn))
+                    .addComponent(connectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -161,9 +197,56 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         mainMenuFrame.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void ipTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ipTxtFldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ipTxtFldActionPerformed
+
+    private void connectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectBtnActionPerformed
+
+        connectBtn.setEnabled(false);
+        connectBtn.setText("Connecting...");
+        
+        findServer();
+
+
+    }//GEN-LAST:event_connectBtnActionPerformed
+
+    private void findServer() {
+        if (client == null) {
+            System.out.println("true");
+            client = new CatanClient(700, 200, "localhost", mainMenuFrame.getGameFrame());
+        }
+        //create a CatanClient and connect to the ip specified
+        try {
+
+            //uddate the ip
+            client.setIp(ipTxtFld.getText());
+
+            //try to connect
+            boolean succesfulConnect = client.connectToServer();
+
+            if (succesfulConnect) {
+                connectBtn.setText("Connection Success");
+
+                client.setUpGUI();
+                client.setUpButton();
+            } else {
+                //count a fail
+                failCounter++;
+
+                connectBtn.setText("Failed (" + failCounter + ")! Try again");
+            }
+        } catch (Exception e) {
+            System.out.println("Error connecting to server: \n" + e);
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.ButtonGroup borderGrp;
+    private javax.swing.JButton connectBtn;
+    private javax.swing.JLabel ipLbl;
+    private javax.swing.JTextField ipTxtFld;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel titleLbl;

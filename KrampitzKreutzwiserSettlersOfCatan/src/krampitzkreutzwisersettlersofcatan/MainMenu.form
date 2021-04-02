@@ -27,18 +27,24 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="rulesBtn" alignment="0" max="32767" attributes="0"/>
-                  <Component id="newGameBtn" alignment="0" max="32767" attributes="0"/>
-                  <Component id="creditsBtn" alignment="0" max="32767" attributes="0"/>
-                  <Component id="exitBtn" alignment="0" max="32767" attributes="0"/>
-                  <Component id="titleLbl" alignment="1" pref="473" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="titleLbl" alignment="0" min="-2" pref="473" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="loadAutosaveBtn" min="-2" pref="226" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="loadGameBtn" min="-2" pref="226" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="loadAutosaveBtn" alignment="0" max="32767" attributes="0"/>
+                          <Component id="joinOnlineBtn" alignment="0" pref="241" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="loadGameBtn" min="-2" pref="241" max="-2" attributes="0"/>
+                          <Component id="loadToOnlineBtn" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
+                  <Component id="newGameBtn" alignment="0" max="32767" attributes="0"/>
                   <Component id="optionBtn" alignment="0" max="32767" attributes="0"/>
+                  <Component id="creditsBtn" alignment="0" max="32767" attributes="0"/>
+                  <Component id="rulesBtn" alignment="0" max="32767" attributes="0"/>
+                  <Component id="exitBtn" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace pref="40" max="32767" attributes="0"/>
           </Group>
@@ -56,6 +62,11 @@
                   <Component id="loadAutosaveBtn" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
                   <Component id="loadGameBtn" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="joinOnlineBtn" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
+                  <Component id="loadToOnlineBtn" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="optionBtn" min="-2" pref="53" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -64,7 +75,7 @@
               <Component id="rulesBtn" min="-2" pref="53" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="exitBtn" min="-2" pref="53" max="-2" attributes="0"/>
-              <EmptySpace pref="24" max="32767" attributes="0"/>
+              <EmptySpace pref="20" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -154,6 +165,29 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="optionBtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="joinOnlineBtn">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="MV Boli" size="16" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Join Online Game"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="joinOnlineBtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="loadToOnlineBtn">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="MV Boli" size="16" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Load Game to Online Mode"/>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadToOnlineBtnActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

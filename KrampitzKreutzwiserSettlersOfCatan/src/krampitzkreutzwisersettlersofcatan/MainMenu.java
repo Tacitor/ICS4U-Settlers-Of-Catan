@@ -26,6 +26,7 @@ public class MainMenu extends javax.swing.JFrame {
     private final NewGameSettings newGameSettingsFrame;
     private final ClientSettings clientSettings;
     private final NewOnlineGameMenu newOnlineGameMenu;
+    private final JoinOnlineGameMenu joinOnlineGameMenu;
 
     /**
      * Creates new form MainMenu
@@ -42,6 +43,7 @@ public class MainMenu extends javax.swing.JFrame {
         clientSettings = new ClientSettings(this);
         newOnlineGameMenu = new NewOnlineGameMenu(this);
         newGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
+        joinOnlineGameMenu = new JoinOnlineGameMenu(this);
 
     }
 
@@ -62,6 +64,8 @@ public class MainMenu extends javax.swing.JFrame {
         rulesBtn = new javax.swing.JButton();
         loadAutosaveBtn = new javax.swing.JButton();
         optionBtn = new javax.swing.JButton();
+        joinOnlineBtn = new javax.swing.JButton();
+        loadToOnlineBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Settlers of Catan - ICS4U Edition");
@@ -127,23 +131,44 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
+        joinOnlineBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
+        joinOnlineBtn.setText("Join Online Game");
+        joinOnlineBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                joinOnlineBtnActionPerformed(evt);
+            }
+        });
+
+        loadToOnlineBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
+        loadToOnlineBtn.setText("Load Game to Online Mode");
+        loadToOnlineBtn.setEnabled(false);
+        loadToOnlineBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadToOnlineBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(rulesBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(newGameBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(creditsBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(exitBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(titleLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(loadAutosaveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(loadGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(optionBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(titleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 473, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(loadAutosaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(joinOnlineBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(loadGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(loadToOnlineBtn)))
+                    .addComponent(newGameBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(optionBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(creditsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rulesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(exitBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -158,6 +183,10 @@ public class MainMenu extends javax.swing.JFrame {
                     .addComponent(loadAutosaveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(loadGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(joinOnlineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loadToOnlineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(optionBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(creditsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -165,7 +194,7 @@ public class MainMenu extends javax.swing.JFrame {
                 .addComponent(rulesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(exitBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -307,6 +336,15 @@ public class MainMenu extends javax.swing.JFrame {
         clientSettings.setVisible(true);
     }//GEN-LAST:event_optionBtnActionPerformed
 
+    private void joinOnlineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinOnlineBtnActionPerformed
+        joinOnlineGameMenu.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_joinOnlineBtnActionPerformed
+
+    private void loadToOnlineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadToOnlineBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_loadToOnlineBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -371,8 +409,10 @@ public class MainMenu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton creditsBtn;
     private javax.swing.JButton exitBtn;
+    private javax.swing.JButton joinOnlineBtn;
     private javax.swing.JButton loadAutosaveBtn;
     private javax.swing.JButton loadGameBtn;
+    private javax.swing.JButton loadToOnlineBtn;
     private javax.swing.JButton newGameBtn;
     private javax.swing.JButton optionBtn;
     private javax.swing.JButton rulesBtn;
