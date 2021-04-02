@@ -206,7 +206,9 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
         connectBtn.setEnabled(false);
         connectBtn.setText("Connecting...");
         
-        findServer();
+        FindServerRunnable findServerRunnable = new FindServerRunnable();
+        findServerRunnable.setDaemon(true);
+        findServerRunnable.start();
 
 
     }//GEN-LAST:event_connectBtnActionPerformed
@@ -235,10 +237,36 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
                 failCounter++;
 
                 connectBtn.setText("Failed (" + failCounter + ")! Try again");
+                connectBtn.setEnabled(true);
             }
         } catch (Exception e) {
             System.out.println("Error connecting to server: \n" + e);
         }
+    }
+    
+    private class FindServerRunnable extends Thread implements Runnable {
+        
+        private boolean stopRequested = false;
+        
+        public synchronized void requestStop() {
+            stopRequested = true;
+        }
+        
+        @Override
+        public void run() {
+            System.out.println("Started connectio attempt");
+            
+            //check if this thread should stop
+            while(!stopRequested) {
+                //try to connect
+                findServer();
+                //only run once
+                stopRequested = true;
+            }
+            
+            System.out.println("done connection attempt");
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
