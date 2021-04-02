@@ -89,10 +89,11 @@ public class CatanClient extends JFrame {
         this.ip = ip;
         theGameFrame = gameFrame;
     }
-    
+
     /**
      * Access the client ID
-     * @return 
+     *
+     * @return
      */
     public int getClientID() {
         return clientID;
@@ -237,7 +238,19 @@ public class CatanClient extends JFrame {
         //make it visible
         theGameFrame.setVisible(true);
         theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
+        
+        //send the save file
+        sendGameToServer();
 
+        //send it to the server
+        //start listening
+        //never stop listening
+        while (true) {
+            regularRecive();
+        }
+    }
+
+    public void sendGameToServer() {
         try {
 
             //ensure there is a directory there
@@ -253,13 +266,6 @@ public class CatanClient extends JFrame {
             System.out.println("FileNotFoundException while saving the initial game:\n" + ex);
         } catch (IOException ex) {
             System.out.println("IOException while saving the initial game:\n" + ex);
-        }
-
-        //send it to the server
-        //start listening
-        //never stop listening
-        while (true) {
-            regularRecive();
         }
     }
 
@@ -338,7 +344,7 @@ public class CatanClient extends JFrame {
 
                         //write the file
                         fos.write(fileTypeRecieve.getFile(), 0, fileTypeRecieve.getFile().length);
-                        
+
                         fos.flush();
 
                         //close it

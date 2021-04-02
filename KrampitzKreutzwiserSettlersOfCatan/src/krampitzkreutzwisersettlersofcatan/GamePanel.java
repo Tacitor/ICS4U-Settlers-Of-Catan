@@ -1031,6 +1031,7 @@ public class GamePanel extends javax.swing.JPanel {
             //check if the game is for online play
             if (onlineMode != -1) {
                 //if it is send the save file to the server
+                onlineClient.sendGameToServer();
             }
 
         } else if (playerSetupRoadsLeft != 0) {
