@@ -27,6 +27,11 @@ import textures.ImageRef;
  */
 public class CatanClient extends JFrame {
 
+    public static final String ONLINE_SAVE_LOCATION = System.getProperty("user.home")
+            + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan";
+    public static final String ONLINE_SAVE_NAME = File.separator + "latestOnline";
+    public static final String ONLINE_SAVE_TYPE = ".catan";
+
     private int width;
     private int height;
     private Container contentPane;
@@ -84,7 +89,7 @@ public class CatanClient extends JFrame {
         this.ip = ip;
         theGameFrame = gameFrame;
     }
-    
+
     /**
      * Set the icon for the JFRame
      */
@@ -151,10 +156,10 @@ public class CatanClient extends JFrame {
     public boolean connectToServer() {
         //set up the socket
         csc = new ClientSideConnection();
-        
+
         return successfulConnect;
     }
-    
+
     public void setIp(String ip) {
         this.ip = ip;
     }
@@ -191,40 +196,7 @@ public class CatanClient extends JFrame {
 
                     updateButtons();
 
-                    //test if it is a vailid save file
-                    try {
-                        String filePath = saveFileLoader.getSelectedFile().getPath();
-                        File file = new File(filePath);
-                        FileInputStream fileStream = new FileInputStream(file);
-
-                        int fileLength = (int) file.length();
-
-                        String fileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
-
-                        //debug file name and length
-                        //System.out.println(fileName);
-                        //System.out.println(fileLength);
-                        byte fileBytes[] = new byte[fileLength];
-                        fileStream.read(fileBytes, 0, fileLength);
-
-                        //debug the stream
-                        //System.out.println(Arrays.toString(fileBytes));
-                        csc.sendFileStream(fileBytes, fileName); //send the file
-
-                        //clear the chat field
-                        messageToSend.setText("");
-
-                        justPressedSend = true;
-                        
-                        fileStream.close();
-                        file.setReadOnly();
-                        file.setExecutable(true);
-
-                    } catch (FileNotFoundException exception) {
-                        JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
-                    } catch (IOException exception) {
-                        JOptionPane.showMessageDialog(null, "There was an IOException loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    sendFile(saveFileLoader.getSelectedFile().getPath());
 
                 }
             }
@@ -251,17 +223,72 @@ public class CatanClient extends JFrame {
         //set the button to the value
         buttonEnabled = recivedBoolean;
         updateButtons();
-        
+
         //setup the game that will be played
         theGameFrame.resetGamePanel();
         //make it visible
         theGameFrame.setVisible(true);
         theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
 
+        try {
+
+            //ensure there is a directory there
+            Files.createDirectories(Paths.get(ONLINE_SAVE_LOCATION));
+
+            //write the game to the save file
+            theGameFrame.getGamePanel().writeToFile(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
+
+            //once it has been saved send it to the server
+            sendFile(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("FileNotFoundException while saving the initial game:\n" + ex);
+        } catch (IOException ex) {
+            System.out.println("IOException while saving the initial game:\n" + ex);
+        }
+
+        //send it to the server
         //start listening
         //never stop listening
         while (true) {
             regularRecive();
+        }
+    }
+
+    private void sendFile(String fileLocation) {
+        //test if it is a vailid save file
+        try {
+            String filePath = fileLocation;
+            File file = new File(filePath);
+            FileInputStream fileStream = new FileInputStream(file);
+
+            int fileLength = (int) file.length();
+
+            String fileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
+
+            //debug file name and length
+            //System.out.println(fileName);
+            //System.out.println(fileLength);
+            byte fileBytes[] = new byte[fileLength];
+            fileStream.read(fileBytes, 0, fileLength);
+
+            //debug the stream
+            //System.out.println(Arrays.toString(fileBytes));
+            csc.sendFileStream(fileBytes, fileName); //send the file
+
+            //clear the chat field
+            messageToSend.setText("");
+
+            justPressedSend = true;
+
+            fileStream.close();
+            file.setReadOnly();
+            file.setExecutable(true);
+
+        } catch (FileNotFoundException exception) {
+            JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException exception) {
+            JOptionPane.showMessageDialog(null, "There was an IOException loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -296,16 +323,27 @@ public class CatanClient extends JFrame {
                                 + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan";
 
                         //ensure the directory is there
-                        Files.createDirectories(Paths.get(saveToPath));
+                        Files.createDirectories(Paths.get(ONLINE_SAVE_LOCATION));
 
                         //Create and output stream at the directory
-                        FileOutputStream fos = new FileOutputStream(saveToPath + File.separator + "latestOnine.catan");
+                        FileOutputStream fos = new FileOutputStream(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
 
                         //write the file
                         fos.write(fileTypeRecieve.getFile(), 0, fileTypeRecieve.getFile().length);
+                        
+                        fos.flush();
 
                         //close it
                         fos.close();
+
+                        //setup the game that will be played
+                        theGameFrame.resetGamePanel();
+                        //load the save
+                        theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
+                        //make it visible
+                        theGameFrame.setVisible(true);
+                        theGameFrame.getMainMenu().getJoinOnlineGameMenu().setVisible(false);
+
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
                     } catch (IOException exception) {
@@ -381,13 +419,13 @@ public class CatanClient extends JFrame {
                 chat = dataIn.readUTF();
                 System.out.println("[Client " + clientID + "] " + "Connected to a server as Client #" + clientID);
                 messageRecived.setText(chat);
-                
+
                 //if everything else was able to be done save the success
                 successfulConnect = true;
-                
+
             } catch (IOException e) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC contructor ");
-                
+
                 //save the failed connection
                 successfulConnect = false;
             }
@@ -462,7 +500,7 @@ public class CatanClient extends JFrame {
             try {
                 msg = dataIn.readInt();
             } catch (IOException ex) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveType()");
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveType():\n" + ex);
             }
 
             return msg;

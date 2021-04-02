@@ -2230,6 +2230,9 @@ public class GamePanel extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(null, "File overwritten: " + myObj.getName(), "Save Success", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
+            
+            myObj.setReadOnly();
+            myObj.setExecutable(true);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "An error occurred while trying to save the game.", "Saving Error", JOptionPane.ERROR_MESSAGE);
@@ -2245,7 +2248,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param writeAdress
      * @throws FileNotFoundException
      */
-    private boolean writeToFile(String writeAdress) throws FileNotFoundException {
+    public boolean writeToFile(String writeAdress) throws FileNotFoundException {
 
         try {
             PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
@@ -2530,12 +2533,14 @@ public class GamePanel extends javax.swing.JPanel {
             for (int i = 0; i < stealCardNum.length; i++) {
                 saveFile.println(stealCardNum[i]);
             }
+            
+            saveFile.flush();
 
             //add the close
             saveFile.close();
             return true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "The game is not able to save at this time. Invalid state\n", "Saving Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "The game is not able to save at this time. Invalid state\n" + e, "Saving Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }

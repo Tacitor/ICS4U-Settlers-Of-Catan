@@ -405,6 +405,15 @@ public class MainMenu extends javax.swing.JFrame {
     public NewOnlineGameMenu getNewOnlineGameMenu() {
         return newOnlineGameMenu;
     }
+    
+    /**
+     * Return the newOnlineGameMenu
+     * 
+     * @return 
+     */
+    public JoinOnlineGameMenu getJoinOnlineGameMenu() {
+        return joinOnlineGameMenu;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton creditsBtn;
