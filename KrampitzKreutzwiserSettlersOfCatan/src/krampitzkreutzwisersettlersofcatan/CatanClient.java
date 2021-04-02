@@ -89,6 +89,14 @@ public class CatanClient extends JFrame {
         this.ip = ip;
         theGameFrame = gameFrame;
     }
+    
+    /**
+     * Access the client ID
+     * @return 
+     */
+    public int getClientID() {
+        return clientID;
+    }
 
     /**
      * Set the icon for the JFRame

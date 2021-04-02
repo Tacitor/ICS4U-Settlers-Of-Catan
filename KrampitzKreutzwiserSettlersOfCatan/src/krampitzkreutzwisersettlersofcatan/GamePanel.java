@@ -92,6 +92,8 @@ public class GamePanel extends javax.swing.JPanel {
     private static boolean giveStartingResources = true; // If players get startup resources
     private static boolean doSnakeRules = true; //make the setup phase of the game more fair follow normal order fist setup round, then reverse
     private static boolean showMenuBoarder = false; //will a boarder be drawn aorund the menus
+    private static CatanClient onlineClient = null; //if this game is in online mode this is the client that talks to the server. Else it's null
+    private static int onlineMode = -1; //if the user is just playing a local game this is -1. If they are in an online game this is the player ID of the player they control
     private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final ArrayList<Integer>[] devCards; //an Array of ArrayLists. Each player gets their own ArrayList for the dev cards they have.
     // ^^^ valid number are: 1 (knight), 2 (progress card road building), 3 (progress card monolpoy), 4 (progress card year of pleanty), 5, 6, 7, 8, 9 (5-9 are vp cards)
@@ -2246,12 +2248,19 @@ public class GamePanel extends javax.swing.JPanel {
      * Write to the save file
      *
      * @param writeAdress
+     * @return 
      * @throws FileNotFoundException
      */
     public boolean writeToFile(String writeAdress) throws FileNotFoundException {
-
+        
         try {
-            PrintWriter saveFile = new PrintWriter(writeAdress); //begin writting to the file
+            //try to create the file
+            File file = new File(writeAdress);
+            //ensure it is mutable
+            file.setExecutable(true);
+            file.setWritable(true);            
+            
+            PrintWriter saveFile = new PrintWriter(file); //begin writting to the file
             saveFile.println("SettlersOfCatanSaveV12"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
@@ -2534,7 +2543,7 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println(stealCardNum[i]);
             }
             
-            saveFile.flush();
+            //saveFile.flush();
 
             //add the close
             saveFile.close();
@@ -6270,6 +6279,42 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public static boolean getShowMenuBoarder() {
         return showMenuBoarder;
+    }
+    
+    /**
+     * Get the CatanClient responsible for interfacing with the server.
+     *
+     * @return
+     */
+    public static CatanClient getCatanClient() {
+        return onlineClient;
+    }
+
+    /**
+     * Set the CatanClient responsible for interfacing with the server.
+     *
+     * @param onlineClient
+     */
+    public static void setCatanClient(CatanClient onlineClient) {
+        GamePanel.onlineClient = onlineClient;
+    }
+    
+    /**
+     * Set the mode the game is in regarding online play
+     *
+     * @param onlineMode
+     */
+    public static void setOnlineMode(int onlineMode) {
+        GamePanel.onlineMode = onlineMode;
+    }
+
+    /**
+     * Get the mode the game is in regarding online play
+     *
+     * @return
+     */
+    public static int getOnlineMode() {
+        return onlineMode;
     }
 
     /**

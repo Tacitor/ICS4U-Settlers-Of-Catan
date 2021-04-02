@@ -72,6 +72,10 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         client.connectToServer();
         client.setUpGUI();
         client.setUpButton();
+        
+        //once the client has been set up save it to the game panel
+        GamePanel.setOnlineMode(client.getClientID());
+        GamePanel.setCatanClient(client);
 
     }
 
