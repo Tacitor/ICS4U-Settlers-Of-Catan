@@ -252,8 +252,8 @@ public class MainMenu extends javax.swing.JFrame {
                 gameJFrame.resetGamePanel();
 
                 //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSaveV12")) {
-                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V12 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                if (!scanner.nextLine().equals("SettlersOfCatanSaveV13")) {
+                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V13 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
                 } else { //if it is a real save file
                     //check if the next line hold the player count
                     if (scanner.nextLine().equals("playerCount:")) {
@@ -306,8 +306,8 @@ public class MainMenu extends javax.swing.JFrame {
             gameJFrame.resetGamePanel();
 
             //check if it is a vailid game save
-            if (!scanner.nextLine().equals("SettlersOfCatanSaveV12")) {
-                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V12 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+            if (!scanner.nextLine().equals("SettlersOfCatanSaveV13")) {
+                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V13 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
             } else { //if it is a real save file
                 //check if the next line hold the player count
                 if (scanner.nextLine().equals("playerCount:")) {

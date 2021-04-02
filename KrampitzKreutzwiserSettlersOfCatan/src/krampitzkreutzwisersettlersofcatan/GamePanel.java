@@ -1027,6 +1027,11 @@ public class GamePanel extends javax.swing.JPanel {
             } catch (IOException ex) {
                 Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            //check if the game is for online play
+            if (onlineMode != -1) {
+                //if it is send the save file to the server
+            }
 
         } else if (playerSetupRoadsLeft != 0) {
             //let the player know that they have more setup roads to place
@@ -2261,7 +2266,7 @@ public class GamePanel extends javax.swing.JPanel {
             file.setWritable(true);            
             
             PrintWriter saveFile = new PrintWriter(file); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV12"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSaveV13"); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -2280,6 +2285,8 @@ public class GamePanel extends javax.swing.JPanel {
             saveFile.println(setupTurnOrderIndex);
             saveFile.println("inSetup:");
             saveFile.println(inSetup);
+            saveFile.println("inbetweenTurns:");
+            saveFile.println(inbetweenTurns);
             saveFile.println("setupRoundsLeft:");
             saveFile.println(setupRoundsLeft);
             saveFile.println("newestSetupSettlmentRefNum:");
@@ -2572,7 +2579,7 @@ public class GamePanel extends javax.swing.JPanel {
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV12")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSaveV13")) {
                 //System.out.println("Yuppers");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
@@ -2636,6 +2643,13 @@ public class GamePanel extends javax.swing.JPanel {
 
             if (scanner.nextLine().equals("inSetup:")) {
                 inSetup = Boolean.parseBoolean(scanner.nextLine());
+                //System.out.println("Yuppers5");
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+            
+            if (scanner.nextLine().equals("inbetweenTurns:")) {
+                inbetweenTurns = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
