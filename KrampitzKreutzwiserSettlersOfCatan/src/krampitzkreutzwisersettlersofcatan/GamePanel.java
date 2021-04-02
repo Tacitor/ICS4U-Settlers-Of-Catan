@@ -817,7 +817,7 @@ public class GamePanel extends javax.swing.JPanel {
         if (inbetweenTurns) {
 
             // Change the button back to the End Turn button
-            turnSwitchBtn.setText("End Current Player's Turn");
+            setTurnBtbTextEnd();
 
             // Begin the next turn
             inbetweenTurns = false; // No longer waiting to start a turn
@@ -1003,7 +1003,7 @@ public class GamePanel extends javax.swing.JPanel {
             userPlayedDevCard = false;
 
             // Change the button to the Start Next Turn button
-            turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
+            setTurnBtnTextStart();
 
             //update the instruction
             instructionLbl.setText("Please allow the next player to use the mouse");
@@ -3404,6 +3404,17 @@ public class GamePanel extends javax.swing.JPanel {
                 default:
                     break;
             }
+        }
+        
+        //check if the game is in online mode
+        if (onlineMode != -1) {
+            //if it is online and inbetween turn make sure the button has the right text
+            if (inbetweenTurns) {
+                setTurnBtnTextStart();
+            } else {
+                setTurnBtbTextEnd();
+            }
+            
         }
 
         //update the subPlayersHaveEnoughcards boolean
@@ -6245,6 +6256,20 @@ public class GamePanel extends javax.swing.JPanel {
 
         }
 
+    }
+    
+    /**
+     * Set the turn button text to show the "End player turn"
+     */
+    private void setTurnBtbTextEnd() {
+        turnSwitchBtn.setText("End Current Player's Turn");
+    }
+    
+    /**
+     * Set the turn button text to show the "Start player turn"
+     */
+    private void setTurnBtnTextStart() {
+        turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
     }
 
     /**
