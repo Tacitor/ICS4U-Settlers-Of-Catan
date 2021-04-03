@@ -2587,7 +2587,15 @@ public class GamePanel extends javax.swing.JPanel {
                 saveFile.println(stealCardNum[i]);
             }
 
-            //saveFile.flush();
+            //save the dice roll
+            saveFile.println("diceRollVals:");
+            saveFile.println("roll-1:");
+            saveFile.println(diceRollVal[0]);
+            saveFile.println("roll-2:");
+            saveFile.println(diceRollVal[1]);
+            saveFile.println("total:");
+            saveFile.println(diceRollVal[2]);
+
             //add the close
             saveFile.close();
             return true;
@@ -2834,7 +2842,7 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("size:")) {
                         tempScannerVal = Integer.parseInt(scanner.nextLine());
                         //System.out.println("Yuppers10.2");
-                        
+
                         //clear the arrayList
                         cards[i].clear();
 
@@ -3070,7 +3078,7 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("size:")) {
                         tempScannerVal = Integer.parseInt(scanner.nextLine());
                         //System.out.println("Yuppers10.2");
-                        
+
                         //clear the arrayList
                         devCards[i].clear();
 
@@ -3272,7 +3280,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //load in the players that can be stolen from
             if (scanner.nextLine().equals("canStealCardPlayers:")) {
-                
+
                 //clear the arrayList
                 canStealCardPlayers.clear();
 
@@ -3421,6 +3429,47 @@ public class GamePanel extends javax.swing.JPanel {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
+            //load in the dice roll values
+            if (scanner.nextLine().equals("diceRollVals:")) {
+
+                if (scanner.nextLine().equals("roll-1:")) {
+                    
+                    diceRollVal[0] = scanner.nextLine();
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+                
+                if (scanner.nextLine().equals("roll-2:")) {
+                    
+                    diceRollVal[1] = scanner.nextLine();
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+                
+                if (scanner.nextLine().equals("total:")) {
+                    
+                    diceRollVal[2] = scanner.nextLine();
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
+            /*
+            //save the dice roll
+            saveFile.println("diceRollVals:");
+            saveFile.println("roll-1:");
+            saveFile.println(diceRollVal[0]);
+            saveFile.println("roll-2:");
+            saveFile.println(diceRollVal[1]);
+            saveFile.println("total:");
+            saveFile.println(diceRollVal[2]);
+             */
             //close the scanner
             scanner.close();
 
