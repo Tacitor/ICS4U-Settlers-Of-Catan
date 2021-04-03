@@ -75,6 +75,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showTileHitbox; //      ^^^
     private boolean showResStackHitbox;
     private boolean showSubPlayerHitbox;
+    private boolean turnBtnEnabled;
     private static boolean showDevCards; //stores whether dec cards or resource cards are shown; Is static because during online play the current player should not effect the card mode on the local machine
     private boolean userPlayedDevCard; //boolean to store whether or not the current player has used a dev card yet this round
     private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
@@ -233,6 +234,7 @@ public class GamePanel extends javax.swing.JPanel {
         showTileHitbox = false;
         showResStackHitbox = false;
         showSubPlayerHitbox = false;
+        turnBtnEnabled = true;
         showDevCards = false;
         showDevCardHitbox = false;
         userPlayedDevCard = false;
@@ -847,7 +849,7 @@ public class GamePanel extends javax.swing.JPanel {
                     repaint();
 
                     //disable the turn switch button so that players must give away cards until the quota is met
-                    turnSwitchBtn.setEnabled(false);
+                    turnBtnEnabled = false;
 
                 }
 
@@ -891,7 +893,7 @@ public class GamePanel extends javax.swing.JPanel {
                         if (subPlayersHaveEnoughcards) {
 
                             //disable the turn switch button until the player has selected another player to steal from
-                            turnSwitchBtn.setEnabled(false);
+                            turnBtnEnabled = false;
 
                             //update the lables for when the player can build
                             instructionLbl.setText("The thief is done stealing. But you are not!");
@@ -1070,7 +1072,7 @@ public class GamePanel extends javax.swing.JPanel {
         //check what mode of trading the game is in for 3:1
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
-            turnSwitchBtn.setEnabled(true);
+            turnBtnEnabled = true;
             trade3to1Btn.setText("Trade 3:1");
             //remove the intent to trade
             tradingMode = 0;
@@ -1090,7 +1092,7 @@ public class GamePanel extends javax.swing.JPanel {
             tradingMode = 2;
             minTradeCardsNeeded = 3;
             //diable turn switching
-            turnSwitchBtn.setEnabled(false);
+            turnBtnEnabled = false;
             //update the text of the button
             trade3to1Btn.setText("Cancel");
             //show the hitboxes
@@ -1113,7 +1115,7 @@ public class GamePanel extends javax.swing.JPanel {
         //check what mode of trading the game is in for 4:1
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
-            turnSwitchBtn.setEnabled(true);
+            turnBtnEnabled = true;
             trade4to1Btn.setText("Trade 4:1");
             //remove the intent to trade
             tradingMode = 0;
@@ -1133,7 +1135,7 @@ public class GamePanel extends javax.swing.JPanel {
             tradingMode = 1;
             minTradeCardsNeeded = 4;
             //diable turn switching
-            turnSwitchBtn.setEnabled(false);
+            turnBtnEnabled = false;
             //update the text of the button
             trade4to1Btn.setText("Cancel");
             //show the hitboxes
@@ -1156,7 +1158,7 @@ public class GamePanel extends javax.swing.JPanel {
         //check what mode of trading the game is in for 2:1
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
-            turnSwitchBtn.setEnabled(true);
+            turnBtnEnabled = true;
             trade2to1Btn.setText("Trade 2:1");
             //remove the intent to trade
             tradingMode = 0;
@@ -1176,7 +1178,7 @@ public class GamePanel extends javax.swing.JPanel {
             tradingMode = 3;
             minTradeCardsNeeded = 2;
             //diable turn switching
-            turnSwitchBtn.setEnabled(false);
+            turnBtnEnabled = false;
             //update the text of the button
             trade2to1Btn.setText("Cancel");
             //show the hitboxes
@@ -1268,7 +1270,7 @@ public class GamePanel extends javax.swing.JPanel {
                         //check the mode
                         if (btn.getMode() == 0) { //if no card is currently being activated
                             //disable the turn switch so it can't be used
-                            turnSwitchBtn.setEnabled(false);
+                            turnBtnEnabled = false;
                             useDevCardBtn.setMode(1); //change the mode
                             showDevCardHitbox = true;
 
@@ -1279,7 +1281,7 @@ public class GamePanel extends javax.swing.JPanel {
                             usingDevCard = 0;
                         } else if (btn.getMode() == 1) { //if the user clicked the cancel button
                             //disable the turn switch so it can't be used
-                            turnSwitchBtn.setEnabled(true);
+                            turnBtnEnabled = true;
                             useDevCardBtn.setMode(0); //change the mode
                             showDevCardHitbox = false;
                             showTileHitbox = false;
@@ -1609,7 +1611,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                                 //check if the player is done now
                                 if (stealCardNum[currentPlayer] <= 0) {
-                                    turnSwitchBtn.setEnabled(true);
+                                    turnBtnEnabled = true;
                                     showCardHitbox = false;
                                 }
                             }
@@ -1638,7 +1640,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                             //check if the player is done now
                             if (stealCardNum[currentPlayer] <= 0) {
-                                turnSwitchBtn.setEnabled(true);
+                                turnBtnEnabled = true;
                                 showCardHitbox = false;
                             }
 
@@ -1834,7 +1836,7 @@ public class GamePanel extends javax.swing.JPanel {
                             } else {
                                 //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
                                 //onto slecting the cards they would like to discard if the requirements are met.
-                                turnSwitchBtn.setEnabled(true);
+                                turnBtnEnabled = true;
                             }
                         }
 
@@ -1881,7 +1883,7 @@ public class GamePanel extends javax.swing.JPanel {
                             cards[playerTurnOrder.get(i)].remove(randomCard);
 
                             //reenable the turn switch button
-                            turnSwitchBtn.setEnabled(true);
+                            turnBtnEnabled = true;
 
                             //clear the canStealCardPlayers ArrayList
                             canStealCardPlayers.clear();
@@ -2100,7 +2102,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
                                     //turn off behavior as if the cancel button was pressed.
-                                    turnSwitchBtn.setEnabled(true);
+                                    turnBtnEnabled = true;
                                     trade4to1Btn.setText("Trade 4:1");
                                     trade3to1Btn.setText("Trade 3:1");
                                     trade2to1Btn.setText("Trade 2:1");
@@ -2166,7 +2168,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
                                     //turn off behavior as if the cancel button was pressed.
-                                    turnSwitchBtn.setEnabled(true);
+                                    turnBtnEnabled = true;
                                     trade4to1Btn.setText("Trade 4:1");
                                     trade3to1Btn.setText("Trade 3:1");
                                     trade2to1Btn.setText("Trade 2:1");
@@ -3558,6 +3560,9 @@ public class GamePanel extends javax.swing.JPanel {
 
             }
         }
+        
+        //enable the turn button (might be disabled again by updateBuildBtn method if online and not the correct player)
+        turnBtnEnabled = true;
 
         updateBuildButtons();
         repaint();
@@ -3733,9 +3738,12 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         //if in online mode and not the current player they should not be able to chick the turn switch button
-        if (onlineMode != -1) {
-            turnSwitchBtn.setEnabled(onlineMode == currentPlayer);
+        if (onlineMode != -1 && onlineMode != currentPlayer) {
+            //if the game is online and the game should be disabled because it is waiting for progess from another player
+            turnBtnEnabled = false;
         }
+        //update the turn button
+        turnSwitchBtn.setEnabled(turnBtnEnabled);
 
         //if the user can build tell them that. (may be overwitten by following instructions
         if (canBuildRoad || canBuildCity || canBuildSettlement || canTrade4to || canTrade3to || canTrade2to) {
@@ -4315,7 +4323,7 @@ public class GamePanel extends javax.swing.JPanel {
             //show the tile hitboxes to the player who rolled the 7. This allows them to move the thief to the Tile of thier choosing.
             showTileHitbox = true;
             //disable the turn switch button so that this cannot be skiped
-            turnSwitchBtn.setEnabled(false);
+            turnBtnEnabled = false;
 
             //save the player who just rolled a 7
             playerRolled7 = currentPlayer;
@@ -6220,7 +6228,7 @@ public class GamePanel extends javax.swing.JPanel {
      */
     private void resetUsingDevCards() {
         //re-enable the turn switch button
-        turnSwitchBtn.setEnabled(true);
+        turnBtnEnabled = true;
 
         //hide the hitbox again
         showSubPlayerHitbox = false;
