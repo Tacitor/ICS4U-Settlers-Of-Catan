@@ -140,6 +140,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         portLbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         portLbl.setText("Catan Game Server Port: (25570 recomended)");
 
+        portTxtFld.setText("25570");
         portTxtFld.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 portTxtFldActionPerformed(evt);

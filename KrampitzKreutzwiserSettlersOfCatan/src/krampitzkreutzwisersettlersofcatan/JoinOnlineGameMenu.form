@@ -140,11 +140,17 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="ipTxtFld">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="donau.ca"/>
+      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ipTxtFldActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="portTxtFld">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="25570"/>
+      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="portTxtFldActionPerformed"/>
       </Events>

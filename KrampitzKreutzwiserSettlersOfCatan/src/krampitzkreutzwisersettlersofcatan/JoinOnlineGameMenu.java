@@ -97,12 +97,14 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
         ipLbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         ipLbl.setText("Destination IP Address or server URL:");
 
+        ipTxtFld.setText("donau.ca");
         ipTxtFld.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ipTxtFldActionPerformed(evt);
             }
         });
 
+        portTxtFld.setText("25570");
         portTxtFld.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 portTxtFldActionPerformed(evt);

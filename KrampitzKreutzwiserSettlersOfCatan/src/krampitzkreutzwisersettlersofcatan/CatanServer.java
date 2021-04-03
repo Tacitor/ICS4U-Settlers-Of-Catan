@@ -178,7 +178,8 @@ public class CatanServer {
                         int count = 0;
                         while (count < fileLength) {
                             int bytesRead = dataIn.read(fileAsStream, count, fileAsStream.length - count);
-                            System.out.println("[Server] " + "bytesRead: " + bytesRead);
+                            //debug reciving the file
+                            //System.out.println("[Server] " + "bytesRead: " + bytesRead);
                             if (bytesRead == -1) {
                                 System.out.println("[Server] " + "didn't get a complete file");
                             }

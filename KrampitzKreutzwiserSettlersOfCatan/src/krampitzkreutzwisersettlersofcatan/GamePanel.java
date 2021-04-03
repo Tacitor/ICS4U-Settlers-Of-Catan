@@ -75,7 +75,7 @@ public class GamePanel extends javax.swing.JPanel {
     private boolean showTileHitbox; //      ^^^
     private boolean showResStackHitbox;
     private boolean showSubPlayerHitbox;
-    private boolean showDevCards; //stores whether dec cards or resource cards are shown;
+    private static boolean showDevCards; //stores whether dec cards or resource cards are shown; Is static because during online play the current player should not effect the card mode on the local machine
     private boolean userPlayedDevCard; //boolean to store whether or not the current player has used a dev card yet this round
     private int tradingMode; //the gamestate regarding trading. 0 for no trade, 1 for a 4:1, 2 for a 3:1, and 3 for a 2:1.
     private int tradeResource; //the resource type number that the player wants to trade to, 0 for none.
@@ -737,6 +737,9 @@ public class GamePanel extends javax.swing.JPanel {
                 // Redraw the board to remove hitbox outlines
                 repaint();
                 // Dont pick a new building to place
+
+                //update the server if online mode
+                onlineUpdateServer();
                 return;
             }
             //Update the vars
@@ -800,6 +803,9 @@ public class GamePanel extends javax.swing.JPanel {
             }
             // Change the build button to a cancel button
             buildBtn.setText("Cancel");
+
+            //update the server if online mode
+            onlineUpdateServer();
         }
     }//GEN-LAST:event_buildBtnActionPerformed
 
@@ -919,6 +925,9 @@ public class GamePanel extends javax.swing.JPanel {
 
             //if the thief had just finished set it false, they are done now
             thiefJustFinished = false;
+            
+            //update the server if online mode
+            onlineUpdateServer();
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             //set the roll sum to 0. This is for the dice images. When the sum is "" then the blank dice are shown
             diceRollVal[2] = "";
@@ -1026,11 +1035,8 @@ public class GamePanel extends javax.swing.JPanel {
                 Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            //check if the game is for online play
-            if (onlineMode != -1) {
-                //if it is send the save file to the server
-                onlineClient.sendGameToServer();
-            }
+            //update the server if online mode
+            onlineUpdateServer();
 
         } else if (playerSetupRoadsLeft != 0) {
             //let the player know that they have more setup roads to place
@@ -1098,6 +1104,9 @@ public class GamePanel extends javax.swing.JPanel {
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
+
+        //update the server if online mode
+        onlineUpdateServer();
     }//GEN-LAST:event_trade3to1BtnActionPerformed
 
     private void trade4to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade4to1BtnActionPerformed
@@ -1138,6 +1147,9 @@ public class GamePanel extends javax.swing.JPanel {
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
+
+        //update the server if online mode
+        onlineUpdateServer();
     }//GEN-LAST:event_trade4to1BtnActionPerformed
 
     private void trade2to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade2to1BtnActionPerformed
@@ -1178,6 +1190,9 @@ public class GamePanel extends javax.swing.JPanel {
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
+
+        //update the server if online mode
+        onlineUpdateServer();
     }//GEN-LAST:event_trade2to1BtnActionPerformed
 
     /**
@@ -1189,390 +1204,422 @@ public class GamePanel extends javax.swing.JPanel {
         // debug click listener
         //System.out.println("Click recieved at clock: " + Catan.clock);
 
-        //check if the player clicked on one of the SettlerBtns
-        //loop through all the custom buttons
-        for (SettlerBtn btn : settlerBtns) {
-            if (event.getX() > btn.getXPos()
-                    && event.getY() > btn.getYPos()
-                    && event.getX() < (btn.getXPos() + getImgWidth(btn.getBaseImage()))
-                    && event.getY() < (btn.getYPos() + getImgHeight(btn.getBaseImage()))
-                    && btn.getEnabled()) { //and that it is enabled
+        //only run logic if the player that clicked is allowed to (stops online players from clicking when it's not their turn)
+        if (onlineMode == -1 || onlineMode == currentPlayer) {
 
-                //check the button that was pressed
-                if (btn.equals(toggleCardBtn)) { //if it was the toggle button
-                    //check the mode
-                    if (toggleCardBtn.getMode() == 0) { //if in mode 0 (switch TO dev cards)
-                        toggleCardBtn.setMode(1);
-                        showDevCards = true;
-                    } else if (toggleCardBtn.getMode() == 1) { //if in mode to switch TO resource cards
-                        toggleCardBtn.setMode(0);
-                        showDevCards = false;
-                    }
+            //check if the player clicked on one of the SettlerBtns
+            //loop through all the custom buttons
+            for (SettlerBtn btn : settlerBtns) {
+                if (event.getX() > btn.getXPos()
+                        && event.getY() > btn.getYPos()
+                        && event.getX() < (btn.getXPos() + getImgWidth(btn.getBaseImage()))
+                        && event.getY() < (btn.getYPos() + getImgHeight(btn.getBaseImage()))
+                        && btn.getEnabled()) { //and that it is enabled
 
-                    repaint();
-
-                } else if (btn.equals(buyDevCardBtn)) { //if there was a click on the buy card button
-                    //since it was already confirmed the player has the corret amount of cards by the update build buttons method remove them
-                    cards[currentPlayer].remove(new Integer("3"));
-                    cards[currentPlayer].remove(new Integer("4"));
-                    cards[currentPlayer].remove(new Integer("5"));
-
-                    //select a randome dev card to give the player
-                    int randCardIndex = (int) (Math.random() * availableDevCards.size());
-
-                    //give the player a dev card
-                    devCards[currentPlayer].add(availableDevCards.get(randCardIndex));
-
-                    //give the player a point if they got a vp card
-                    if (availableDevCards.get(randCardIndex) > 4) { //greater than 4 is 5-9
-                        victoryPoints[currentPlayer]++;
-                    }
-
-                    //remove it from the ArrayList as it is no longer available
-                    availableDevCards.remove(randCardIndex);
-
-                    //sort the dev cards
-                    quickSortCards(devCards[currentPlayer], 0, devCards[currentPlayer].size() - 1);
-
-                    updateBuildButtons();
-                    repaint();
-                } else if (btn.equals(useDevCardBtn)) { //if the player clicked the use dev card btn
-                    //check the mode
-                    if (btn.getMode() == 0) { //if no card is currently being activated
-                        //disable the turn switch so it can't be used
-                        turnSwitchBtn.setEnabled(false);
-                        useDevCardBtn.setMode(1); //change the mode
-                        showDevCardHitbox = true;
-
-                        //force show the cards
-                        showDevCards = true;
-
-                        //register that the player wan't to use a dev card
-                        usingDevCard = 0;
-                    } else if (btn.getMode() == 1) { //if the user clicked the cancel button
-                        //disable the turn switch so it can't be used
-                        turnSwitchBtn.setEnabled(true);
-                        useDevCardBtn.setMode(0); //change the mode
-                        showDevCardHitbox = false;
-                        showTileHitbox = false;
-
-                        //reset the dev card being used to no card
-                        usingDevCard = -1;
-                    }
-
-                    updateBuildButtons();
-                    repaint();
-                }
-            }
-        }
-
-        //check if the player is building
-        if (buildingObject != 0) {
-            //check what they are building
-            switch (buildingObject) {
-                case 1:
-                    //roads
-
-                    //check the distance to the nearest road using hitboxes and check if it is close enough
-                    for (int i = 0; i < roadNodes.size() - 1; i++) {
-
-                        //get the type of road and set the width and height //get this to not be hard coded if there is time
-                        if (roadNodes.get(i).getOrientation() == 0) {
-                            roadWidth = getImgWidth(RED_ROAD_H); //scale the road dimensions
-                            roadHeight = getImgHeight(RED_ROAD_H);
-                        } else {
-                            roadWidth = getImgWidth(RED_ROAD_L);
-                            roadHeight = getImgHeight(RED_ROAD_L);
+                    //check the button that was pressed
+                    if (btn.equals(toggleCardBtn)) { //if it was the toggle button
+                        //check the mode
+                        if (toggleCardBtn.getMode() == 0) { //if in mode 0 (switch TO dev cards)
+                            toggleCardBtn.setMode(1);
+                            showDevCards = true;
+                        } else if (toggleCardBtn.getMode() == 1) { //if in mode to switch TO resource cards
+                            toggleCardBtn.setMode(0);
+                            showDevCards = false;
                         }
 
-                        //if the player click in a valid hitbox for a road
-                        if (event.getX() > roadNodes.get(i).getXPos() - roadWidth / 2
-                                && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
-                                && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
-                                && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
-                            //debug road build detection
-                            //System.out.println("road match");
+                        repaint();
 
-                            //check that the road is unowned
-                            if (roadNodes.get(i).getPlayer() == 0) {
-                                //check what mode the game is in
-                                if (inSetup && playerSetupRoadsLeft > 0) {
+                    } else if (btn.equals(buyDevCardBtn)) { //if there was a click on the buy card button
+                        //since it was already confirmed the player has the corret amount of cards by the update build buttons method remove them
+                        cards[currentPlayer].remove(new Integer("3"));
+                        cards[currentPlayer].remove(new Integer("4"));
+                        cards[currentPlayer].remove(new Integer("5"));
 
-                                    //check if the player has placed a settlement yet
-                                    if (newestSetupSettlment != null) {
+                        //select a randome dev card to give the player
+                        int randCardIndex = (int) (Math.random() * availableDevCards.size());
 
-                                        //check that the road is next to the just build settlement
-                                        if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
-                                                || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
-                                                || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
+                        //give the player a dev card
+                        devCards[currentPlayer].add(availableDevCards.get(randCardIndex));
 
-                                            roadNodes.get(i).setPlayer(currentPlayer);
-                                            playerSetupRoadsLeft--;
-                                            // Update thwe build buttons to relfect the remaining setup buildings
-                                            updateBuildButtons();
+                        //give the player a point if they got a vp card
+                        if (availableDevCards.get(randCardIndex) > 4) { //greater than 4 is 5-9
+                            victoryPoints[currentPlayer]++;
+                        }
+
+                        //remove it from the ArrayList as it is no longer available
+                        availableDevCards.remove(randCardIndex);
+
+                        //sort the dev cards
+                        quickSortCards(devCards[currentPlayer], 0, devCards[currentPlayer].size() - 1);
+
+                        updateBuildButtons();
+                        repaint();
+                    } else if (btn.equals(useDevCardBtn)) { //if the player clicked the use dev card btn
+                        //check the mode
+                        if (btn.getMode() == 0) { //if no card is currently being activated
+                            //disable the turn switch so it can't be used
+                            turnSwitchBtn.setEnabled(false);
+                            useDevCardBtn.setMode(1); //change the mode
+                            showDevCardHitbox = true;
+
+                            //force show the cards
+                            showDevCards = true;
+
+                            //register that the player wan't to use a dev card
+                            usingDevCard = 0;
+                        } else if (btn.getMode() == 1) { //if the user clicked the cancel button
+                            //disable the turn switch so it can't be used
+                            turnSwitchBtn.setEnabled(true);
+                            useDevCardBtn.setMode(0); //change the mode
+                            showDevCardHitbox = false;
+                            showTileHitbox = false;
+
+                            //reset the dev card being used to no card
+                            usingDevCard = -1;
+                        }
+
+                        updateBuildButtons();
+                        repaint();
+                    }
+                }
+            }
+
+            //check if the player is building
+            if (buildingObject != 0) {
+                //check what they are building
+                switch (buildingObject) {
+                    case 1:
+                        //roads
+
+                        //check the distance to the nearest road using hitboxes and check if it is close enough
+                        for (int i = 0; i < roadNodes.size() - 1; i++) {
+
+                            //get the type of road and set the width and height //get this to not be hard coded if there is time
+                            if (roadNodes.get(i).getOrientation() == 0) {
+                                roadWidth = getImgWidth(RED_ROAD_H); //scale the road dimensions
+                                roadHeight = getImgHeight(RED_ROAD_H);
+                            } else {
+                                roadWidth = getImgWidth(RED_ROAD_L);
+                                roadHeight = getImgHeight(RED_ROAD_L);
+                            }
+
+                            //if the player click in a valid hitbox for a road
+                            if (event.getX() > roadNodes.get(i).getXPos() - roadWidth / 2
+                                    && event.getX() < roadNodes.get(i).getXPos() - roadWidth / 2 + roadWidth
+                                    && event.getY() > roadNodes.get(i).getYPos() - roadHeight / 2
+                                    && event.getY() < roadNodes.get(i).getYPos() - roadHeight / 2 + roadHeight) {
+                                //debug road build detection
+                                //System.out.println("road match");
+
+                                //check that the road is unowned
+                                if (roadNodes.get(i).getPlayer() == 0) {
+                                    //check what mode the game is in
+                                    if (inSetup && playerSetupRoadsLeft > 0) {
+
+                                        //check if the player has placed a settlement yet
+                                        if (newestSetupSettlment != null) {
+
+                                            //check that the road is next to the just build settlement
+                                            if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
+                                                    || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
+                                                    || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
+
+                                                roadNodes.get(i).setPlayer(currentPlayer);
+                                                playerSetupRoadsLeft--;
+                                                // Update thwe build buttons to relfect the remaining setup buildings
+                                                updateBuildButtons();
+                                            } else { //display the error to the user
+                                                instructionLbl.setText("Sorry but that is not a valid location.");
+                                                subInstructionLbl.setText("Try building next to the settlement just built.");
+                                            }
                                         } else { //display the error to the user
-                                            instructionLbl.setText("Sorry but that is not a valid location.");
-                                            subInstructionLbl.setText("Try building next to the settlement just built.");
-                                        }
-                                    } else { //display the error to the user
-                                        instructionLbl.setText("Sorry but you must build a new settlement first.");
-                                        subInstructionLbl.setText("Try building the road after.");
-                                    }
-
-                                } // If the real game is in progress and the player can build there
-                                else if (canBuildRoad(roadNodes.get(i))) {
-
-                                    //check if the user built roads given from the progress card
-                                    if (usingDevCard == 2 && playerSetupRoadsLeft > 0) { //these aren't actually setup roads. They just dont require resources
-
-                                        //cout a free road
-                                        playerSetupRoadsLeft--;
-
-                                        //check if the player is done now
-                                        if (playerSetupRoadsLeft == 0) {
-                                            resetUsingDevCards();
+                                            instructionLbl.setText("Sorry but you must build a new settlement first.");
+                                            subInstructionLbl.setText("Try building the road after.");
                                         }
 
-                                    } else { //for normally bought roads
+                                    } // If the real game is in progress and the player can build there
+                                    else if (canBuildRoad(roadNodes.get(i))) {
 
-                                        // The card check has already been made, and the user has the right cards
-                                        // Remove the cards from the player's deck
-                                        // Remove 1 clay and 1 wood
-                                        cards[currentPlayer].remove(new Integer(1));
-                                        cards[currentPlayer].remove(new Integer(2));
-                                    }
+                                        //check if the user built roads given from the progress card
+                                        if (usingDevCard == 2 && playerSetupRoadsLeft > 0) { //these aren't actually setup roads. They just dont require resources
 
-                                    // Set the road's player to the current player
-                                    roadNodes.get(i).setPlayer(currentPlayer);
-                                    /*
+                                            //cout a free road
+                                            playerSetupRoadsLeft--;
+
+                                            //check if the player is done now
+                                            if (playerSetupRoadsLeft == 0) {
+                                                resetUsingDevCards();
+                                            }
+
+                                        } else { //for normally bought roads
+
+                                            // The card check has already been made, and the user has the right cards
+                                            // Remove the cards from the player's deck
+                                            // Remove 1 clay and 1 wood
+                                            cards[currentPlayer].remove(new Integer(1));
+                                            cards[currentPlayer].remove(new Integer(2));
+                                        }
+
+                                        // Set the road's player to the current player
+                                        roadNodes.get(i).setPlayer(currentPlayer);
+                                        /*
                                      *
                                      *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion Start =-=-=-=-=-=-=-=-=-=-=-=-=\\
                                      *
-                                     */
+                                         */
 
-                                    //remove the points from who ever has them incase it changes
-                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getSize() >= 5) { //only if the player wan't player 0
-                                        victoryPoints[longestRoadData.getPlayerNum()] -= 2;
-                                    }
-
-                                    //loop through all the roads
-                                    for (NodeRoad road : roadNodes) {
-
-                                        //check to not use the null road
-                                        if (road != null) {
-
-                                            checkForLongestRoad(road, 0, currentPlayer); //pass the road and the current branch length
-
-                                            //clear the array for checked roads
-                                            alreadyCheckedRoad.clear();
-                                            //also clear the settlments
-                                            alreadyCheckedSettlements.clear();
+                                        //remove the points from who ever has them incase it changes
+                                        if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getSize() >= 5) { //only if the player wan't player 0
+                                            victoryPoints[longestRoadData.getPlayerNum()] -= 2;
                                         }
 
-                                    }
+                                        //loop through all the roads
+                                        for (NodeRoad road : roadNodes) {
 
-                                    //add the points to who ever has the longest road
-                                    //only if the player wan't player 0
-                                    //also only if the length is greater than 5
-                                    if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getSize() >= 5) {
-                                        victoryPoints[longestRoadData.getPlayerNum()] += 2;
-                                    }
+                                            //check to not use the null road
+                                            if (road != null) {
 
-                                    //debug the longest road
-                                    //System.out.println("\n" + longestRoadData);
-                                    /*
+                                                checkForLongestRoad(road, 0, currentPlayer); //pass the road and the current branch length
+
+                                                //clear the array for checked roads
+                                                alreadyCheckedRoad.clear();
+                                                //also clear the settlments
+                                                alreadyCheckedSettlements.clear();
+                                            }
+
+                                        }
+
+                                        //add the points to who ever has the longest road
+                                        //only if the player wan't player 0
+                                        //also only if the length is greater than 5
+                                        if (longestRoadData.getPlayerNum() != 0 && longestRoadData.getSize() >= 5) {
+                                            victoryPoints[longestRoadData.getPlayerNum()] += 2;
+                                        }
+
+                                        //debug the longest road
+                                        //System.out.println("\n" + longestRoadData);
+                                        /*
                                      *
                                      *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion End =-=-=-=-=-=-=-=-=-=-=-=-=\\
                                      *
-                                     */
-                                    // Update the building buttons to reflect the player's new list of cards
-                                    updateBuildButtons();
+                                         */
+                                        // Update the building buttons to reflect the player's new list of cards
+                                        updateBuildButtons();
 
-                                } // If the player could not build there
-                                else {
-                                    // Print out why the player could not build there
-                                    instructionLbl.setText("Sorry but you can't build a road there.");
-                                    subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
-                                }
-                            } else {
-                                instructionLbl.setText("Sorry but you can't take a claimed road.");
-                                subInstructionLbl.setText("Try building where there isn't already another road");
-                            }
-
-                            // Stop building
-                            buildingObject = 0;
-                            showRoadHitbox = false;
-                            // Change the button back to the build button
-                            buildBtn.setText("Build");
-                            // Redraw the board
-                            repaint();
-                        }
-                    }
-                    break;
-                case 2:
-                    //small house
-
-                    //check the distance to the nearest settlement node using hitboxes and check if it is close enough
-                    for (int i = 0; i < settlementNodes.size(); i++) {
-
-                        //if the player clicks in a valid hitbox for a settlement
-                        if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                                && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                                && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                                && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
-                            //debug settlent build detection
-                            //System.out.println("hitbox match");
-
-                            //check that the settlement is unowned
-                            if (settlementNodes.get(i).getPlayer() == 0) {
-
-                                // Check that the player can build there and update the instruction labels accordingly if hey cannot
-                                if (canBuildSettlement(settlementNodes.get(i), false)) {
-
-                                    // If the game is in setup
-                                    if (inSetup) { // In Setup
-                                        // Decremeent the number of setup settlements since one is placed
-                                        playerSetupSettlementLeft--;
-                                    } // If the main game is in progress
+                                    } // If the player could not build there
                                     else {
-                                        // The card check has already been made, and the user has the right cards
-
-                                        // Remove the required cards from the player's deck
-                                        // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
-                                        cards[currentPlayer].remove(new Integer(1));
-                                        cards[currentPlayer].remove(new Integer(2));
-                                        cards[currentPlayer].remove(new Integer(3));
-                                        cards[currentPlayer].remove(new Integer(4));
+                                        // Print out why the player could not build there
+                                        instructionLbl.setText("Sorry but you can't build a road there.");
+                                        subInstructionLbl.setText("Try building adjacent to one of your exsisting buildings");
                                     }
+                                } else {
+                                    instructionLbl.setText("Sorry but you can't take a claimed road.");
+                                    subInstructionLbl.setText("Try building where there isn't already another road");
+                                }
 
-                                    // Set the settlement's player to the current player
-                                    settlementNodes.get(i).setPlayer(currentPlayer);
+                                // Stop building
+                                buildingObject = 0;
+                                showRoadHitbox = false;
+                                // Change the button back to the build button
+                                buildBtn.setText("Build");
+                                // Redraw the board
+                                repaint();
+                            }
+                        }
+                        break;
+                    case 2:
+                        //small house
 
-                                    //check to see if that settlment is on a port
-                                    //loop thorugh the ports and see if the settlement just built is on a port
-                                    for (int j = 0; j < ports.size(); j++) {
+                        //check the distance to the nearest settlement node using hitboxes and check if it is close enough
+                        for (int i = 0; i < settlementNodes.size(); i++) {
 
-                                        //check to see if that port contains this settlemnt
-                                        if (portSettlements[j].contains(settlementNodes.get(i))) {
-                                            //save that the new settlement is on a port and which one
-                                            playerHasPort[currentPlayer][ports.get(j).getType()] = true;
+                            //if the player clicks in a valid hitbox for a settlement
+                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+                                //debug settlent build detection
+                                //System.out.println("hitbox match");
+
+                                //check that the settlement is unowned
+                                if (settlementNodes.get(i).getPlayer() == 0) {
+
+                                    // Check that the player can build there and update the instruction labels accordingly if hey cannot
+                                    if (canBuildSettlement(settlementNodes.get(i), false)) {
+
+                                        // If the game is in setup
+                                        if (inSetup) { // In Setup
+                                            // Decremeent the number of setup settlements since one is placed
+                                            playerSetupSettlementLeft--;
+                                        } // If the main game is in progress
+                                        else {
+                                            // The card check has already been made, and the user has the right cards
+
+                                            // Remove the required cards from the player's deck
+                                            // Remove 1 clay, 1 wood, 1 wheat, and 1 sheep
+                                            cards[currentPlayer].remove(new Integer(1));
+                                            cards[currentPlayer].remove(new Integer(2));
+                                            cards[currentPlayer].remove(new Integer(3));
+                                            cards[currentPlayer].remove(new Integer(4));
                                         }
 
+                                        // Set the settlement's player to the current player
+                                        settlementNodes.get(i).setPlayer(currentPlayer);
+
+                                        //check to see if that settlment is on a port
+                                        //loop thorugh the ports and see if the settlement just built is on a port
+                                        for (int j = 0; j < ports.size(); j++) {
+
+                                            //check to see if that port contains this settlemnt
+                                            if (portSettlements[j].contains(settlementNodes.get(i))) {
+                                                //save that the new settlement is on a port and which one
+                                                playerHasPort[currentPlayer][ports.get(j).getType()] = true;
+                                            }
+
+                                        }
+
+                                        //save the settelment just built
+                                        newestSetupSettlment = settlementNodes.get(i);
+
+                                        // Increment the player's victory point counter
+                                        victoryPoints[currentPlayer]++;
+
+                                        // Update the building buttons to reflect the player's new list of cards
+                                        // or number of setup buildings
+                                        updateBuildButtons();
                                     }
 
-                                    //save the settelment just built
-                                    newestSetupSettlment = settlementNodes.get(i);
-
-                                    // Increment the player's victory point counter
-                                    victoryPoints[currentPlayer]++;
-
-                                    // Update the building buttons to reflect the player's new list of cards
-                                    // or number of setup buildings
-                                    updateBuildButtons();
-                                }
-
-                            } else {
-                                instructionLbl.setText("Sorry but you can't take a claimed settlement.");
-                                subInstructionLbl.setText("Try building where there isn't already another settlement");
-                            }
-
-                            // Stop building and hide the hitboxes
-                            buildingObject = 0;
-                            showSettlementHitbox = false;
-                            // Change the button back to the build button
-                            buildBtn.setText("Build");
-                            // Redraw the board
-                            repaint();
-                        }
-                    }
-                    break;
-                case 3:
-                    //large house
-
-                    //check the distance to the nearest settlement node using hitboxes and check if it is close enough
-                    for (int i = 0; i < settlementNodes.size(); i++) {
-
-                        //if the player clicks in a valid hitbox for a settlement
-                        if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                                && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                                && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                                && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
-
-                            // Check that the current player owns settlement
-                            if (settlementNodes.get(i).getPlayer() == currentPlayer) {
-
-                                // Check that the settlement isn't already large
-                                if (settlementNodes.get(i).isLarge() == false) {
-                                    // The card check has already been made, and the user has the right cards
-
-                                    // Remove the cards from the player's deck
-                                    // Remove 2 wheat, and 3 ore
-                                    cards[currentPlayer].remove(new Integer(3));
-                                    cards[currentPlayer].remove(new Integer(3));
-                                    cards[currentPlayer].remove(new Integer(5));
-                                    cards[currentPlayer].remove(new Integer(5));
-                                    cards[currentPlayer].remove(new Integer(5));
-
-                                    // Make the settlement large
-                                    settlementNodes.get(i).setLarge(true);
-
-                                    // Increment the player's victory point counter
-                                    victoryPoints[currentPlayer]++;
-
-                                    // Update the building buttons to reflect the player's new list of cards
-                                    updateBuildButtons();
-                                } else { // If the settlement is already large
-
-                                    instructionLbl.setText("Sorry but settlement is already large.");
-                                    subInstructionLbl.setText("Try upgrading a small settlement");
-                                }
-                            } else { // If the settlement belongs to another player
-                                //check what player it is
-                                if (settlementNodes.get(i).getPlayer() == 0) {
-                                    instructionLbl.setText("Sorry but you can't upgrade an unowned settlement.");
-                                    subInstructionLbl.setText("Try upgrading your own settlement");
                                 } else {
-                                    instructionLbl.setText("Sorry but you can't upgrade someone elses settlement.");
-                                    subInstructionLbl.setText("Try upgrading your own settlement");
+                                    instructionLbl.setText("Sorry but you can't take a claimed settlement.");
+                                    subInstructionLbl.setText("Try building where there isn't already another settlement");
+                                }
+
+                                // Stop building and hide the hitboxes
+                                buildingObject = 0;
+                                showSettlementHitbox = false;
+                                // Change the button back to the build button
+                                buildBtn.setText("Build");
+                                // Redraw the board
+                                repaint();
+                            }
+                        }
+                        break;
+                    case 3:
+                        //large house
+
+                        //check the distance to the nearest settlement node using hitboxes and check if it is close enough
+                        for (int i = 0; i < settlementNodes.size(); i++) {
+
+                            //if the player clicks in a valid hitbox for a settlement
+                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
+                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
+                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
+                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+
+                                // Check that the current player owns settlement
+                                if (settlementNodes.get(i).getPlayer() == currentPlayer) {
+
+                                    // Check that the settlement isn't already large
+                                    if (settlementNodes.get(i).isLarge() == false) {
+                                        // The card check has already been made, and the user has the right cards
+
+                                        // Remove the cards from the player's deck
+                                        // Remove 2 wheat, and 3 ore
+                                        cards[currentPlayer].remove(new Integer(3));
+                                        cards[currentPlayer].remove(new Integer(3));
+                                        cards[currentPlayer].remove(new Integer(5));
+                                        cards[currentPlayer].remove(new Integer(5));
+                                        cards[currentPlayer].remove(new Integer(5));
+
+                                        // Make the settlement large
+                                        settlementNodes.get(i).setLarge(true);
+
+                                        // Increment the player's victory point counter
+                                        victoryPoints[currentPlayer]++;
+
+                                        // Update the building buttons to reflect the player's new list of cards
+                                        updateBuildButtons();
+                                    } else { // If the settlement is already large
+
+                                        instructionLbl.setText("Sorry but settlement is already large.");
+                                        subInstructionLbl.setText("Try upgrading a small settlement");
+                                    }
+                                } else { // If the settlement belongs to another player
+                                    //check what player it is
+                                    if (settlementNodes.get(i).getPlayer() == 0) {
+                                        instructionLbl.setText("Sorry but you can't upgrade an unowned settlement.");
+                                        subInstructionLbl.setText("Try upgrading your own settlement");
+                                    } else {
+                                        instructionLbl.setText("Sorry but you can't upgrade someone elses settlement.");
+                                        subInstructionLbl.setText("Try upgrading your own settlement");
+                                    }
+                                }
+
+                                // Stop building and hide the hitboxes
+                                buildingObject = 0;
+                                showSettlementHitbox = false;
+                                // Change the button back to the build button
+                                buildBtn.setText("Build");
+                                // Redraw the board
+                                repaint();
+                            }
+                        }
+                        break;
+                    default:
+                        System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
+                        break;
+                }
+            } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0 && !thiefJustStarted) { //check if the user clicked to select a card and the thief didn't just start
+
+                //get the y position for the cards
+                int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
+
+                //check what mode the card drawing is in
+                if (drawCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
+
+                    //loop though the 5 stacks
+                    for (int i = 0; i < 5; i++) {
+                        //check for a click
+                        if (event.getX() > cardStackXPositions[i]
+                                && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
+                                && event.getY() > cardYPos
+                                && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                            //debug click detection
+                            //System.out.println("Card Clicked!");
+                            boolean removeSuccess; //crate var to save if the removal was succesful
+                            removeSuccess = cards[currentPlayer].remove(new Integer(i + 1)); //remove the card
+
+                            //check if that was a valid card removal
+                            if (removeSuccess) {
+                                stealCardNum[currentPlayer]--; //count the removal
+
+                                //check if the player is done now
+                                if (stealCardNum[currentPlayer] <= 0) {
+                                    turnSwitchBtn.setEnabled(true);
+                                    showCardHitbox = false;
                                 }
                             }
 
-                            // Stop building and hide the hitboxes
-                            buildingObject = 0;
-                            showSettlementHitbox = false;
-                            // Change the button back to the build button
-                            buildBtn.setText("Build");
-                            // Redraw the board
+                            updateBuildButtons();
                             repaint();
                         }
                     }
-                    break;
-                default:
-                    System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
-                    break;
-            }
-        } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0 && !thiefJustStarted) { //check if the user clicked to select a card and the thief didn't just start
 
-            //get the y position for the cards
-            int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
+                } else { //check for a click on a card in the full layout mode
 
-            //check what mode the card drawing is in
-            if (drawCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
+                    //check if the user clicked on any card
+                    for (int i = 0; i < cards[currentPlayer].size(); i++) {
+                        //get the x position for that card
+                        int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
 
-                //loop though the 5 stacks
-                for (int i = 0; i < 5; i++) {
-                    //check for a click
-                    if (event.getX() > cardStackXPositions[i]
-                            && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
-                            && event.getY() > cardYPos
-                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
-                        //debug click detection
-                        //System.out.println("Card Clicked!");
-                        boolean removeSuccess; //crate var to save if the removal was succesful
-                        removeSuccess = cards[currentPlayer].remove(new Integer(i + 1)); //remove the card
-
-                        //check if that was a valid card removal
-                        if (removeSuccess) {
+                        //check if there was a click on a card
+                        if (event.getX() > cardXPos
+                                && event.getY() > cardYPos
+                                && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
+                                && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                            //debug click detection
+                            //System.out.println("Card Clicked!");
+                            cards[currentPlayer].remove(i); //remove the card
                             stealCardNum[currentPlayer]--; //count the removal
 
                             //check if the player is done now
@@ -1580,157 +1627,201 @@ public class GamePanel extends javax.swing.JPanel {
                                 turnSwitchBtn.setEnabled(true);
                                 showCardHitbox = false;
                             }
-                        }
 
-                        updateBuildButtons();
-                        repaint();
+                            updateBuildButtons();
+                            repaint();
+
+                        }
                     }
+
                 }
 
-            } else { //check for a click on a card in the full layout mode
+            } else if (showDevCardHitbox && usingDevCard == 0) { //check if the player clicked on a dev card to actiavet it and use it
+                //get the y position for the cards
+                int devCardYPos = (int) (superFrame.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125));
 
-                //check if the user clicked on any card
-                for (int i = 0; i < cards[currentPlayer].size(); i++) {
-                    //get the x position for that card
-                    int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
+                //check what mode the card drawing is in
+                if (drawDevCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
 
-                    //check if there was a click on a card
-                    if (event.getX() > cardXPos
-                            && event.getY() > cardYPos
-                            && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
-                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
-                        //debug click detection
-                        //System.out.println("Card Clicked!");
-                        cards[currentPlayer].remove(i); //remove the card
-                        stealCardNum[currentPlayer]--; //count the removal
+                    //loop though four of the 5 stacks. They last one doesn't need to be checked as it isn't playable
+                    for (int i = 0; i < 4; i++) {
+                        //check for a click
+                        if (event.getX() > devCardStackXPositions[i]
+                                && event.getX() < (devCardStackXPositions[i] + getImgWidth(DEV_CARD_KNIGHT))
+                                && event.getY() > devCardYPos
+                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                            //debug click detection
+                            //System.out.println("Stack Dev Card Clicked!");
 
-                        //check if the player is done now
-                        if (stealCardNum[currentPlayer] <= 0) {
-                            turnSwitchBtn.setEnabled(true);
-                            showCardHitbox = false;
-                        }
+                            usingDevCard = i + 1;
 
-                        updateBuildButtons();
-                        repaint();
+                            //make sure there is atleast one card in the stack
+                            if (devCardTypeCount[i] > 0) {
 
-                    }
-                }
+                                //get the type of dev card clicked
+                                switch (i) {
+                                    case 0:
+                                        //if knight
+                                        clickedKnightCard();
 
-            }
+                                        break;
+                                    case 1:
+                                        //if vp road
+                                        clickedRoadCard();
 
-        } else if (showDevCardHitbox && usingDevCard == 0) { //check if the player clicked on a dev card to actiavet it and use it
-            //get the y position for the cards
-            int devCardYPos = (int) (superFrame.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125));
+                                        break;
+                                    case 2:
+                                        //if vp monopoly
+                                        clickedMonopolyCard();
 
-            //check what mode the card drawing is in
-            if (drawDevCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
+                                        break;
+                                    case 3:
+                                        //if vp YOP
+                                        clickedYOPCard();
 
-                //loop though four of the 5 stacks. They last one doesn't need to be checked as it isn't playable
-                for (int i = 0; i < 4; i++) {
-                    //check for a click
-                    if (event.getX() > devCardStackXPositions[i]
-                            && event.getX() < (devCardStackXPositions[i] + getImgWidth(DEV_CARD_KNIGHT))
-                            && event.getY() > devCardYPos
-                            && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
-                        //debug click detection
-                        //System.out.println("Stack Dev Card Clicked!");
+                                        break;
+                                    default:
+                                        //if anything else
+                                        //System.out.println("Invalid card clicked");
+                                        break;
+                                }
 
-                        usingDevCard = i + 1;
+                                //hide dev card hitbox
+                                showDevCardHitbox = false;
 
-                        //make sure there is atleast one card in the stack
-                        if (devCardTypeCount[i] > 0) {
-
-                            //get the type of dev card clicked
-                            switch (i) {
-                                case 0:
-                                    //if knight
-                                    clickedKnightCard();
-
-                                    break;
-                                case 1:
-                                    //if vp road
-                                    clickedRoadCard();
-
-                                    break;
-                                case 2:
-                                    //if vp monopoly
-                                    clickedMonopolyCard();
-
-                                    break;
-                                case 3:
-                                    //if vp YOP
-                                    clickedYOPCard();
-
-                                    break;
-                                default:
-                                    //if anything else
-                                    //System.out.println("Invalid card clicked");
-                                    break;
+                                updateBuildButtons();
+                                repaint();
                             }
+                        }
+                    }
 
-                            //hide dev card hitbox
-                            showDevCardHitbox = false;
+                } else { //check for a click on a card in the full layout mode
+
+                    //check if the user clicked on any card
+                    for (int i = 0; i < devCards[currentPlayer].size(); i++) {
+                        //get the x position for that card
+                        int cardXPos = (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i);
+
+                        //check if there was a click on a card
+                        if (event.getX() > cardXPos
+                                && event.getY() > devCardYPos
+                                && event.getX() < (cardXPos + getImgWidth(DEV_CARD_KNIGHT))
+                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                            //debug click detection
+                            //System.out.println("Dev Card Clicked!");
+
+                            //save the card type
+                            int devCardType = devCards[currentPlayer].get(i);
+
+                            //make sure the dev card type is a useable one and not VP
+                            if (devCardType < 5) {
+
+                                usingDevCard = devCardType;
+
+                                //get the type of dev card clicked
+                                switch (devCardType) {
+                                    case 1:
+                                        //if knight
+                                        clickedKnightCard();
+
+                                        break;
+                                    case 2:
+                                        //if vp road
+                                        clickedRoadCard();
+
+                                        break;
+                                    case 3:
+                                        //if vp monopoly
+                                        clickedMonopolyCard();
+
+                                        break;
+                                    case 4:
+                                        //if vp YOP
+                                        clickedYOPCard();
+
+                                        break;
+                                    default:
+                                        //if anything else
+                                        System.out.println("Invalid card clicked");
+                                        break;
+                                }
+
+                                //hide dev card hitbox
+                                showDevCardHitbox = false;
+
+                            }
 
                             updateBuildButtons();
                             repaint();
                         }
                     }
+
                 }
 
-            } else { //check for a click on a card in the full layout mode
+            } else if ((thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) || (usingDevCard == 1 && showTileHitbox)) { //check if the player clicked on a Tile to move the thief
+                // ^^^ either for when a 7 is rolled or when a knight card is used.
 
-                //check if the user clicked on any card
-                for (int i = 0; i < devCards[currentPlayer].size(); i++) {
-                    //get the x position for that card
-                    int cardXPos = (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i);
+                //loop through the Tiles. Ignore the null Tile at the end
+                for (int i = 0; i < tiles.size() - 1; i++) {
 
-                    //check if there was a click on a card
-                    if (event.getX() > cardXPos
-                            && event.getY() > devCardYPos
-                            && event.getX() < (cardXPos + getImgWidth(DEV_CARD_KNIGHT))
-                            && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                    //get the x and y positions for that tile
+                    int tilePosX = tiles.get(i).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2);
+                    int tilePosY = (int) (tiles.get(i).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset);
+
+                    //check if there was a click on that tile.
+                    if (event.getX() > tilePosX
+                            && event.getY() > tilePosY
+                            && event.getX() < (tilePosX + (int) (30 / scaleFactor))
+                            && event.getY() < (tilePosY + (int) (30 / scaleFactor))) {
                         //debug click detection
-                        //System.out.println("Dev Card Clicked!");
+                        //System.out.println("Got Click");
 
-                        //save the card type
-                        int devCardType = devCards[currentPlayer].get(i);
+                        //check if that was a valid Tile to select. Eg. no thief on the tile
+                        if (!tiles.get(i).hasThief()) {
+                            //disabable the hitbox because the click was registered.
+                            showTileHitbox = false;
 
-                        //make sure the dev card type is a useable one and not VP
-                        if (devCardType < 5) {
+                            //put the thief on that tile
+                            tiles.get(i).setThief(true);
 
-                            usingDevCard = devCardType;
+                            //remove the thief from the old one
+                            tiles.get(tileWithThief).setThief(false);
 
-                            //get the type of dev card clicked
-                            switch (devCardType) {
-                                case 1:
-                                    //if knight
-                                    clickedKnightCard();
+                            //update the tileWithThief var
+                            tileWithThief = i;
 
-                                    break;
-                                case 2:
-                                    //if vp road
-                                    clickedRoadCard();
+                            // Increment the thief movement counter
+                            thiefMoveCounter++;
 
-                                    break;
-                                case 3:
-                                    //if vp monopoly
-                                    clickedMonopolyCard();
-
-                                    break;
-                                case 4:
-                                    //if vp YOP
-                                    clickedYOPCard();
-
-                                    break;
-                                default:
-                                    //if anything else
-                                    System.out.println("Invalid card clicked");
-                                    break;
+                            //check if the player who rolled the 7 is eligable to steal cards
+                            //loop through all the settlements and see if they boarder the new thief tile and if it is owned
+                            for (int j = 0; j < settlementNodes.size(); j++) {
+                                //loop 3 times for the 3 potencial tile connections
+                                for (int k = 1; k < 4; k++) {
+                                    //check if the settlment is on the Tile and if the settlement is owned and if the owner is someone other than current player
+                                    if (settlementNodes.get(j).getTile(k) == tiles.get(i) && settlementNodes.get(j).getPlayer() != 0 && settlementNodes.get(j).getPlayer() != currentPlayer) {
+                                        //if so than the current player can steal cards from the player that owns that settlment
+                                        canStealCardPlayers.add(settlementNodes.get(j).getPlayer());
+                                    }
+                                }
                             }
 
-                            //hide dev card hitbox
-                            showDevCardHitbox = false;
+                            //System.out.println(canStealCardPlayers);
+                            //decide how the rest will continue depending on if whether or not a knight card was used
+                            if (usingDevCard == 1) {
 
+                                //check if there are any players to steal from
+                                if (canStealCardPlayers.size() > 0) {
+                                    showSubPlayerHitbox = true;
+                                } else {
+                                    resetUsingDevCards();
+                                }
+
+                            } else {
+                                //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
+                                //onto slecting the cards they would like to discard if the requirements are met.
+                                turnSwitchBtn.setEnabled(true);
+                            }
                         }
 
                         updateBuildButtons();
@@ -1738,150 +1829,77 @@ public class GamePanel extends javax.swing.JPanel {
                     }
                 }
 
-            }
+            } else if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) || (showSubPlayerHitbox && usingDevCard == 1)) { //check if the player just clicked to select another player to seal from
+                //debug
+                //System.out.println("Got a steal click");
 
-        } else if ((thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) || (usingDevCard == 1 && showTileHitbox)) { //check if the player clicked on a Tile to move the thief
-            // ^^^ either for when a 7 is rolled or when a knight card is used.
+                int subPlayerPosY = superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED);
+                int subPlayerPosX;
 
-            //loop through the Tiles. Ignore the null Tile at the end
-            for (int i = 0; i < tiles.size() - 1; i++) {
+                //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
+                for (int i = 1; i < playerTurnOrder.size(); i++) {
 
-                //get the x and y positions for that tile
-                int tilePosX = tiles.get(i).getXPos() + newTileWidth / 2 - ((int) (30 / scaleFactor) / 2);
-                int tilePosY = (int) (tiles.get(i).getYPos() + newTileHeight / 2 - ((30 / scaleFactor) / 2) + threeDTileOffset);
+                    subPlayerPosX = superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i);
 
-                //check if there was a click on that tile.
-                if (event.getX() > tilePosX
-                        && event.getY() > tilePosY
-                        && event.getX() < (tilePosX + (int) (30 / scaleFactor))
-                        && event.getY() < (tilePosY + (int) (30 / scaleFactor))) {
-                    //debug click detection
-                    //System.out.println("Got Click");
+                    //check if there was a click on one of the sub players
+                    if (event.getX() > subPlayerPosX
+                            && event.getY() > subPlayerPosY
+                            && event.getX() < (subPlayerPosX + (getImgWidth(SMALL_PLAYER_RED)))
+                            && event.getY() < (subPlayerPosY + (getImgHeight(SMALL_PLAYER_RED)))) {
 
-                    //check if that was a valid Tile to select. Eg. no thief on the tile
-                    if (!tiles.get(i).hasThief()) {
-                        //disabable the hitbox because the click was registered.
-                        showTileHitbox = false;
+                        //debug
+                        //System.out.println("Yuh we got a click on player: " + playerTurnOrder.get(i));
+                        //check if the player is allowed to steal from that players and that said player has atleast 1 card to steal
+                        if (canStealCardPlayers.contains(playerTurnOrder.get(i)) && cards[playerTurnOrder.get(i)].size() > 0) {
+                            //debug
+                            //System.out.println("Yup valid removal");
 
-                        //put the thief on that tile
-                        tiles.get(i).setThief(true);
+                            //steal the card
+                            //randomly select a card from the targets hand
+                            int randomCard = (int) (Math.random() * cards[playerTurnOrder.get(i)].size());
 
-                        //remove the thief from the old one
-                        tiles.get(tileWithThief).setThief(false);
+                            //debug the stealing
+                            //System.out.println("index of: " + randomCard);
+                            //System.out.println("card type: " + cards[playerTurnOrder.get(i)].get(randomCard));
+                            //give the card to the playerRolled7
+                            cards[currentPlayer].add(cards[playerTurnOrder.get(i)].get(randomCard));
+                            //remove said card from the original player
+                            cards[playerTurnOrder.get(i)].remove(randomCard);
 
-                        //update the tileWithThief var
-                        tileWithThief = i;
+                            //reenable the turn switch button
+                            turnSwitchBtn.setEnabled(true);
 
-                        // Increment the thief movement counter
-                        thiefMoveCounter++;
+                            //clear the canStealCardPlayers ArrayList
+                            canStealCardPlayers.clear();
 
-                        //check if the player who rolled the 7 is eligable to steal cards
-                        //loop through all the settlements and see if they boarder the new thief tile and if it is owned
-                        for (int j = 0; j < settlementNodes.size(); j++) {
-                            //loop 3 times for the 3 potencial tile connections
-                            for (int k = 1; k < 4; k++) {
-                                //check if the settlment is on the Tile and if the settlement is owned and if the owner is someone other than current player
-                                if (settlementNodes.get(j).getTile(k) == tiles.get(i) && settlementNodes.get(j).getPlayer() != 0 && settlementNodes.get(j).getPlayer() != currentPlayer) {
-                                    //if so than the current player can steal cards from the player that owns that settlment
-                                    canStealCardPlayers.add(settlementNodes.get(j).getPlayer());
-                                }
-                            }
-                        }
+                            //hide the hitbox again
+                            showSubPlayerHitbox = false;
 
-                        //System.out.println(canStealCardPlayers);
-                        //decide how the rest will continue depending on if whether or not a knight card was used
-                        if (usingDevCard == 1) {
+                            //update the instructions
+                            instructionLbl.setText("You may now continue your turn.");
+                            subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
 
-                            //check if there are any players to steal from
-                            if (canStealCardPlayers.size() > 0) {
-                                showSubPlayerHitbox = true;
-                            } else {
+                            //since player stealing is now done now. Reset this to false
+                            subPlayersHaveEnoughcards = false;
+
+                            //sort the cards first
+                            quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+
+                            //if this was tiggered by a dev knight card
+                            if (usingDevCard == 1) {
                                 resetUsingDevCards();
                             }
 
-                        } else {
-                            //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
-                            //onto slecting the cards they would like to discard if the requirements are met.
-                            turnSwitchBtn.setEnabled(true);
-                        }
-                    }
-
-                    updateBuildButtons();
-                    repaint();
-                }
-            }
-
-        } else if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) || (showSubPlayerHitbox && usingDevCard == 1)) { //check if the player just clicked to select another player to seal from
-            //debug
-            //System.out.println("Got a steal click");
-
-            int subPlayerPosY = superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED);
-            int subPlayerPosX;
-
-            //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
-            for (int i = 1; i < playerTurnOrder.size(); i++) {
-
-                subPlayerPosX = superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i);
-
-                //check if there was a click on one of the sub players
-                if (event.getX() > subPlayerPosX
-                        && event.getY() > subPlayerPosY
-                        && event.getX() < (subPlayerPosX + (getImgWidth(SMALL_PLAYER_RED)))
-                        && event.getY() < (subPlayerPosY + (getImgHeight(SMALL_PLAYER_RED)))) {
-
-                    //debug
-                    //System.out.println("Yuh we got a click on player: " + playerTurnOrder.get(i));
-                    //check if the player is allowed to steal from that players and that said player has atleast 1 card to steal
-                    if (canStealCardPlayers.contains(playerTurnOrder.get(i)) && cards[playerTurnOrder.get(i)].size() > 0) {
-                        //debug
-                        //System.out.println("Yup valid removal");
-
-                        //steal the card
-                        //randomly select a card from the targets hand
-                        int randomCard = (int) (Math.random() * cards[playerTurnOrder.get(i)].size());
-
-                        //debug the stealing
-                        //System.out.println("index of: " + randomCard);
-                        //System.out.println("card type: " + cards[playerTurnOrder.get(i)].get(randomCard));
-                        //give the card to the playerRolled7
-                        cards[currentPlayer].add(cards[playerTurnOrder.get(i)].get(randomCard));
-                        //remove said card from the original player
-                        cards[playerTurnOrder.get(i)].remove(randomCard);
-
-                        //reenable the turn switch button
-                        turnSwitchBtn.setEnabled(true);
-
-                        //clear the canStealCardPlayers ArrayList
-                        canStealCardPlayers.clear();
-
-                        //hide the hitbox again
-                        showSubPlayerHitbox = false;
-
-                        //update the instructions
-                        instructionLbl.setText("You may now continue your turn.");
-                        subInstructionLbl.setText("Building and trading is allowed assuming you have the correct cards.");
-
-                        //since player stealing is now done now. Reset this to false
-                        subPlayersHaveEnoughcards = false;
-
-                        //sort the cards first
-                        quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
-
-                        //if this was tiggered by a dev knight card
-                        if (usingDevCard == 1) {
-                            resetUsingDevCards();
+                            //redraw
+                            updateBuildButtons();
+                            repaint();
                         }
 
-                        //redraw
-                        updateBuildButtons();
-                        repaint();
                     }
 
                 }
 
-            }
-
-            /*
+                /*
             if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) {
                 g2d.setColor(Color.green);
                 g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i), //put it in the corner with some padding space
@@ -1890,277 +1908,282 @@ public class GamePanel extends javax.swing.JPanel {
                     getImgHeight(PLAYER_RED) / 2);
                 g2d.setColor(Color.black);
             }
-             */
-        } //but it's not really a port. Now its a resource stack
-        else if ((showResStackHitbox && tradingMode != 0 && tradeResource == 0) //check if the player is clicking a port to select a resource type to trade to
-                || ((usingDevCard == 4 || usingDevCard == 3) && showResStackHitbox)) {
-            //or if the player clicked the port to select a resource type for a dev card
+                 */
+            } //but it's not really a port. Now its a resource stack
+            else if ((showResStackHitbox && tradingMode != 0 && tradeResource == 0) //check if the player is clicking a port to select a resource type to trade to
+                    || ((usingDevCard == 4 || usingDevCard == 3) && showResStackHitbox)) {
+                //or if the player clicked the port to select a resource type for a dev card
 
-            int stackPosX;
-            int stackPosY = 1;
-            boolean validResource;
+                int stackPosX;
+                int stackPosY = 1;
+                boolean validResource;
 
-            //loop through the resource stacks
-            for (int i = 1; i < 6; i++) {
-                stackPosX = resourceStackXPositions[i];
-                validResource = false;
+                //loop through the resource stacks
+                for (int i = 1; i < 6; i++) {
+                    stackPosX = resourceStackXPositions[i];
+                    validResource = false;
 
-                //check if there was a click on a port
-                if (event.getX() > stackPosX
-                        && event.getY() > stackPosY
-                        && event.getX() < (stackPosX + getImgWidth(RES_STACKS[i]))
-                        && event.getY() < (stackPosY + getImgHeight(RES_STACKS[i]))) {
+                    //check if there was a click on a port
+                    if (event.getX() > stackPosX
+                            && event.getY() > stackPosY
+                            && event.getX() < (stackPosX + getImgWidth(RES_STACKS[i]))
+                            && event.getY() < (stackPosY + getImgHeight(RES_STACKS[i]))) {
 
-                    //check if the player clicked the port for trading or dev card
-                    switch (usingDevCard) {
-                        case 4:
-                            //YOP card
+                        //check if the player clicked the port for trading or dev card
+                        switch (usingDevCard) {
+                            case 4:
+                                //YOP card
 
-                            //give the player two of the resource
-                            for (int j = 0; j < 2; j++) {
-                                cards[currentPlayer].add(i);
-                            }
-
-                            //sort the card
-                            quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
-
-                            //finish using the dev card
-                            resetUsingDevCards();
-                            updateBuildButtons();
-
-                            //turn off the hitboxes
-                            showResStackHitbox = false;
-
-                            //update the screen
-                            repaint();
-
-                            break;
-                        case 3:
-                            //Monopoly card
-
-                            //save the resource type the player wants
-                            int resourceType = i;
-
-                            //loop through all the cards.
-                            //Go through each players ArrayList
-                            for (ArrayList<Integer> cardDeck : cards) {
-
-                                //make sure the current players deck isn't searched
-                                //or the null player
-                                if (cardDeck != cards[currentPlayer] && cardDeck != cards[0]) {
-
-                                    //now go through the indevidual cards
-                                    for (Integer cardID : cardDeck) {
-                                        //debug
-                                        //System.out.println("Checking at: " + ", Val: " + cardID);
-
-                                        //if that card type is the wanted card type remove it 
-                                        if (cardID == resourceType) {
-
-                                            //then give it to the player that used the monopoly card
-                                            cards[currentPlayer].add(cardID);
-                                        }
-                                    }
-
-                                    //now go through the player being stolen from and remove all the cards
-                                    while (cardDeck.contains(resourceType)) {
-                                        cardDeck.remove(new Integer(resourceType));
-                                    }
-
+                                //give the player two of the resource
+                                for (int j = 0; j < 2; j++) {
+                                    cards[currentPlayer].add(i);
                                 }
 
-                            }
+                                //sort the card
+                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
-                            //sort the current players card
-                            quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
-
-                            //finish using the dev card
-                            resetUsingDevCards();
-                            updateBuildButtons();
-
-                            //turn off the hitboxes
-                            showResStackHitbox = false;
-
-                            //update the screen
-                            repaint();
-
-                            break;
-                        default:
-                            //if its for trading
-
-                            //also if clicking that port would leave the player with no options for cards to trade away
-                            //split up into generic 4:1 or 3:1, and specialized 2:1 trades
-                            //4:1 or 3:1 tradng
-                            if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(i, tradingMode)) {
-                                validResource = true;
-                            } else if (tradingMode == 3 && canTradeSecializedTo(i)) { //2:1 tradng
-                                validResource = true;
-                            }
-
-                            //only make the selection if its a valid port selection
-                            if (validResource) {
-                                //register the type the player want to trade TO
-                                tradeResource = i;
-
-                                //update the instructions for the next trading step
-                                instructionLbl.setText("Now select a card");
-                                subInstructionLbl.setText("This card should be of the type you would like to trade away");
-
-                                //show the card hitboxes
-                                showCardHitbox = true;
+                                //finish using the dev card
+                                resetUsingDevCards();
+                                updateBuildButtons();
 
                                 //turn off the hitboxes
                                 showResStackHitbox = false;
 
                                 //update the screen
                                 repaint();
-                            }
 
-                            break;
-                    }
-                }
-            }
+                                break;
+                            case 3:
+                                //Monopoly card
 
-        } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
-            //get the y position for the cards
-            int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
-            boolean validCard;
+                                //save the resource type the player wants
+                                int resourceType = i;
 
-            //check what mode the card drawing is in
-            if (drawCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
+                                //loop through all the cards.
+                                //Go through each players ArrayList
+                                for (ArrayList<Integer> cardDeck : cards) {
 
-                //loop though the 5 stacks
-                for (int i = 0; i < 5; i++) {
-                    validCard = false;
+                                    //make sure the current players deck isn't searched
+                                    //or the null player
+                                    if (cardDeck != cards[currentPlayer] && cardDeck != cards[0]) {
 
-                    //check for a click
-                    if (event.getX() > cardStackXPositions[i]
-                            && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
-                            && event.getY() > cardYPos
-                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                                        //now go through the indevidual cards
+                                        for (Integer cardID : cardDeck) {
+                                            //debug
+                                            //System.out.println("Checking at: " + ", Val: " + cardID);
 
-                        //check if the card is available to trade and that it is not the same type the payer would like to trade TO
-                        //split the handeling for the 2:1 away from the others
-                        if ((i + 1) != tradeResource) {
+                                            //if that card type is the wanted card type remove it 
+                                            if (cardID == resourceType) {
 
-                            //check for a specialized trade
-                            if (tradingMode == 3 && (playerHasPort[currentPlayer][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded) {
-                                validCard = true;
-                            } else if ((tradingMode == 1 || tradingMode == 2) && cardTypeCount[i] >= minTradeCardsNeeded) { //if 4:1 or 3:1
-                                validCard = true;
-                            }
+                                                //then give it to the player that used the monopoly card
+                                                cards[currentPlayer].add(cardID);
+                                            }
+                                        }
 
-                            //only make the selection if its a valid card selection
-                            if (validCard) {
-                                //debug click detection
-                                //System.out.println("Card stack Clicked!");
-                                Integer typeToRemove = i + 1;
+                                        //now go through the player being stolen from and remove all the cards
+                                        while (cardDeck.contains(resourceType)) {
+                                            cardDeck.remove(new Integer(resourceType));
+                                        }
 
-                                //remove the required amount of that card type
-                                for (int j = 0; j < minTradeCardsNeeded; j++) {
-                                    cards[currentPlayer].remove(typeToRemove);
+                                    }
+
                                 }
 
-                                //add the card the player wants
-                                cards[currentPlayer].add(tradeResource);
-
-                                //sort the cards so when the build button are updated they are in the correct order
+                                //sort the current players card
                                 quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
-                                //turn off behavior as if the cancel button was pressed.
-                                turnSwitchBtn.setEnabled(true);
-                                trade4to1Btn.setText("Trade 4:1");
-                                trade3to1Btn.setText("Trade 3:1");
-                                trade2to1Btn.setText("Trade 2:1");
-                                //remove the intent to trade
-                                tradingMode = 0;
-                                minTradeCardsNeeded = 0;
-                                //clear the resource if there was one
-                                tradeResource = 0;
-                                //hide the hitboxes
-                                showResStackHitbox = false;
-                                showCardHitbox = false;
-                                //update the buildbuttons (should be renabeling them now)
+                                //finish using the dev card
+                                resetUsingDevCards();
                                 updateBuildButtons();
-                                //give the instructions that the user can now do what ever they want
-                                instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
-                                subInstructionLbl.setText("You may now continue your turn how ever you please.");
-                            }
+
+                                //turn off the hitboxes
+                                showResStackHitbox = false;
+
+                                //update the screen
+                                repaint();
+
+                                break;
+                            default:
+                                //if its for trading
+
+                                //also if clicking that port would leave the player with no options for cards to trade away
+                                //split up into generic 4:1 or 3:1, and specialized 2:1 trades
+                                //4:1 or 3:1 tradng
+                                if ((tradingMode == 1 || tradingMode == 2) && canTradeTo(i, tradingMode)) {
+                                    validResource = true;
+                                } else if (tradingMode == 3 && canTradeSecializedTo(i)) { //2:1 tradng
+                                    validResource = true;
+                                }
+
+                                //only make the selection if its a valid port selection
+                                if (validResource) {
+                                    //register the type the player want to trade TO
+                                    tradeResource = i;
+
+                                    //update the instructions for the next trading step
+                                    instructionLbl.setText("Now select a card");
+                                    subInstructionLbl.setText("This card should be of the type you would like to trade away");
+
+                                    //show the card hitboxes
+                                    showCardHitbox = true;
+
+                                    //turn off the hitboxes
+                                    showResStackHitbox = false;
+
+                                    //update the screen
+                                    repaint();
+                                }
+
+                                break;
                         }
                     }
                 }
 
-            } else { //check for a click on a card in the full layout mode
+            } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
+                //get the y position for the cards
+                int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
+                boolean validCard;
 
-                //check if the user clicked on any card
-                for (int i = 0; i < cards[currentPlayer].size(); i++) {
-                    validCard = false;
+                //check what mode the card drawing is in
+                if (drawCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
 
-                    //get the x position for that card
-                    int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
+                    //loop though the 5 stacks
+                    for (int i = 0; i < 5; i++) {
+                        validCard = false;
 
-                    //check if there was a click on a card
-                    if (event.getX() > cardXPos
-                            && event.getY() > cardYPos
-                            && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
-                            && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+                        //check for a click
+                        if (event.getX() > cardStackXPositions[i]
+                                && event.getX() < (cardStackXPositions[i] + getImgWidth(CARD_CLAY))
+                                && event.getY() > cardYPos
+                                && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
 
-                        //check if the card is available to trade and that it is not the same type the payer would like to trade TO
-                        //split the 2:1 haneling
-                        if (cards[currentPlayer].get(i) != tradeResource) {
+                            //check if the card is available to trade and that it is not the same type the payer would like to trade TO
+                            //split the handeling for the 2:1 away from the others
+                            if ((i + 1) != tradeResource) {
 
-                            //check for specialized
-                            if (tradingMode == 3 && (playerHasPort[currentPlayer][cards[currentPlayer].get(i)]) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) {
-                                validCard = true;
-                            } else if ((tradingMode == 1 || tradingMode == 2) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) { //if 4:1 or 3:1
-                                validCard = true;
-                            }
-
-                            //only make the selection if its a valid card selection
-                            if (validCard) {
-                                //debug click detection
-                                //System.out.println("Card no stack Clicked!");
-                                Integer typeToRemove = cards[currentPlayer].get(i);
-
-                                //remove the required amount of that card type
-                                for (int j = 0; j < minTradeCardsNeeded; j++) {
-                                    cards[currentPlayer].remove(typeToRemove);
+                                //check for a specialized trade
+                                if (tradingMode == 3 && (playerHasPort[currentPlayer][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded) {
+                                    validCard = true;
+                                } else if ((tradingMode == 1 || tradingMode == 2) && cardTypeCount[i] >= minTradeCardsNeeded) { //if 4:1 or 3:1
+                                    validCard = true;
                                 }
 
-                                //add the card the player wants
-                                cards[currentPlayer].add(tradeResource);
+                                //only make the selection if its a valid card selection
+                                if (validCard) {
+                                    //debug click detection
+                                    //System.out.println("Card stack Clicked!");
+                                    Integer typeToRemove = i + 1;
 
-                                //sort the cards so when the build button are updated they are in the correct order
-                                quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+                                    //remove the required amount of that card type
+                                    for (int j = 0; j < minTradeCardsNeeded; j++) {
+                                        cards[currentPlayer].remove(typeToRemove);
+                                    }
 
-                                //turn off behavior as if the cancel button was pressed.
-                                turnSwitchBtn.setEnabled(true);
-                                trade4to1Btn.setText("Trade 4:1");
-                                trade3to1Btn.setText("Trade 3:1");
-                                trade2to1Btn.setText("Trade 2:1");
-                                //remove the intent to trade
-                                tradingMode = 0;
-                                minTradeCardsNeeded = 0;
-                                //clear the resource if there was one
-                                tradeResource = 0;
-                                //hide the hitboxes
-                                showResStackHitbox = false;
-                                showCardHitbox = false;
-                                //update the buildbuttons (should be renabeling them now)
-                                updateBuildButtons();
-                                //give the instructions that the user can now do what ever they want
-                                instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
-                                subInstructionLbl.setText("You may now continue your turn how ever you please.");
+                                    //add the card the player wants
+                                    cards[currentPlayer].add(tradeResource);
+
+                                    //sort the cards so when the build button are updated they are in the correct order
+                                    quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+
+                                    //turn off behavior as if the cancel button was pressed.
+                                    turnSwitchBtn.setEnabled(true);
+                                    trade4to1Btn.setText("Trade 4:1");
+                                    trade3to1Btn.setText("Trade 3:1");
+                                    trade2to1Btn.setText("Trade 2:1");
+                                    //remove the intent to trade
+                                    tradingMode = 0;
+                                    minTradeCardsNeeded = 0;
+                                    //clear the resource if there was one
+                                    tradeResource = 0;
+                                    //hide the hitboxes
+                                    showResStackHitbox = false;
+                                    showCardHitbox = false;
+                                    //update the buildbuttons (should be renabeling them now)
+                                    updateBuildButtons();
+                                    //give the instructions that the user can now do what ever they want
+                                    instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
+                                    subInstructionLbl.setText("You may now continue your turn how ever you please.");
+                                }
                             }
                         }
-
                     }
+
+                } else { //check for a click on a card in the full layout mode
+
+                    //check if the user clicked on any card
+                    for (int i = 0; i < cards[currentPlayer].size(); i++) {
+                        validCard = false;
+
+                        //get the x position for that card
+                        int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
+
+                        //check if there was a click on a card
+                        if (event.getX() > cardXPos
+                                && event.getY() > cardYPos
+                                && event.getX() < (cardXPos + getImgWidth(CARD_CLAY))
+                                && event.getY() < (cardYPos + getImgHeight(CARD_CLAY))) {
+
+                            //check if the card is available to trade and that it is not the same type the payer would like to trade TO
+                            //split the 2:1 haneling
+                            if (cards[currentPlayer].get(i) != tradeResource) {
+
+                                //check for specialized
+                                if (tradingMode == 3 && (playerHasPort[currentPlayer][cards[currentPlayer].get(i)]) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) {
+                                    validCard = true;
+                                } else if ((tradingMode == 1 || tradingMode == 2) && numCardType[cards[currentPlayer].get(i)] >= minTradeCardsNeeded) { //if 4:1 or 3:1
+                                    validCard = true;
+                                }
+
+                                //only make the selection if its a valid card selection
+                                if (validCard) {
+                                    //debug click detection
+                                    //System.out.println("Card no stack Clicked!");
+                                    Integer typeToRemove = cards[currentPlayer].get(i);
+
+                                    //remove the required amount of that card type
+                                    for (int j = 0; j < minTradeCardsNeeded; j++) {
+                                        cards[currentPlayer].remove(typeToRemove);
+                                    }
+
+                                    //add the card the player wants
+                                    cards[currentPlayer].add(tradeResource);
+
+                                    //sort the cards so when the build button are updated they are in the correct order
+                                    quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
+
+                                    //turn off behavior as if the cancel button was pressed.
+                                    turnSwitchBtn.setEnabled(true);
+                                    trade4to1Btn.setText("Trade 4:1");
+                                    trade3to1Btn.setText("Trade 3:1");
+                                    trade2to1Btn.setText("Trade 2:1");
+                                    //remove the intent to trade
+                                    tradingMode = 0;
+                                    minTradeCardsNeeded = 0;
+                                    //clear the resource if there was one
+                                    tradeResource = 0;
+                                    //hide the hitboxes
+                                    showResStackHitbox = false;
+                                    showCardHitbox = false;
+                                    //update the buildbuttons (should be renabeling them now)
+                                    updateBuildButtons();
+                                    //give the instructions that the user can now do what ever they want
+                                    instructionLbl.setText("Thank you for your trade. The trade vessels have already departed.");
+                                    subInstructionLbl.setText("You may now continue your turn how ever you please.");
+                                }
+                            }
+
+                        }
+                    }
+
                 }
 
+                //update the screen
+                repaint();
             }
 
-            //update the screen
-            repaint();
+            //update the server if online mode and the click came from an authroiazed user
+            onlineUpdateServer();
+
         }
     }
 
@@ -3135,9 +3158,15 @@ public class GamePanel extends javax.swing.JPanel {
             }
 
             //get the showDevCards data
+            //but only update the cards if in offline mode because the game will always show the online users cards if in online mode
             if (scanner.nextLine().equals("showDevCards:")) {
                 //System.out.println("Yes");
-                showDevCards = Boolean.parseBoolean(scanner.nextLine());
+                if (onlineMode == -1) {
+                    showDevCards = Boolean.parseBoolean(scanner.nextLine());
+                } else {
+                    //skip a line
+                    scanner.nextLine();
+                }
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -3377,8 +3406,9 @@ public class GamePanel extends javax.swing.JPanel {
         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
         //get the number of each card type the player has
-        countCardTypes(cards[currentPlayer].size());
-        countNumCardTypes();
+        
+        countCardTypes(cards[currentPlayer].size(), currentPlayer);
+        countNumCardTypes(currentPlayer);
 
         //update the text of the Swing buttons
         //check if building
@@ -3595,9 +3625,9 @@ public class GamePanel extends javax.swing.JPanel {
             canBuildRoad = hasCards(0); // Roads
             canBuildSettlement = hasCards(1) && canBuildASettlment(); // Settlements
             canBuildCity = hasCards(2); // Cities
-            canTrade4to = hasTradeCards(4);
-            canTrade3to = hasTradeCards(3) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
-            canTrade2to = hasSpecializedPort();
+            canTrade4to = hasTradeCards(4, currentPlayer);
+            canTrade3to = hasTradeCards(3, currentPlayer) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
+            canTrade2to = hasSpecializedPort(currentPlayer);
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
@@ -3769,11 +3799,11 @@ public class GamePanel extends javax.swing.JPanel {
      *
      * @return
      */
-    private boolean hasSpecializedPort() {
+    private boolean hasSpecializedPort(int playerNumber) {
         boolean has2to1 = false;
 
         //create an array to store how many cards of each type the player has
-        countNumCardTypes();
+        countNumCardTypes(playerNumber);
 
         for (int i = 1; i < 6; i++) { //loop thorugh indexes 1-5
             if (playerHasPort[currentPlayer][i] && numCardType[i] >= 2) { //check if the player has that port and atleast 2 cards of that type
@@ -3791,7 +3821,7 @@ public class GamePanel extends javax.swing.JPanel {
      * "2" for their respective ratios
      * @return
      */
-    private boolean hasTradeCards(int tradingType) {
+    private boolean hasTradeCards(int tradingType, int playerNumber) {
         boolean hasEnoughCards = false; //does the player have enough cards. Start false because no check has been made yet.
 
         //check if the input is valid
@@ -3799,7 +3829,7 @@ public class GamePanel extends javax.swing.JPanel {
             System.out.println("Error: hasTradeCards out of bounds with value: " + tradingType);
         } else { //check the current players cards
             //create an array to store how many cards of each type the player has
-            countNumCardTypes();
+            countNumCardTypes(playerNumber);
 
             //check if there is the required amount of each type
             for (int i = 1; i < numCardType.length; i++) {
@@ -4948,21 +4978,30 @@ public class GamePanel extends javax.swing.JPanel {
         // If a turn is currently going on, render the current player's cards
         if (!inbetweenTurns) {
 
+            int playerID;
+
+            //if online then always show the local player's cards
+            if (onlineMode != -1) {
+                playerID = onlineMode;
+            } else { //show the current players cards
+                playerID = currentPlayer;
+            }
+
             //decide which cards to draw: development or resource
             if (!showDevCards) {
 
                 // Get the number of cards the player has
-                int listSize = cards[currentPlayer].size();
+                int listSize = cards[playerID].size();
 
                 //get the number of each card type the player has
-                countCardTypes(listSize);
+                countCardTypes(listSize, playerID);
 
                 // Calculate where the first card must go to center the list
                 cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 //check if the cards would go off the screen
                 if ((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(CARD_CLAY)))) {
-                    drawCardStacks[currentPlayer] = true;
+                    drawCardStacks[playerID] = true;
 
                     //draw the number of cards the payer has of each type
                     //change the font
@@ -5012,11 +5051,13 @@ public class GamePanel extends javax.swing.JPanel {
                         //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
                         if (showCardHitbox && cardTypeCount[i] > 0) {
                             //decide if to draw this on in the loop
-                            if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
+                            if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
+                                drawSpecificHitbox = false;
+                            } else if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                                 drawSpecificHitbox = true;
                             } else if (tradingMode == 3) { //special handeling for 2:1
                                 //check if the card is of the type the player muct trade for 2:1 trading
-                                drawSpecificHitbox = (i + 1) != tradeResource && (playerHasPort[currentPlayer][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded;
+                                drawSpecificHitbox = (i + 1) != tradeResource && (playerHasPort[playerID][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded;
                             } else { //if it is for other 4:1 or 3:1 trading purpous do some more checks
                                 //has to have more than the minimum or more cards and cannot be the same type of card the play wants to end up with.
                                 drawSpecificHitbox = cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource;
@@ -5048,14 +5089,14 @@ public class GamePanel extends javax.swing.JPanel {
                     g2d.setFont(tempFont);
 
                 } else { //if the cards would NOT go off the screen
-                    drawCardStacks[currentPlayer] = false;
+                    drawCardStacks[playerID] = false;
 
                     // Draw the player's cards
                     // Reuse the image variable
                     int type;
                     for (int i = 0; i < listSize; i++) {
                         // Get the card type
-                        type = cards[currentPlayer].get(i);
+                        type = cards[playerID].get(i);
                         // Get the image for that card
                         switch (type) {
                             case 1: // Clay card
@@ -5089,14 +5130,16 @@ public class GamePanel extends javax.swing.JPanel {
                         //draw the hitbox
                         if (showCardHitbox) {
                             //decide if to draw this on in the loop
-                            if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
+                            if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
+                                drawSpecificHitbox = false;
+                            } else if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
                                 drawSpecificHitbox = true;
                             } else if (tradingMode == 3) { //special handeling for 2:1
                                 //check if the card is of the type the player muct trade for 2:1 trading
-                                drawSpecificHitbox = cards[currentPlayer].get(i) != tradeResource && (playerHasPort[currentPlayer][cards[currentPlayer].get(i)]) && numCardType[type] >= minTradeCardsNeeded;
+                                drawSpecificHitbox = cards[playerID].get(i) != tradeResource && (playerHasPort[playerID][cards[playerID].get(i)]) && numCardType[type] >= minTradeCardsNeeded;
                             } else { //if it is for trading purpous do some more checks
                                 //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
-                                drawSpecificHitbox = numCardType[type] >= minTradeCardsNeeded && cards[currentPlayer].get(i) != tradeResource;
+                                drawSpecificHitbox = numCardType[type] >= minTradeCardsNeeded && cards[playerID].get(i) != tradeResource;
                             }
 
                             if (drawSpecificHitbox) {
@@ -5123,7 +5166,7 @@ public class GamePanel extends javax.swing.JPanel {
             } else { //if the dev cards are being drawn instead
 
                 // Get the number of dev cards the player has
-                int listSize = devCards[currentPlayer].size();
+                int listSize = devCards[playerID].size();
 
                 //get the number of each dev card type the player has
                 //setup an array to hold the results
@@ -5132,7 +5175,7 @@ public class GamePanel extends javax.swing.JPanel {
                 //loop thorugh and populate the array
                 for (int i = 0; i < listSize; i++) {
 
-                    devCardTypeCount[devCards[currentPlayer].get(i) - 1]++;
+                    devCardTypeCount[devCards[playerID].get(i) - 1]++;
                 }
 
                 // Calculate where the first card must go to center the list
@@ -5140,7 +5183,7 @@ public class GamePanel extends javax.swing.JPanel {
 
                 //check if the cards would go off the screen
                 if ((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(DEV_CARD_KNIGHT)))) {
-                    drawDevCardStacks[currentPlayer] = true;
+                    drawDevCardStacks[playerID] = true;
 
                     //draw the number of cards the payer has of each type
                     //change the font
@@ -5200,7 +5243,11 @@ public class GamePanel extends javax.swing.JPanel {
                         //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
                         if (showDevCardHitbox && devCardTypeCount[i] > 0) {
                             //decide if to draw this one in the loop
-                            drawSpecificHitbox = i < 4; //make sure the card is an action type card
+                            if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
+                                drawSpecificHitbox = false;
+                            } else { //make sure the card is an action type card
+                                drawSpecificHitbox = i < 4;
+                            }
 
                             if (drawSpecificHitbox) {
                                 //draw the high light
@@ -5228,14 +5275,14 @@ public class GamePanel extends javax.swing.JPanel {
                     g2d.setFont(tempFont);
 
                 } else { //if the dev cards would NOT go off screen
-                    drawDevCardStacks[currentPlayer] = false;
+                    drawDevCardStacks[playerID] = false;
 
                     // Draw the player's dev cards
                     // Reuse the image variable
                     int type;
                     for (int i = 0; i < listSize; i++) {
                         // Get the card type
-                        type = devCards[currentPlayer].get(i);
+                        type = devCards[playerID].get(i);
                         // Get the image for that card
                         switch (type) {
                             case 1: //knight card
@@ -5281,7 +5328,11 @@ public class GamePanel extends javax.swing.JPanel {
                         //draw the hitbox
                         if (showDevCardHitbox) {
                             //decide if to draw this one in the loop
-                            drawSpecificHitbox = type < 5; //make sure the card is an action type card
+                            if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
+                                drawSpecificHitbox = false;
+                            } else {
+                                drawSpecificHitbox = type < 5; //make sure the card is an action type card
+                            }
 
                             if (drawSpecificHitbox) {
                                 //draw the high light
@@ -5932,7 +5983,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean showPort = false;
 
         //create an array to store how many cards of each type the player has
-        countNumCardTypes();
+        countNumCardTypes(currentPlayer);
 
         //do not show the port if it is the 2:1 port that the player has. This prevents trading wood for wood.
         if (!playerHasPort[currentPlayer][resourceType]) {
@@ -6114,25 +6165,25 @@ public class GamePanel extends javax.swing.JPanel {
      *
      * @param listSize
      */
-    private void countCardTypes(int listSize) {
+    private void countCardTypes(int listSize, int playerNum) {
         //setup an array to hold the results
         cardTypeCount = new int[5];
 
         //loop thorugh and populate the array
         for (int i = 0; i < listSize; i++) {
-            cardTypeCount[cards[currentPlayer].get(i) - 1]++;
+            cardTypeCount[cards[playerNum].get(i) - 1]++;
         }
     }
 
     /**
      * Initialize numCardType and assign it values.
      */
-    private void countNumCardTypes() {
+    private void countNumCardTypes(int playerNum) {
         numCardType = new int[6]; //index 0 is empty and index 1-5 correspond to the card type
 
         //sum up the cards of each type
-        for (int i = 0; i < cards[currentPlayer].size(); i++) {
-            numCardType[cards[currentPlayer].get(i)]++;
+        for (int i = 0; i < cards[playerNum].size(); i++) {
+            numCardType[cards[playerNum].get(i)]++;
         }
     }
 
@@ -6288,6 +6339,19 @@ public class GamePanel extends javax.swing.JPanel {
 
         }
 
+    }
+
+    /**
+     * If the game is in online mode update the server with the current game.
+     */
+    private void onlineUpdateServer() {
+        System.out.println("Updateing online");
+
+        //check if the game is for online play
+        if (onlineMode != -1) {
+            //if it is send the save file to the server
+            onlineClient.sendGameToServer();
+        }
     }
 
     /**
