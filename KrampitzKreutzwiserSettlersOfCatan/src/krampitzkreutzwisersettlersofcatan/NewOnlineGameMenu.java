@@ -17,6 +17,8 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
     private final MainMenu mainMenuFrame;
     private CatanServer server;
     private CatanClient client;
+    
+    private int portNum = 25570;
 
     /**
      * Creates new form CreditsUI
@@ -51,7 +53,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
      * Create the local server
      */
     private void serverStartUp() {
-        server = new CatanServer(GamePanel.getPlayerCount());
+        server = new CatanServer(GamePanel.getPlayerCount(), portNum);
 
         //create a new thread for the server
         Thread t = new Thread(() -> {
@@ -67,7 +69,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
      */
     private void createFirstClient() {
 
-        client = new CatanClient(700, 200, "localhost", mainMenuFrame.getGameFrame());
+        client = new CatanClient(700, 200, "localhost", mainMenuFrame.getGameFrame(), portNum);
         client.connectToServer();
         client.setUpGUI();
         client.setUpButton();
@@ -100,6 +102,9 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         titleLbl = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        createBtn = new javax.swing.JButton();
+        portLbl = new javax.swing.JLabel();
+        portTxtFld = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -118,11 +123,28 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("You have created a new Online Catan Game! A server has been started on you local machine and the first client has automatically connected you as player 1 (Red). For the other players to connect you must open port 25570 to you local machine. Then the players can connect over your IP using port 25570.");
+        jTextArea1.setText("Select a port to create your game server.\n\nYou have created a new Online Catan Game! A server has been started on you local machine and the first client has automatically connected you as player 1 (Red). For the other players to connect you must open port 25570 to you local machine. Then the players can connect over your IP using port 25570.");
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setEnabled(false);
         jTextArea1.setOpaque(false);
         jScrollPane1.setViewportView(jTextArea1);
+
+        createBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
+        createBtn.setText("Create Server");
+        createBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createBtnActionPerformed(evt);
+            }
+        });
+
+        portLbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        portLbl.setText("Catan Game Server Port: (25570 recomended)");
+
+        portTxtFld.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                portTxtFldActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -131,12 +153,18 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(titleLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 615, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(backBtn)
                         .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(titleLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(portLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .addComponent(portTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(createBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1))
-                .addContainerGap())
+                .addGap(10, 10, 10))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,10 +172,17 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(titleLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(createBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(portLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(portTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(backBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -164,11 +199,51 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         mainMenuFrame.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void createBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBtnActionPerformed
+
+        boolean validInput = false;
+        String input = portTxtFld.getText();
+        int portNum = -1;
+        
+        //make sure the input is good
+        //if a blank feild
+        if (!input.equals("")) {
+            
+            //if the feild is not blank check if it's and integer
+            try {
+                portNum = Integer.parseInt(input);
+                
+                //make sure no important ports
+                if (portNum != 80 && portNum != 443) {
+                    
+                    this.portNum = portNum;
+                    runSetup();
+                } else {
+                    createBtn.setText("No HTTP port! Try again");
+                }
+                
+            } catch (NumberFormatException e) {
+                createBtn.setText("No port num! Try again");
+            }
+            
+        } else {
+            createBtn.setText("Must have port Num! Try again");
+        }
+
+    }//GEN-LAST:event_createBtnActionPerformed
+
+    private void portTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_portTxtFldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_portTxtFldActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.ButtonGroup borderGrp;
+    private javax.swing.JButton createBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel portLbl;
+    private javax.swing.JTextField portTxtFld;
     private javax.swing.JLabel titleLbl;
     private javax.swing.ButtonGroup windowedGrp;
     // End of variables declaration//GEN-END:variables

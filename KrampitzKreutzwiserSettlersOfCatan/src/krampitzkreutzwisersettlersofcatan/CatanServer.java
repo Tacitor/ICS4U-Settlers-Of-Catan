@@ -36,7 +36,7 @@ public class CatanServer {
      *
      * @param maxClients
      */
-    public CatanServer(int maxClients) {
+    public CatanServer(int maxClients, int port) {
         //no clients have connected yet
         numClients = 0;
         //save the number of clients that will connect
@@ -47,7 +47,7 @@ public class CatanServer {
 
         //create the socket to listen 
         try {
-            serverSocket = new ServerSocket(25570);
+            serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             System.out.println("[Server] " + "IOException from server contructor");
         }
@@ -265,7 +265,7 @@ public class CatanServer {
         int numClientsToHave = Integer.parseInt(JOptionPane.showInputDialog("Enter the integer number of clients that will connect:"));
 
         //create the server socket
-        CatanServer server = new CatanServer(numClientsToHave);
+        CatanServer server = new CatanServer(numClientsToHave, 25570);
         //begin listening
         server.acceptConnections();
     }

@@ -44,6 +44,7 @@ public class CatanClient extends JFrame {
     private int clientID;
     private int totalClientNum; //the number of total clients that will be connected to the server
     private String ip; //the ip adress the client will try to connect to
+    private int port;
     private boolean successfulConnect = false; //did this client successfully connect to the server
     private GameFrame theGameFrame;
 
@@ -61,7 +62,7 @@ public class CatanClient extends JFrame {
      * @param ip
      * @param gameFrame
      */
-    public CatanClient(int width, int height, String ip, GameFrame gameFrame) {
+    public CatanClient(int width, int height, String ip, GameFrame gameFrame, int port) {
         /* Set the Windows 10 look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -87,7 +88,17 @@ public class CatanClient extends JFrame {
         sendBtn = new JButton();
         fileBtn = new JButton();
         this.ip = ip;
+        this.port = port;
         theGameFrame = gameFrame;
+    }
+    
+    /**
+     * Update the port for when the Client will attempt a connection to the server
+     * 
+     * @param port 
+     */
+    public void setPort(int port) {
+        this.port = port;
     }
 
     /**
@@ -437,7 +448,7 @@ public class CatanClient extends JFrame {
             System.out.println("----Client----");
             try {
                 //establic connection
-                socket = new Socket(ip, 25570);
+                socket = new Socket(ip, port);
                 dataIn = new DataInputStream(socket.getInputStream());
                 dataOut = new DataOutputStream(socket.getOutputStream());
                 //now that a connection has been establichsed get the number for this client

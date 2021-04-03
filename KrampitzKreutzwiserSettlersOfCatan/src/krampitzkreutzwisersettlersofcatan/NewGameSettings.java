@@ -315,7 +315,6 @@ public class NewGameSettings extends javax.swing.JFrame {
             // Hide this window and show the next screen
             this.setVisible(false);
             newOnlineGameMenu.setVisible(true);
-            newOnlineGameMenu.runSetup();
         }
     }//GEN-LAST:event_startGameBtnActionPerformed
 
