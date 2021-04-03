@@ -98,6 +98,15 @@ public class CatanClient extends JFrame {
     public int getClientID() {
         return clientID;
     }
+    
+    /**
+     * Access the total number of Clients on the server
+     *
+     * @return
+     */
+    public int getMaxClients() {
+        return totalClientNum;
+    }
 
     /**
      * Set the icon for the JFRame

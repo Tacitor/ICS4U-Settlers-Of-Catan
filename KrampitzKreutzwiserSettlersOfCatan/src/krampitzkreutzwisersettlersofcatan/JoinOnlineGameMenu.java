@@ -191,6 +191,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
                 //once the client has been set up save it to the game panel
                 GamePanel.setOnlineMode(client.getClientID());
                 GamePanel.setCatanClient(client);
+                GamePanel.setPlayerCount(client.getMaxClients());
 
             } else {
                 //count a fail
