@@ -3482,7 +3482,9 @@ public class GamePanel extends javax.swing.JPanel {
         ButtonModel oldSelection; // The button selected before this update began
 
         //first check if the game is inbetween turns
-        if (inbetweenTurns) {
+        //of if it's online and the player is not the active one
+        //in both cases turn everything off
+        if (inbetweenTurns || (onlineMode != -1 && onlineMode != currentPlayer)) {
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
@@ -3602,6 +3604,11 @@ public class GamePanel extends javax.swing.JPanel {
             useDevCardBtn.setEnabled(hasDevCards() && !userPlayedDevCard); //only if the user has dev cards and hasn't already used oene this turn
         }
 
+        //if in online mode and not the current player they should not be able to chick the turn switch button
+        if (onlineMode != -1) {
+            turnSwitchBtn.setEnabled(onlineMode == currentPlayer);
+        }
+
         //if the user can build tell them that. (may be overwitten by following instructions
         if (canBuildRoad || canBuildCity || canBuildSettlement || canTrade4to || canTrade3to || canTrade2to) {
             // Set the instruction labels to tell the user they can build
@@ -3700,9 +3707,21 @@ public class GamePanel extends javax.swing.JPanel {
         else {
             // If no buttons are enabled clear the selection
             buildBtnGroup.clearSelection();
-            // Set the instruction labels to tell the player they are out of setup buildings
-            instructionLbl.setText("You have placed all of your setup buildings");
-            subInstructionLbl.setText("End your turn to continue the game");
+
+            //check if the game is in online mode
+            if ((onlineMode == -1 || onlineMode == currentPlayer) && !inbetweenTurns) {
+                //if in offline mode then the player has no more buildings
+                //also if in online mode and the current player is the online player
+                //must not be inbetween turns
+
+                // Set the instruction labels to tell the player they are out of setup buildings
+                instructionLbl.setText("You have placed all of your setup buildings");
+                subInstructionLbl.setText("End your turn to continue the game");
+            } else {
+                //set the lables so the player knows that they need to wait
+                instructionLbl.setText("You are player " + onlineMode + " please wait for your turn");
+                subInstructionLbl.setText("The current player is: " + currentPlayer);
+            }
         }
 
         // Change the enabled/disabled state of the buttons based on whether or 

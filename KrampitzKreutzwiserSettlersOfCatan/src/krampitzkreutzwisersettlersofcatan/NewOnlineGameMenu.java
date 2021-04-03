@@ -5,7 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
-import javax.swing.JOptionPane;
 import textures.ImageRef;
 
 /**
