@@ -51,6 +51,7 @@ public class CatanClient extends JFrame {
     private String chat;
     private boolean buttonEnabled;
     private boolean justPressedSend = false; //if this client waiting for the first transmision from the server
+    private boolean firstFileRecieve; //is the client waiting for it's first catan file recive and waiting to set up the game
 
     private ClientSideConnection csc; //the socket type var to hold the connection for this CatanClient
 
@@ -61,6 +62,7 @@ public class CatanClient extends JFrame {
      * @param height
      * @param ip
      * @param gameFrame
+     * @param port
      */
     public CatanClient(int width, int height, String ip, GameFrame gameFrame, int port) {
         /* Set the Windows 10 look and feel */
@@ -90,12 +92,14 @@ public class CatanClient extends JFrame {
         this.ip = ip;
         this.port = port;
         theGameFrame = gameFrame;
+        firstFileRecieve = true;
     }
-    
+
     /**
-     * Update the port for when the Client will attempt a connection to the server
-     * 
-     * @param port 
+     * Update the port for when the Client will attempt a connection to the
+     * server
+     *
+     * @param port
      */
     public void setPort(int port) {
         this.port = port;
@@ -109,7 +113,7 @@ public class CatanClient extends JFrame {
     public int getClientID() {
         return clientID;
     }
-    
+
     /**
      * Access the total number of Clients on the server
      *
@@ -237,7 +241,8 @@ public class CatanClient extends JFrame {
 
     public void updateButtons() {
         sendBtn.setEnabled(buttonEnabled);
-        fileBtn.setEnabled(buttonEnabled);
+        //always false because the only file that should be sent is a Catan save file
+        fileBtn.setEnabled(false);
     }
 
     /**
@@ -258,7 +263,7 @@ public class CatanClient extends JFrame {
         //make it visible
         theGameFrame.setVisible(true);
         theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
-        
+
         //send the save file
         sendGameToServer();
 
@@ -358,9 +363,9 @@ public class CatanClient extends JFrame {
 
                         //ensure the directory is there
                         Files.createDirectories(Paths.get(ONLINE_SAVE_LOCATION));
-                        
+
                         //create a file to save it to
-                        File file  = new File(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
+                        File file = new File(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
                         
                         //take read and write acess
                         file.setExecutable(true);
@@ -376,8 +381,14 @@ public class CatanClient extends JFrame {
                         //close it
                         fos.close();
 
-                        //setup the game that will be played
-                        theGameFrame.resetGamePanel();
+                        //check if this was the first file recival
+                        if (firstFileRecieve) {
+                            //setup the game that will be played
+                            theGameFrame.resetGamePanel();
+                            
+                            //save that a file was recived
+                            firstFileRecieve = false;
+                        }
                         //load the save
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
                         //make it visible

@@ -925,7 +925,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //if the thief had just finished set it false, they are done now
             thiefJustFinished = false;
-            
+
             //update the server if online mode
             onlineUpdateServer();
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
@@ -1201,35 +1201,45 @@ public class GamePanel extends javax.swing.JPanel {
      * @param event The event triggered by the mouse click
      */
     public void mouseClick(MouseEvent event) {
-        // debug click listener
-        //System.out.println("Click recieved at clock: " + Catan.clock);
+        boolean authorizedUser; //stores whether or not the click can from an autheroized user
 
+        // debug click listener
+        //System.out.println("Click recieved at clock: " + Catan.clock); 
+        //check if the user is authorized
         //only run logic if the player that clicked is allowed to (stops online players from clicking when it's not their turn)
         if (onlineMode == -1 || onlineMode == currentPlayer) {
+            authorizedUser = true;
+        } else {
+            authorizedUser = false;
+        }
 
-            //check if the player clicked on one of the SettlerBtns
-            //loop through all the custom buttons
-            for (SettlerBtn btn : settlerBtns) {
-                if (event.getX() > btn.getXPos()
-                        && event.getY() > btn.getYPos()
-                        && event.getX() < (btn.getXPos() + getImgWidth(btn.getBaseImage()))
-                        && event.getY() < (btn.getYPos() + getImgHeight(btn.getBaseImage()))
-                        && btn.getEnabled()) { //and that it is enabled
+        //check if the player clicked on one of the SettlerBtns
+        //loop through all the custom buttons
+        for (SettlerBtn btn : settlerBtns) {
+            if (event.getX() > btn.getXPos()
+                    && event.getY() > btn.getYPos()
+                    && event.getX() < (btn.getXPos() + getImgWidth(btn.getBaseImage()))
+                    && event.getY() < (btn.getYPos() + getImgHeight(btn.getBaseImage()))
+                    && btn.getEnabled()) { //and that it is enabled
 
-                    //check the button that was pressed
-                    if (btn.equals(toggleCardBtn)) { //if it was the toggle button
-                        //check the mode
-                        if (toggleCardBtn.getMode() == 0) { //if in mode 0 (switch TO dev cards)
-                            toggleCardBtn.setMode(1);
-                            showDevCards = true;
-                        } else if (toggleCardBtn.getMode() == 1) { //if in mode to switch TO resource cards
-                            toggleCardBtn.setMode(0);
-                            showDevCards = false;
-                        }
+                //check the button that was pressed
+                if (btn.equals(toggleCardBtn)) { //if it was the toggle button
+                    //check the mode
+                    if (toggleCardBtn.getMode() == 0) { //if in mode 0 (switch TO dev cards)
+                        toggleCardBtn.setMode(1);
+                        showDevCards = true;
+                    } else if (toggleCardBtn.getMode() == 1) { //if in mode to switch TO resource cards
+                        toggleCardBtn.setMode(0);
+                        showDevCards = false;
+                    }
 
-                        repaint();
+                    repaint();
 
-                    } else if (btn.equals(buyDevCardBtn)) { //if there was a click on the buy card button
+                }
+                //only check the other buttons if there is and authroiazed user
+                if (authorizedUser) {
+
+                    if (btn.equals(buyDevCardBtn)) { //if there was a click on the buy card button
                         //since it was already confirmed the player has the corret amount of cards by the update build buttons method remove them
                         cards[currentPlayer].remove(new Integer("3"));
                         cards[currentPlayer].remove(new Integer("4"));
@@ -1283,6 +1293,10 @@ public class GamePanel extends javax.swing.JPanel {
                     }
                 }
             }
+        }
+
+        //only check for a click on the rest of the board if the user is authoriazed
+        if (authorizedUser) {
 
             //check if the player is building
             if (buildingObject != 0) {
@@ -2185,6 +2199,7 @@ public class GamePanel extends javax.swing.JPanel {
             onlineUpdateServer();
 
         }
+
     }
 
     /**
@@ -2819,6 +2834,9 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("size:")) {
                         tempScannerVal = Integer.parseInt(scanner.nextLine());
                         //System.out.println("Yuppers10.2");
+                        
+                        //clear the arrayList
+                        cards[i].clear();
 
                         if (scanner.nextLine().equals("cards:")) {
 
@@ -3052,6 +3070,9 @@ public class GamePanel extends javax.swing.JPanel {
                     if (scanner.nextLine().equals("size:")) {
                         tempScannerVal = Integer.parseInt(scanner.nextLine());
                         //System.out.println("Yuppers10.2");
+                        
+                        //clear the arrayList
+                        devCards[i].clear();
 
                         if (scanner.nextLine().equals("dev cards:")) {
 
@@ -3200,13 +3221,28 @@ public class GamePanel extends javax.swing.JPanel {
             //toggleCardBtn
             if (scanner.nextLine().equals("toggleCardBtn.getEnabled")) {
                 //System.out.println("Got it");
-                toggleCardBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+
+                if (onlineMode == -1) {
+
+                    toggleCardBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
+
+                } else {
+                    //skip a line
+                    scanner.nextLine();
+                }
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
             if (scanner.nextLine().equals("toggleCardBtn.getMode")) {
                 //System.out.println("Got it");
-                toggleCardBtn.setMode(Integer.parseInt(scanner.nextLine()));
+
+                if (onlineMode == -1) {
+
+                    toggleCardBtn.setMode(Integer.parseInt(scanner.nextLine()));
+                } else {
+                    //skip a line
+                    scanner.nextLine();
+                }
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -3236,6 +3272,9 @@ public class GamePanel extends javax.swing.JPanel {
 
             //load in the players that can be stolen from
             if (scanner.nextLine().equals("canStealCardPlayers:")) {
+                
+                //clear the arrayList
+                canStealCardPlayers.clear();
 
                 if (scanner.nextLine().equals("size:")) {
 
@@ -3406,7 +3445,6 @@ public class GamePanel extends javax.swing.JPanel {
         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
         //get the number of each card type the player has
-        
         countCardTypes(cards[currentPlayer].size(), currentPlayer);
         countNumCardTypes(currentPlayer);
 
@@ -3514,7 +3552,7 @@ public class GamePanel extends javax.swing.JPanel {
         //first check if the game is inbetween turns
         //of if it's online and the player is not the active one
         //in both cases turn everything off
-        if (inbetweenTurns || (onlineMode != -1 && onlineMode != currentPlayer)) {
+        if (inbetweenTurns) {
             canBuildRoad = false;
             canBuildSettlement = false;
             canBuildCity = false;
@@ -3524,12 +3562,23 @@ public class GamePanel extends javax.swing.JPanel {
 
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(false);
-            toggleCardBtn.setMode(0);
-            showDevCards = false;
 
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(false);
 
+        } else if (onlineMode != -1 && onlineMode != currentPlayer) {
+            canBuildRoad = false;
+            canBuildSettlement = false;
+            canBuildCity = false;
+            canTrade4to = false;
+            canTrade3to = false;
+            canTrade2to = false;
+
+            //update the toggle card button to show the resource cards options for stealing
+            toggleCardBtn.setEnabled(true);
+
+            buyDevCardBtn.setEnabled(false);
+            useDevCardBtn.setEnabled(false);
         } // If the game is in setup
         else if (inSetup) {
             canBuildRoad = (playerSetupRoadsLeft > 0) && newestSetupSettlment != null;
@@ -6345,7 +6394,8 @@ public class GamePanel extends javax.swing.JPanel {
      * If the game is in online mode update the server with the current game.
      */
     private void onlineUpdateServer() {
-        System.out.println("Updateing online");
+        //debug statemtn for updateing the game server
+        //System.out.println("Updateing online");
 
         //check if the game is for online play
         if (onlineMode != -1) {
