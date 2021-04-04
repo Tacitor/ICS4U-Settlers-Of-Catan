@@ -941,12 +941,8 @@ public class GamePanel extends javax.swing.JPanel {
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
-            if (victoryPoints[currentPlayer] >= victoryPointsToWin) {
-                // If they have a winning amount of points end the game
-                endGame();
-                return;
-            }
-
+            checkForWin();
+                    
             // Now the game is waiting to start the next turn
             inbetweenTurns = true;
 
@@ -1204,16 +1200,11 @@ public class GamePanel extends javax.swing.JPanel {
      */
     public void mouseClick(MouseEvent event) {
         boolean authorizedUser; //stores whether or not the click can from an autheroized user
-
         // debug click listener
         //System.out.println("Click recieved at clock: " + Catan.clock); 
         //check if the user is authorized
         //only run logic if the player that clicked is allowed to (stops online players from clicking when it's not their turn)
-        if (onlineMode == -1 || onlineMode == currentPlayer) {
-            authorizedUser = true;
-        } else {
-            authorizedUser = false;
-        }
+        authorizedUser = onlineMode == -1 || onlineMode == currentPlayer;
 
         //check if the player clicked on one of the SettlerBtns
         //loop through all the custom buttons
@@ -3435,23 +3426,23 @@ public class GamePanel extends javax.swing.JPanel {
             if (scanner.nextLine().equals("diceRollVals:")) {
 
                 if (scanner.nextLine().equals("roll-1:")) {
-                    
+
                     diceRollVal[0] = scanner.nextLine();
 
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
                 }
-                
+
                 if (scanner.nextLine().equals("roll-2:")) {
-                    
+
                     diceRollVal[1] = scanner.nextLine();
 
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
                 }
-                
+
                 if (scanner.nextLine().equals("total:")) {
-                    
+
                     diceRollVal[2] = scanner.nextLine();
 
                 } else {
@@ -3560,9 +3551,12 @@ public class GamePanel extends javax.swing.JPanel {
 
             }
         }
-        
+
         //enable the turn button (might be disabled again by updateBuildBtn method if online and not the correct player)
         turnBtnEnabled = true;
+        
+        //check for a wining game
+        checkForWin();
 
         updateBuildButtons();
         repaint();
@@ -3741,6 +3735,7 @@ public class GamePanel extends javax.swing.JPanel {
         if (onlineMode != -1 && onlineMode != currentPlayer) {
             //if the game is online and the game should be disabled because it is waiting for progess from another player
             turnBtnEnabled = false;
+            System.out.println("Setting to :" + turnBtnEnabled);
         }
         //update the turn button
         turnSwitchBtn.setEnabled(turnBtnEnabled);
@@ -6458,6 +6453,20 @@ public class GamePanel extends javax.swing.JPanel {
         if (onlineMode != -1) {
             //if it is send the save file to the server
             onlineClient.sendGameToServer();
+        }
+        
+        //and check for a win
+        checkForWin();
+    }
+
+    /**
+     * Checks the game state if the current player wins the game
+     */
+    private void checkForWin() {
+        // Check if the player has enough points to win
+        if (victoryPoints[currentPlayer] >= victoryPointsToWin) {
+            // If they have a winning amount of points end the game
+            endGame();
         }
     }
 
