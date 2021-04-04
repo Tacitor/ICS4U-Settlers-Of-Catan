@@ -134,14 +134,6 @@ public class CatanServer {
                 dataOut.writeUTF(chat);
                 dataOut.flush(); //send it
 
-                //check if this is the last client to connect
-                if (clientID == maxClients) {
-                    //then tell the first client to begin
-                    clients[0].sendBoolean(true, 4); //incluse the messagy type 4 (startup command)
-
-                    System.out.println("[Server] " + "Send begin command to Client 1");
-                }
-
                 //loop state after all startup business is complete
                 while (true) {
                     //accept a message
@@ -218,10 +210,10 @@ public class CatanServer {
                             } else {
 
                                 hasColour = true;
-                                
+
                                 //give them the first next colour
                                 colourRequest = availableColours.get(0);
-                                
+
                                 //then remove it from the list
                                 availableColours.remove(0);
                             }
@@ -231,6 +223,14 @@ public class CatanServer {
                                 clients[clientID - 1].sendColourResponse(colourRequest); //message type 3: colour request
                             } else {
                                 clients[clientID - 1].sendColourResponse(-1);
+                            }
+
+                            //check if this is the last client to select their colour
+                            if (availableColours.isEmpty()) {
+                                //then tell the first client to begin
+                                clients[0].sendBoolean(true, 4); //incluse the messagy type 4 (startup command)
+
+                                System.out.println("[Server] " + "Send begin command to Client 1");
                             }
 
                             break;
