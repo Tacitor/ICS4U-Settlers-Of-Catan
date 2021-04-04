@@ -27,6 +27,7 @@ public class MainMenu extends javax.swing.JFrame {
     private final ClientSettings clientSettings;
     private final NewOnlineGameMenu newOnlineGameMenu;
     private final JoinOnlineGameMenu joinOnlineGameMenu;
+    private final LoadOnlineGameMenu loadOnlineGameMenu;
 
     /**
      * Creates new form MainMenu
@@ -44,6 +45,7 @@ public class MainMenu extends javax.swing.JFrame {
         newOnlineGameMenu = new NewOnlineGameMenu(this);
         newGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
         joinOnlineGameMenu = new JoinOnlineGameMenu(this);
+        loadOnlineGameMenu = new LoadOnlineGameMenu(this);
 
     }
 
@@ -141,7 +143,6 @@ public class MainMenu extends javax.swing.JFrame {
 
         loadToOnlineBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
         loadToOnlineBtn.setText("Load Game to Online Mode");
-        loadToOnlineBtn.setEnabled(false);
         loadToOnlineBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadToOnlineBtnActionPerformed(evt);
@@ -252,8 +253,8 @@ public class MainMenu extends javax.swing.JFrame {
                 gameJFrame.resetGamePanel();
 
                 //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSaveV13")) {
-                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V13 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
+                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
                 } else { //if it is a real save file
                     //check if the next line hold the player count
                     if (scanner.nextLine().equals("playerCount:")) {
@@ -306,8 +307,8 @@ public class MainMenu extends javax.swing.JFrame {
             gameJFrame.resetGamePanel();
 
             //check if it is a vailid game save
-            if (!scanner.nextLine().equals("SettlersOfCatanSaveV13")) {
-                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan V13 save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+            if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
+                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
             } else { //if it is a real save file
                 //check if the next line hold the player count
                 if (scanner.nextLine().equals("playerCount:")) {
@@ -342,7 +343,8 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_joinOnlineBtnActionPerformed
 
     private void loadToOnlineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadToOnlineBtnActionPerformed
-        // TODO add your handling code here:
+        loadOnlineGameMenu.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_loadToOnlineBtnActionPerformed
 
     /**
@@ -404,6 +406,15 @@ public class MainMenu extends javax.swing.JFrame {
      */
     public NewOnlineGameMenu getNewOnlineGameMenu() {
         return newOnlineGameMenu;
+    }
+    
+    /**
+     * Return the newOnlineGameMenu
+     * 
+     * @return 
+     */
+    public LoadOnlineGameMenu getLoadOnlineGameMenu() {
+        return loadOnlineGameMenu;
     }
     
     /**

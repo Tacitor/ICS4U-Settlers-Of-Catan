@@ -293,10 +293,11 @@ public class CatanClient extends JFrame {
             updateButtons();
 
             //setup the game that will be played
-            theGameFrame.resetGamePanel();
+            //theGameFrame.resetGamePanel();
             //make it visible
             theGameFrame.setVisible(true);
             theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
+            theGameFrame.getMainMenu().getLoadOnlineGameMenu().setVisible(false);
 
             //send the save file
             sendGameToServer();

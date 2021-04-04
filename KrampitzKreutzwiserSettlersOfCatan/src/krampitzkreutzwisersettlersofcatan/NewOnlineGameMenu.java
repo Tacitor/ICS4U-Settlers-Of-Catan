@@ -37,15 +37,11 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
      * Sets everything up for other player to join over a network
      */
     public void runSetup() {
+        //reset the game panel
+        mainMenuFrame.getGameFrame().resetGamePanel();
+        
         serverStartUp();
         createFirstClient();
-        
-        /*
-         * TODO
-         * 
-         * Auto send the save file to the server when all clients have connected.
-         * Add option to the main menu to join a server
-         */
         
     }
 
