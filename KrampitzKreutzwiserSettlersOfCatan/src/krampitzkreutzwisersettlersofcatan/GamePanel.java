@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import Audio.AudioRef;
 import dataFiles.OldCode;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -16,21 +17,30 @@ import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import javax.swing.filechooser.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 import textures.ImageRef;
 import static textures.ImageRef.*;
 
@@ -942,7 +952,7 @@ public class GamePanel extends javax.swing.JPanel {
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
             checkForWin();
-                    
+
             // Now the game is waiting to start the next turn
             inbetweenTurns = true;
 
@@ -3552,9 +3562,15 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
+        //play the turn beep if online and it's the user's turn
+        if (onlineMode == currentPlayer) {
+            playAudio(AudioRef.TURN_BEEP);
+            System.out.println("PLayed");
+        }
+
         //enable the turn button (might be disabled again by updateBuildBtn method if online and not the correct player)
         turnBtnEnabled = true;
-        
+
         //check for a wining game
         checkForWin();
 
@@ -5546,6 +5562,33 @@ public class GamePanel extends javax.swing.JPanel {
          */
     }
 
+    /**
+     * Play some audio from a URL file path
+     *
+     * @param url
+     */
+    private static void playAudio(File file) {
+        AudioInputStream stream;
+        try {
+            //load it in
+            stream = AudioSystem.getAudioInputStream(file);
+
+            Clip clip = AudioSystem.getClip();
+            clip.open(stream);
+
+            clip.start();
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("Sound File not found");
+        } catch (IOException ex) {
+            System.out.println("Sound File error");
+        } catch (UnsupportedAudioFileException ex) {
+            System.out.println("Sound File is of wrong type");
+        } catch (LineUnavailableException ex) {
+            System.out.println("Sound File error: \n" + ex);
+        }
+    }
+
     public void fire() {
         //debugs. Proof the game is actually redrawing.
         //showRoadHitbox = true;
@@ -6455,7 +6498,7 @@ public class GamePanel extends javax.swing.JPanel {
             //if it is send the save file to the server
             onlineClient.sendGameToServer();
         }
-        
+
         //and check for a win
         checkForWin();
     }
