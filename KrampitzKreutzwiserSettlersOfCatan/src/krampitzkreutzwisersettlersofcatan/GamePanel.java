@@ -3582,7 +3582,7 @@ public class GamePanel extends javax.swing.JPanel {
      * on how many cards the current player has, or if the game is in setup, how
      * many setup buildings they have left to place
      */
-    private void updateBuildButtons() {
+    public void updateBuildButtons() {
 
         //reset the colour
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
@@ -3735,10 +3735,11 @@ public class GamePanel extends javax.swing.JPanel {
         if (onlineMode != -1 && onlineMode != currentPlayer) {
             //if the game is online and the game should be disabled because it is waiting for progess from another player
             turnBtnEnabled = false;
-            System.out.println("Setting to :" + turnBtnEnabled);
         }
         //update the turn button
         turnSwitchBtn.setEnabled(turnBtnEnabled);
+        //debug the game state
+        //System.out.println("Setting to :" + turnBtnEnabled);
 
         //if the user can build tell them that. (may be overwitten by following instructions
         if (canBuildRoad || canBuildCity || canBuildSettlement || canTrade4to || canTrade3to || canTrade2to) {

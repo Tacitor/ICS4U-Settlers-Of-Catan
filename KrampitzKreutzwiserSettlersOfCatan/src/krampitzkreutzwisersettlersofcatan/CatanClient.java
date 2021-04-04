@@ -291,6 +291,9 @@ public class CatanClient extends JFrame {
             //set the button to the value
             buttonEnabled = recivedBoolean;
             updateButtons();
+            
+            //update the build buttons ingame
+            theGameFrame.getGamePanel().updateBuildButtons();
 
             //setup the game that will be played
             //theGameFrame.resetGamePanel();
