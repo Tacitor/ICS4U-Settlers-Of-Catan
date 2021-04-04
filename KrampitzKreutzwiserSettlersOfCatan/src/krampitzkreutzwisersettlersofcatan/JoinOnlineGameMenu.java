@@ -51,8 +51,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        borderGrp = new javax.swing.ButtonGroup();
-        windowedGrp = new javax.swing.ButtonGroup();
+        colourSelectBtnGrp = new javax.swing.ButtonGroup();
         backBtn = new javax.swing.JButton();
         connectBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
@@ -62,6 +61,12 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
         ipTxtFld = new javax.swing.JTextField();
         portTxtFld = new javax.swing.JTextField();
         portLbl = new javax.swing.JLabel();
+        colourSelectLbl = new javax.swing.JLabel();
+        colourRedRbtn = new javax.swing.JRadioButton();
+        colourBlueRbtn = new javax.swing.JRadioButton();
+        colourOrangeRbtn = new javax.swing.JRadioButton();
+        colourWhiteRbtn = new javax.swing.JRadioButton();
+        requestColourBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -114,6 +119,35 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
         portLbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         portLbl.setText("Connection port:");
 
+        colourSelectLbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        colourSelectLbl.setText("Select the colour you would like to play as:");
+
+        colourSelectBtnGrp.add(colourRedRbtn);
+        colourRedRbtn.setSelected(true);
+        colourRedRbtn.setText("Red");
+        colourRedRbtn.setEnabled(false);
+
+        colourSelectBtnGrp.add(colourBlueRbtn);
+        colourBlueRbtn.setText("Blue");
+        colourBlueRbtn.setEnabled(false);
+
+        colourSelectBtnGrp.add(colourOrangeRbtn);
+        colourOrangeRbtn.setText("Orange");
+        colourOrangeRbtn.setEnabled(false);
+
+        colourSelectBtnGrp.add(colourWhiteRbtn);
+        colourWhiteRbtn.setText("White");
+        colourWhiteRbtn.setEnabled(false);
+
+        requestColourBtn.setFont(new java.awt.Font("MV Boli", 0, 16)); // NOI18N
+        requestColourBtn.setText("Request Colour");
+        requestColourBtn.setEnabled(false);
+        requestColourBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                requestColourBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -126,14 +160,27 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(backBtn)
                                 .addComponent(ipLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(ipTxtFld))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(portLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(portTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(connectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(connectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(colourSelectLbl)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(colourRedRbtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(colourBlueRbtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(colourOrangeRbtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(colourWhiteRbtn))
+                            .addComponent(backBtn))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(requestColourBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -155,7 +202,18 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
                         .addComponent(portTxtFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(connectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(backBtn)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(colourSelectLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(colourRedRbtn)
+                            .addComponent(colourBlueRbtn)
+                            .addComponent(colourOrangeRbtn)
+                            .addComponent(colourWhiteRbtn))
+                        .addGap(18, 18, 18)
+                        .addComponent(backBtn))
+                    .addComponent(requestColourBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -192,6 +250,52 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
     private void portTxtFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_portTxtFldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_portTxtFldActionPerformed
+
+    private void requestColourBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestColourBtnActionPerformed
+        requestColourBtn.setText("Requesting...");
+        
+        int colourRequest; //store the colour to request
+
+        //get the colour the user wants
+        if (colourRedRbtn.isSelected()) {
+            colourRequest = 1; //request red
+        } else if (colourBlueRbtn.isSelected()) {
+            colourRequest = 2; //request blue
+        } else if (colourOrangeRbtn.isSelected()) {
+            colourRequest = 3; //request orange
+        } else if (colourWhiteRbtn.isSelected()) {
+            colourRequest = 4; //request white
+        } else {
+            colourRequest = 0; //default to what every the server want to give me
+        }
+
+        //request the player colour
+        client.requestColour(colourRequest); //request any colour
+
+        //System.out.println("coluour: " + client.getClientColour());
+        //wait for the response to come through
+        while (client.getClientColour() == 0) {
+            try {
+                //while there is no assinged colour do nothing and just wait
+                //System.out.println("coluour still: " + client.getClientColour());
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                System.out.println("Error requesing colour in JoinOnlineGameMenu");
+            }
+        }
+
+        //if the colour request was successfule tell the game
+        if (client.getClientColour() == colourRequest) {
+
+            //once the client has been set up save it to the game panel
+            GamePanel.setOnlineMode(client.getClientColour());
+            
+            requestColourBtn.setText("Done");
+            requestColourBtn.setEnabled(false);
+        } else { //the the user that it failed
+            requestColourBtn.setText("Not available. Try Again");
+        }
+    }//GEN-LAST:event_requestColourBtnActionPerformed
 
     private void findServer() {
         if (client == null) {
@@ -237,30 +341,22 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
             if (succesfulConnect) {
                 connectBtn.setText("Connection Success");
-                
+
                 int colour;
 
                 client.setUpGUI();
                 client.setUpButton();
-                
+
                 //save the client and the max number of players now because the colour request could finish first
                 GamePanel.setCatanClient(client);
                 GamePanel.setPlayerCount(client.getMaxClients());
 
-                //request the player colour
-                client.requestColour(0); //request any colour
-                
-                //System.out.println("coluour: " + client.getClientColour());
-
-                //wait for the response to come through
-                while (client.getClientColour() == 0) {
-                    //while there is no assinged colour do nothing and just wait
-                    //System.out.println("coluour still: " + client.getClientColour());
-                    Thread.sleep(200);
-                }
-
-                //once the client has been set up save it to the game panel
-                GamePanel.setOnlineMode(client.getClientColour());
+                //enable all the colour buttons
+                colourBlueRbtn.setEnabled(true);
+                colourOrangeRbtn.setEnabled(true);
+                colourRedRbtn.setEnabled(true);
+                colourWhiteRbtn.setEnabled(true);
+                requestColourBtn.setEnabled(true);
 
             } else {
                 //count a fail
@@ -302,7 +398,12 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
-    private javax.swing.ButtonGroup borderGrp;
+    private javax.swing.JRadioButton colourBlueRbtn;
+    private javax.swing.JRadioButton colourOrangeRbtn;
+    private javax.swing.JRadioButton colourRedRbtn;
+    private javax.swing.ButtonGroup colourSelectBtnGrp;
+    private javax.swing.JLabel colourSelectLbl;
+    private javax.swing.JRadioButton colourWhiteRbtn;
     private javax.swing.JButton connectBtn;
     private javax.swing.JLabel ipLbl;
     private javax.swing.JTextField ipTxtFld;
@@ -310,8 +411,8 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel portLbl;
     private javax.swing.JTextField portTxtFld;
+    private javax.swing.JButton requestColourBtn;
     private javax.swing.JLabel titleLbl;
-    private javax.swing.ButtonGroup windowedGrp;
     // End of variables declaration//GEN-END:variables
 
 }

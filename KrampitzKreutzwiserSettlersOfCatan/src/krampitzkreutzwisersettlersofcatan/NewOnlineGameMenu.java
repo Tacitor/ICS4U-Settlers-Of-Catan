@@ -104,8 +104,6 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        borderGrp = new javax.swing.ButtonGroup();
-        windowedGrp = new javax.swing.ButtonGroup();
         backBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -246,14 +244,12 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
-    private javax.swing.ButtonGroup borderGrp;
     private javax.swing.JButton createBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel portLbl;
     private javax.swing.JTextField portTxtFld;
     private javax.swing.JLabel titleLbl;
-    private javax.swing.ButtonGroup windowedGrp;
     // End of variables declaration//GEN-END:variables
 
 }
