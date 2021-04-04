@@ -42,6 +42,7 @@ public class CatanClient extends JFrame {
     private JButton fileBtn;
 
     private int clientID;
+    private int clientColour; //the colour of the player the client will be speaking for. Often but not always the same as the client ID. 0 for no request and 1-4 for that colour
     private int totalClientNum; //the number of total clients that will be connected to the server
     private String ip; //the ip adress the client will try to connect to
     private int port;
@@ -52,6 +53,7 @@ public class CatanClient extends JFrame {
     private boolean buttonEnabled;
     private boolean justPressedSend = false; //if this client waiting for the first transmision from the server
     private boolean firstFileRecieve; //is the client waiting for it's first catan file recive and waiting to set up the game
+    private boolean firstClientGotStatup = false; //only used if this is client #1. Stores if the startup command has been recived yet
 
     private ClientSideConnection csc; //the socket type var to hold the connection for this CatanClient
 
@@ -93,6 +95,7 @@ public class CatanClient extends JFrame {
         this.port = port;
         theGameFrame = gameFrame;
         firstFileRecieve = true;
+        clientColour = 0; //default to no colour
     }
 
     /**
@@ -112,6 +115,31 @@ public class CatanClient extends JFrame {
      */
     public int getClientID() {
         return clientID;
+    }
+
+    /**
+     * Access the colour of the client
+     *
+     * @return
+     */
+    public int getClientColour() {
+        return clientColour;
+    }
+
+    /**
+     * Sends a colour request to the server and returns whether or not the
+     * colour was successfully assigned.
+     *
+     * @param colour
+     */
+    public void requestColour(int colour) {
+        
+        //reset a failed request
+        clientColour = 0;
+
+        //send it
+        csc.requestColour(colour);
+
     }
 
     /**
@@ -166,7 +194,9 @@ public class CatanClient extends JFrame {
             header.setText("You are client number 1. Please wait for the rest of the clients to connect before starting\n\nMost recent message: -->");
             //go ahead and wait for the server to send the startup signal
             Thread t = new Thread(() -> {
-                startUpClient1();
+                while (!firstClientGotStatup) {
+                    startUpClient1();
+                }
             });
             t.start();
         } else {
@@ -249,30 +279,57 @@ public class CatanClient extends JFrame {
      * Enables the button for client 1 when the server sends the signal
      */
     public void startUpClient1() {
+        int type = csc.reciveType();
 
-        //place to store the boolean
-        //and assign it to the value the server sends
-        boolean recivedBoolean = csc.reciveBoolean();
+        //make sure this is for a type == 4 startup command
+        if (type == 4) {
 
-        //set the button to the value
-        buttonEnabled = recivedBoolean;
-        updateButtons();
+            //place to store the boolean
+            //and assign it to the value the server sends
+            boolean recivedBoolean = csc.reciveBoolean();
 
-        //setup the game that will be played
-        theGameFrame.resetGamePanel();
-        //make it visible
-        theGameFrame.setVisible(true);
-        theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
+            //set the button to the value
+            buttonEnabled = recivedBoolean;
+            updateButtons();
 
-        //send the save file
-        sendGameToServer();
+            //setup the game that will be played
+            theGameFrame.resetGamePanel();
+            //make it visible
+            theGameFrame.setVisible(true);
+            theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
 
-        //send it to the server
-        //start listening
-        //never stop listening
-        while (true) {
-            regularRecive();
+            //send the save file
+            sendGameToServer();
+
+            firstClientGotStatup = true;
+
+            //send it to the server
+            //start listening
+            //never stop listening
+            while (true) {
+                regularRecive();
+            }
+        } else if (type == 3) {
+            incomingColourResponse();
+
+            firstClientGotStatup = false;
         }
+    }
+
+    /**
+     * Deal with the server responding to a colour change request
+     */
+    private void incomingColourResponse() {
+        System.out.println("[Client " + clientID + "] " + "Recieved a colour change response");
+
+        //read in that boolean
+        int recivedColourResponse = csc.reciveType(); //read in the int
+        
+        //debug the response
+        System.out.println("colour is: " + recivedColourResponse);
+
+        clientColour = recivedColourResponse;
+
     }
 
     public void sendGameToServer() {
@@ -366,7 +423,7 @@ public class CatanClient extends JFrame {
 
                         //create a file to save it to
                         File file = new File(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
-                        
+
                         //take read and write acess
                         file.setExecutable(true);
                         file.setReadable(true);
@@ -385,7 +442,7 @@ public class CatanClient extends JFrame {
                         if (firstFileRecieve) {
                             //setup the game that will be played
                             theGameFrame.resetGamePanel();
-                            
+
                             //save that a file was recived
                             firstFileRecieve = false;
                         }
@@ -403,6 +460,9 @@ public class CatanClient extends JFrame {
                     buttonEnabled = true;
 
                 }
+                break;
+            case 3:
+                incomingColourResponse();
                 break;
             default:
                 buttonEnabled = false;
@@ -501,6 +561,17 @@ public class CatanClient extends JFrame {
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC sendFileStream()");
+            }
+        }
+
+        public void requestColour(int colour) {
+
+            try {
+                dataOut.writeInt(3); //tell the server it is reciving a colour request
+                dataOut.writeInt(colour); //send the colour the client would like
+                dataOut.flush();
+            } catch (IOException e) {
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendColourRequest():\n" + e);
             }
         }
 

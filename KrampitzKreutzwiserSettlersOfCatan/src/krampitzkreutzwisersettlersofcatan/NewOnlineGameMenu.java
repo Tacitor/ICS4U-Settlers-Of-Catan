@@ -68,14 +68,22 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
      * Creates a client to connect to the local server
      */
     private void createFirstClient() {
-
+        //create the new client and request to be the red player
         client = new CatanClient(700, 200, "localhost", mainMenuFrame.getGameFrame(), portNum);
         client.connectToServer();
         client.setUpGUI();
         client.setUpButton();
         
+        //request the player colour
+        client.requestColour(1); //request the red player
+        
+        //wait for the response to come through
+        while (client.getClientColour() == 0) {
+            //while there is no assinged colour do nothing and just wait
+        }
+        
         //once the client has been set up save it to the game panel
-        GamePanel.setOnlineMode(client.getClientID());
+        GamePanel.setOnlineMode(client.getClientColour());
         GamePanel.setCatanClient(client);
 
     }
@@ -204,7 +212,6 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
 
         boolean validInput = false;
         String input = portTxtFld.getText();
-        int portNum = -1;
         
         //make sure the input is good
         //if a blank feild
@@ -212,7 +219,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
             
             //if the feild is not blank check if it's and integer
             try {
-                portNum = Integer.parseInt(input);
+                int portNum = Integer.parseInt(input);
                 
                 //make sure no important ports
                 if (portNum != 80 && portNum != 443) {

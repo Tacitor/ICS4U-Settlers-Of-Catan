@@ -195,14 +195,13 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
     private void findServer() {
         if (client == null) {
-            System.out.println("true");
+            //create a new client and don't request any colour
             client = new CatanClient(700, 200, "localhost", mainMenuFrame.getGameFrame(), 25570);
         }
         //create a CatanClient and connect to the ip specified
         try {
 
             String input = portTxtFld.getText();
-            int portNum = -1;
 
             //=-=-=-=-=-=-=-=-=-=-=Port Check Start=-=-=-=-=-=-=-=-=-=-=
             //make sure the port input is good
@@ -211,7 +210,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
                 //if the feild is not blank check if it's and integer
                 try {
-                    portNum = Integer.parseInt(input);
+                    int portNum = Integer.parseInt(input);
 
                     //make sure no important ports
                     if (portNum != 80 && portNum != 443) {
@@ -238,14 +237,30 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
             if (succesfulConnect) {
                 connectBtn.setText("Connection Success");
+                
+                int colour;
 
                 client.setUpGUI();
                 client.setUpButton();
-
-                //once the client has been set up save it to the game panel
-                GamePanel.setOnlineMode(client.getClientID());
+                
+                //save the client and the max number of players now because the colour request could finish first
                 GamePanel.setCatanClient(client);
                 GamePanel.setPlayerCount(client.getMaxClients());
+
+                //request the player colour
+                client.requestColour(0); //request any colour
+                
+                //System.out.println("coluour: " + client.getClientColour());
+
+                //wait for the response to come through
+                while (client.getClientColour() == 0) {
+                    //while there is no assinged colour do nothing and just wait
+                    //System.out.println("coluour still: " + client.getClientColour());
+                    Thread.sleep(200);
+                }
+
+                //once the client has been set up save it to the game panel
+                GamePanel.setOnlineMode(client.getClientColour());
 
             } else {
                 //count a fail
