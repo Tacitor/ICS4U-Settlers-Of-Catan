@@ -6,6 +6,7 @@
 package Audio;
 
 import java.io.File;
+import java.io.InputStream;
 
 /**
  *
@@ -13,5 +14,5 @@ import java.io.File;
  */
 public class AudioRef {
     
-    public final static File TURN_BEEP = (new File(AudioRef.class.getResource("turnBeep.wav").getPath()));
+    //public final static InputStream TURN_BEEP = (AudioRef.class.getResourceAsStream("turnBeep.wav"));
 }

@@ -16,6 +16,7 @@ import java.awt.Image;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import javax.swing.filechooser.FileFilter;
@@ -3564,8 +3565,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         //play the turn beep if online and it's the user's turn
         if (onlineMode == currentPlayer) {
-            playAudio(AudioRef.TURN_BEEP);
-            System.out.println("PLayed");
+            playTurnBeep();
+            //debug the sound
+            //System.out.println("PLayed");
         }
 
         //enable the turn button (might be disabled again by updateBuildBtn method if online and not the correct player)
@@ -5567,23 +5569,32 @@ public class GamePanel extends javax.swing.JPanel {
      *
      * @param url
      */
-    private static void playAudio(File file) {
-        AudioInputStream stream;
+    private static void playTurnBeep() {
         try {
+            InputStream TURN_BEEP = (AudioRef.class.getResourceAsStream("turnBeep.wav"));
+            
+            InputStream bufferedStream; //add a buffer to the stream
+            AudioInputStream stream; //the stream best used for playing audio
+
+            //decorate it with a buffer
+            bufferedStream = new BufferedInputStream(TURN_BEEP);
+
             //load it in
-            stream = AudioSystem.getAudioInputStream(file);
+            stream = AudioSystem.getAudioInputStream(bufferedStream);
 
             Clip clip = AudioSystem.getClip();
             clip.open(stream);
 
             clip.start();
 
+            System.out.println("boop");
+
         } catch (FileNotFoundException ex) {
-            System.out.println("Sound File not found");
+            System.out.println("Sound File not found\n" + ex);
         } catch (IOException ex) {
-            System.out.println("Sound File error");
+            System.out.println("Sound File error\n" + ex);
         } catch (UnsupportedAudioFileException ex) {
-            System.out.println("Sound File is of wrong type");
+            System.out.println("Sound File is of wrong type\n" + ex);
         } catch (LineUnavailableException ex) {
             System.out.println("Sound File error: \n" + ex);
         }
