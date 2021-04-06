@@ -4750,18 +4750,15 @@ public class GamePanel extends javax.swing.JPanel {
             //draw the hitbox
             if (showResStackHitbox) {
                 //decide if that specif box should be drawn
-                switch (tradingMode) {
-                    case 1:
-                    case 2:
-                        drawSpecificHitbox = canTradeTo(i, tradingMode); //
-                        break;
-                    case 3:
-                        //if its a specialized 2:1
-                        drawSpecificHitbox = canTradeSecializedTo(i);
-                        break;
-                    default:
-                        drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
-                        break;
+                if (currentPlayer != onlineMode) {
+                    drawSpecificHitbox = false;
+                } else if (tradingMode == 1 || tradingMode == 2) {
+                    drawSpecificHitbox = canTradeTo(i, tradingMode);
+                } else if (tradingMode == 3) {
+                    //if its a specialized 2:1
+                    drawSpecificHitbox = canTradeSecializedTo(i);
+                } else {
+                    drawSpecificHitbox = usingDevCard == 4 || usingDevCard == 3; //if the player is selecting a resource type for a YOP or Monopoly dev card
                 }
 
                 //check if that one should be drawn
@@ -5572,7 +5569,7 @@ public class GamePanel extends javax.swing.JPanel {
     private static void playTurnBeep() {
         try {
             InputStream TURN_BEEP = (AudioRef.class.getResourceAsStream("turnBeep.wav"));
-            
+
             InputStream bufferedStream; //add a buffer to the stream
             AudioInputStream stream; //the stream best used for playing audio
 
