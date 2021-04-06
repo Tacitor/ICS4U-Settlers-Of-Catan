@@ -3481,6 +3481,14 @@ public class GamePanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nError: " + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
 
+        //reset the trade and build buttons if in online mode
+        if (onlineMode != -1 && onlineMode != currentPlayer) {
+            trade4to1Btn.setText("Trade 4:1");
+            trade3to1Btn.setText("Trade 3:1");
+            trade2to1Btn.setText("Trade 2:1");
+            cancelBuilding();
+        }
+
         //update the instructions
         if (!inSetup) {
             // Set the instruction labels to tell the user they can build
@@ -4750,7 +4758,7 @@ public class GamePanel extends javax.swing.JPanel {
             //draw the hitbox
             if (showResStackHitbox) {
                 //decide if that specif box should be drawn
-                if (currentPlayer != onlineMode) {
+                if (onlineMode != -1 && onlineMode != currentPlayer) {
                     drawSpecificHitbox = false;
                 } else if (tradingMode == 1 || tradingMode == 2) {
                     drawSpecificHitbox = canTradeTo(i, tradingMode);
