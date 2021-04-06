@@ -3482,7 +3482,7 @@ public class GamePanel extends javax.swing.JPanel {
             trade4to1Btn.setText("Trade 4:1");
             trade3to1Btn.setText("Trade 3:1");
             trade2to1Btn.setText("Trade 2:1");
-            cancelBuilding();
+            buildBtn.setText("Build");
         }
 
         //update the instructions
@@ -5592,7 +5592,8 @@ public class GamePanel extends javax.swing.JPanel {
 
             clip.start();
 
-            System.out.println("boop");
+            //debug the turn idecator
+            //System.out.println("boop");
 
         } catch (FileNotFoundException ex) {
             System.out.println("Sound File not found\n" + ex);

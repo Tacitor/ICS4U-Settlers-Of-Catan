@@ -230,7 +230,8 @@ public class CatanServer {
                                 //then tell the first client to begin
                                 clients[0].sendBoolean(true, 4); //incluse the messagy type 4 (startup command)
 
-                                System.out.println("[Server] " + "Send begin command to Client 1");
+                                //debug the data coming in
+                                //System.out.println("[Server] " + "Send begin command to Client 1");
                             }
 
                             break;
