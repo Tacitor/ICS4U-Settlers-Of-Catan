@@ -18,13 +18,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import javax.swing.filechooser.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -40,8 +38,6 @@ import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
 import textures.ImageRef;
 import static textures.ImageRef.*;
 
@@ -3856,6 +3852,10 @@ public class GamePanel extends javax.swing.JPanel {
                         break;
                 }
 
+            } else if ((onlineMode != -1 && onlineMode != currentPlayer)) {
+                //set the lables so the player knows that they need to wait
+                instructionLbl.setText("You are player " + onlineMode + " please wait for your turn");
+                subInstructionLbl.setText("The current player is: " + currentPlayer);
             } else {
                 // Set the instruction labels to tell the player they dont have enough cards
                 instructionLbl.setText("Sorry, you don't have enough cards to build anything");
