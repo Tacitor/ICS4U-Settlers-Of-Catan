@@ -5,9 +5,6 @@
  */
 package Audio;
 
-import java.io.File;
-import java.io.InputStream;
-
 /**
  *
  * @author Tacitor
