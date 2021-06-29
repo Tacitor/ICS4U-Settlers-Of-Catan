@@ -133,7 +133,7 @@ public class CatanClient extends JFrame {
      * @param colour
      */
     public void requestColour(int colour) {
-        
+
         //reset a failed request
         clientColour = 0;
 
@@ -291,7 +291,7 @@ public class CatanClient extends JFrame {
             //set the button to the value
             buttonEnabled = recivedBoolean;
             updateButtons();
-            
+
             //update the build buttons ingame
             theGameFrame.getGamePanel().updateBuildButtons();
 
@@ -328,7 +328,7 @@ public class CatanClient extends JFrame {
 
         //read in that boolean
         int recivedColourResponse = csc.reciveType(); //read in the int
-        
+
         //debug the response
         System.out.println("colour is: " + recivedColourResponse);
 
@@ -645,17 +645,4 @@ public class CatanClient extends JFrame {
             return bool;
         }
     }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-        System.out.println("[Client] " + "Hello World: Client");
-        //CatanClient client = new CatanClient(700, 200, "localhost");
-        //client.connectToServer();
-        //client.setUpGUI();
-        //client.setUpButton();
-    }
-
 }

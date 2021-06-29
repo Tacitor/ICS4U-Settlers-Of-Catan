@@ -311,19 +311,4 @@ public class CatanServer {
 
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-        System.out.println("[Server] " + "Hello World: Server");
-        //get the number of clients the server admin wants
-        int numClientsToHave = Integer.parseInt(JOptionPane.showInputDialog("Enter the integer number of clients that will connect:"));
-
-        //create the server socket
-        CatanServer server = new CatanServer(numClientsToHave, 25570);
-        //begin listening
-        server.acceptConnections();
-    }
-
 }
