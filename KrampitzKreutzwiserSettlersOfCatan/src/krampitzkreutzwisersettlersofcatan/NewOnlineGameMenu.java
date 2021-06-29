@@ -5,6 +5,8 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import textures.ImageRef;
 
 /**
@@ -42,6 +44,9 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         
         serverStartUp();
         createFirstClient();
+        
+        //show that the setup is complete
+        createBtn.setText("Server is running");
         
     }
 
@@ -219,6 +224,14 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
                 if (portNum != 80 && portNum != 443) {
                     
                     this.portNum = portNum;
+                    
+                    //disable the button
+                    createBtn.setEnabled(false);
+                    
+                    //display a message showing that the server is being set up
+                    createBtn.setText("Running Server Setup");
+                    
+                    //run the set up
                     runSetup();
                 } else {
                     createBtn.setText("No HTTP port! Try again");
