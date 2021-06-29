@@ -81,6 +81,7 @@ public class CatanServer {
                 t.start();
             }
             System.out.println("[Server] " + "We now have " + maxClients + " players. No more connections will be accepted.");
+            serverSocket.close();
         } catch (IOException e) {
             System.out.println("[Server] " + "IOException from acceptConnections");
         }

@@ -25,9 +25,9 @@ public class MainMenu extends javax.swing.JFrame {
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final NewGameSettings newGameSettingsFrame;
     private final ClientSettings clientSettings;
-    private final NewOnlineGameMenu newOnlineGameMenu;
-    private final JoinOnlineGameMenu joinOnlineGameMenu;
-    private final LoadOnlineGameMenu loadOnlineGameMenu;
+    private NewOnlineGameMenu newOnlineGameMenu;
+    private JoinOnlineGameMenu joinOnlineGameMenu;
+    private LoadOnlineGameMenu loadOnlineGameMenu;
 
     /**
      * Creates new form MainMenu
@@ -42,9 +42,7 @@ public class MainMenu extends javax.swing.JFrame {
         creditsUIFrame = new CreditsUI(this);
         gameJFrame = new GameFrame(this);
         clientSettings = new ClientSettings(this);
-        newOnlineGameMenu = new NewOnlineGameMenu(this);
         newGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
-        joinOnlineGameMenu = new JoinOnlineGameMenu(this);
         loadOnlineGameMenu = new LoadOnlineGameMenu(this);
 
     }
@@ -338,6 +336,8 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_optionBtnActionPerformed
 
     private void joinOnlineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinOnlineBtnActionPerformed
+        //create a new game joining window
+        joinOnlineGameMenu = new JoinOnlineGameMenu(this);
         joinOnlineGameMenu.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_joinOnlineBtnActionPerformed
@@ -353,11 +353,11 @@ public class MainMenu extends javax.swing.JFrame {
     /*
     public static void main(String args[]) {
         /* Set the Windows 10 look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        /*
+     */
+ /*
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -377,7 +377,7 @@ public class MainMenu extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        /*
+ /*
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainMenu().setVisible(true);
@@ -385,49 +385,66 @@ public class MainMenu extends javax.swing.JFrame {
         });
 
     }
-    */
-
+     */
     /**
      * Set the icon for the JFRame
      */
     private void setIcon() {
         this.setIconImage(ImageRef.ICON);
     }
-    
+
     /**
      * Return the game frame
-     * 
-     * @return 
+     *
+     * @return
      */
     public GameFrame getGameFrame() {
         return gameJFrame;
     }
-    
+
     /**
      * Return the newOnlineGameMenu
-     * 
-     * @return 
+     *
+     * @return
      */
     public NewOnlineGameMenu getNewOnlineGameMenu() {
         return newOnlineGameMenu;
     }
-    
+
+    /**
+     * Mutator for the newOnlineGameMenu
+     *
+     * @param newOnlineGameMenu
+     */
+    public void setNewOnlineGameMenu(NewOnlineGameMenu newOnlineGameMenu) {
+        this.newOnlineGameMenu = newOnlineGameMenu;
+    }
+
     /**
      * Return the newOnlineGameMenu
-     * 
-     * @return 
+     *
+     * @return
      */
     public LoadOnlineGameMenu getLoadOnlineGameMenu() {
         return loadOnlineGameMenu;
     }
-    
+
     /**
      * Return the newOnlineGameMenu
-     * 
-     * @return 
+     *
+     * @return
      */
     public JoinOnlineGameMenu getJoinOnlineGameMenu() {
         return joinOnlineGameMenu;
+    }
+    
+    /**
+     * Mutator for the loadOnlineGameMenu
+     *
+     * @param joinOnlineGameMenu
+     */
+    public void setJoinOnlineGameMenu(JoinOnlineGameMenu joinOnlineGameMenu) {
+        this.joinOnlineGameMenu = joinOnlineGameMenu;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

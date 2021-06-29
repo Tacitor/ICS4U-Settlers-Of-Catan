@@ -292,6 +292,9 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
             
             requestColourBtn.setText("Done");
             requestColourBtn.setEnabled(false);
+            
+            //now hide this window
+            this.setVisible(false);
         } else { //the the user that it failed
             requestColourBtn.setText("Not available. Try Again");
         }

@@ -54,6 +54,8 @@ public class CatanClient extends JFrame {
     private boolean justPressedSend = false; //if this client waiting for the first transmision from the server
     private boolean firstFileRecieve; //is the client waiting for it's first catan file recive and waiting to set up the game
     private boolean firstClientGotStatup = false; //only used if this is client #1. Stores if the startup command has been recived yet
+    
+    private boolean cscStopRequested = false;
 
     private ClientSideConnection csc; //the socket type var to hold the connection for this CatanClient
 
@@ -214,7 +216,7 @@ public class CatanClient extends JFrame {
             //wait for a message to come through
             Thread t = new Thread(() -> {
                 //never stop listening
-                while (true) {
+                while (!cscStopRequested) {
                     regularRecive();
                 }
             });
@@ -321,7 +323,7 @@ public class CatanClient extends JFrame {
             //send it to the server
             //start listening
             //never stop listening
-            while (true) {
+            while (!cscStopRequested) {
                 regularRecive();
             }
         } else if (type == 3) {
@@ -465,7 +467,7 @@ public class CatanClient extends JFrame {
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
                         //make it visible
                         theGameFrame.setVisible(true);
-                        theGameFrame.getMainMenu().getJoinOnlineGameMenu().setVisible(false);
+                        //theGameFrame.getMainMenu().getJoinOnlineGameMenu().setVisible(false);
 
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
@@ -595,6 +597,9 @@ public class CatanClient extends JFrame {
             try {
                 dataOut.writeInt(4); //tell the server it is reveiving a stop command
                 dataOut.flush();
+                
+                socket.close();
+                
             } catch (IOException e) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC sendStopCommand():\n" + e);
             }
@@ -649,6 +654,9 @@ public class CatanClient extends JFrame {
                 msg = dataIn.readInt();
             } catch (IOException ex) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveType():\n" + ex);
+                
+                //request a stop
+                cscStopRequested = true;
             }
 
             return msg;
