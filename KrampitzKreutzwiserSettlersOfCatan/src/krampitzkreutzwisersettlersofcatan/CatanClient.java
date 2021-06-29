@@ -143,6 +143,16 @@ public class CatanClient extends JFrame {
     }
 
     /**
+     * Send a stopping command to the server through the CSC
+     */
+    public void sendStop() {
+        
+        //send the requestion
+        csc.sendStopCommand();
+
+    }
+
+    /**
      * Access the total number of Clients on the server
      *
      * @return
@@ -577,6 +587,16 @@ public class CatanClient extends JFrame {
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC sendColourRequest():\n" + e);
+            }
+        }
+        
+        public void sendStopCommand() {
+            
+            try {
+                dataOut.writeInt(4); //tell the server it is reveiving a stop command
+                dataOut.flush();
+            } catch (IOException e) {
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendStopCommand():\n" + e);
             }
         }
 

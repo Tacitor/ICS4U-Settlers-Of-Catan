@@ -729,6 +729,9 @@ public class GamePanel extends javax.swing.JPanel {
             //save the game and only close if it is successful
             if (save()) {
 
+                //if there is networking active stop it
+                onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+
                 // Hide this window and show the main menu
                 superFrame.getMainMenu().setVisible(true); //show the main menu
                 superFrame.setVisible(false); //hide the parent frame 
@@ -1065,6 +1068,10 @@ public class GamePanel extends javax.swing.JPanel {
         overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
         //If the user really want to leave let them
         if (overwrite == 0) {
+
+            //if there is networking active stop it
+            onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+
             // Hide this window and show the main menu
             superFrame.getMainMenu().setVisible(true); //show the main menu
             superFrame.setVisible(false); //hide the parent frame 
@@ -5601,7 +5608,6 @@ public class GamePanel extends javax.swing.JPanel {
 
             //debug the turn idecator
             //System.out.println("boop");
-
         } catch (FileNotFoundException ex) {
             System.out.println("Sound File not found\n" + ex);
         } catch (IOException ex) {
