@@ -44,6 +44,7 @@ public class MainMenu extends javax.swing.JFrame {
         clientSettings = new ClientSettings(this);
         newGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
         loadOnlineGameMenu = new LoadOnlineGameMenu(this);
+        newOnlineGameMenu = new NewOnlineGameMenu(this);
 
     }
 
@@ -343,6 +344,8 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_joinOnlineBtnActionPerformed
 
     private void loadToOnlineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadToOnlineBtnActionPerformed
+        //make a new loading from a save file window
+        loadOnlineGameMenu = new LoadOnlineGameMenu(this);
         loadOnlineGameMenu.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_loadToOnlineBtnActionPerformed
@@ -439,7 +442,7 @@ public class MainMenu extends javax.swing.JFrame {
     }
     
     /**
-     * Mutator for the loadOnlineGameMenu
+     * Mutator for the joinOnlineGameMenu
      *
      * @param joinOnlineGameMenu
      */
