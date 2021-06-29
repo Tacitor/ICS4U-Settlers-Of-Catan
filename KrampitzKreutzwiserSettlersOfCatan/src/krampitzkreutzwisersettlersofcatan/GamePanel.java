@@ -4516,8 +4516,6 @@ public class GamePanel extends javax.swing.JPanel {
         int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
         boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
 
-        titleLbl.setText("Setterls of Catan: " + onlineMode);
-
         //end local vars
         //the Graphics2D class is the class that handles all the drawing
         //must be casted from older Graphics class in order to have access to some newer methods
@@ -5550,6 +5548,15 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the game version info
         g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("pre-v5.0.0 - Online Multiplayer Update", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
+        //draw the online mode
+        String appendText; //the test to append
+        //find the text to append
+        if (onlineMode == -1) { //if in ofline mode say that
+            appendText = "Offline";
+        } else {
+            appendText = "Online";
+        }
+        g2d.drawString("Online mode: " + appendText + " with ID of " + onlineMode, rightDrawMargin, scaleInt(60) + getImgHeight(MATERIAL_KEY));
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
