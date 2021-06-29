@@ -213,7 +213,8 @@ public class CatanClient extends JFrame {
 
         buttonEnabled = false;
         updateButtons();
-        this.setVisible(true);
+        //no longer show the catan Client window
+        this.setVisible(false);
     }
 
     public boolean connectToServer() {
