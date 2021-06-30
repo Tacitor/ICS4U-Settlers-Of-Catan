@@ -728,11 +728,9 @@ public class GamePanel extends javax.swing.JPanel {
             //System.out.println(saveAddress);
             //save the game and only close if it is successful
             if (save()) {
-
-                //if there is networking active stop it
-                if (onlineMode != -1) {
-                    onlineClient.sendStop(); //tell the server that this client disconected and to close the server
-                }
+                
+                //Preform the opperations needed when leaving an online game
+                networkingCloseOpertations();
 
                 // Hide this window and show the main menu
                 superFrame.getMainMenu().setVisible(true); //show the main menu
@@ -1071,16 +1069,28 @@ public class GamePanel extends javax.swing.JPanel {
         //If the user really want to leave let them
         if (overwrite == 0) {
 
-            //if there is networking active stop it
-            if (onlineMode != -1) {
-                onlineClient.sendStop(); //tell the server that this client disconected and to close the server
-            }
-
+            //Preform the opperations needed when leaving an online game
+            networkingCloseOpertations();
+            
             // Hide this window and show the main menu
             superFrame.getMainMenu().setVisible(true); //show the main menu
             superFrame.setVisible(false); //hide the parent frame 
         }
     }//GEN-LAST:event_backNoSaveBtnActionPerformed
+
+    /**
+     * Tasks that need to be performed when closing out of game from online mode
+     */
+    private void networkingCloseOpertations() {
+        //if there is networking active stop it
+        if (onlineMode != -1) {
+            onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+            
+            //reset the game to the offline defaults
+            onlineMode = -1;
+            onlineClient = null;
+        }
+    }
 
     private void trade3to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade3to1BtnActionPerformed
         //check what mode of trading the game is in for 3:1
@@ -5530,6 +5540,10 @@ public class GamePanel extends javax.swing.JPanel {
 
         }
 
+        /*
+         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         *
+         */
         //draw the separator boxes around the UI elements
         //only if the user want to
         if (showMenuBoarder) {
@@ -5563,7 +5577,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //draw the game version info
         g2d.setColor(new java.awt.Color(255, 255, 225));
-        g2d.drawString("pre-v5.0.0 - Online Multiplayer Update", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
+        g2d.drawString("v5.0.0 - Online Multiplayer Update", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
         //draw the online mode
         String appendText; //the test to append
         //find the text to append
@@ -5572,12 +5586,8 @@ public class GamePanel extends javax.swing.JPanel {
         } else {
             appendText = "Online";
         }
-        g2d.drawString("Online mode: " + appendText + " with ID of " + onlineMode, rightDrawMargin, scaleInt(60) + getImgHeight(MATERIAL_KEY));
+        g2d.drawString("Online mode: " + appendText + " with ID of \'" + onlineMode + "\'", rightDrawMargin, scaleInt(60) + getImgHeight(MATERIAL_KEY));
 
-        /*
-         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-         *
-         */
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
         //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
