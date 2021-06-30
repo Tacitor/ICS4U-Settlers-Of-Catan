@@ -465,9 +465,6 @@ public class CatanClient extends JFrame {
                         }
                         //load the save
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
-                        //make it visible
-                        theGameFrame.setVisible(true);
-                        //theGameFrame.getMainMenu().getJoinOnlineGameMenu().setVisible(false);
 
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);

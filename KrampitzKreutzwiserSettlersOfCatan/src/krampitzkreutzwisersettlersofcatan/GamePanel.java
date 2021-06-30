@@ -3584,6 +3584,11 @@ public class GamePanel extends javax.swing.JPanel {
             //debug the sound
             //System.out.println("PLayed");
         }
+        
+        //if in online mode also make the game visable
+        if (onlineMode != -1) {
+            superFrame.setVisible(true);
+        }
 
         //enable the turn button (might be disabled again by updateBuildBtn method if online and not the correct player)
         turnBtnEnabled = true;
@@ -4499,7 +4504,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Close the game panel
         // Hide this window and show the main menu
-        superFrame.getMainMenu().setVisible(true); //show the main menu
+        superFrame.getMainMenu().setVisible(true); //show the main menu        
         superFrame.setVisible(false); //hide the parent frame 
     }
 
