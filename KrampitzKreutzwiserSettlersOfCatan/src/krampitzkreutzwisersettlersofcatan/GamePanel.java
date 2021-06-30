@@ -3584,7 +3584,7 @@ public class GamePanel extends javax.swing.JPanel {
             //debug the sound
             //System.out.println("PLayed");
         }
-        
+
         //if in online mode also make the game visable
         if (onlineMode != -1) {
             superFrame.setVisible(true);

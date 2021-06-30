@@ -81,6 +81,8 @@ public class CatanServer {
                 t.start();
             }
             System.out.println("[Server] " + "We now have " + maxClients + " players. No more connections will be accepted.");
+
+            //close the server socket so another can later be created
             serverSocket.close();
         } catch (IOException e) {
             System.out.println("[Server] " + "IOException from acceptConnections");
@@ -250,11 +252,10 @@ public class CatanServer {
 
                             //debug the stop reqesting
                             //System.out.println("[Server] got stop");
-
                             //tell all the threads to die
                             for (ServerSideConnection ssc : clients) {
                                 ssc.requestStop();
-                                System.out.println("[Server SSC-" + ssc.clientID + "] stopping");
+                                //System.out.println("[Server SSC-" + ssc.clientID + "] stopping");
                             }
 
                             //TODO: What is causeing the GameFrame to be visable after stopping

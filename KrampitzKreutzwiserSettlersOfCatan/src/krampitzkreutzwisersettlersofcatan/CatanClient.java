@@ -55,7 +55,7 @@ public class CatanClient extends JFrame {
     private boolean firstFileRecieve; //is the client waiting for it's first catan file recive and waiting to set up the game
     private boolean firstClientGotStatup = false; //only used if this is client #1. Stores if the startup command has been recived yet
     
-    private boolean cscStopRequested = false;
+    private boolean cscStopRequested = false; //has the client been asked to stop
 
     private ClientSideConnection csc; //the socket type var to hold the connection for this CatanClient
 
@@ -215,7 +215,7 @@ public class CatanClient extends JFrame {
             header.setText("You are client number " + clientID + ". Please wait for client#1 to begin after the rest of the clients have connected\n\nMost recent message: -->");
             //wait for a message to come through
             Thread t = new Thread(() -> {
-                //never stop listening
+                //never stop listening unless told
                 while (!cscStopRequested) {
                     regularRecive();
                 }
@@ -322,7 +322,7 @@ public class CatanClient extends JFrame {
 
             //send it to the server
             //start listening
-            //never stop listening
+            //never stop listening unless told
             while (!cscStopRequested) {
                 regularRecive();
             }
