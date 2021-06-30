@@ -730,7 +730,9 @@ public class GamePanel extends javax.swing.JPanel {
             if (save()) {
 
                 //if there is networking active stop it
-                onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+                if (onlineMode != -1) {
+                    onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+                }
 
                 // Hide this window and show the main menu
                 superFrame.getMainMenu().setVisible(true); //show the main menu
@@ -1070,7 +1072,9 @@ public class GamePanel extends javax.swing.JPanel {
         if (overwrite == 0) {
 
             //if there is networking active stop it
-            onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+            if (onlineMode != -1) {
+                onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+            }
 
             // Hide this window and show the main menu
             superFrame.getMainMenu().setVisible(true); //show the main menu
