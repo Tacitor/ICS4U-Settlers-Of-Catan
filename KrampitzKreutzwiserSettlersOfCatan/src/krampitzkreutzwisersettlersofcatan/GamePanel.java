@@ -728,7 +728,8 @@ public class GamePanel extends javax.swing.JPanel {
             //System.out.println(saveAddress);
             //save the game and only close if it is successful
             if (save()) {
-
+                
+                //Preform the opperations needed when leaving an online game
                 networkingCloseOpertations();
 
                 // Hide this window and show the main menu
@@ -1068,6 +1069,7 @@ public class GamePanel extends javax.swing.JPanel {
         //If the user really want to leave let them
         if (overwrite == 0) {
 
+            //Preform the opperations needed when leaving an online game
             networkingCloseOpertations();
             
             // Hide this window and show the main menu
