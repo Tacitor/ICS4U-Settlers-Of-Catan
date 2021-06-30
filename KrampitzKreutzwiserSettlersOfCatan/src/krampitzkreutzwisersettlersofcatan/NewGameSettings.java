@@ -310,6 +310,11 @@ public class NewGameSettings extends javax.swing.JFrame {
 
             // Hide this window and show the game
             this.setVisible(false);
+            
+            //remove the online modes if the previous game was online
+            GamePanel.setOnlineMode(-1);
+            GamePanel.setCatanClient(null);
+            
             gameFrame.resetGamePanel();
             gameFrame.setVisible(true);
         } else {
