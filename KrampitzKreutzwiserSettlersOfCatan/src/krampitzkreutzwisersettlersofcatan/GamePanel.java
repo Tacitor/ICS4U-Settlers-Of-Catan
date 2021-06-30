@@ -5584,7 +5584,7 @@ public class GamePanel extends javax.swing.JPanel {
         } else {
             appendText = "Online";
         }
-        g2d.drawString("Online mode: " + appendText + " with ID of " + onlineMode, rightDrawMargin, scaleInt(60) + getImgHeight(MATERIAL_KEY));
+        g2d.drawString("Online mode: " + appendText + " with ID of \'" + onlineMode + "\'", rightDrawMargin, scaleInt(60) + getImgHeight(MATERIAL_KEY));
 
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
