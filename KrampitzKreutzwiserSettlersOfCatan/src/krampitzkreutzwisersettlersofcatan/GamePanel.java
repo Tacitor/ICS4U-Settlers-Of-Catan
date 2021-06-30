@@ -5563,7 +5563,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //draw the game version info
         g2d.setColor(new java.awt.Color(255, 255, 225));
-        g2d.drawString("pre-v5.0.0 - Online Multiplayer Update", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
+        g2d.drawString("v5.0.0 - Online Multiplayer Update", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
         //draw the online mode
         String appendText; //the test to append
         //find the text to append
