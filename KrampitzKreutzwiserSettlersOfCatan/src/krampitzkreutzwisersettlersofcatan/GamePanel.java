@@ -729,6 +729,11 @@ public class GamePanel extends javax.swing.JPanel {
             //save the game and only close if it is successful
             if (save()) {
 
+                //if there is networking active stop it
+                if (onlineMode != -1) {
+                    onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+                }
+
                 // Hide this window and show the main menu
                 superFrame.getMainMenu().setVisible(true); //show the main menu
                 superFrame.setVisible(false); //hide the parent frame 
@@ -1065,6 +1070,12 @@ public class GamePanel extends javax.swing.JPanel {
         overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
         //If the user really want to leave let them
         if (overwrite == 0) {
+
+            //if there is networking active stop it
+            if (onlineMode != -1) {
+                onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+            }
+
             // Hide this window and show the main menu
             superFrame.getMainMenu().setVisible(true); //show the main menu
             superFrame.setVisible(false); //hide the parent frame 
@@ -3574,6 +3585,11 @@ public class GamePanel extends javax.swing.JPanel {
             //System.out.println("PLayed");
         }
 
+        //if in online mode also make the game visable
+        if (onlineMode != -1) {
+            superFrame.setVisible(true);
+        }
+
         //enable the turn button (might be disabled again by updateBuildBtn method if online and not the correct player)
         turnBtnEnabled = true;
 
@@ -4488,7 +4504,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         // Close the game panel
         // Hide this window and show the main menu
-        superFrame.getMainMenu().setVisible(true); //show the main menu
+        superFrame.getMainMenu().setVisible(true); //show the main menu        
         superFrame.setVisible(false); //hide the parent frame 
     }
 
@@ -4515,8 +4531,6 @@ public class GamePanel extends javax.swing.JPanel {
         //start local vars
         int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
         boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
-
-        titleLbl.setText("Setterls of Catan: " + onlineMode);
 
         //end local vars
         //the Graphics2D class is the class that handles all the drawing
@@ -5550,6 +5564,15 @@ public class GamePanel extends javax.swing.JPanel {
         //draw the game version info
         g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("pre-v5.0.0 - Online Multiplayer Update", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
+        //draw the online mode
+        String appendText; //the test to append
+        //find the text to append
+        if (onlineMode == -1) { //if in ofline mode say that
+            appendText = "Offline";
+        } else {
+            appendText = "Online";
+        }
+        g2d.drawString("Online mode: " + appendText + " with ID of " + onlineMode, rightDrawMargin, scaleInt(60) + getImgHeight(MATERIAL_KEY));
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -5594,7 +5617,6 @@ public class GamePanel extends javax.swing.JPanel {
 
             //debug the turn idecator
             //System.out.println("boop");
-
         } catch (FileNotFoundException ex) {
             System.out.println("Sound File not found\n" + ex);
         } catch (IOException ex) {

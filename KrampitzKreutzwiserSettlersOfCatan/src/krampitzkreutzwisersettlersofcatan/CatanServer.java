@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -83,6 +81,9 @@ public class CatanServer {
                 t.start();
             }
             System.out.println("[Server] " + "We now have " + maxClients + " players. No more connections will be accepted.");
+
+            //close the server socket so another can later be created
+            serverSocket.close();
         } catch (IOException e) {
             System.out.println("[Server] " + "IOException from acceptConnections");
         }
@@ -102,6 +103,9 @@ public class CatanServer {
         private DataInputStream dataIn;
         private DataOutputStream dataOut;
         private int clientID;
+
+        //has the thread been reqested to stop?
+        private boolean stopRequested = false;
 
         /**
          * Constructor
@@ -125,6 +129,10 @@ public class CatanServer {
             return clientID;
         }
 
+        public void requestStop() {
+            stopRequested = true;
+        }
+
         @Override
         public void run() {
             try {
@@ -135,7 +143,7 @@ public class CatanServer {
                 dataOut.flush(); //send it
 
                 //loop state after all startup business is complete
-                while (true) {
+                while (!stopRequested) {
                     //accept a message
                     int type = dataIn.readInt(); //get the type of transmision
                     //if the client sent a chat message
@@ -181,14 +189,18 @@ public class CatanServer {
                                 }
                                 count += bytesRead;
                             }   //debug the file that was sent
-                            System.out.println("[Server] " + Arrays.toString(fileAsStream));
-                            //send the new chat out to all the clients
-                            for (ServerSideConnection client : clients) {
-                                //debug how many times it was sent
-                                //System.out.println("[CatanServer] " +"Sent it");
-                                //System.out.println("[CatanServer] " +"\nCurrent chat is :\n" + chat);
-                                client.sendFile(chat, fileAsStream, fileName);
+                            //System.out.println("[Server] " + Arrays.toString(fileAsStream));
 
+                            //check if a stop is requested
+                            if (!stopRequested) {
+                                //send the new chat out to all the clients
+                                for (ServerSideConnection client : clients) {
+                                    //debug how many times it was sent
+                                    //System.out.println("[CatanServer] " +"Sent it");
+                                    //System.out.println("[CatanServer] " +"\nCurrent chat is :\n" + chat);
+                                    client.sendFile(chat, fileAsStream, fileName);
+
+                                }
                             }
                             break;
                         //if the server is getting a colour request
@@ -234,6 +246,19 @@ public class CatanServer {
                                 //System.out.println("[Server] " + "Send begin command to Client 1");
                             }
 
+                            break;
+                        //if the server is getting a stop command
+                        case 4:
+
+                            //debug the stop reqesting
+                            //System.out.println("[Server] got stop");
+                            //tell all the threads to die
+                            for (ServerSideConnection ssc : clients) {
+                                ssc.requestStop();
+                                //System.out.println("[Server SSC-" + ssc.clientID + "] stopping");
+                            }
+
+                            //TODO: What is causeing the GameFrame to be visable after stopping
                             break;
                         default:
                             break;
@@ -309,21 +334,6 @@ public class CatanServer {
             }
         }
 
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-        System.out.println("[Server] " + "Hello World: Server");
-        //get the number of clients the server admin wants
-        int numClientsToHave = Integer.parseInt(JOptionPane.showInputDialog("Enter the integer number of clients that will connect:"));
-
-        //create the server socket
-        CatanServer server = new CatanServer(numClientsToHave, 25570);
-        //begin listening
-        server.acceptConnections();
     }
 
 }

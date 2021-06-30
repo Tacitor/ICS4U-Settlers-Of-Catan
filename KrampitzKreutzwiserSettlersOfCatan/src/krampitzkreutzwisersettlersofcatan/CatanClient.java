@@ -54,6 +54,8 @@ public class CatanClient extends JFrame {
     private boolean justPressedSend = false; //if this client waiting for the first transmision from the server
     private boolean firstFileRecieve; //is the client waiting for it's first catan file recive and waiting to set up the game
     private boolean firstClientGotStatup = false; //only used if this is client #1. Stores if the startup command has been recived yet
+    
+    private boolean cscStopRequested = false; //has the client been asked to stop
 
     private ClientSideConnection csc; //the socket type var to hold the connection for this CatanClient
 
@@ -133,12 +135,22 @@ public class CatanClient extends JFrame {
      * @param colour
      */
     public void requestColour(int colour) {
-        
+
         //reset a failed request
         clientColour = 0;
 
         //send it
         csc.requestColour(colour);
+
+    }
+
+    /**
+     * Send a stopping command to the server through the CSC
+     */
+    public void sendStop() {
+        
+        //send the requestion
+        csc.sendStopCommand();
 
     }
 
@@ -203,8 +215,8 @@ public class CatanClient extends JFrame {
             header.setText("You are client number " + clientID + ". Please wait for client#1 to begin after the rest of the clients have connected\n\nMost recent message: -->");
             //wait for a message to come through
             Thread t = new Thread(() -> {
-                //never stop listening
-                while (true) {
+                //never stop listening unless told
+                while (!cscStopRequested) {
                     regularRecive();
                 }
             });
@@ -213,7 +225,8 @@ public class CatanClient extends JFrame {
 
         buttonEnabled = false;
         updateButtons();
-        this.setVisible(true);
+        //no longer show the catan Client window
+        this.setVisible(false);
     }
 
     public boolean connectToServer() {
@@ -291,7 +304,7 @@ public class CatanClient extends JFrame {
             //set the button to the value
             buttonEnabled = recivedBoolean;
             updateButtons();
-            
+
             //update the build buttons ingame
             theGameFrame.getGamePanel().updateBuildButtons();
 
@@ -309,8 +322,8 @@ public class CatanClient extends JFrame {
 
             //send it to the server
             //start listening
-            //never stop listening
-            while (true) {
+            //never stop listening unless told
+            while (!cscStopRequested) {
                 regularRecive();
             }
         } else if (type == 3) {
@@ -328,7 +341,7 @@ public class CatanClient extends JFrame {
 
         //read in that boolean
         int recivedColourResponse = csc.reciveType(); //read in the int
-        
+
         //debug the response
         System.out.println("colour is: " + recivedColourResponse);
 
@@ -452,9 +465,6 @@ public class CatanClient extends JFrame {
                         }
                         //load the save
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
-                        //make it visible
-                        theGameFrame.setVisible(true);
-                        theGameFrame.getMainMenu().getJoinOnlineGameMenu().setVisible(false);
 
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
@@ -578,6 +588,19 @@ public class CatanClient extends JFrame {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC sendColourRequest():\n" + e);
             }
         }
+        
+        public void sendStopCommand() {
+            
+            try {
+                dataOut.writeInt(4); //tell the server it is reveiving a stop command
+                dataOut.flush();
+                
+                socket.close();
+                
+            } catch (IOException e) {
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendStopCommand():\n" + e);
+            }
+        }
 
         public FileTypeRecieve recieveFile() {
             String msg = "";
@@ -628,6 +651,9 @@ public class CatanClient extends JFrame {
                 msg = dataIn.readInt();
             } catch (IOException ex) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveType():\n" + ex);
+                
+                //request a stop
+                cscStopRequested = true;
             }
 
             return msg;
@@ -645,17 +671,4 @@ public class CatanClient extends JFrame {
             return bool;
         }
     }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-        System.out.println("[Client] " + "Hello World: Client");
-        //CatanClient client = new CatanClient(700, 200, "localhost");
-        //client.connectToServer();
-        //client.setUpGUI();
-        //client.setUpButton();
-    }
-
 }

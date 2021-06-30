@@ -16,13 +16,14 @@ public class NewGameSettings extends javax.swing.JFrame {
 
     private final MainMenu mainMenuFrame;
     private final GameFrame gameFrame;
-    private final NewOnlineGameMenu newOnlineGameMenu;
+    private NewOnlineGameMenu newOnlineGameMenu;
 
     /**
      * Creates new form CreditsUI
      *
      * @param m The main menu JFrame this returns to on exit
      * @param g
+     * @param n
      */
     public NewGameSettings(MainMenu m, GameFrame g, NewOnlineGameMenu n) {
         setIcon();
@@ -314,6 +315,9 @@ public class NewGameSettings extends javax.swing.JFrame {
         } else {
             // Hide this window and show the next screen
             this.setVisible(false);
+            //create a new creation window
+            newOnlineGameMenu = new NewOnlineGameMenu(mainMenuFrame);
+            mainMenuFrame.setNewOnlineGameMenu(newOnlineGameMenu);
             newOnlineGameMenu.setVisible(true);
         }
     }//GEN-LAST:event_startGameBtnActionPerformed
