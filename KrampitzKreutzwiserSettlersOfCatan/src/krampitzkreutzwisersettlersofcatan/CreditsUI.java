@@ -27,6 +27,9 @@ public class CreditsUI extends javax.swing.JFrame {
         setIcon();
         
         initComponents();
+
+        this.setLocationRelativeTo(null);
+
         mainMenuFrame = m;
         
         // Load and display the credits file

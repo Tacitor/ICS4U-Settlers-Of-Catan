@@ -17,7 +17,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
     private final MainMenu mainMenuFrame;
     private CatanServer server;
     private CatanClient client;
-    
+
     private int portNum = 25570;
 
     /**
@@ -29,6 +29,9 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         setIcon();
 
         initComponents();
+
+        this.setLocationRelativeTo(null);
+
         mainMenuFrame = m;
 
     }
@@ -39,13 +42,13 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
     public void runSetup() {
         //reset the game panel
         mainMenuFrame.getGameFrame().resetGamePanel();
-        
+
         serverStartUp();
         createFirstClient();
-        
+
         //show that the setup is complete
         createBtn.setText("Server is running");
-        
+
     }
 
     /**
@@ -72,15 +75,15 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         client.connectToServer();
         client.setUpGUI();
         client.setUpButton();
-        
+
         //request the player colour
         client.requestColour(1); //request the red player
-        
+
         //wait for the response to come through
         while (client.getClientColour() == 0) {
             //while there is no assinged colour do nothing and just wait
         }
-        
+
         //once the client has been set up save it to the game panel
         GamePanel.setOnlineMode(client.getClientColour());
         GamePanel.setCatanClient(client);
@@ -209,36 +212,36 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
 
         boolean validInput = false;
         String input = portTxtFld.getText();
-        
+
         //make sure the input is good
         //if a blank feild
         if (!input.equals("")) {
-            
+
             //if the feild is not blank check if it's and integer
             try {
                 int portNum = Integer.parseInt(input);
-                
+
                 //make sure no important ports
                 if (portNum != 80 && portNum != 443) {
-                    
+
                     this.portNum = portNum;
-                    
+
                     //disable the button
                     createBtn.setEnabled(false);
-                    
+
                     //display a message showing that the server is being set up
                     createBtn.setText("Running Server Setup");
-                    
+
                     //run the set up
                     runSetup();
                 } else {
                     createBtn.setText("No HTTP port! Try again");
                 }
-                
+
             } catch (NumberFormatException e) {
                 createBtn.setText("No port num! Try again");
             }
-            
+
         } else {
             createBtn.setText("Must have port Num! Try again");
         }
