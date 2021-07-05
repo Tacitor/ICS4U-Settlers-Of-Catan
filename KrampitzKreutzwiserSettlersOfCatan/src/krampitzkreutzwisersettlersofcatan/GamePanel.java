@@ -162,6 +162,12 @@ public class GamePanel extends javax.swing.JPanel {
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
 
+    //custom lables
+    private SettlerLbl instructionLbl;
+    private SettlerLbl subInstructionLbl;
+    //array of labels
+    private SettlerLbl[] settlerLbls;
+
     //fonts
     private final Font timesNewRoman;
     private final Font tahoma;
@@ -365,6 +371,8 @@ public class GamePanel extends javax.swing.JPanel {
         // Initialize the window and board
         initComponents(); //add the buttons and other Swing elements
 
+        initSettlerLbl();
+
         //randomize the board
         randomizeTiles();
 
@@ -433,7 +441,7 @@ public class GamePanel extends javax.swing.JPanel {
         updatePortPos();
 
         //get the fonts
-        timesNewRoman = instructionLbl.getFont();
+        timesNewRoman = instructionPromptLbl.getFont();
         tahoma = buildRoadRBtn.getFont();
         dialog = buildBtn.getFont();
 
@@ -444,6 +452,8 @@ public class GamePanel extends javax.swing.JPanel {
 
         //setup the button array
         settlerBtns = new SettlerBtn[]{toggleCardBtn, buyDevCardBtn, useDevCardBtn};
+        //setup label array
+        settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl};
 
         //scale the Swing elements
         buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
@@ -492,13 +502,11 @@ public class GamePanel extends javax.swing.JPanel {
         backBtn = new javax.swing.JButton();
         turnSwitchBtn = new javax.swing.JButton();
         instructionPromptLbl = new javax.swing.JLabel();
-        instructionLbl = new javax.swing.JLabel();
         buildMenuLbl = new javax.swing.JLabel();
         buildSettlementSRBtn = new javax.swing.JRadioButton();
         buildSettlementLRBtn = new javax.swing.JRadioButton();
         buildRoadRBtn = new javax.swing.JRadioButton();
         buildBtn = new javax.swing.JButton();
-        subInstructionLbl = new javax.swing.JLabel();
         backNoSaveBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
         trade3to1Btn = new javax.swing.JButton();
@@ -530,10 +538,6 @@ public class GamePanel extends javax.swing.JPanel {
         instructionPromptLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         instructionPromptLbl.setForeground(new java.awt.Color(255, 255, 225));
         instructionPromptLbl.setText("Instructions:");
-
-        instructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
-        instructionLbl.setText("Place two roads and two small settlements each to start. Only one of each per setup round.");
 
         buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         buildMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
@@ -567,10 +571,6 @@ public class GamePanel extends javax.swing.JPanel {
                 buildBtnActionPerformed(evt);
             }
         });
-
-        subInstructionLbl.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        subInstructionLbl.setForeground(new java.awt.Color(255, 255, 225));
-        subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
 
         backNoSaveBtn.setText("< Exit without saving");
         backNoSaveBtn.setFocusable(false);
@@ -639,12 +639,7 @@ public class GamePanel extends javax.swing.JPanel {
                     .addComponent(turnSwitchBtn)
                     .addComponent(buildMenuLbl)
                     .addComponent(buildRoadRBtn)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(instructionPromptLbl)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(instructionLbl)
-                            .addComponent(subInstructionLbl)))
+                    .addComponent(instructionPromptLbl)
                     .addComponent(titleLbl)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -657,7 +652,7 @@ public class GamePanel extends javax.swing.JPanel {
                         .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(tradeMenuLbl)
                     .addComponent(devCardMenuLbl))
-                .addContainerGap(1157, Short.MAX_VALUE))
+                .addContainerGap(1625, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -667,12 +662,8 @@ public class GamePanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(turnSwitchBtn)
                 .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(instructionPromptLbl)
-                    .addComponent(instructionLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(subInstructionLbl)
-                .addGap(21, 21, 21)
+                .addComponent(instructionPromptLbl)
+                .addGap(44, 44, 44)
                 .addComponent(buildMenuLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildRoadRBtn)
@@ -699,6 +690,16 @@ public class GamePanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * Setup the custom JLable replacements
+     */
+    private void initSettlerLbl() {
+        //setup main label
+        instructionLbl = new SettlerLbl();
+        //set up sub label
+        subInstructionLbl = new SettlerLbl();
+    }
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
 
@@ -728,7 +729,7 @@ public class GamePanel extends javax.swing.JPanel {
             //System.out.println(saveAddress);
             //save the game and only close if it is successful
             if (save()) {
-                
+
                 //Preform the opperations needed when leaving an online game
                 networkingCloseOpertations();
 
@@ -1071,7 +1072,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //Preform the opperations needed when leaving an online game
             networkingCloseOpertations();
-            
+
             // Hide this window and show the main menu
             superFrame.getMainMenu().setVisible(true); //show the main menu
             superFrame.setVisible(false); //hide the parent frame 
@@ -1085,7 +1086,7 @@ public class GamePanel extends javax.swing.JPanel {
         //if there is networking active stop it
         if (onlineMode != -1) {
             onlineClient.sendStop(); //tell the server that this client disconected and to close the server
-            
+
             //reset the game to the offline defaults
             onlineMode = -1;
             onlineClient = null;
@@ -5542,6 +5543,16 @@ public class GamePanel extends javax.swing.JPanel {
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         * 
+         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         *
+         */
+        //go through and draw all the labels
+        for (SettlerLbl settlerLbl : settlerLbls) {
+            settlerLbl.draw(g2d);
+        }
+        /*
+         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */
         //draw the separator boxes around the UI elements
@@ -6734,9 +6745,7 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton buildSettlementLRBtn;
     private javax.swing.JRadioButton buildSettlementSRBtn;
     private javax.swing.JLabel devCardMenuLbl;
-    private javax.swing.JLabel instructionLbl;
     private javax.swing.JLabel instructionPromptLbl;
-    private javax.swing.JLabel subInstructionLbl;
     private javax.swing.JLabel titleLbl;
     private javax.swing.JButton trade2to1Btn;
     private javax.swing.JButton trade3to1Btn;
