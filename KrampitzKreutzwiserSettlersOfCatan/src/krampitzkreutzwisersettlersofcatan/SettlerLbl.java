@@ -99,6 +99,9 @@ public class SettlerLbl extends WorldObject {
      */
     public void draw(Graphics2D g2d) {
         
+        //g2d.setFont(font);
+        g2d.setColor(foregroundColour);
+        g2d.setFont(font);
         g2d.drawString(text, xPos, yPos);
 
     }

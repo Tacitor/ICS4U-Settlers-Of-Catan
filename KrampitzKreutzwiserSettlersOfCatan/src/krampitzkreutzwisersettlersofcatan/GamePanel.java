@@ -14,7 +14,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Stroke;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
@@ -472,9 +471,9 @@ public class GamePanel extends javax.swing.JPanel {
         tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
-        instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (pointToPixel((float)(timesNewRoman.getSize())) / scaleFactor)));
-        subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() - 4) / scaleFactor)));
+        instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+        subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
 
         turnSwitchBtn.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
@@ -695,6 +694,11 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl = new SettlerLbl();
         //set up the prompt
         instructionPromptLbl = new SettlerLbl("Instructions:");
+        
+        //set up the colours
+        instructionLbl.setForeground(new Color(255, 255, 225));
+        subInstructionLbl.setForeground(new Color(255, 255, 225));
+        instructionPromptLbl.setForeground(new Color(255, 255, 225));
     }
 
     /**
@@ -702,23 +706,13 @@ public class GamePanel extends javax.swing.JPanel {
      */
     private void settlerLblPos() {
         instructionPromptLbl.setXPos(scaleInt(10));
-        instructionPromptLbl.setYPos(scaleInt(150));
+        instructionPromptLbl.setYPos(turnSwitchBtn.getY() + turnSwitchBtn.getHeight() + scaleInt(50));
         
-        instructionLbl.setXPos(instructionPromptLbl.getXPos() + scaleInt(instructionPromptLbl.getText().length() * 8));
+        instructionLbl.setXPos(instructionPromptLbl.getXPos() + scaleInt((int) (instructionPromptLbl.getText().length() * 9.2)));
         instructionLbl.setYPos(instructionPromptLbl.getYPos());
         
         subInstructionLbl.setXPos(instructionLbl.getXPos());
         subInstructionLbl.setYPos(instructionLbl.getYPos() + scaleInt(20));
-    }
-
-    /**
-     * Conversion help for stupid Swing text
-     * @param pt
-     * @return 
-     */
-    public int pointToPixel(float pt) {
-        int ppi = Toolkit.getDefaultToolkit().getScreenResolution();
-        return (int) Math.round(pt / (72 / ppi));
     }
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
@@ -968,7 +962,7 @@ public class GamePanel extends javax.swing.JPanel {
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
             //reset the font
-            instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (pointToPixel((float)(timesNewRoman.getSize())) / scaleFactor)));
+            instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
@@ -3656,7 +3650,7 @@ public class GamePanel extends javax.swing.JPanel {
         //reset the colour
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         //reset the font
-        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (pointToPixel((float)(timesNewRoman.getSize())) / scaleFactor)));
+        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
 
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
@@ -3850,19 +3844,19 @@ public class GamePanel extends javax.swing.JPanel {
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
                 instructionLbl.setForeground(new Color(255, 175, 175));
-                instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) (pointToPixel((float)(timesNewRoman.getSize())) / scaleFactor)));
+                instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
 
                 //update the lables for the player if the thief is stealing their cards specifically. Do not show this if a 7 was JUST rolled
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
                     instructionLbl.setForeground(new Color(255, 175, 175));
-                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) (pointToPixel((float)(timesNewRoman.getSize())) / scaleFactor)));
+                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
                 } else if (showTileHitbox) { //if a 7 was JUST rolled and the current player needs to move the thief show a specific messgae.
                     instructionLbl.setForeground(new Color(255, 175, 175));
-                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) (pointToPixel((float)(timesNewRoman.getSize())) / scaleFactor)));
+                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
                     instructionLbl.setText("A Thief! They will steal cards. Select a hex to move the thief.");
                     subInstructionLbl.setText("Afterwards, you can then end your turn so the thief can decide the next person to steal from");
                 }
@@ -5572,6 +5566,10 @@ public class GamePanel extends javax.swing.JPanel {
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
         }
+        
+        //reset the font
+        g2d.setFont(timesNewRoman);
+        
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
