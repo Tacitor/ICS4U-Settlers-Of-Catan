@@ -704,11 +704,14 @@ public class GamePanel extends javax.swing.JPanel {
     /**
      * Update the coordinates for the custom labels
      */
-    private void settlerLblPos() {
+    private void settlerLblPos(Graphics g, Graphics2D g2d) {
         instructionPromptLbl.setXPos(scaleInt(10));
         instructionPromptLbl.setYPos(turnSwitchBtn.getY() + turnSwitchBtn.getHeight() + scaleInt(50));
         
-        instructionLbl.setXPos(instructionPromptLbl.getXPos() + scaleInt((int) (instructionPromptLbl.getText().length() * 9.2)));
+        g2d.setFont(instructionPromptLbl.getFont());
+        int stringWidth = g.getFontMetrics().stringWidth(instructionPromptLbl.getText());
+        
+        instructionLbl.setXPos(instructionPromptLbl.getXPos() + stringWidth + scaleInt(5));
         instructionLbl.setYPos(instructionPromptLbl.getYPos());
         
         subInstructionLbl.setXPos(instructionLbl.getXPos());
@@ -5561,11 +5564,16 @@ public class GamePanel extends javax.swing.JPanel {
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */
-        settlerLblPos();
+        settlerLblPos(g, g2d);
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
         }
+        
+        //draw a rect at the end of the instruction
+        g2d.setFont(instructionLbl.getFont());
+        int stringWidth = g.getFontMetrics().stringWidth(instructionLbl.getText());
+        g2d.fillRect(instructionLbl.getXPos() + stringWidth, instructionLbl.getYPos(), 50, 50);
         
         //reset the font
         g2d.setFont(timesNewRoman);
