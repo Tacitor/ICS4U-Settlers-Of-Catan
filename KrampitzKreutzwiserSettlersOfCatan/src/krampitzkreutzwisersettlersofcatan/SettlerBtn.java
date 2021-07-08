@@ -26,15 +26,15 @@ public class SettlerBtn extends WorldObject {
     private Image textImage; //the text of the button
 
     //static button images
-    private final static Image CARD_BTN = new ImageIcon(ImageRef.class.getResource("cardBtn.png")).getImage();
-    private final static Image CARD_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("cardBtnDisabled.png")).getImage();
-    private final static Image CARD_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("cardBtnText1.png")).getImage();
-    private final static Image CARD_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("cardBtnText2.png")).getImage();
+    private final static Image CARD_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtn.png")).getImage();
+    private final static Image CARD_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnDisabled.png")).getImage();
+    private final static Image CARD_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnText1.png")).getImage();
+    private final static Image CARD_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnText2.png")).getImage();
 
-    private final static Image BUY_DEV_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("buyDevBtnText.png")).getImage();
+    private final static Image BUY_DEV_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/buyDevBtnText.png")).getImage();
 
-    private final static Image USE_DEV_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("useDevBtnText1.png")).getImage();
-    private final static Image USE_DEV_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("useDevBtnText2.png")).getImage();
+    private final static Image USE_DEV_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/useDevBtnText1.png")).getImage();
+    private final static Image USE_DEV_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/useDevBtnText2.png")).getImage();
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};

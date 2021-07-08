@@ -26,19 +26,19 @@ public class Port extends WorldObject {
     private int typePosY; //the y position of the type image
 
     //image files for base port
-    private final static Image TOP_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups1.png")).getImage();
-    private final static Image TOP_RIGHT_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups2.png")).getImage();
-    private final static Image BOTTOM_RIGHT_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups3.png")).getImage();
-    private final static Image BOTTOM_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups4.png")).getImage();
-    private final static Image BOTTOM_LEFT_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups5.png")).getImage();
-    private final static Image TOP_LEFT_PORT = new ImageIcon(ImageRef.class.getResource("peirGroups6.png")).getImage();
+    private final static Image TOP_PORT = new ImageIcon(ImageRef.class.getResource("port/peirGroups1.png")).getImage();
+    private final static Image TOP_RIGHT_PORT = new ImageIcon(ImageRef.class.getResource("port/peirGroups2.png")).getImage();
+    private final static Image BOTTOM_RIGHT_PORT = new ImageIcon(ImageRef.class.getResource("port/peirGroups3.png")).getImage();
+    private final static Image BOTTOM_PORT = new ImageIcon(ImageRef.class.getResource("port/peirGroups4.png")).getImage();
+    private final static Image BOTTOM_LEFT_PORT = new ImageIcon(ImageRef.class.getResource("port/peirGroups5.png")).getImage();
+    private final static Image TOP_LEFT_PORT = new ImageIcon(ImageRef.class.getResource("port/peirGroups6.png")).getImage();
     //image files for type
-    private final static Image CLAY_PORT = new ImageIcon(ImageRef.class.getResource("clayPort.png")).getImage();
-    private final static Image WOOD_PORT = new ImageIcon(ImageRef.class.getResource("woodPort.png")).getImage();
-    private final static Image WHEAT_PORT = new ImageIcon(ImageRef.class.getResource("wheatPort.png")).getImage();
-    private final static Image SHEEP_PORT = new ImageIcon(ImageRef.class.getResource("sheepPort.png")).getImage();
-    private final static Image ORE_PORT = new ImageIcon(ImageRef.class.getResource("orePort.png")).getImage();
-    private final static Image WILD_CARD_PORT = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage();
+    private final static Image CLAY_PORT = new ImageIcon(ImageRef.class.getResource("port/clayPort.png")).getImage();
+    private final static Image WOOD_PORT = new ImageIcon(ImageRef.class.getResource("port/woodPort.png")).getImage();
+    private final static Image WHEAT_PORT = new ImageIcon(ImageRef.class.getResource("port/wheatPort.png")).getImage();
+    private final static Image SHEEP_PORT = new ImageIcon(ImageRef.class.getResource("port/sheepPort.png")).getImage();
+    private final static Image ORE_PORT = new ImageIcon(ImageRef.class.getResource("port/orePort.png")).getImage();
+    private final static Image WILD_CARD_PORT = new ImageIcon(ImageRef.class.getResource("port/wildcard.png")).getImage();
 
     /**
      * Constructor for a blank Port
