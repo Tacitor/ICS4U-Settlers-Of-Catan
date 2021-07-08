@@ -694,28 +694,39 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl = new SettlerLbl();
         //set up the prompt
         instructionPromptLbl = new SettlerLbl("Instructions:");
-        
+
         //set up the colours
         instructionLbl.setForeground(new Color(255, 255, 225));
         subInstructionLbl.setForeground(new Color(255, 255, 225));
         instructionPromptLbl.setForeground(new Color(255, 255, 225));
+
+        //set the instructions to do line wrap
+        instructionLbl.setLineWrap(true);
+        subInstructionLbl.setLineWrap(true);
     }
 
     /**
      * Update the coordinates for the custom labels
      */
-    private void settlerLblPos(Graphics g, Graphics2D g2d) {
+    private void settlerLblPos(Graphics2D g2d) {
+        //calc the number of lines for the labels that will be multi line
+        for (SettlerLbl lbl : settlerLbls) {
+            if (lbl.getLineWrap()) {
+                lbl.calcNumLines(g2d, this);
+            }
+        }
+        
         instructionPromptLbl.setXPos(scaleInt(10));
         instructionPromptLbl.setYPos(turnSwitchBtn.getY() + turnSwitchBtn.getHeight() + scaleInt(50));
-        
+
         g2d.setFont(instructionPromptLbl.getFont());
-        int stringWidth = g.getFontMetrics().stringWidth(instructionPromptLbl.getText());
-        
+        int stringWidth = g2d.getFontMetrics().stringWidth(instructionPromptLbl.getText());
+
         instructionLbl.setXPos(instructionPromptLbl.getXPos() + stringWidth + scaleInt(5));
         instructionLbl.setYPos(instructionPromptLbl.getYPos());
-        
+
         subInstructionLbl.setXPos(instructionLbl.getXPos());
-        subInstructionLbl.setYPos(instructionLbl.getYPos() + scaleInt(20));
+        subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
     }
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
@@ -5564,20 +5575,15 @@ public class GamePanel extends javax.swing.JPanel {
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */
-        settlerLblPos(g, g2d);
+        settlerLblPos(g2d);
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
         }
-        
-        //draw a rect at the end of the instruction
-        g2d.setFont(instructionLbl.getFont());
-        int stringWidth = g.getFontMetrics().stringWidth(instructionLbl.getText());
-        g2d.fillRect(instructionLbl.getXPos() + stringWidth, instructionLbl.getYPos(), 50, 50);
-        
+
         //reset the font
-        g2d.setFont(timesNewRoman);
-        
+        g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
+
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
@@ -5615,7 +5621,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //draw the game version info
         g2d.setColor(new java.awt.Color(255, 255, 225));
-        g2d.drawString("v5.0.0 - Online Multiplayer Update", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
+        g2d.drawString("prev5.1.0 - Update", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
         //draw the online mode
         String appendText; //the test to append
         //find the text to append
@@ -5791,7 +5797,7 @@ public class GamePanel extends javax.swing.JPanel {
      * @param num
      * @return
      */
-    public int scaleInt(int num) {
+    public static int scaleInt(int num) {
         return (int) (num / scaleFactor);
     }
 
@@ -6613,6 +6619,10 @@ public class GamePanel extends javax.swing.JPanel {
      */
     private void setTurnBtnTextStart() {
         turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
+    }
+
+    public GameFrame getSuperFrame() {
+        return superFrame;
     }
 
     /**
