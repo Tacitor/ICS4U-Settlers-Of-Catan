@@ -137,7 +137,7 @@
           <Color blue="e1" green="ff" red="ff" type="rgb"/>
         </Property>
         <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="Small Settlement"/>
+        <Property name="text" type="java.lang.String" value="Settlement"/>
         <Property name="opaque" type="boolean" value="false"/>
       </Properties>
     </Component>
@@ -152,7 +152,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="e1" green="ff" red="ff" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Large Settlement"/>
+        <Property name="text" type="java.lang.String" value="City"/>
         <Property name="opaque" type="boolean" value="false"/>
       </Properties>
     </Component>

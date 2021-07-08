@@ -60,7 +60,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
     //the old deflaut order                  {1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}
-    private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 2, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom
+    private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 2, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom    
     private final int[] tileDrawOrder = new int[]{7, 3, 0, 12, 8, 4, 1, 16, 13, 9, 5, 2, 17, 14, 10, 6, 18, 15, 11}; //the order tiles are drawin in, in 3d tile mode to account fot the over lap
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
     private ArrayList<Integer> playerTurnOrder; //the oder the players go in. index 0 is always the current player and index 1 is always the next up, etc.
@@ -545,13 +545,13 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementSRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         buildSettlementSRBtn.setForeground(new java.awt.Color(255, 255, 225));
         buildSettlementSRBtn.setSelected(true);
-        buildSettlementSRBtn.setText("Small Settlement");
+        buildSettlementSRBtn.setText("Settlement");
         buildSettlementSRBtn.setOpaque(false);
 
         buildBtnGroup.add(buildSettlementLRBtn);
         buildSettlementLRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         buildSettlementLRBtn.setForeground(new java.awt.Color(255, 255, 225));
-        buildSettlementLRBtn.setText("Large Settlement");
+        buildSettlementLRBtn.setText("City");
         buildSettlementLRBtn.setOpaque(false);
 
         buildBtnGroup.add(buildRoadRBtn);
@@ -832,8 +832,8 @@ public class GamePanel extends javax.swing.JPanel {
                 buildingObject = 3;
                 //make sure you're not in setup mode
                 if (inSetup) {
-                    instructionLbl.setText("Sorry you don't have any large settlements to place.");
-                    subInstructionLbl.setText("You do still have " + playerSetupSettlementLeft + " small settlement(s) left");
+                    instructionLbl.setText("Sorry you don't have any cities to place.");
+                    subInstructionLbl.setText("You do still have " + playerSetupSettlementLeft + " settlement(s) left");
                     buildingObject = 0; // Dont build
                 } else { // If the real game is in progress
                     // Show the settlement hitboxes
@@ -874,7 +874,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             //update the instructions
             if (inSetup) {
-                instructionLbl.setText("Place two roads and two small settlements each to start. Only one of each per setup round.");
+                instructionLbl.setText("Place two roads and two settlements each to start. Only one of each per setup round.");
                 subInstructionLbl.setText("Select a type, click build, and then click where it shoud go.");
             } else if (thiefIsStealing) { //check if the current mode is stealing cards
 
@@ -1084,7 +1084,7 @@ public class GamePanel extends javax.swing.JPanel {
             subInstructionLbl.setText("Build them from the build menu below.");
         } else if (playerSetupSettlementLeft != 0) {
             //let the player know that they have more setup roads to place
-            instructionLbl.setText("Make sure you place your " + playerSetupSettlementLeft + " remaining small settlment(s).");
+            instructionLbl.setText("Make sure you place your " + playerSetupSettlementLeft + " remaining settlement(s).");
             subInstructionLbl.setText("Build them from the build menu below.");
         }
 
@@ -4477,7 +4477,7 @@ public class GamePanel extends javax.swing.JPanel {
                             cards[player].add(settlement.getTile(j).getType());
                             // Add the collected card to the card counter
                             totalCardsCollected[settlement.getTile(j).getType() - 1]++;
-                            // If the settlement was a large settlement (City), the player earns twice the resources
+                            // If the settlement was a city (City), the player earns twice the resources
                             if (settlement.isLarge()) {
                                 // Give the player a second card from the tile
                                 cards[player].add(settlement.getTile(j).getType());
@@ -5053,8 +5053,8 @@ public class GamePanel extends javax.swing.JPanel {
             if (settlement.getPlayer() == 0) {
                 image = BLANK_HOUSE;
             } // Otherwise, check the size of the settlement to see which image to use
-            else if (settlement.isLarge() == false) { // Small settlement
-                // Store the small settlement image for the player's color
+            else if (settlement.isLarge() == false) { // settlement
+                // Store the settlement image for the player's color
                 switch (settlement.getPlayer()) {
                     // Player 1: Red
                     case 1:
@@ -5076,8 +5076,8 @@ public class GamePanel extends javax.swing.JPanel {
                         image = RED_HOUSE_L;
                         break;
                 }
-            } else { // Large settlement
-                // Store the large settlement image for the player's color
+            } else { // city
+                // Store the city image for the player's color
                 switch (settlement.getPlayer()) {
                     // Player 1: Red
                     case 1:
