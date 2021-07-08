@@ -35,6 +35,9 @@ public class LoadOnlineGameMenu extends javax.swing.JFrame {
         setIcon();
 
         initComponents();
+
+        this.setLocationRelativeTo(null);
+
         mainMenuFrame = m;
 
         //no failed attempts yet
@@ -313,10 +316,9 @@ public class LoadOnlineGameMenu extends javax.swing.JFrame {
                     }
 
                     //=-=-=-=-=-=-=-=-=Save file End=-=-=-=-=-=-=-=-=
-                    
                     //disable the connection button
                     createBtn.setEnabled(false);
-                    
+
                     //run the server and client setup
                     runSetup();
                 } else {

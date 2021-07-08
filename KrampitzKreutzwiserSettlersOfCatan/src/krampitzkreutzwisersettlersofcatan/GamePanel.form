@@ -38,14 +38,6 @@
                   <Component id="turnSwitchBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="buildMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="buildRoadRBtn" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="instructionPromptLbl" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="instructionLbl" min="-2" max="-2" attributes="0"/>
-                          <Component id="subInstructionLbl" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
                   <Component id="titleLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                       <Component id="backBtn" alignment="0" max="32767" attributes="0"/>
@@ -61,7 +53,7 @@
                   <Component id="tradeMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="devCardMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="1157" max="32767" attributes="0"/>
+              <EmptySpace pref="1625" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -72,14 +64,7 @@
               <Component id="titleLbl" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="turnSwitchBtn" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="instructionPromptLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="instructionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="subInstructionLbl" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="95" max="-2" attributes="0"/>
               <Component id="buildMenuLbl" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="buildRoadRBtn" min="-2" max="-2" attributes="0"/>
@@ -128,28 +113,6 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="turnSwitchBtnActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="instructionPromptLbl">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Times New Roman" size="18" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="e1" green="ff" red="ff" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Instructions:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="instructionLbl">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Times New Roman" size="18" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="e1" green="ff" red="ff" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Place two roads and two small settlements each to start. Only one of each per setup round."/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="buildMenuLbl">
       <Properties>
@@ -220,17 +183,6 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buildBtnActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="subInstructionLbl">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Times New Roman" size="14" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="e1" green="ff" red="ff" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Select a type, click build, and then click where it shoud go."/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="backNoSaveBtn">
       <Properties>

@@ -26,6 +26,9 @@ public class ClientSettings extends javax.swing.JFrame {
         setIcon();
 
         initComponents();
+
+        this.setLocationRelativeTo(null);
+
         mainMenuFrame = m;
     }
 

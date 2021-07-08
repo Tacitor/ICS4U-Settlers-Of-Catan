@@ -28,6 +28,9 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
         setIcon();
 
         initComponents();
+
+        this.setLocationRelativeTo(null);
+
         mainMenuFrame = m;
 
         //no failed attempts yet
@@ -253,7 +256,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
     private void requestColourBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestColourBtnActionPerformed
         requestColourBtn.setText("Requesting...");
-        
+
         int colourRequest; //store the colour to request
 
         //get the colour the user wants
@@ -289,10 +292,10 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
             //once the client has been set up save it to the game panel
             GamePanel.setOnlineMode(client.getClientColour());
-            
+
             requestColourBtn.setText("Done");
             requestColourBtn.setEnabled(false);
-            
+
             //now hide this window
             this.setVisible(false);
         } else { //the the user that it failed
