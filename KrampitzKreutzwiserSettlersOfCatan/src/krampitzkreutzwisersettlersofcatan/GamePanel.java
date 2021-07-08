@@ -46,9 +46,8 @@ import static textures.ImageRef.*;
  * @author Tacitor
  */
 public class GamePanel extends javax.swing.JPanel {
-    
-    // <editor-fold defaultstate="collapsed" desc="Attributes"> 
 
+    // <editor-fold defaultstate="collapsed" desc="Attributes"> 
     private final GameFrame superFrame; //ref to the JFrame this kept in
 
     private static String saveAddress; //The path to where to save to
@@ -175,9 +174,8 @@ public class GamePanel extends javax.swing.JPanel {
     private final Font timesNewRoman;
     private final Font tahoma;
     private final Font dialog;
-    
-    // </editor-fold>
 
+    // </editor-fold>
     //private Graphics awtGraphics;
     /**
      * Creates new form NewGamePanel
@@ -719,7 +717,7 @@ public class GamePanel extends javax.swing.JPanel {
                 lbl.calcNumLines(g2d, this);
             }
         }
-        
+
         instructionPromptLbl.setXPos(scaleInt(10));
         instructionPromptLbl.setYPos(turnSwitchBtn.getY() + turnSwitchBtn.getHeight() + scaleInt(30));
 
@@ -3857,6 +3855,7 @@ public class GamePanel extends javax.swing.JPanel {
             buildBtnGroup.clearSelection();
 
             if (inbetweenTurns) {
+                //show this message for when not in set up (differnt code does this for when in setup)
                 instructionLbl.setText("Please allow the next player to use the mouse");
                 subInstructionLbl.setText("Then start the next turn");
             } else //set the instructions 
@@ -3927,14 +3926,20 @@ public class GamePanel extends javax.swing.JPanel {
             buildBtnGroup.clearSelection();
 
             //check if the game is in online mode
-            if ((onlineMode == -1 || onlineMode == currentPlayer) && !inbetweenTurns) {
+            if (onlineMode == -1 || onlineMode == currentPlayer) {
                 //if in offline mode then the player has no more buildings
                 //also if in online mode and the current player is the online player
                 //must not be inbetween turns
-
-                // Set the instruction labels to tell the player they are out of setup buildings
-                instructionLbl.setText("You have placed all of your setup buildings");
-                subInstructionLbl.setText("End your turn to continue the game");
+                if (inbetweenTurns) {
+                    //show this message for when in setup (differnt code does this for when not in setup)
+                    instructionLbl.setText("Please allow the next player to use the mouse");
+                    subInstructionLbl.setText("Then start the next turn");
+                } else //if not inbetween turns 
+                {
+                    // Set the instruction labels to tell the player they are out of setup buildings
+                    instructionLbl.setText("You have placed all of your setup buildings");
+                    subInstructionLbl.setText("End your turn to continue the game");
+                }
             } else {
                 //set the lables so the player knows that they need to wait
                 instructionLbl.setText("You are player " + onlineMode + " please wait for your turn");
@@ -6625,17 +6630,17 @@ public class GamePanel extends javax.swing.JPanel {
     private void setTurnBtnTextStart() {
         turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
     }
-    
+
     /**
      * Accessor for the super Frame reference
-     * @return 
+     *
+     * @return
      */
     public GameFrame getSuperFrame() {
         return superFrame;
     }
-    
-    // <editor-fold defaultstate="collapsed" desc="Static Accessors and Mutators"> 
 
+    // <editor-fold defaultstate="collapsed" desc="Static Accessors and Mutators"> 
     /**
      * Set the number of players playing the game
      *
@@ -6782,7 +6787,7 @@ public class GamePanel extends javax.swing.JPanel {
     public static void setDoSnakeRules(boolean doSnakeRules) {
         GamePanel.doSnakeRules = doSnakeRules;
     }
-    
+
     // </editor-fold>
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
