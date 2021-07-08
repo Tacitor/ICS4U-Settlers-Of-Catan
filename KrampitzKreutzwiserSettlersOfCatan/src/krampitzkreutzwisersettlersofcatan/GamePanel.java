@@ -4701,7 +4701,7 @@ public class GamePanel extends javax.swing.JPanel {
                 superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
                 superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
 
-        Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("wildcard.png")).getImage();
+        Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("port/wildcard.png")).getImage();
 
         //draw the ports
         for (int i = 0; i < ports.size(); i++) {
