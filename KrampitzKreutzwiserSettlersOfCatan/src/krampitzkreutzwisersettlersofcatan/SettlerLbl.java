@@ -31,6 +31,7 @@ public class SettlerLbl extends WorldObject {
     public SettlerLbl() {
         text = "";
 
+        //set the defaults
         doLineWrap = false;
         numLines = 1;
     }
@@ -168,6 +169,13 @@ public class SettlerLbl extends WorldObject {
 
     }
 
+    /**
+     * Preform the calculation needed to predict how many lines a given string
+     * will need when displayed as an instruction
+     *
+     * @param g2d
+     * @param gamePanel
+     */
     public void calcNumLines(Graphics2D g2d, GamePanel gamePanel) {
         //calculate the number of lines needed
         //spaceForText //the number of pixels there are to work with from edge of the prompt to the edge of the board starts
@@ -182,6 +190,15 @@ public class SettlerLbl extends WorldObject {
         //System.out.println(lineNum);
     }
 
+    /**
+     * Calculate the character a string needs to be cut off at to fit within the
+     * given area. Sticks to whole words.
+     *
+     * @param text
+     * @param spaceAvail
+     * @param g2d
+     * @return
+     */
     private int getEndingChar(String text, int spaceAvail, Graphics2D g2d) {
 
         //check if the string is short enough

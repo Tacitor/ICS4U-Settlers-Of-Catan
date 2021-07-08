@@ -723,6 +723,7 @@ public class GamePanel extends javax.swing.JPanel {
         instructionPromptLbl.setXPos(scaleInt(10));
         instructionPromptLbl.setYPos(turnSwitchBtn.getY() + turnSwitchBtn.getHeight() + scaleInt(50));
 
+        //get the length of the instruction prompt
         g2d.setFont(instructionPromptLbl.getFont());
         int stringWidth = g2d.getFontMetrics().stringWidth(instructionPromptLbl.getText());
 
@@ -5579,7 +5580,7 @@ public class GamePanel extends javax.swing.JPanel {
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */
-        settlerLblPos(g2d);
+        settlerLblPos(g2d); //update the positions of the custon labels
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
