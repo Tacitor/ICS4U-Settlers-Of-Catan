@@ -46,6 +46,8 @@ import static textures.ImageRef.*;
  * @author Tacitor
  */
 public class GamePanel extends javax.swing.JPanel {
+    
+    // <editor-fold defaultstate="collapsed" desc="Attributes"> 
 
     private final GameFrame superFrame; //ref to the JFrame this kept in
 
@@ -173,6 +175,8 @@ public class GamePanel extends javax.swing.JPanel {
     private final Font timesNewRoman;
     private final Font tahoma;
     private final Font dialog;
+    
+    // </editor-fold>
 
     //private Graphics awtGraphics;
     /**
@@ -6620,10 +6624,16 @@ public class GamePanel extends javax.swing.JPanel {
     private void setTurnBtnTextStart() {
         turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
     }
-
+    
+    /**
+     * Accessor for the super Frame reference
+     * @return 
+     */
     public GameFrame getSuperFrame() {
         return superFrame;
     }
+    
+    // <editor-fold defaultstate="collapsed" desc="Static Accessors and Mutators"> 
 
     /**
      * Set the number of players playing the game
@@ -6771,6 +6781,8 @@ public class GamePanel extends javax.swing.JPanel {
     public static void setDoSnakeRules(boolean doSnakeRules) {
         GamePanel.doSnakeRules = doSnakeRules;
     }
+    
+    // </editor-fold>
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
