@@ -1333,6 +1333,8 @@ public class GamePanel extends javax.swing.JPanel {
 
                         updateBuildButtons();
                         repaint();
+                    } else if (btn.equals(turnSwitchBtn)) { //if the user clicked to end/start their turn
+                        turnSwitchBtnClicked();
                     }
                 }
             }
@@ -5551,7 +5553,7 @@ public class GamePanel extends javax.swing.JPanel {
 
             useDevCardBtn.setXPos(toggleCardBtn.getXPos());
             useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
-            
+
             //set the turn button to the correct location
             turnSwitchBtn.setXPos(titleLbl.getX());
             turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
