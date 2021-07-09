@@ -38,6 +38,8 @@ public class SettlerBtn extends WorldObject {
 
     private final static Image USE_DEV_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/useDevBtnText1.png")).getImage();
     private final static Image USE_DEV_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/useDevBtnText2.png")).getImage();
+    
+    //turn switch button images
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
