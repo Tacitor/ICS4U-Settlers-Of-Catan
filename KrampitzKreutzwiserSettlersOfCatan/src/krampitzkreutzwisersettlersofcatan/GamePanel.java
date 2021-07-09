@@ -5554,7 +5554,7 @@ public class GamePanel extends javax.swing.JPanel {
             
             //set the turn button to the correct location
             turnSwitchBtn.setXPos(titleLbl.getX());
-            turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(10));
+            turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
         }
 
         //draw the custom SettlerBtns
