@@ -16,7 +16,7 @@ import static textures.ImageRef.ERROR_IMAGE;
  */
 public class SettlerBtn extends WorldObject {
 
-    //data attributes
+    //data attribu
     private boolean enabled; //stores whether or not the button is enabled
     private int mode; //the mode the button is in. Decides what text to display
     private int type; //the type of button. (Trade button, card toggle, build, etc.)
@@ -26,6 +26,9 @@ public class SettlerBtn extends WorldObject {
     private Image textImage; //the text of the button
 
     //static button images
+    /************************** POSSIBLE FONT FOR THE BUTTON TEXT **************************
+     * Microsoft New Tai Lue, 16, dual layer with 1 pixel translation
+     */
     private final static Image CARD_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtn.png")).getImage();
     private final static Image CARD_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnDisabled.png")).getImage();
     private final static Image CARD_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnText1.png")).getImage();
