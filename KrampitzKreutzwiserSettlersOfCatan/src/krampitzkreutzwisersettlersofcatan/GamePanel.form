@@ -49,7 +49,6 @@
                       <Component id="buildBtn" alignment="0" max="32767" attributes="0"/>
                       <Component id="buildSettlementLRBtn" alignment="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="tradeMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="1625" max="32767" attributes="0"/>
           </Group>
@@ -70,9 +69,7 @@
               <Component id="buildSettlementLRBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="buildBtn" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-              <Component id="tradeMenuLbl" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
               <Component id="trade4to1Btn" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="trade3to1Btn" max="-2" attributes="0"/>
@@ -249,17 +246,6 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="trade2to1BtnActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="tradeMenuLbl">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Times New Roman" size="18" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="e1" green="ff" red="ff" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Trade Menu:"/>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>

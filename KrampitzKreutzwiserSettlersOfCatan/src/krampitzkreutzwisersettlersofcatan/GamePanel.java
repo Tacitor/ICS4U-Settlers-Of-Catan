@@ -162,6 +162,7 @@ public class GamePanel extends javax.swing.JPanel {
     private SettlerBtn useDevCardBtn;
     //turn switch
     private SettlerBtn turnSwitchBtn;
+    //trade
 
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
@@ -173,6 +174,7 @@ public class GamePanel extends javax.swing.JPanel {
     private SettlerLbl instructionPromptLbl;
     //menu headers
     private SettlerLbl devCardMenuLbl;
+    private SettlerLbl tradeMenuLbl;
     //array of labels
     private SettlerLbl[] settlerLbls;
 
@@ -464,7 +466,7 @@ public class GamePanel extends javax.swing.JPanel {
         //setup the button array
         settlerBtns = new SettlerBtn[]{turnSwitchBtn, toggleCardBtn, buyDevCardBtn, useDevCardBtn};
         //setup label array
-        settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, devCardMenuLbl};
+        settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, tradeMenuLbl, devCardMenuLbl};
 
         //scale the Swing elements
         buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
@@ -519,7 +521,6 @@ public class GamePanel extends javax.swing.JPanel {
         trade3to1Btn = new javax.swing.JButton();
         trade4to1Btn = new javax.swing.JButton();
         trade2to1Btn = new javax.swing.JButton();
-        tradeMenuLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -614,10 +615,6 @@ public class GamePanel extends javax.swing.JPanel {
             }
         });
 
-        tradeMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        tradeMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
-        tradeMenuLbl.setText("Trade Menu:");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -637,8 +634,7 @@ public class GamePanel extends javax.swing.JPanel {
                         .addComponent(trade3to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(tradeMenuLbl))
+                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(1625, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -656,9 +652,7 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementLRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildBtn)
-                .addGap(18, 18, 18)
-                .addComponent(tradeMenuLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(51, 51, 51)
                 .addComponent(trade4to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(trade3to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -684,6 +678,7 @@ public class GamePanel extends javax.swing.JPanel {
         instructionPromptLbl = new SettlerLbl("Instructions:");
 
         devCardMenuLbl = new SettlerLbl("Development Card Menu:");
+        tradeMenuLbl = new SettlerLbl("Trade Menu:");
 
         //set up the colours
         instructionLbl.setForeground(new Color(255, 255, 225));
@@ -691,6 +686,7 @@ public class GamePanel extends javax.swing.JPanel {
         instructionPromptLbl.setForeground(new Color(255, 255, 225));
 
         devCardMenuLbl.setForeground(new Color(255, 255, 225));
+        tradeMenuLbl.setForeground(new Color(255, 255, 225));        
 
         //set the instructions to do line wrap
         instructionLbl.setLineWrap(true);
@@ -720,6 +716,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         subInstructionLbl.setXPos(instructionLbl.getXPos());
         subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
+        
+        tradeMenuLbl.setXPos(instructionPromptLbl.getXPos());
+        tradeMenuLbl.setYPos(buildBtn.getY() + buildBtn.getHeight() + scaleInt(30));
 
         devCardMenuLbl.setXPos(instructionPromptLbl.getXPos());
         devCardMenuLbl.setYPos(trade2to1Btn.getY() + trade2to1Btn.getHeight() + scaleInt(30));
@@ -5599,10 +5598,10 @@ public class GamePanel extends javax.swing.JPanel {
         if (showMenuBoarder) {
             g2d.setStroke(new BasicStroke(scaleInt(2))); //make the stroke a little thicker
             //the trade box
-            g2d.drawRect(tradeMenuLbl.getX() - scaleInt(5),
-                    tradeMenuLbl.getY() - scaleInt(5),
+            g2d.drawRect(tradeMenuLbl.getXPos() - scaleInt(5),
+                    tradeMenuLbl.getYPos() - scaleInt(5),
                     trade4to1Btn.getWidth() + scaleInt(10),
-                    (trade2to1Btn.getY() + trade2to1Btn.getHeight()) - tradeMenuLbl.getY() + scaleInt(10));
+                    (trade2to1Btn.getY() + trade2to1Btn.getHeight()) - tradeMenuLbl.getYPos() + scaleInt(10));
             //the build box
             g2d.drawRect(buildMenuLbl.getX() - scaleInt(5),
                     buildMenuLbl.getY() - scaleInt(5),
@@ -6799,7 +6798,6 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JButton trade2to1Btn;
     private javax.swing.JButton trade3to1Btn;
     private javax.swing.JButton trade4to1Btn;
-    private javax.swing.JLabel tradeMenuLbl;
     // End of variables declaration//GEN-END:variables
 
 }
