@@ -50,7 +50,6 @@
                       <Component id="buildSettlementLRBtn" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <Component id="tradeMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="devCardMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="1625" max="32767" attributes="0"/>
           </Group>
@@ -79,9 +78,7 @@
               <Component id="trade3to1Btn" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="trade2to1Btn" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="devCardMenuLbl" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="464" max="32767" attributes="0"/>
+              <EmptySpace pref="504" max="32767" attributes="0"/>
               <Component id="backNoSaveBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="backBtn" min="-2" max="-2" attributes="0"/>
@@ -262,17 +259,6 @@
           <Color blue="e1" green="ff" red="ff" type="rgb"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Trade Menu:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="devCardMenuLbl">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Times New Roman" size="18" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="e1" green="ff" red="ff" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Development Card Menu:"/>
       </Properties>
     </Component>
   </SubComponents>
