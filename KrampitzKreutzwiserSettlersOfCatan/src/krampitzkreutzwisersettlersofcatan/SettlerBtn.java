@@ -62,7 +62,7 @@ public class SettlerBtn extends WorldObject {
     //trade button ones
     private final static Image[] TRADE_BTN_4TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_4};
     private final static Image[] TRADE_BTN_3TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_3};
-    private final static Image[] TRADE_BTN_2TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_2};    
+    private final static Image[] TRADE_BTN_2TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_2};
 
     //constructors
     /**
@@ -149,6 +149,11 @@ public class SettlerBtn extends WorldObject {
                 baseImage = TRADE_BTN; //still has the right length
                 disabledImage = TRADE_DISABLED_BTN;
                 break;
+            case 5:
+                //if the type is a trade 3:1 button
+                baseImage = TRADE_BTN; //still has the right length
+                disabledImage = TRADE_DISABLED_BTN;
+                break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
@@ -182,6 +187,10 @@ public class SettlerBtn extends WorldObject {
             case 4:
                 //if the type is a trade 4:1 button
                 textImage = TRADE_BTN_4TO_TEXTS[mode];
+                break;
+            case 5:
+                //if the type is a trade 4:1 button
+                textImage = TRADE_BTN_3TO_TEXTS[mode];
                 break;
             default:
                 //deflault to error image
