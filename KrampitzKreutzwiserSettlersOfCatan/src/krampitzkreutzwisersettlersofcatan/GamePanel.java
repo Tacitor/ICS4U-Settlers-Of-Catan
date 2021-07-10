@@ -166,6 +166,7 @@ public class GamePanel extends javax.swing.JPanel {
     private SettlerBtn trade4to1Btn;
     private SettlerBtn trade3to1Btn;
     private SettlerBtn trade2to1Btn;
+    private SettlerBtn tradeDomestic;
 
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
@@ -469,9 +470,10 @@ public class GamePanel extends javax.swing.JPanel {
         trade4to1Btn = new SettlerBtn(false, 1, 4); //trade at a 4:1 cost
         trade3to1Btn = new SettlerBtn(false, 1, 5); //trade at a 3:1 cost
         trade2to1Btn = new SettlerBtn(false, 1, 6); //trade at a 2:1 cost
+        tradeDomestic = new SettlerBtn(false, 1, 7); //trade domestically with another player
 
         //setup the button array
-        settlerBtns = new SettlerBtn[]{turnSwitchBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, toggleCardBtn, buyDevCardBtn, useDevCardBtn};
+        settlerBtns = new SettlerBtn[]{turnSwitchBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn};
         //setup label array
         settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, tradeMenuLbl, devCardMenuLbl};
 
@@ -674,6 +676,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         trade2to1Btn.setXPos(tradeMenuLbl.getXPos());
         trade2to1Btn.setYPos(trade4to1Btn.getYPos() + getImgHeight(trade4to1Btn.getBaseImage()) + scaleInt(6));
+        
+        tradeDomestic.setXPos(trade2to1Btn.getXPos() + getImgWidth(trade2to1Btn.getBaseImage()) + scaleInt(6));
+        tradeDomestic.setYPos(trade2to1Btn.getYPos());
     }
 
     /**
