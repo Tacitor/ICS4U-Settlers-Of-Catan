@@ -61,8 +61,8 @@ public class SettlerBtn extends WorldObject {
     private final static Image BUILD_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/buildBtnText.png")).getImage();
     //exit buttons
     private final static Image EXIT_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitBtn.png")).getImage();
-    private final static Image EXIT_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitNoSaveText.png")).getImage();
-    private final static Image EXIT_NO_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitSaveText.png")).getImage();
+    private final static Image EXIT_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitSaveText.png")).getImage();
+    private final static Image EXIT_NO_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitNoSaveText.png")).getImage();
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -186,6 +186,11 @@ public class SettlerBtn extends WorldObject {
                 baseImage = EXIT_BTN; //still has the right length
                 disabledImage = ERROR_IMAGE;
                 break;
+            case 10:
+                //if the type is an exit without saving button
+                baseImage = EXIT_BTN; //still has the right length
+                disabledImage = ERROR_IMAGE;
+                break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
@@ -239,6 +244,10 @@ public class SettlerBtn extends WorldObject {
             case 9:
                 //if the type is a trade 4:1 button
                 textImage = EXIT_NO_SAVE_TEXT;
+                break;
+            case 10:
+                //if the type is a trade 4:1 button
+                textImage = EXIT_SAVE_TEXT;
                 break;
             default:
                 //deflault to error image

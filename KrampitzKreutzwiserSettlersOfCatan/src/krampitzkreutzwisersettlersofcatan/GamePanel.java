@@ -170,6 +170,7 @@ public class GamePanel extends javax.swing.JPanel {
     //util buttons
     private SettlerBtn buildBtn;
     private SettlerBtn backNoSaveBtn;
+    private SettlerBtn backBtn;
 
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
@@ -475,9 +476,10 @@ public class GamePanel extends javax.swing.JPanel {
         //util
         buildBtn = new SettlerBtn(false, 1, 8); //the build button
         backNoSaveBtn = new SettlerBtn(true, 1, 9); //the exit button and not saving
+        backBtn = new SettlerBtn(true, 1, 10); //the exit button for saving
 
         //setup the button array
-        settlerBtns = new SettlerBtn[]{turnSwitchBtn, buildBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn, backNoSaveBtn};
+        settlerBtns = new SettlerBtn[]{turnSwitchBtn, buildBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn, backNoSaveBtn, backBtn};
         //setup label array
         settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, tradeMenuLbl, devCardMenuLbl};
 
@@ -517,7 +519,6 @@ public class GamePanel extends javax.swing.JPanel {
     private void initComponents() {
 
         buildBtnGroup = new javax.swing.ButtonGroup();
-        backBtn = new javax.swing.JButton();
         buildMenuLbl = new javax.swing.JLabel();
         buildSettlementSRBtn = new javax.swing.JRadioButton();
         buildSettlementLRBtn = new javax.swing.JRadioButton();
@@ -527,14 +528,6 @@ public class GamePanel extends javax.swing.JPanel {
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1920, 1080));
-
-        backBtn.setText("< Save and Exit");
-        backBtn.setFocusable(false);
-        backBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backBtnActionPerformed(evt);
-            }
-        });
 
         buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         buildMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
@@ -574,7 +567,6 @@ public class GamePanel extends javax.swing.JPanel {
                     .addComponent(buildMenuLbl)
                     .addComponent(buildRoadRBtn)
                     .addComponent(titleLbl)
-                    .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buildSettlementSRBtn))
                 .addContainerGap(1625, Short.MAX_VALUE))
@@ -592,9 +584,7 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementSRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buildSettlementLRBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 740, Short.MAX_VALUE)
-                .addComponent(backBtn)
-                .addContainerGap())
+                .addContainerGap(774, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -687,11 +677,14 @@ public class GamePanel extends javax.swing.JPanel {
         useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (6 / scaleFactor)));
 
         //the exit buttons aligned to the bottom
+        backBtn.setXPos(turnSwitchBtn.getXPos());
+        backBtn.setYPos(frameHeight - getImgHeight(backBtn.getBaseImage()) - scaleInt(6));
+        
         backNoSaveBtn.setXPos(turnSwitchBtn.getXPos());
-        backNoSaveBtn.setYPos(backBtn.getY() - getImgHeight(backNoSaveBtn.getBaseImage()) - scaleInt(6));
+        backNoSaveBtn.setYPos(backBtn.getYPos() - getImgHeight(backNoSaveBtn.getBaseImage()) - scaleInt(6));
     }
 
-    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+    private void backBtnClicked() {                                        
 
         //get the location to save to
         userSaveSelection = saveFileChooser.showSaveDialog(this);
@@ -729,7 +722,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
-    }//GEN-LAST:event_backBtnActionPerformed
+    }                                       
 
     /**
      * What to do when a player clicks the build button
@@ -1322,6 +1315,8 @@ public class GamePanel extends javax.swing.JPanel {
                         buildBtnClicked();
                     } else if (btn.equals(backNoSaveBtn)) { //if the user clicked to trade with a 3:1 ratio
                         backNoSaveBtnClicked();
+                    } else if (btn.equals(backBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        backBtnClicked();
                     }
                 }
             }
@@ -6762,7 +6757,6 @@ public class GamePanel extends javax.swing.JPanel {
     // </editor-fold>
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton backBtn;
     private javax.swing.ButtonGroup buildBtnGroup;
     private javax.swing.JLabel buildMenuLbl;
     private javax.swing.JRadioButton buildRoadRBtn;
