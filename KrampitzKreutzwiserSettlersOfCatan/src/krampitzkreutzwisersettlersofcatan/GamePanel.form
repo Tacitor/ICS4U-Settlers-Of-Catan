@@ -37,10 +37,7 @@
                   <Component id="buildMenuLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="buildRoadRBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="titleLbl" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="backBtn" alignment="0" max="32767" attributes="0"/>
-                      <Component id="backNoSaveBtn" alignment="0" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="backBtn" alignment="0" min="-2" pref="135" max="-2" attributes="0"/>
                   <Component id="buildSettlementLRBtn" alignment="0" min="-2" pref="73" max="-2" attributes="0"/>
                   <Component id="buildSettlementSRBtn" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -61,9 +58,7 @@
               <Component id="buildSettlementSRBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="buildSettlementLRBtn" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="706" max="32767" attributes="0"/>
-              <Component id="backNoSaveBtn" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace pref="740" max="32767" attributes="0"/>
               <Component id="backBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -137,15 +132,6 @@
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="opaque" type="boolean" value="false"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="backNoSaveBtn">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="&lt; Exit without saving"/>
-        <Property name="focusable" type="boolean" value="false"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backNoSaveBtnActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="titleLbl">
       <Properties>

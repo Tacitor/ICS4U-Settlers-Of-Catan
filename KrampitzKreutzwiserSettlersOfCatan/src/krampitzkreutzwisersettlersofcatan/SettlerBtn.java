@@ -59,6 +59,10 @@ public class SettlerBtn extends WorldObject {
     //util buttons
     //build
     private final static Image BUILD_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/buildBtnText.png")).getImage();
+    //exit buttons
+    private final static Image EXIT_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitBtn.png")).getImage();
+    private final static Image EXIT_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitNoSaveText.png")).getImage();
+    private final static Image EXIT_NO_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitSaveText.png")).getImage();
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -168,14 +172,19 @@ public class SettlerBtn extends WorldObject {
                 disabledImage = TRADE_DISABLED_BTN;
                 break;
             case 7:
-                //if the type is a trade 2:1 button
+                //if the type is a dosmestic trade button
                 baseImage = TRADE_BTN; //still has the right length
                 disabledImage = TRADE_DISABLED_BTN;
                 break;
             case 8:
-                //if the type is a trade 2:1 button
+                //if the type is a build button
                 baseImage = TRADE_BTN; //still has the right length
                 disabledImage = TRADE_DISABLED_BTN;
+                break;
+            case 9:
+                //if the type is an exit without saving button
+                baseImage = EXIT_BTN; //still has the right length
+                disabledImage = ERROR_IMAGE;
                 break;
             default:
                 //default to error images
@@ -226,6 +235,10 @@ public class SettlerBtn extends WorldObject {
             case 8:
                 //if the type is a trade 4:1 button
                 textImage = BUILD_BTN_TEXTS[mode];
+                break;
+            case 9:
+                //if the type is a trade 4:1 button
+                textImage = EXIT_NO_SAVE_TEXT;
                 break;
             default:
                 //deflault to error image

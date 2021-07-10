@@ -169,6 +169,7 @@ public class GamePanel extends javax.swing.JPanel {
     private SettlerBtn tradeDomestic;
     //util buttons
     private SettlerBtn buildBtn;
+    private SettlerBtn backNoSaveBtn;
 
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
@@ -473,9 +474,10 @@ public class GamePanel extends javax.swing.JPanel {
         tradeDomestic = new SettlerBtn(false, 1, 7); //trade domestically with another player
         //util
         buildBtn = new SettlerBtn(false, 1, 8); //the build button
+        backNoSaveBtn = new SettlerBtn(true, 1, 9); //the exit button and not saving
 
         //setup the button array
-        settlerBtns = new SettlerBtn[]{turnSwitchBtn, buildBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn};
+        settlerBtns = new SettlerBtn[]{turnSwitchBtn, buildBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn, backNoSaveBtn};
         //setup label array
         settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, tradeMenuLbl, devCardMenuLbl};
 
@@ -520,7 +522,6 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementSRBtn = new javax.swing.JRadioButton();
         buildSettlementLRBtn = new javax.swing.JRadioButton();
         buildRoadRBtn = new javax.swing.JRadioButton();
-        backNoSaveBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
@@ -559,14 +560,6 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(false);
         buildRoadRBtn.setOpaque(false);
 
-        backNoSaveBtn.setText("< Exit without saving");
-        backNoSaveBtn.setFocusable(false);
-        backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backNoSaveBtnActionPerformed(evt);
-            }
-        });
-
         titleLbl.setFont(new java.awt.Font("Times New Roman", 1, 40)); // NOI18N
         titleLbl.setForeground(new java.awt.Color(255, 255, 225));
         titleLbl.setText("Settlers of Catan");
@@ -581,9 +574,7 @@ public class GamePanel extends javax.swing.JPanel {
                     .addComponent(buildMenuLbl)
                     .addComponent(buildRoadRBtn)
                     .addComponent(titleLbl)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buildSettlementSRBtn))
                 .addContainerGap(1625, Short.MAX_VALUE))
@@ -601,9 +592,7 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementSRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buildSettlementLRBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 706, Short.MAX_VALUE)
-                .addComponent(backNoSaveBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 740, Short.MAX_VALUE)
                 .addComponent(backBtn)
                 .addContainerGap())
         );
@@ -647,6 +636,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
+        //most buttons and labels aligned to the top
         //set the turn button to the correct location
         turnSwitchBtn.setXPos(titleLbl.getX());
         turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
@@ -695,6 +685,10 @@ public class GamePanel extends javax.swing.JPanel {
 
         useDevCardBtn.setXPos(toggleCardBtn.getXPos());
         useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (6 / scaleFactor)));
+
+        //the exit buttons aligned to the bottom
+        backNoSaveBtn.setXPos(turnSwitchBtn.getXPos());
+        backNoSaveBtn.setYPos(backBtn.getY() - getImgHeight(backNoSaveBtn.getBaseImage()) - scaleInt(6));
     }
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
@@ -1062,7 +1056,7 @@ public class GamePanel extends javax.swing.JPanel {
      *
      * @param evt
      */
-    private void backNoSaveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backNoSaveBtnActionPerformed
+    private void backNoSaveBtnClicked() {
         int overwrite;
         overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
         //If the user really want to leave let them
@@ -1075,7 +1069,7 @@ public class GamePanel extends javax.swing.JPanel {
             superFrame.getMainMenu().setVisible(true); //show the main menu
             superFrame.setVisible(false); //hide the parent frame 
         }
-    }//GEN-LAST:event_backNoSaveBtnActionPerformed
+    }
 
     /**
      * Tasks that need to be performed when closing out of game from online mode
@@ -1326,6 +1320,8 @@ public class GamePanel extends javax.swing.JPanel {
                         trade2to1BtnClicked();
                     } else if (btn.equals(buildBtn)) { //if the user clicked to trade with a 3:1 ratio
                         buildBtnClicked();
+                    } else if (btn.equals(backNoSaveBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        backNoSaveBtnClicked();
                     }
                 }
             }
@@ -6767,7 +6763,6 @@ public class GamePanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
-    private javax.swing.JButton backNoSaveBtn;
     private javax.swing.ButtonGroup buildBtnGroup;
     private javax.swing.JLabel buildMenuLbl;
     private javax.swing.JRadioButton buildRoadRBtn;
