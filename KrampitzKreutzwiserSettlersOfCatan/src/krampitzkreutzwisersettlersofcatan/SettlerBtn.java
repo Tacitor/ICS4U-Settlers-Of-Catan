@@ -154,6 +154,11 @@ public class SettlerBtn extends WorldObject {
                 baseImage = TRADE_BTN; //still has the right length
                 disabledImage = TRADE_DISABLED_BTN;
                 break;
+            case 6:
+                //if the type is a trade 2:1 button
+                baseImage = TRADE_BTN; //still has the right length
+                disabledImage = TRADE_DISABLED_BTN;
+                break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
@@ -191,6 +196,10 @@ public class SettlerBtn extends WorldObject {
             case 5:
                 //if the type is a trade 4:1 button
                 textImage = TRADE_BTN_3TO_TEXTS[mode];
+                break;
+            case 6:
+                //if the type is a trade 4:1 button
+                textImage = TRADE_BTN_2TO_TEXTS[mode];
                 break;
             default:
                 //deflault to error image
