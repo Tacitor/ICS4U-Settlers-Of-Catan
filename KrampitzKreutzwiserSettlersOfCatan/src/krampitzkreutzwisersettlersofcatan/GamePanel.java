@@ -167,6 +167,8 @@ public class GamePanel extends javax.swing.JPanel {
     private SettlerBtn trade3to1Btn;
     private SettlerBtn trade2to1Btn;
     private SettlerBtn tradeDomestic;
+    //util buttons
+    private SettlerBtn buildBtn;
 
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
@@ -185,7 +187,6 @@ public class GamePanel extends javax.swing.JPanel {
     //fonts
     private final Font timesNewRoman;
     private final Font tahoma;
-    private final Font dialog;
 
     // </editor-fold>
     //private Graphics awtGraphics;
@@ -458,7 +459,6 @@ public class GamePanel extends javax.swing.JPanel {
         //get the fonts
         timesNewRoman = buildMenuLbl.getFont();
         tahoma = buildRoadRBtn.getFont();
-        dialog = buildBtn.getFont();
 
         //setup the SettlerBtns
         toggleCardBtn = new SettlerBtn(false, 0, 0); //cannot give a position yet because they need to be below the Swing buttons
@@ -466,14 +466,16 @@ public class GamePanel extends javax.swing.JPanel {
         useDevCardBtn = new SettlerBtn(false, 0, 2); //play a dev card and use it's abilities
         //turn btn
         turnSwitchBtn = new SettlerBtn(true, 0, 3);
-        //trade
+        //trade buttons as of here (down) have mode 0 as cancel. Buttons above ^^^ have the last mode as cancel (usually)
         trade4to1Btn = new SettlerBtn(false, 1, 4); //trade at a 4:1 cost
         trade3to1Btn = new SettlerBtn(false, 1, 5); //trade at a 3:1 cost
         trade2to1Btn = new SettlerBtn(false, 1, 6); //trade at a 2:1 cost
         tradeDomestic = new SettlerBtn(false, 1, 7); //trade domestically with another player
+        //util
+        buildBtn = new SettlerBtn(false, 1, 8); //the build button
 
         //setup the button array
-        settlerBtns = new SettlerBtn[]{turnSwitchBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn};
+        settlerBtns = new SettlerBtn[]{turnSwitchBtn, buildBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn};
         //setup label array
         settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, tradeMenuLbl, devCardMenuLbl};
 
@@ -481,8 +483,6 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
         buildSettlementSRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
         buildSettlementLRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
-
-        buildBtn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
 
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
@@ -520,7 +520,6 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementSRBtn = new javax.swing.JRadioButton();
         buildSettlementLRBtn = new javax.swing.JRadioButton();
         buildRoadRBtn = new javax.swing.JRadioButton();
-        buildBtn = new javax.swing.JButton();
         backNoSaveBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
 
@@ -560,15 +559,6 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setEnabled(false);
         buildRoadRBtn.setOpaque(false);
 
-        buildBtn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        buildBtn.setText("Build");
-        buildBtn.setToolTipText("");
-        buildBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buildBtnActionPerformed(evt);
-            }
-        });
-
         backNoSaveBtn.setText("< Exit without saving");
         backNoSaveBtn.setFocusable(false);
         backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -595,8 +585,7 @@ public class GamePanel extends javax.swing.JPanel {
                         .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buildSettlementSRBtn)
-                    .addComponent(buildBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(buildSettlementSRBtn))
                 .addContainerGap(1625, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -612,9 +601,7 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementSRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buildSettlementLRBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(buildBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 666, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 706, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -648,24 +635,19 @@ public class GamePanel extends javax.swing.JPanel {
         instructionLbl.setLineWrap(true);
         subInstructionLbl.setLineWrap(true);
     }
-    
+
     /**
      * Update the coordinates for the custom buttons
      */
     private void settlerBtnPos() {
-        
-        toggleCardBtn.setXPos(trade2to1Btn.getXPos());
-        toggleCardBtn.setYPos(devCardMenuLbl.getYPos() + scaleInt(10));
-
-        buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
-        buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
-
-        useDevCardBtn.setXPos(toggleCardBtn.getXPos());
-        useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
 
         //set the turn button to the correct location
         turnSwitchBtn.setXPos(titleLbl.getX());
         turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
+
+        //set the build button
+        buildBtn.setXPos(turnSwitchBtn.getXPos());
+        buildBtn.setYPos(buildSettlementLRBtn.getY() + buildSettlementLRBtn.getHeight() + scaleInt(10));
 
         //set the trade buttons to the correct location
         trade4to1Btn.setXPos(tradeMenuLbl.getXPos());
@@ -676,9 +658,18 @@ public class GamePanel extends javax.swing.JPanel {
 
         trade2to1Btn.setXPos(tradeMenuLbl.getXPos());
         trade2to1Btn.setYPos(trade4to1Btn.getYPos() + getImgHeight(trade4to1Btn.getBaseImage()) + scaleInt(6));
-        
+
         tradeDomestic.setXPos(trade2to1Btn.getXPos() + getImgWidth(trade2to1Btn.getBaseImage()) + scaleInt(6));
         tradeDomestic.setYPos(trade2to1Btn.getYPos());
+
+        toggleCardBtn.setXPos(trade2to1Btn.getXPos());
+        toggleCardBtn.setYPos(devCardMenuLbl.getYPos() + scaleInt(10));
+
+        buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
+        buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
+
+        useDevCardBtn.setXPos(toggleCardBtn.getXPos());
+        useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
     }
 
     /**
@@ -706,7 +697,7 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
 
         tradeMenuLbl.setXPos(instructionPromptLbl.getXPos());
-        tradeMenuLbl.setYPos(buildBtn.getY() + buildBtn.getHeight() + scaleInt(30));
+        tradeMenuLbl.setYPos(buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage()) + scaleInt(30));
 
         devCardMenuLbl.setXPos(instructionPromptLbl.getXPos());
         devCardMenuLbl.setYPos(trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage()) + scaleInt(30));
@@ -752,7 +743,10 @@ public class GamePanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_backBtnActionPerformed
 
-    private void buildBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildBtnActionPerformed
+    /**
+     * What to do when a player clicks the build button
+     */
+    private void buildBtnClicked() {
         // If a turn is in progress
         if (!inbetweenTurns) {
             //check to make sure there isn't already another building trying to be made
@@ -826,12 +820,12 @@ public class GamePanel extends javax.swing.JPanel {
                 System.out.println("An error has occoured while building");
             }
             // Change the build button to a cancel button
-            buildBtn.setText("Cancel");
+            buildBtn.setMode(0);//set it to "Cancel"
 
             //update the server if online mode
             onlineUpdateServer();
         }
-    }//GEN-LAST:event_buildBtnActionPerformed
+    }
 
     /**
      * End/start turn button click handling, for turn switching
@@ -1010,7 +1004,7 @@ public class GamePanel extends javax.swing.JPanel {
                 showRoadHitbox = false; // Hide placement hitboxes
                 showSettlementHitbox = false; // Hide placement hitboxes
                 // Change the button back to the build button
-                buildBtn.setText("Build");
+                buildBtn.setMode(1);//set it to "Build"
             }
 
             /* Old code. This is done in the udpateBuildButton method now
@@ -1336,6 +1330,8 @@ public class GamePanel extends javax.swing.JPanel {
                         trade3to1BtnClicked();
                     } else if (btn.equals(trade2to1Btn)) { //if the user clicked to trade with a 3:1 ratio
                         trade2to1BtnClicked();
+                    } else if (btn.equals(buildBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        buildBtnClicked();
                     }
                 }
             }
@@ -1481,7 +1477,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 buildingObject = 0;
                                 showRoadHitbox = false;
                                 // Change the button back to the build button
-                                buildBtn.setText("Build");
+                                buildBtn.setMode(1);//set it to "Build"
                                 // Redraw the board
                                 repaint();
                             }
@@ -1558,7 +1554,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 buildingObject = 0;
                                 showSettlementHitbox = false;
                                 // Change the button back to the build button
-                                buildBtn.setText("Build");
+                                buildBtn.setMode(1);//set it to "Build"
                                 // Redraw the board
                                 repaint();
                             }
@@ -1619,7 +1615,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 buildingObject = 0;
                                 showSettlementHitbox = false;
                                 // Change the button back to the build button
-                                buildBtn.setText("Build");
+                                buildBtn.setMode(1);//set it to "Build"
                                 // Redraw the board
                                 repaint();
                             }
@@ -3528,7 +3524,7 @@ public class GamePanel extends javax.swing.JPanel {
             trade4to1Btn.setMode(1); //set to "Trade 4:1"
             trade3to1Btn.setMode(1); //set to "Trade 3:1"
             trade2to1Btn.setMode(1); //set to "Trade 2:1"
-            buildBtn.setText("Build");
+            buildBtn.setMode(1);//set it to "Build"
         }
 
         //update the instructions
@@ -3554,7 +3550,7 @@ public class GamePanel extends javax.swing.JPanel {
         //update the text of the Swing buttons
         //check if building
         if (buildingObject != 0) {
-            buildBtn.setText("Cancel");
+            buildBtn.setMode(0);//set it to "Cancel"
         }
         //check if trading
         if (tradingMode != 0) {
@@ -5546,11 +5542,10 @@ public class GamePanel extends javax.swing.JPanel {
          */
         //make sure the buttons are all in the right spot      
         //keep looping until the dev card buttons are no longer in the top left
-        while (toggleCardBtn.getYPos() < scaleInt(100)) {
+        while (toggleCardBtn.getYPos() < scaleInt(300)) {
             settlerLblPos(g2d); //update the positions of the custon labels because some buttons are bassed off of them
             settlerBtnPos();
         }
-        
 
         //draw the custom SettlerBtns
         //loop through the buttons
@@ -5599,8 +5594,8 @@ public class GamePanel extends javax.swing.JPanel {
             //the build box
             g2d.drawRect(buildMenuLbl.getX() - scaleInt(5),
                     buildMenuLbl.getY() - scaleInt(5),
-                    buildBtn.getWidth() + scaleInt(10),
-                    (buildBtn.getY() + buildBtn.getHeight()) - buildMenuLbl.getY() + scaleInt(10));
+                    getImgWidth(buildBtn.getBaseImage()) + scaleInt(10),
+                    (buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage())) - buildMenuLbl.getY() + scaleInt(10));
             //the dev card box
             g2d.drawRect(devCardMenuLbl.getXPos() - scaleInt(5),
                     devCardMenuLbl.getYPos() - scaleInt(5),
@@ -6245,7 +6240,7 @@ public class GamePanel extends javax.swing.JPanel {
         showRoadHitbox = false;
         showSettlementHitbox = false;
         // Change the button back to the build button
-        buildBtn.setText("Build");
+        buildBtn.setMode(1);//set it to "Build"
     }
 
     /**
@@ -6782,7 +6777,6 @@ public class GamePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.JButton backNoSaveBtn;
-    private javax.swing.JButton buildBtn;
     private javax.swing.ButtonGroup buildBtnGroup;
     private javax.swing.JLabel buildMenuLbl;
     private javax.swing.JRadioButton buildRoadRBtn;

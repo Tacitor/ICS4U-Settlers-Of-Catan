@@ -56,6 +56,10 @@ public class SettlerBtn extends WorldObject {
     private final static Image TRADE_2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/trade2to1Text.png")).getImage();
     private final static Image TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeDomesticText.png")).getImage();
 
+    //util buttons
+    //build
+    private final static Image BUILD_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/buildBtnText.png")).getImage();
+
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
     private final static Image[] USE_DEV_BTN_TEXTS = new Image[]{USE_DEV_BTN_TEXT1, USE_DEV_BTN_TEXT2};
@@ -65,6 +69,8 @@ public class SettlerBtn extends WorldObject {
     private final static Image[] TRADE_BTN_3TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_3};
     private final static Image[] TRADE_BTN_2TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_2};
     private final static Image[] TRADE_BTN_DOM_TEXTS = new Image[]{TRADE_CANCEL, TRADE_DOMESTIC};
+    //util arrays
+    private final static Image[] BUILD_BTN_TEXTS = new Image[]{TRADE_CANCEL, BUILD_TEXT};
 
     //constructors
     /**
@@ -166,6 +172,11 @@ public class SettlerBtn extends WorldObject {
                 baseImage = TRADE_BTN; //still has the right length
                 disabledImage = TRADE_DISABLED_BTN;
                 break;
+            case 8:
+                //if the type is a trade 2:1 button
+                baseImage = TRADE_BTN; //still has the right length
+                disabledImage = TRADE_DISABLED_BTN;
+                break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
@@ -211,6 +222,10 @@ public class SettlerBtn extends WorldObject {
             case 7:
                 //if the type is a trade 4:1 button
                 textImage = TRADE_BTN_DOM_TEXTS[mode];
+                break;
+            case 8:
+                //if the type is a trade 4:1 button
+                textImage = BUILD_BTN_TEXTS[mode];
                 break;
             default:
                 //deflault to error image
