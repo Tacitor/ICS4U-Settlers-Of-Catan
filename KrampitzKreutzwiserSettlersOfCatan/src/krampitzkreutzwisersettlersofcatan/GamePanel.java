@@ -637,51 +637,19 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Update the coordinates for the custom buttons
+     * Update the coordinates for the custom labels and buttons
      */
-    private void settlerBtnPos() {
-
-        //set the turn button to the correct location
-        turnSwitchBtn.setXPos(titleLbl.getX());
-        turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
-
-        //set the build button
-        buildBtn.setXPos(turnSwitchBtn.getXPos());
-        buildBtn.setYPos(buildSettlementLRBtn.getY() + buildSettlementLRBtn.getHeight() + scaleInt(10));
-
-        //set the trade buttons to the correct location
-        trade4to1Btn.setXPos(tradeMenuLbl.getXPos());
-        trade4to1Btn.setYPos(tradeMenuLbl.getYPos() + scaleInt(10));
-
-        trade3to1Btn.setXPos(trade4to1Btn.getXPos() + getImgWidth(trade4to1Btn.getBaseImage()) + scaleInt(6));
-        trade3to1Btn.setYPos(trade4to1Btn.getYPos());
-
-        trade2to1Btn.setXPos(tradeMenuLbl.getXPos());
-        trade2to1Btn.setYPos(trade4to1Btn.getYPos() + getImgHeight(trade4to1Btn.getBaseImage()) + scaleInt(6));
-
-        tradeDomestic.setXPos(trade2to1Btn.getXPos() + getImgWidth(trade2to1Btn.getBaseImage()) + scaleInt(6));
-        tradeDomestic.setYPos(trade2to1Btn.getYPos());
-
-        toggleCardBtn.setXPos(trade2to1Btn.getXPos());
-        toggleCardBtn.setYPos(devCardMenuLbl.getYPos() + scaleInt(10));
-
-        buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
-        buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
-
-        useDevCardBtn.setXPos(toggleCardBtn.getXPos());
-        useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
-    }
-
-    /**
-     * Update the coordinates for the custom labels
-     */
-    private void settlerLblPos(Graphics2D g2d) {
+    private void settlerVarPos(Graphics2D g2d) {
         //calc the number of lines for the labels that will be multi line
         for (SettlerLbl lbl : settlerLbls) {
             if (lbl.getLineWrap()) {
                 lbl.calcNumLines(g2d, this);
             }
         }
+
+        //set the turn button to the correct location
+        turnSwitchBtn.setXPos(titleLbl.getX());
+        turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
 
         instructionPromptLbl.setXPos(scaleInt(10));
         instructionPromptLbl.setYPos(turnSwitchBtn.getYPos() + getImgHeight(turnSwitchBtn.getBaseImage()) + scaleInt(30));
@@ -696,11 +664,37 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setXPos(instructionLbl.getXPos());
         subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
 
+        //set the build button
+        buildBtn.setXPos(turnSwitchBtn.getXPos());
+        buildBtn.setYPos(buildSettlementLRBtn.getY() + buildSettlementLRBtn.getHeight() + scaleInt(10));
+
         tradeMenuLbl.setXPos(instructionPromptLbl.getXPos());
         tradeMenuLbl.setYPos(buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage()) + scaleInt(30));
 
+        //set the trade buttons to the correct location
+        trade4to1Btn.setXPos(tradeMenuLbl.getXPos());
+        trade4to1Btn.setYPos(tradeMenuLbl.getYPos() + scaleInt(10));
+
+        trade3to1Btn.setXPos(trade4to1Btn.getXPos() + getImgWidth(trade4to1Btn.getBaseImage()) + scaleInt(6));
+        trade3to1Btn.setYPos(trade4to1Btn.getYPos());
+
+        trade2to1Btn.setXPos(tradeMenuLbl.getXPos());
+        trade2to1Btn.setYPos(trade4to1Btn.getYPos() + getImgHeight(trade4to1Btn.getBaseImage()) + scaleInt(6));
+
+        tradeDomestic.setXPos(trade2to1Btn.getXPos() + getImgWidth(trade2to1Btn.getBaseImage()) + scaleInt(6));
+        tradeDomestic.setYPos(trade2to1Btn.getYPos());
+
         devCardMenuLbl.setXPos(instructionPromptLbl.getXPos());
         devCardMenuLbl.setYPos(trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage()) + scaleInt(30));
+
+        toggleCardBtn.setXPos(trade2to1Btn.getXPos());
+        toggleCardBtn.setYPos(devCardMenuLbl.getYPos() + scaleInt(10));
+
+        buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
+        buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
+
+        useDevCardBtn.setXPos(toggleCardBtn.getXPos());
+        useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
     }
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
@@ -5542,10 +5536,7 @@ public class GamePanel extends javax.swing.JPanel {
          */
         //make sure the buttons are all in the right spot      
         //keep looping until the dev card buttons are no longer in the top left
-        while (toggleCardBtn.getYPos() < scaleInt(300)) {
-            settlerLblPos(g2d); //update the positions of the custon labels because some buttons are bassed off of them
-            settlerBtnPos();
-        }
+        settlerVarPos(g2d); //update the positions of the custon labels because some buttons are bassed off of them
 
         //draw the custom SettlerBtns
         //loop through the buttons
@@ -5569,7 +5560,7 @@ public class GamePanel extends javax.swing.JPanel {
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */
-        settlerLblPos(g2d); //update the positions of the custon labels
+        settlerVarPos(g2d); //update the positions of the custon labels
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
