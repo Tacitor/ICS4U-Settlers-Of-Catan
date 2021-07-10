@@ -631,7 +631,7 @@ public class GamePanel extends javax.swing.JPanel {
         turnSwitchBtn.setXPos(titleLbl.getX());
         turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
 
-        instructionPromptLbl.setXPos(scaleInt(10));
+        instructionPromptLbl.setXPos(titleLbl.getX());
         instructionPromptLbl.setYPos(turnSwitchBtn.getYPos() + getImgHeight(turnSwitchBtn.getBaseImage()) + scaleInt(30));
 
         //get the length of the instruction prompt
