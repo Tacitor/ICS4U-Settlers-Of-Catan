@@ -165,6 +165,7 @@ public class GamePanel extends javax.swing.JPanel {
     //trade
     private SettlerBtn trade4to1Btn;
     private SettlerBtn trade3to1Btn;
+    private SettlerBtn trade2to1Btn;
 
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
@@ -467,9 +468,10 @@ public class GamePanel extends javax.swing.JPanel {
         //trade
         trade4to1Btn = new SettlerBtn(false, 1, 4); //trade at a 4:1 cost
         trade3to1Btn = new SettlerBtn(false, 1, 5); //trade at a 3:1 cost
+        trade2to1Btn = new SettlerBtn(false, 1, 6); //trade at a 2:1 cost
 
         //setup the button array
-        settlerBtns = new SettlerBtn[]{turnSwitchBtn, trade4to1Btn, trade3to1Btn, toggleCardBtn, buyDevCardBtn, useDevCardBtn};
+        settlerBtns = new SettlerBtn[]{turnSwitchBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, toggleCardBtn, buyDevCardBtn, useDevCardBtn};
         //setup label array
         settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, tradeMenuLbl, devCardMenuLbl};
 
@@ -479,8 +481,6 @@ public class GamePanel extends javax.swing.JPanel {
         buildSettlementLRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
 
         buildBtn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
-
-        trade2to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
 
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
@@ -521,7 +521,6 @@ public class GamePanel extends javax.swing.JPanel {
         buildBtn = new javax.swing.JButton();
         backNoSaveBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
-        trade2to1Btn = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
@@ -580,18 +579,6 @@ public class GamePanel extends javax.swing.JPanel {
         titleLbl.setForeground(new java.awt.Color(255, 255, 225));
         titleLbl.setText("Settlers of Catan");
 
-        trade2to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        trade2to1Btn.setText("Trade 2:1");
-        trade2to1Btn.setToolTipText("");
-        trade2to1Btn.setMaximumSize(null);
-        trade2to1Btn.setMinimumSize(null);
-        trade2to1Btn.setPreferredSize(null);
-        trade2to1Btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                trade2to1BtnActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -607,9 +594,7 @@ public class GamePanel extends javax.swing.JPanel {
                         .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buildSettlementSRBtn)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(trade2to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
+                    .addComponent(buildBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(1625, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -627,9 +612,7 @@ public class GamePanel extends javax.swing.JPanel {
                 .addComponent(buildSettlementLRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buildBtn)
-                .addGap(129, 129, 129)
-                .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 504, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 666, Short.MAX_VALUE)
                 .addComponent(backNoSaveBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -663,6 +646,35 @@ public class GamePanel extends javax.swing.JPanel {
         instructionLbl.setLineWrap(true);
         subInstructionLbl.setLineWrap(true);
     }
+    
+    /**
+     * Update the coordinates for the custom buttons
+     */
+    private void settlerBtnPos() {
+        
+        toggleCardBtn.setXPos(trade2to1Btn.getXPos());
+        toggleCardBtn.setYPos(devCardMenuLbl.getYPos() + scaleInt(10));
+
+        buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
+        buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
+
+        useDevCardBtn.setXPos(toggleCardBtn.getXPos());
+        useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
+
+        //set the turn button to the correct location
+        turnSwitchBtn.setXPos(titleLbl.getX());
+        turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
+
+        //set the trade buttons to the correct location
+        trade4to1Btn.setXPos(tradeMenuLbl.getXPos());
+        trade4to1Btn.setYPos(tradeMenuLbl.getYPos() + scaleInt(10));
+
+        trade3to1Btn.setXPos(trade4to1Btn.getXPos() + getImgWidth(trade4to1Btn.getBaseImage()) + scaleInt(6));
+        trade3to1Btn.setYPos(trade4to1Btn.getYPos());
+
+        trade2to1Btn.setXPos(tradeMenuLbl.getXPos());
+        trade2to1Btn.setYPos(trade4to1Btn.getYPos() + getImgHeight(trade4to1Btn.getBaseImage()) + scaleInt(6));
+    }
 
     /**
      * Update the coordinates for the custom labels
@@ -692,7 +704,7 @@ public class GamePanel extends javax.swing.JPanel {
         tradeMenuLbl.setYPos(buildBtn.getY() + buildBtn.getHeight() + scaleInt(30));
 
         devCardMenuLbl.setXPos(instructionPromptLbl.getXPos());
-        devCardMenuLbl.setYPos(trade2to1Btn.getY() + trade2to1Btn.getHeight() + scaleInt(30));
+        devCardMenuLbl.setYPos(trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage()) + scaleInt(30));
     }
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
@@ -1131,7 +1143,7 @@ public class GamePanel extends javax.swing.JPanel {
         //update the server if online mode
         onlineUpdateServer();
     }
-    
+
     /**
      * Actions preformed when a player want to trade 4:1 cards
      */
@@ -1178,12 +1190,12 @@ public class GamePanel extends javax.swing.JPanel {
         onlineUpdateServer();
     }
 
-    private void trade2to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade2to1BtnActionPerformed
+    private void trade2to1BtnClicked() {
         //check what mode of trading the game is in for 2:1
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
             turnBtnEnabled = true;
-            trade2to1Btn.setText("Trade 2:1");
+            trade2to1Btn.setMode(1); //set to "Trade 2:1"
             //remove the intent to trade
             tradingMode = 0;
             minTradeCardsNeeded = 0;
@@ -1204,7 +1216,7 @@ public class GamePanel extends javax.swing.JPanel {
             //diable turn switching
             turnBtnEnabled = false;
             //update the text of the button
-            trade2to1Btn.setText("Cancel");
+            trade2to1Btn.setMode(0); //set to "Cancel"
             //show the hitboxes
             showResStackHitbox = true;
             //canbel any building if there is any
@@ -1219,7 +1231,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //update the server if online mode
         onlineUpdateServer();
-    }//GEN-LAST:event_trade2to1BtnActionPerformed
+    }
 
     /**
      * Handles mouse input, based on the state of the game
@@ -1317,6 +1329,8 @@ public class GamePanel extends javax.swing.JPanel {
                         trade4to1BtnClicked();
                     } else if (btn.equals(trade3to1Btn)) { //if the user clicked to trade with a 3:1 ratio
                         trade3to1BtnClicked();
+                    } else if (btn.equals(trade2to1Btn)) { //if the user clicked to trade with a 3:1 ratio
+                        trade2to1BtnClicked();
                     }
                 }
             }
@@ -2130,7 +2144,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     turnBtnEnabled = true;
                                     trade4to1Btn.setMode(1); //set to "Trade 4:1"
                                     trade3to1Btn.setMode(1); //set to "Trade 3:1"
-                                    trade2to1Btn.setText("Trade 2:1");
+                                    trade2to1Btn.setMode(1); //set to "Trade 2:1"
                                     //remove the intent to trade
                                     tradingMode = 0;
                                     minTradeCardsNeeded = 0;
@@ -2196,7 +2210,7 @@ public class GamePanel extends javax.swing.JPanel {
                                     turnBtnEnabled = true;
                                     trade4to1Btn.setMode(1); //set to "Trade 4:1"
                                     trade3to1Btn.setMode(1); //set to "Trade 3:1"
-                                    trade2to1Btn.setText("Trade 2:1");
+                                    trade2to1Btn.setMode(1); //set to "Trade 2:1"
                                     //remove the intent to trade
                                     tradingMode = 0;
                                     minTradeCardsNeeded = 0;
@@ -3508,7 +3522,7 @@ public class GamePanel extends javax.swing.JPanel {
         if (onlineMode != -1 && onlineMode != currentPlayer) {
             trade4to1Btn.setMode(1); //set to "Trade 4:1"
             trade3to1Btn.setMode(1); //set to "Trade 3:1"
-            trade2to1Btn.setText("Trade 2:1");
+            trade2to1Btn.setMode(1); //set to "Trade 2:1"
             buildBtn.setText("Build");
         }
 
@@ -3548,7 +3562,7 @@ public class GamePanel extends javax.swing.JPanel {
                     trade3to1Btn.setMode(0); //set to "Cancel"
                     break;
                 case 3:
-                    trade2to1Btn.setText("Cancel");
+                    trade2to1Btn.setMode(0); //set to "Cancel"
                     break;
                 default:
                     break;
@@ -5525,26 +5539,13 @@ public class GamePanel extends javax.swing.JPanel {
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */
-        //make sure the buttons are all in the right spot
-        toggleCardBtn.setXPos((int) trade2to1Btn.getBounds().getX());
-        toggleCardBtn.setYPos(devCardMenuLbl.getYPos() + scaleInt(10));
-
-        buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
-        buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
-
-        useDevCardBtn.setXPos(toggleCardBtn.getXPos());
-        useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
-
-        //set the turn button to the correct location
-        turnSwitchBtn.setXPos(titleLbl.getX());
-        turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
-
-        //set the trade buttons to the correct location
-        trade4to1Btn.setXPos(tradeMenuLbl.getXPos());
-        trade4to1Btn.setYPos(tradeMenuLbl.getYPos() + scaleInt(10));
+        //make sure the buttons are all in the right spot      
+        //keep looping until the dev card buttons are no longer in the top left
+        while (toggleCardBtn.getYPos() < scaleInt(100)) {
+            settlerLblPos(g2d); //update the positions of the custon labels because some buttons are bassed off of them
+            settlerBtnPos();
+        }
         
-        trade3to1Btn.setXPos(trade4to1Btn.getXPos() + getImgWidth(trade4to1Btn.getBaseImage()) + scaleInt(6));
-        trade3to1Btn.setYPos(trade4to1Btn.getYPos());
 
         //draw the custom SettlerBtns
         //loop through the buttons
@@ -5589,7 +5590,7 @@ public class GamePanel extends javax.swing.JPanel {
             g2d.drawRect(tradeMenuLbl.getXPos() - scaleInt(5),
                     tradeMenuLbl.getYPos() - scaleInt(5),
                     getImgWidth(trade4to1Btn.getBaseImage()) + scaleInt(10),
-                    (trade2to1Btn.getY() + trade2to1Btn.getHeight()) - tradeMenuLbl.getYPos() + scaleInt(10));
+                    (trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage())) - tradeMenuLbl.getYPos() + scaleInt(10));
             //the build box
             g2d.drawRect(buildMenuLbl.getX() - scaleInt(5),
                     buildMenuLbl.getY() - scaleInt(5),
@@ -6783,7 +6784,6 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton buildSettlementLRBtn;
     private javax.swing.JRadioButton buildSettlementSRBtn;
     private javax.swing.JLabel titleLbl;
-    private javax.swing.JButton trade2to1Btn;
     // End of variables declaration//GEN-END:variables
 
 }
