@@ -691,10 +691,10 @@ public class GamePanel extends javax.swing.JPanel {
         toggleCardBtn.setYPos(devCardMenuLbl.getYPos() + scaleInt(10));
 
         buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
-        buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
+        buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (6 / scaleFactor)));
 
         useDevCardBtn.setXPos(toggleCardBtn.getXPos());
-        useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
+        useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (6 / scaleFactor)));
     }
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
