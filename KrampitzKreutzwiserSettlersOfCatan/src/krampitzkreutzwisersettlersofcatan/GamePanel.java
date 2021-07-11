@@ -34,7 +34,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -183,6 +182,7 @@ public class GamePanel extends javax.swing.JPanel {
     //menu headers
     private SettlerLbl devCardMenuLbl;
     private SettlerLbl tradeMenuLbl;
+    private SettlerLbl buildMenuLbl;
     //array of labels
     private SettlerLbl[] settlerLbls;
 
@@ -466,7 +466,7 @@ public class GamePanel extends javax.swing.JPanel {
         updatePortPos();
 
         //get the fonts
-        timesNewRoman = buildMenuLbl.getFont();
+        timesNewRoman = new Font("Times New Roman", Font.PLAIN, 18);
 
         //setup the SettlerBtns
         toggleCardBtn = new SettlerBtn(false, 0, 0); //cannot give a position yet because they need to be below the Swing buttons
@@ -492,7 +492,7 @@ public class GamePanel extends javax.swing.JPanel {
         //setup the button array
         settlerBtns = new SettlerBtn[]{turnSwitchBtn, buildBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn, backNoSaveBtn, backBtn};
         //setup label array
-        settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, tradeMenuLbl, devCardMenuLbl};
+        settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, buildMenuLbl, tradeMenuLbl, devCardMenuLbl};
         //setup the radio button array
         settlerRadioBtns = new SettlerRadioBtn[]{buildRoadRBtn, buildSettlementSRBtn, buildSettlementLRBtn};
         
@@ -529,16 +529,11 @@ public class GamePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buildMenuLbl = new javax.swing.JLabel();
         titleLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1920, 1080));
-
-        buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        buildMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
-        buildMenuLbl.setText("Build Menu:");
 
         titleLbl.setFont(new java.awt.Font("Times New Roman", 1, 40)); // NOI18N
         titleLbl.setForeground(new java.awt.Color(255, 255, 225));
@@ -550,9 +545,7 @@ public class GamePanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buildMenuLbl)
-                    .addComponent(titleLbl))
+                .addComponent(titleLbl)
                 .addContainerGap(1625, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -560,9 +553,7 @@ public class GamePanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(titleLbl)
-                .addGap(144, 144, 144)
-                .addComponent(buildMenuLbl)
-                .addContainerGap(856, Short.MAX_VALUE))
+                .addContainerGap(1022, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -579,6 +570,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         devCardMenuLbl = new SettlerLbl("Development Card Menu:");
         tradeMenuLbl = new SettlerLbl("Trade Menu:");
+        buildMenuLbl = new SettlerLbl("Build Menu:");
 
         //set up the colours
         instructionLbl.setForeground(new Color(255, 255, 225));
@@ -587,6 +579,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         devCardMenuLbl.setForeground(new Color(255, 255, 225));
         tradeMenuLbl.setForeground(new Color(255, 255, 225));
+        buildMenuLbl.setForeground(new Color(255, 255, 225));
 
         //set the instructions to do line wrap
         instructionLbl.setLineWrap(true);
@@ -621,10 +614,13 @@ public class GamePanel extends javax.swing.JPanel {
 
         subInstructionLbl.setXPos(instructionLbl.getXPos());
         subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
+        
+        buildMenuLbl.setXPos(turnSwitchBtn.getXPos());
+        buildMenuLbl.setYPos(scaleInt(225));
 
         //set the build button
         buildBtn.setXPos(turnSwitchBtn.getXPos());
-        buildBtn.setYPos(buildMenuLbl.getY() + buildMenuLbl.getHeight() + scaleInt(10));
+        buildBtn.setYPos(buildMenuLbl.getYPos() + scaleInt(10));
 
         tradeMenuLbl.setXPos(instructionPromptLbl.getXPos());
         tradeMenuLbl.setYPos(buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage()) + scaleInt(30));
@@ -3914,7 +3910,9 @@ public class GamePanel extends javax.swing.JPanel {
         } // If no buttons are selected and the game IS in setup 
         else {
             // If no buttons are enabled clear the selection
-            SettlerRadioBtn.getGroupSelection(settlerRadioBtns).setSelected(false);
+            if (SettlerRadioBtn.getGroupSelection(settlerRadioBtns) != null) {
+                SettlerRadioBtn.getGroupSelection(settlerRadioBtns).setSelected(false);
+            }
 
             //check if the game is in online mode
             if (onlineMode == -1 || onlineMode == currentPlayer) {
@@ -5585,10 +5583,10 @@ public class GamePanel extends javax.swing.JPanel {
                     getImgWidth(trade4to1Btn.getBaseImage()) + scaleInt(10),
                     (trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage())) - tradeMenuLbl.getYPos() + scaleInt(10));
             //the build box
-            g2d.drawRect(buildMenuLbl.getX() - scaleInt(5),
-                    buildMenuLbl.getY() - scaleInt(5),
+            g2d.drawRect(buildMenuLbl.getXPos() - scaleInt(5),
+                    buildMenuLbl.getYPos() - scaleInt(5),
                     getImgWidth(buildBtn.getBaseImage()) + scaleInt(10),
-                    (buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage())) - buildMenuLbl.getY() + scaleInt(10));
+                    (buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage())) - buildMenuLbl.getYPos() + scaleInt(10));
             //the dev card box
             g2d.drawRect(devCardMenuLbl.getXPos() - scaleInt(5),
                     devCardMenuLbl.getYPos() - scaleInt(5),
@@ -6768,7 +6766,6 @@ public class GamePanel extends javax.swing.JPanel {
     // </editor-fold>
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel buildMenuLbl;
     private javax.swing.JLabel titleLbl;
     // End of variables declaration//GEN-END:variables
 
