@@ -5579,19 +5579,19 @@ public class GamePanel extends javax.swing.JPanel {
             g2d.setStroke(new BasicStroke(scaleInt(2))); //make the stroke a little thicker
             //the trade box
             g2d.drawRect(tradeMenuLbl.getXPos() - scaleInt(5),
-                    tradeMenuLbl.getYPos() - scaleInt(5),
-                    getImgWidth(trade4to1Btn.getBaseImage()) + scaleInt(10),
-                    (trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage())) - tradeMenuLbl.getYPos() + scaleInt(10));
+                    tradeMenuLbl.getYPos() - scaleInt(17),
+                    (trade3to1Btn.getXPos() + getImgWidth(trade3to1Btn.getBaseImage()) + scaleInt(10)) - (tradeMenuLbl.getXPos()),
+                    (trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage())) - tradeMenuLbl.getYPos() + scaleInt(22));
             //the build box
             g2d.drawRect(buildMenuLbl.getXPos() - scaleInt(5),
-                    buildMenuLbl.getYPos() - scaleInt(5),
-                    getImgWidth(buildBtn.getBaseImage()) + scaleInt(10),
-                    (buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage())) - buildMenuLbl.getYPos() + scaleInt(10));
+                    buildMenuLbl.getYPos() - scaleInt(17),
+                    getImgWidth(buildRoadRBtn.getBaseImage()) + scaleInt(10),
+                    (buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage())) - buildMenuLbl.getYPos() + scaleInt(22));
             //the dev card box
             g2d.drawRect(devCardMenuLbl.getXPos() - scaleInt(5),
-                    devCardMenuLbl.getYPos() - scaleInt(5),
+                    devCardMenuLbl.getYPos() - scaleInt(17),
                     getImgWidth(toggleCardBtn.getBaseImage()) + scaleInt(10),
-                    (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getYPos() + scaleInt(10));
+                    (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getYPos() + scaleInt(22));
             //the dice menu box
             g2d.drawRect(rightDrawMargin - scaleInt(5),
                     scaleInt(385) - scaleInt(5),
