@@ -589,7 +589,7 @@ public class GamePanel extends javax.swing.JPanel {
     /**
      * Update the coordinates for the custom labels and buttons
      */
-    private void settlerVarPos(Graphics2D g2d) {
+    private void settlerVarPos(Graphics2D g2d) {        
         //calc the number of lines for the labels that will be multi line
         for (SettlerLbl lbl : settlerLbls) {
             if (lbl.getLineWrap()) {
@@ -616,7 +616,7 @@ public class GamePanel extends javax.swing.JPanel {
         subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
         
         buildMenuLbl.setXPos(turnSwitchBtn.getXPos());
-        buildMenuLbl.setYPos(scaleInt(225));
+        buildMenuLbl.setYPos((int) (scaleInt(225) * ((1920.0 / 1080.0) - ((double)frameWidth / (double)frameHeight) + 1.0)));
         
         //set the radio build buttons
         buildRoadRBtn.setXPos(turnSwitchBtn.getXPos());
