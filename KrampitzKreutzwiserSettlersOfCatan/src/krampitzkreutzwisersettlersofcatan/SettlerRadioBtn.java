@@ -6,6 +6,8 @@
 package krampitzkreutzwisersettlersofcatan;
 
 import java.awt.Image;
+import javax.swing.ImageIcon;
+import textures.ImageRef;
 import static textures.ImageRef.ERROR_IMAGE;
 
 /**
@@ -25,6 +27,14 @@ public class SettlerRadioBtn extends WorldObject {
     private Image textImage; //the text of the button
 
     //static radio button images
+    private final static Image RADIO_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioBtn.png")).getImage();
+    private final static Image RADIO_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioBtnDisabled.png")).getImage();
+    private final static Image RADIO_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/rBtnSelection.png")).getImage();
+    //the texts
+    private final static Image RADIO_BTN_ROAD_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/roadBtnText.png")).getImage();
+    private final static Image RADIO_BTN_SETTLEMENT_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/settlementBtnText.png")).getImage();
+    private final static Image RADIO_BTN_CITY_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/cityBtnText.png")).getImage();
+
     //constructors
     /**
      * Basic constructor
