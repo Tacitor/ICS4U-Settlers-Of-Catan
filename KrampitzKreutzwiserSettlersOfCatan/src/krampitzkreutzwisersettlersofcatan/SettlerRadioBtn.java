@@ -244,7 +244,7 @@ public class SettlerRadioBtn extends WorldObject {
      *
      * @return
      */
-    public boolean getSelected() {
+    public boolean isSelected() {
         return selected;
     }
 
