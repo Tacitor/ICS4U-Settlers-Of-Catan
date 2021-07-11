@@ -617,10 +617,22 @@ public class GamePanel extends javax.swing.JPanel {
         
         buildMenuLbl.setXPos(turnSwitchBtn.getXPos());
         buildMenuLbl.setYPos(scaleInt(225));
+        
+        //set the radio build buttons
+        buildRoadRBtn.setXPos(turnSwitchBtn.getXPos());
+        buildRoadRBtn.setYPos(buildMenuLbl.getYPos() + scaleInt(10));
+        
+        //set the radio build buttons
+        buildSettlementSRBtn.setXPos(turnSwitchBtn.getXPos());
+        buildSettlementSRBtn.setYPos(buildRoadRBtn.getYPos() + getImgHeight(buildRoadRBtn.getBaseImage()) + scaleInt(6));
+        
+        //set the radio build buttons
+        buildSettlementLRBtn.setXPos(turnSwitchBtn.getXPos());
+        buildSettlementLRBtn.setYPos(buildSettlementSRBtn.getYPos() + getImgHeight(buildSettlementSRBtn.getBaseImage()) + scaleInt(6));
 
         //set the build button
         buildBtn.setXPos(turnSwitchBtn.getXPos());
-        buildBtn.setYPos(buildMenuLbl.getYPos() + scaleInt(10));
+        buildBtn.setYPos(buildSettlementLRBtn.getYPos() + getImgHeight(buildSettlementLRBtn.getBaseImage()) + scaleInt(6));
 
         tradeMenuLbl.setXPos(instructionPromptLbl.getXPos());
         tradeMenuLbl.setYPos(buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage()) + scaleInt(30));
@@ -649,18 +661,6 @@ public class GamePanel extends javax.swing.JPanel {
 
         useDevCardBtn.setXPos(toggleCardBtn.getXPos());
         useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (6 / scaleFactor)));
-
-        //set the radio build buttons
-        buildRoadRBtn.setXPos(turnSwitchBtn.getXPos());
-        buildRoadRBtn.setYPos(useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage()) + scaleInt(6));
-        
-        //set the radio build buttons
-        buildSettlementSRBtn.setXPos(turnSwitchBtn.getXPos());
-        buildSettlementSRBtn.setYPos(buildRoadRBtn.getYPos() + getImgHeight(buildRoadRBtn.getBaseImage()) + scaleInt(6));
-        
-        //set the radio build buttons
-        buildSettlementLRBtn.setXPos(turnSwitchBtn.getXPos());
-        buildSettlementLRBtn.setYPos(buildSettlementSRBtn.getYPos() + getImgHeight(buildSettlementSRBtn.getBaseImage()) + scaleInt(6));
 
         //the exit buttons aligned to the bottom
         backBtn.setXPos(turnSwitchBtn.getXPos());
