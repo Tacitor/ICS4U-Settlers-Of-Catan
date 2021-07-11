@@ -226,7 +226,7 @@ public class SettlerRadioBtn extends WorldObject {
      *
      * @return
      */
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -366,6 +366,26 @@ public class SettlerRadioBtn extends WorldObject {
                 }
             }
         }
+    }
+
+    /**
+     * Out of a group of SettlerBtns, return the selected one
+     *
+     * @param groupBtns
+     * @return
+     */
+    public static SettlerRadioBtn getGroupSelection(SettlerRadioBtn[] groupBtns) {
+        SettlerRadioBtn theSelectedOne = null;
+
+        //loop through the buttons
+        for (SettlerRadioBtn radioBtn : groupBtns) {
+            if (radioBtn.isSelected()) {
+                theSelectedOne = radioBtn;
+            }
+        }
+
+        return theSelectedOne;
+
     }
 
 }

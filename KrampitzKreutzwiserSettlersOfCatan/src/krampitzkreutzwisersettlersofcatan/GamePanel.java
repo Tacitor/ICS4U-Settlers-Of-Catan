@@ -529,7 +529,6 @@ public class GamePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buildBtnGroup = new javax.swing.ButtonGroup();
         buildMenuLbl = new javax.swing.JLabel();
         titleLbl = new javax.swing.JLabel();
 
@@ -1320,7 +1319,7 @@ public class GamePanel extends javax.swing.JPanel {
                     && event.getY() > radioBtn.getYPos()
                     && event.getX() < (radioBtn.getXPos() + getImgWidth(radioBtn.getBaseImage()))
                     && event.getY() < (radioBtn.getYPos() + getImgHeight(radioBtn.getBaseImage()))
-                    && radioBtn.getEnabled()) { //and that it is enabled
+                    && radioBtn.isEnabled()) { //and that it is enabled
 
                 //only check the other buttons if there is and authroiazed user
                 if (authorizedUser) {
@@ -3665,7 +3664,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean canTrade4to;
         boolean canTrade3to;
         boolean canTrade2to;
-        ButtonModel oldSelection; // The button selected before this update began
+        SettlerRadioBtn oldSelection; // The button selected before this update began
 
         //first check if the game is inbetween turns
         //of if it's online and the player is not the active one
@@ -3827,7 +3826,7 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // Save what button was selected before this update began
-        oldSelection = buildBtnGroup.getSelection();
+        oldSelection = SettlerRadioBtn.getGroupSelection(settlerRadioBtns);
 
         // Select the first enabled button on the list
         if (canBuildRoad) {
@@ -3842,7 +3841,9 @@ public class GamePanel extends javax.swing.JPanel {
         } // If no buttons are selected and the game is not in setup
         else if (inSetup == false) {
             // If no buttons are enabled clear the selection
-            buildBtnGroup.clearSelection();
+            if (SettlerRadioBtn.getGroupSelection(settlerRadioBtns) != null) {
+                SettlerRadioBtn.getGroupSelection(settlerRadioBtns).setSelected(false);
+            }
 
             if (inbetweenTurns) {
                 //show this message for when not in set up (differnt code does this for when in setup)
@@ -3913,7 +3914,7 @@ public class GamePanel extends javax.swing.JPanel {
         } // If no buttons are selected and the game IS in setup 
         else {
             // If no buttons are enabled clear the selection
-            buildBtnGroup.clearSelection();
+            SettlerRadioBtn.getGroupSelection(settlerRadioBtns).setSelected(false);
 
             //check if the game is in online mode
             if (onlineMode == -1 || onlineMode == currentPlayer) {
@@ -3949,7 +3950,7 @@ public class GamePanel extends javax.swing.JPanel {
         // If the button selected before this update is still enabled, select it
         // instead of the selection made in the if/else block above
         if (oldSelection != null && oldSelection.isEnabled()) { // Also make sure the saved button is not null
-            buildBtnGroup.setSelected(oldSelection, true);
+            oldSelection.setSelected(true);
         }
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
@@ -6767,7 +6768,6 @@ public class GamePanel extends javax.swing.JPanel {
     // </editor-fold>
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buildBtnGroup;
     private javax.swing.JLabel buildMenuLbl;
     private javax.swing.JLabel titleLbl;
     // End of variables declaration//GEN-END:variables
