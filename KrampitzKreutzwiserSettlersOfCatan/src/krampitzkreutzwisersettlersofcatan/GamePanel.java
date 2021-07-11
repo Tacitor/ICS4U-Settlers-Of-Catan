@@ -186,6 +186,14 @@ public class GamePanel extends javax.swing.JPanel {
     //array of labels
     private SettlerLbl[] settlerLbls;
 
+    //custom radio buttons
+    private SettlerRadioBtn ebuildRoadRBtn;
+    private SettlerRadioBtn ebuildSettlementSRBtn;
+    private SettlerRadioBtn ebuildSettlementLRBtn;
+
+    //array of the radio buttons
+    private SettlerRadioBtn[] settlerRadioBtns;
+
     //fonts
     private final Font timesNewRoman;
     private final Font tahoma;
@@ -478,10 +486,20 @@ public class GamePanel extends javax.swing.JPanel {
         backNoSaveBtn = new SettlerBtn(true, 1, 9); //the exit button and not saving
         backBtn = new SettlerBtn(true, 1, 10); //the exit button for saving
 
+        //setup up the radio buttons
+        ebuildRoadRBtn = new SettlerRadioBtn(true, false, 0); //road
+        ebuildSettlementSRBtn = new SettlerRadioBtn(true, false, 1); //settlement
+        ebuildSettlementLRBtn = new SettlerRadioBtn(true, false, 2); //city
+
         //setup the button array
         settlerBtns = new SettlerBtn[]{turnSwitchBtn, buildBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn, backNoSaveBtn, backBtn};
         //setup label array
         settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, tradeMenuLbl, devCardMenuLbl};
+        //setup the radio button array
+        settlerRadioBtns = new SettlerRadioBtn[]{ebuildRoadRBtn, ebuildSettlementSRBtn, ebuildSettlementLRBtn};
+        
+        //setup the custom radio buttons to go into the groups
+        SettlerRadioBtn.setUpGroup(settlerRadioBtns);
 
         //scale the Swing elements
         buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
@@ -552,6 +570,11 @@ public class GamePanel extends javax.swing.JPanel {
         buildRoadRBtn.setText("Road");
         buildRoadRBtn.setEnabled(false);
         buildRoadRBtn.setOpaque(false);
+        buildRoadRBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buildRoadRBtnActionPerformed(evt);
+            }
+        });
 
         titleLbl.setFont(new java.awt.Font("Times New Roman", 1, 40)); // NOI18N
         titleLbl.setForeground(new java.awt.Color(255, 255, 225));
@@ -587,6 +610,10 @@ public class GamePanel extends javax.swing.JPanel {
                 .addContainerGap(774, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void buildRoadRBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildRoadRBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buildRoadRBtnActionPerformed
 
     /**
      * Setup the custom JLable replacements
@@ -676,15 +703,27 @@ public class GamePanel extends javax.swing.JPanel {
         useDevCardBtn.setXPos(toggleCardBtn.getXPos());
         useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (6 / scaleFactor)));
 
+        //set the radio build buttons
+        ebuildRoadRBtn.setXPos(turnSwitchBtn.getXPos());
+        ebuildRoadRBtn.setYPos(useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage()) + scaleInt(6));
+        
+        //set the radio build buttons
+        ebuildSettlementSRBtn.setXPos(turnSwitchBtn.getXPos());
+        ebuildSettlementSRBtn.setYPos(ebuildRoadRBtn.getYPos() + getImgHeight(ebuildRoadRBtn.getBaseImage()) + scaleInt(6));
+        
+        //set the radio build buttons
+        ebuildSettlementLRBtn.setXPos(turnSwitchBtn.getXPos());
+        ebuildSettlementLRBtn.setYPos(ebuildSettlementSRBtn.getYPos() + getImgHeight(ebuildSettlementSRBtn.getBaseImage()) + scaleInt(6));
+
         //the exit buttons aligned to the bottom
         backBtn.setXPos(turnSwitchBtn.getXPos());
         backBtn.setYPos(frameHeight - getImgHeight(backBtn.getBaseImage()) - scaleInt(6));
-        
+
         backNoSaveBtn.setXPos(turnSwitchBtn.getXPos());
         backNoSaveBtn.setYPos(backBtn.getYPos() - getImgHeight(backNoSaveBtn.getBaseImage()) - scaleInt(6));
     }
 
-    private void backBtnClicked() {                                        
+    private void backBtnClicked() {
 
         //get the location to save to
         userSaveSelection = saveFileChooser.showSaveDialog(this);
@@ -722,7 +761,7 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
-    }                                       
+    }
 
     /**
      * What to do when a player clicks the build button
@@ -1318,6 +1357,31 @@ public class GamePanel extends javax.swing.JPanel {
                     } else if (btn.equals(backBtn)) { //if the user clicked to trade with a 3:1 ratio
                         backBtnClicked();
                     }
+                }
+            }
+        }
+
+        //check if the player clicked on one of the Settler Radio Buttons
+        //loop through all the custom radio buttons
+        for (SettlerRadioBtn radioBtn : settlerRadioBtns) {
+            if (event.getX() > radioBtn.getXPos()
+                    && event.getY() > radioBtn.getYPos()
+                    && event.getX() < (radioBtn.getXPos() + getImgWidth(radioBtn.getBaseImage()))
+                    && event.getY() < (radioBtn.getYPos() + getImgHeight(radioBtn.getBaseImage()))
+                    && radioBtn.getEnabled()) { //and that it is enabled
+
+                //only check the other buttons if there is and authroiazed user
+                if (authorizedUser) {
+
+                    if (radioBtn.equals(ebuildRoadRBtn)) {
+                        ebuildRoadRBtn.setSelected(true);
+                    } else if (radioBtn.equals(ebuildSettlementSRBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        ebuildSettlementSRBtn.setSelected(true);
+                    } else if (radioBtn.equals(ebuildSettlementLRBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        ebuildSettlementLRBtn.setSelected(true);
+                    }
+
+                    repaint();
                 }
             }
         }
@@ -5548,6 +5612,19 @@ public class GamePanel extends javax.swing.JPanel {
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          * 
+         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterRadioBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         *
+         */
+        settlerVarPos(g2d); //update the positions of the custon labels
+        //go through and draw all the labels
+        for (SettlerRadioBtn settlerRadioBtn : settlerRadioBtns) {
+            settlerRadioBtn.draw(g2d, this);
+        }
+
+        /*
+         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterRadioBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         *
+         *
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */

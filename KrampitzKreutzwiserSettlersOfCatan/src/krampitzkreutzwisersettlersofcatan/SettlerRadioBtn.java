@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import textures.ImageRef;
@@ -25,6 +26,7 @@ public class SettlerRadioBtn extends WorldObject {
     private Image baseImage; //the main image of the button
     private Image disabledImage; //the overlay to dim the button to indecate a disabled button
     private Image textImage; //the text of the button
+    private Image selectionImage; //the 'x' to show that this is the selected button
 
     //static radio button images
     private final static Image RADIO_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioBtn.png")).getImage();
@@ -99,20 +101,28 @@ public class SettlerRadioBtn extends WorldObject {
     public void updateButtonImages() {
         switch (type) {
             case 0:
-                //if type is card toggle button
-                baseImage = null;
-                disabledImage = null;
+                //if type is road radio button
+                baseImage = RADIO_BTN_BASE;
+                disabledImage = RADIO_BTN_DISABLED;
+                selectionImage = RADIO_BTN_SELECTION;
                 break;
             case 1:
-                //if type is dev card buy button
-                baseImage = null;
-                disabledImage = null;
+                //if type is settlement radio button
+                baseImage = RADIO_BTN_BASE;
+                disabledImage = RADIO_BTN_DISABLED;
+                selectionImage = RADIO_BTN_SELECTION;
                 break;
-
+            case 2:
+                //if type is city radio button
+                baseImage = RADIO_BTN_BASE;
+                disabledImage = RADIO_BTN_DISABLED;
+                selectionImage = RADIO_BTN_SELECTION;
+                break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
                 disabledImage = ERROR_IMAGE;
+                selectionImage = ERROR_IMAGE;
                 break;
         }
     }
@@ -124,18 +134,64 @@ public class SettlerRadioBtn extends WorldObject {
     public void updateText() {
         switch (type) {
             case 0:
-                //if the type is card toggle button
-                textImage = null;
+                //if type is road radio button
+                textImage = RADIO_BTN_ROAD_TEXT;
                 break;
             case 1:
-                //if the type is dev card buy button
-                textImage = null;
+                //if type is settlement radio button
+                textImage = RADIO_BTN_SETTLEMENT_TEXT;
+                break;
+            case 2:
+                //if type is city radio button
+                textImage = RADIO_BTN_CITY_TEXT;
                 break;
             default:
                 //deflault to error image
                 textImage = ERROR_IMAGE;
                 break;
         }
+    }
+
+    /**
+     * Draw the radio button
+     *
+     * @param g2d
+     * @param theGamePanel
+     */
+    public void draw(Graphics2D g2d, GamePanel theGamePanel) {
+
+        //draw the base        
+        g2d.drawImage(baseImage,
+                xPos,
+                yPos,
+                theGamePanel.getImgWidth(baseImage),
+                theGamePanel.getImgHeight(baseImage), null);
+
+        //draw the text
+        g2d.drawImage(textImage,
+                xPos,
+                yPos,
+                theGamePanel.getImgWidth(textImage),
+                theGamePanel.getImgHeight(textImage), null);
+
+        //draw the selected overlay if required
+        if (selected) {
+            g2d.drawImage(selectionImage,
+                    xPos,
+                    yPos,
+                    theGamePanel.getImgWidth(selectionImage),
+                    theGamePanel.getImgHeight(selectionImage), null);
+        }
+
+        //draw the disabled overlay if required
+        if (!enabled) {
+            g2d.drawImage(disabledImage,
+                    xPos,
+                    yPos,
+                    theGamePanel.getImgWidth(disabledImage),
+                    theGamePanel.getImgHeight(disabledImage), null);
+        }
+
     }
 
     /**
@@ -282,12 +338,34 @@ public class SettlerRadioBtn extends WorldObject {
                 && type == other.type
                 && baseImage == other.baseImage
                 && textImage == other.textImage
-                && disabledImage == other.disabledImage;
+                && disabledImage == other.disabledImage
+                && selectionImage == other.selectionImage;
     }
 
     @Override
     public WorldObject clone() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Given an array of SettlerRadioBtns set them up to acknowledge the others
+     * are in the group
+     *
+     * @param groupBtns
+     */
+    public static void setUpGroup(SettlerRadioBtn[] groupBtns) {
+        //loop through the buttons
+        for (SettlerRadioBtn buttonAddTo : groupBtns) {
+
+            //loop through the buttons again to add them
+            for (SettlerRadioBtn buttonToAdd : groupBtns) {
+
+                //make sure it's not the same button
+                if (buttonAddTo != buttonToAdd) {
+                    buttonAddTo.addGroupedRadioBtn(buttonToAdd);
+                }
+            }
+        }
     }
 
 }
