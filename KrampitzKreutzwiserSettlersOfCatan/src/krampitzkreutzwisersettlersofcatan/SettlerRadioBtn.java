@@ -20,18 +20,21 @@ public class SettlerRadioBtn extends WorldObject {
     //data attributes
     private boolean enabled; //stores whether or not the button is enabled
     private boolean selected; //is this radio button selected
-    private int type; //the type of button. (Road button, city toggle, settlemtn, etc.)
+    private int type; //the type of button. (Road button, city toggle, settlemtn, etc.)    
+    private boolean mouseHover; //is the mouse currently being hovered over this button
     private SettlerRadioBtn[] groupedRadioBtns; //other radio buttons that ARE NOT this one. They will be deselected whenever this one is
     //image attributes
     private Image baseImage; //the main image of the button
     private Image disabledImage; //the overlay to dim the button to indecate a disabled button
     private Image textImage; //the text of the button
     private Image selectionImage; //the 'x' to show that this is the selected button
+    private Image hoverImage; //the layer to add if there is a hover over the button
 
     //static radio button images
     private final static Image RADIO_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioBtn.png")).getImage();
     private final static Image RADIO_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioBtnDisabled.png")).getImage();
     private final static Image RADIO_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/rBtnSelection.png")).getImage();
+    private final static Image RADIO_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioHoverBtn.png")).getImage();
     //the texts
     private final static Image RADIO_BTN_ROAD_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/roadBtnText.png")).getImage();
     private final static Image RADIO_BTN_SETTLEMENT_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/settlementBtnText.png")).getImage();
@@ -47,6 +50,7 @@ public class SettlerRadioBtn extends WorldObject {
 
         enabled = false;
         selected = false;
+        mouseHover = false;
         type = 0; //set to road radio button
 
         //set up the button group
@@ -125,6 +129,8 @@ public class SettlerRadioBtn extends WorldObject {
                 selectionImage = ERROR_IMAGE;
                 break;
         }
+        
+        hoverImage = RADIO_BTN_HOVER;
     }
 
     /**
@@ -191,6 +197,15 @@ public class SettlerRadioBtn extends WorldObject {
                     theGamePanel.getImgWidth(disabledImage),
                     theGamePanel.getImgHeight(disabledImage), null);
         }
+        
+        //draw the mouseHover overlay if required
+        if (mouseHover) {
+            g2d.drawImage(hoverImage,
+                    xPos,
+                    yPos,
+                    theGamePanel.getImgWidth(hoverImage),
+                    theGamePanel.getImgHeight(hoverImage), null);
+        }
 
     }
 
@@ -237,6 +252,33 @@ public class SettlerRadioBtn extends WorldObject {
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    /**
+     * Return the Image for the hover overlay of the button
+     *
+     * @return
+     */
+    public Image getHoverImage() {
+        return hoverImage;
+    }
+
+    /**
+     * Access the enabled state of the mouseHover
+     *
+     * @return mouseHover
+     */
+    public boolean isMouseHover() {
+        return mouseHover;
+    }
+
+    /**
+     * Mutate the enabled state of the mouseHover
+     *
+     * @param mouseHover
+     */
+    public void setmouseHover(boolean mouseHover) {
+        this.mouseHover = mouseHover;
     }
 
     /**

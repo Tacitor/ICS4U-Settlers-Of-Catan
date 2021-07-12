@@ -202,6 +202,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     //fonts
     private final Font timesNewRoman;
 
+    //mouse motion listener vars
+    private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
+    private int mouseMotionPosY;
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructor">
     /**
@@ -1177,6 +1181,52 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //update the server if online mode
         onlineUpdateServer();
+    }
+
+    private void mouseMoveAction() {
+
+        //check if the player moved the mouse over one of the SettlerBtns
+        //loop through all the custom buttons
+        for (SettlerBtn btn : settlerBtns) {
+            if (mouseMotionPosX > btn.getXPos()
+                    && mouseMotionPosY > btn.getYPos()
+                    && mouseMotionPosX < (btn.getXPos() + getImgWidth(btn.getBaseImage()))
+                    && mouseMotionPosY < (btn.getYPos() + getImgHeight(btn.getBaseImage()))
+                    && btn.getEnabled()) { //and that it is enabled
+
+                //set the hover
+                btn.setmouseHover(true);
+
+            } else {
+
+                //make suer there is no hover over that button
+                btn.setmouseHover(false);
+            }
+
+        }
+        
+        //check if the player moved the mouse over one of the SettlerRadioBtns
+        //loop through all the custom buttons
+        for (SettlerRadioBtn Rbtn : settlerRadioBtns) {
+            if (mouseMotionPosX > Rbtn.getXPos()
+                    && mouseMotionPosY > Rbtn.getYPos()
+                    && mouseMotionPosX < (Rbtn.getXPos() + getImgWidth(Rbtn.getBaseImage()))
+                    && mouseMotionPosY < (Rbtn.getYPos() + getImgHeight(Rbtn.getBaseImage()))
+                    && Rbtn.isEnabled()) { //and that it is enabled
+
+                //set the hover
+                Rbtn.setmouseHover(true);
+
+            } else {
+
+                //make suer there is no hover over that button
+                Rbtn.setmouseHover(false);
+            }
+
+        }
+
+        repaint();
+
     }
 
     /**
@@ -5523,6 +5573,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             if (!btn.getEnabled()) {
                 drawSettlerBtn(g2d, btn.getDisabledImage(), btn);
             }
+            //draw the mouseHover overlay if required
+            if (btn.isMouseHover()) {
+                drawSettlerBtn(g2d, btn.getHoverImage(), btn);
+            }
 
         }
 
@@ -5614,6 +5668,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 getImgWidth(WATER_RING_OVERLAY), 
                 getImgHeight(WATER_RING_OVERLAY), null);
          */
+        //draw a test cursor for a custom ingame one
+        /*g2d.drawImage(trade2to1Btn.getBaseImage(),
+        mouseMotionPosX,
+        mouseMotionPosY,
+        getImgWidth(trade2to1Btn.getBaseImage()),
+        getImgHeight(trade2to1Btn.getBaseImage()), null);*/
     }
 
     // </editor-fold>
@@ -6321,8 +6381,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         g2d.drawImage(btnImage,
                 btn.xPos,
                 btn.yPos,
-                getImgWidth(btnImage),
-                getImgHeight(btnImage), null);
+                getImgWidth(btn.getBaseImage()),
+                getImgHeight(btn.getBaseImage()), null);
     }
 
     /**
@@ -6757,6 +6817,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        System.out.println("Moved");
+        //System.out.println("Moved: " + e.getX() + ", an " + e.getY());
+        mouseMotionPosX = e.getX();
+        mouseMotionPosY = e.getY();
+        mouseMoveAction();
     }
 }
