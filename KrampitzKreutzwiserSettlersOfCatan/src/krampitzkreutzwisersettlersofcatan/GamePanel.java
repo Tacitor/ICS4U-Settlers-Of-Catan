@@ -495,7 +495,7 @@ public class GamePanel extends javax.swing.JPanel {
         settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, buildMenuLbl, tradeMenuLbl, devCardMenuLbl};
         //setup the radio button array
         settlerRadioBtns = new SettlerRadioBtn[]{buildRoadRBtn, buildSettlementSRBtn, buildSettlementLRBtn};
-        
+
         //setup the custom radio buttons to go into the groups
         SettlerRadioBtn.setUpGroup(settlerRadioBtns);
 
@@ -589,7 +589,7 @@ public class GamePanel extends javax.swing.JPanel {
     /**
      * Update the coordinates for the custom labels and buttons
      */
-    private void settlerVarPos(Graphics2D g2d) {        
+    private void settlerVarPos(Graphics2D g2d) {
         //calc the number of lines for the labels that will be multi line
         for (SettlerLbl lbl : settlerLbls) {
             if (lbl.getLineWrap()) {
@@ -614,18 +614,18 @@ public class GamePanel extends javax.swing.JPanel {
 
         subInstructionLbl.setXPos(instructionLbl.getXPos());
         subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
-        
+
         buildMenuLbl.setXPos(turnSwitchBtn.getXPos());
-        buildMenuLbl.setYPos((int) (scaleInt(225) * ((1920.0 / 1080.0) - ((double)frameWidth / (double)frameHeight) + 1.0)));
-        
+        buildMenuLbl.setYPos((int) (scaleInt(225) * ((1920.0 / 1080.0) - ((double) frameWidth / (double) frameHeight) + 1.0)));
+
         //set the radio build buttons
         buildRoadRBtn.setXPos(turnSwitchBtn.getXPos());
         buildRoadRBtn.setYPos(buildMenuLbl.getYPos() + scaleInt(10));
-        
+
         //set the radio build buttons
         buildSettlementSRBtn.setXPos(turnSwitchBtn.getXPos());
         buildSettlementSRBtn.setYPos(buildRoadRBtn.getYPos() + getImgHeight(buildRoadRBtn.getBaseImage()) + scaleInt(6));
-        
+
         //set the radio build buttons
         buildSettlementLRBtn.setXPos(turnSwitchBtn.getXPos());
         buildSettlementLRBtn.setYPos(buildSettlementSRBtn.getYPos() + getImgHeight(buildSettlementSRBtn.getBaseImage()) + scaleInt(6));
@@ -5158,7 +5158,7 @@ public class GamePanel extends javax.swing.JPanel {
                 cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 //check if the cards would go off the screen
-                if ((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(CARD_CLAY)))) {
+                if (cardStartPosition < (backNoSaveBtn.getXPos() + getImgWidth(backNoSaveBtn.getBaseImage()))) {
                     drawCardStacks[playerID] = true;
 
                     //draw the number of cards the payer has of each type
@@ -5340,7 +5340,7 @@ public class GamePanel extends javax.swing.JPanel {
                 devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(DEV_CARD_KNIGHT) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 //check if the cards would go off the screen
-                if ((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(DEV_CARD_KNIGHT)))) {
+                if ((devCardStartPosition < (backNoSaveBtn.getXPos() + getImgWidth(backNoSaveBtn.getBaseImage())))) {
                     drawDevCardStacks[playerID] = true;
 
                     //draw the number of cards the payer has of each type
