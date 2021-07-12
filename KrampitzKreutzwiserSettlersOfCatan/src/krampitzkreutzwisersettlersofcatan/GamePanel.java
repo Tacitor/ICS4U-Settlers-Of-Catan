@@ -17,6 +17,7 @@ import java.awt.Image;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
@@ -46,7 +47,7 @@ import static textures.ImageRef.*;
  * @author Evan
  * @author Tacitor
  */
-public class GamePanel extends javax.swing.JPanel {
+public class GamePanel extends javax.swing.JPanel implements MouseMotionListener {
 
     // <editor-fold defaultstate="collapsed" desc="Attributes"> 
     private final GameFrame superFrame; //ref to the JFrame this kept in
@@ -418,6 +419,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         generatePortSettlements(); //Get a list of the settlements that allow access to each port
 
+        //add a mouse motion listener for hovering over button
+        addMouseMotionListener(this);
+
         // Add the mouse listener that calls the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
@@ -520,7 +524,8 @@ public class GamePanel extends javax.swing.JPanel {
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
 
-    }// </editor-fold>
+    }
+    // </editor-fold>
 
     /**
      * Setup the custom JLable replacements
@@ -6745,4 +6750,13 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     // </editor-fold>
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        System.out.println("Dragged");
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        System.out.println("Moved");
+    }
 }
