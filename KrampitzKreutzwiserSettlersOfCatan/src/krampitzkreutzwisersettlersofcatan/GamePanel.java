@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+// <editor-fold defaultstate="collapsed" desc="Imports"> 
 import Audio.AudioRef;
 import dataFiles.OldCode;
 import java.awt.BasicStroke;
@@ -39,6 +40,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import textures.ImageRef;
 import static textures.ImageRef.*;
+// </editor-fold>
 
 /**
  * @author Evan
@@ -200,7 +202,7 @@ public class GamePanel extends javax.swing.JPanel {
     private final Font timesNewRoman;
 
     // </editor-fold>
-    //private Graphics awtGraphics;
+    // <editor-fold defaultstate="collapsed" desc="Constructor">
     /**
      * Creates new form NewGamePanel
      *
@@ -518,7 +520,7 @@ public class GamePanel extends javax.swing.JPanel {
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
 
-    }
+    }// </editor-fold>
 
     /**
      * Setup the custom JLable replacements
@@ -638,6 +640,7 @@ public class GamePanel extends javax.swing.JPanel {
         backNoSaveBtn.setYPos(backBtn.getYPos() - getImgHeight(backNoSaveBtn.getBaseImage()) - scaleInt(6));
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Clicking and Mouse Detection"> 
     /**
      * Action to preform when a user wants to save and exit the game
      */
@@ -2255,8 +2258,9 @@ public class GamePanel extends javax.swing.JPanel {
 
         //show the port hitboxes so the player can select a resource
         showResStackHitbox = true;
-    }
+    }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Saving and Loading"> 
     /**
      * Save game data to a file
      *
@@ -3614,6 +3618,8 @@ public class GamePanel extends javax.swing.JPanel {
         return hasThrownLoadError;
     }
 
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="updateBuildButtons()"> 
     /**
      * Update the state of the build buttons, enabling or disabling them based
      * on how many cards the current player has, or if the game is in setup, how
@@ -3926,7 +3932,7 @@ public class GamePanel extends javax.swing.JPanel {
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
 
-    }
+    }// </editor-fold>
 
     /**
      * Determine if a the current player has enough cards to make a 2:1 trade
@@ -4513,6 +4519,7 @@ public class GamePanel extends javax.swing.JPanel {
         draw(g); //add the custom drawing (the game)
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Drawing"> 
     /**
      * Draw the game.
      *
@@ -5604,6 +5611,7 @@ public class GamePanel extends javax.swing.JPanel {
          */
     }
 
+    // </editor-fold>
     /**
      * Play some audio from a URL file path
      *
