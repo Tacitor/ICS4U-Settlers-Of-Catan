@@ -34,7 +34,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -156,24 +155,47 @@ public class GamePanel extends javax.swing.JPanel {
     private int[] playerArmySize; //the size of each player's army
 
     //custom buttons
+    //dev cards
     private SettlerBtn toggleCardBtn;
     private SettlerBtn buyDevCardBtn;
     private SettlerBtn useDevCardBtn;
+    //turn switch
+    private SettlerBtn turnSwitchBtn;
+    //trade
+    private SettlerBtn trade4to1Btn;
+    private SettlerBtn trade3to1Btn;
+    private SettlerBtn trade2to1Btn;
+    private SettlerBtn tradeDomestic;
+    //util buttons
+    private SettlerBtn buildBtn;
+    private SettlerBtn backNoSaveBtn;
+    private SettlerBtn backBtn;
 
     //array of buttons for easy access
     private SettlerBtn[] settlerBtns;
 
     //custom lables
+    //instructions
     private SettlerLbl instructionLbl;
     private SettlerLbl subInstructionLbl;
     private SettlerLbl instructionPromptLbl;
+    //menu headers
+    private SettlerLbl devCardMenuLbl;
+    private SettlerLbl tradeMenuLbl;
+    private SettlerLbl buildMenuLbl;
     //array of labels
     private SettlerLbl[] settlerLbls;
 
+    //custom radio buttons
+    private SettlerRadioBtn buildRoadRBtn;
+    private SettlerRadioBtn buildSettlementSRBtn;
+    private SettlerRadioBtn buildSettlementLRBtn;
+
+    //array of the radio buttons
+    private SettlerRadioBtn[] settlerRadioBtns;
+
     //fonts
     private final Font timesNewRoman;
-    private final Font tahoma;
-    private final Font dialog;
 
     // </editor-fold>
     //private Graphics awtGraphics;
@@ -444,30 +466,38 @@ public class GamePanel extends javax.swing.JPanel {
         updatePortPos();
 
         //get the fonts
-        timesNewRoman = buildMenuLbl.getFont();
-        tahoma = buildRoadRBtn.getFont();
-        dialog = buildBtn.getFont();
+        timesNewRoman = new Font("Times New Roman", Font.PLAIN, 18);
 
         //setup the SettlerBtns
         toggleCardBtn = new SettlerBtn(false, 0, 0); //cannot give a position yet because they need to be below the Swing buttons
         buyDevCardBtn = new SettlerBtn(false, 0, 1); //but as of right here the Swing btns do not have coords.
         useDevCardBtn = new SettlerBtn(false, 0, 2); //play a dev card and use it's abilities
+        //turn btn
+        turnSwitchBtn = new SettlerBtn(true, 0, 3);
+        //trade buttons as of here (down) have mode 0 as cancel. Buttons above ^^^ have the last mode as cancel (usually)
+        trade4to1Btn = new SettlerBtn(false, 1, 4); //trade at a 4:1 cost
+        trade3to1Btn = new SettlerBtn(false, 1, 5); //trade at a 3:1 cost
+        trade2to1Btn = new SettlerBtn(false, 1, 6); //trade at a 2:1 cost
+        tradeDomestic = new SettlerBtn(false, 1, 7); //trade domestically with another player
+        //util
+        buildBtn = new SettlerBtn(false, 1, 8); //the build button
+        backNoSaveBtn = new SettlerBtn(true, 1, 9); //the exit button and not saving
+        backBtn = new SettlerBtn(true, 1, 10); //the exit button for saving
+
+        //setup up the radio buttons
+        buildRoadRBtn = new SettlerRadioBtn(true, false, 0); //road
+        buildSettlementSRBtn = new SettlerRadioBtn(true, false, 1); //settlement
+        buildSettlementLRBtn = new SettlerRadioBtn(true, false, 2); //city
 
         //setup the button array
-        settlerBtns = new SettlerBtn[]{toggleCardBtn, buyDevCardBtn, useDevCardBtn};
+        settlerBtns = new SettlerBtn[]{turnSwitchBtn, buildBtn, trade4to1Btn, trade3to1Btn, trade2to1Btn, tradeDomestic, toggleCardBtn, buyDevCardBtn, useDevCardBtn, backNoSaveBtn, backBtn};
         //setup label array
-        settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl};
+        settlerLbls = new SettlerLbl[]{instructionLbl, subInstructionLbl, instructionPromptLbl, buildMenuLbl, tradeMenuLbl, devCardMenuLbl};
+        //setup the radio button array
+        settlerRadioBtns = new SettlerRadioBtn[]{buildRoadRBtn, buildSettlementSRBtn, buildSettlementLRBtn};
 
-        //scale the Swing elements
-        buildRoadRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
-        buildSettlementSRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
-        buildSettlementLRBtn.setFont(new Font(tahoma.getName(), tahoma.getStyle(), (int) (tahoma.getSize() / scaleFactor)));
-
-        buildBtn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
-
-        trade4to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
-        trade3to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
-        trade2to1Btn.setFont(new Font(dialog.getName(), dialog.getStyle(), (int) (dialog.getSize() / scaleFactor)));
+        //setup the custom radio buttons to go into the groups
+        SettlerRadioBtn.setUpGroup(settlerRadioBtns);
 
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
@@ -476,8 +506,6 @@ public class GamePanel extends javax.swing.JPanel {
         instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
         instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
         subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
-
-        turnSwitchBtn.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
 
         titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
 
@@ -501,130 +529,15 @@ public class GamePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buildBtnGroup = new javax.swing.ButtonGroup();
-        backBtn = new javax.swing.JButton();
-        turnSwitchBtn = new javax.swing.JButton();
-        buildMenuLbl = new javax.swing.JLabel();
-        buildSettlementSRBtn = new javax.swing.JRadioButton();
-        buildSettlementLRBtn = new javax.swing.JRadioButton();
-        buildRoadRBtn = new javax.swing.JRadioButton();
-        buildBtn = new javax.swing.JButton();
-        backNoSaveBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
-        trade3to1Btn = new javax.swing.JButton();
-        trade4to1Btn = new javax.swing.JButton();
-        trade2to1Btn = new javax.swing.JButton();
-        tradeMenuLbl = new javax.swing.JLabel();
-        devCardMenuLbl = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1920, 1080));
 
-        backBtn.setText("< Save and Exit");
-        backBtn.setFocusable(false);
-        backBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backBtnActionPerformed(evt);
-            }
-        });
-
-        turnSwitchBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        turnSwitchBtn.setText("End Current Player's Turn");
-        turnSwitchBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                turnSwitchBtnActionPerformed(evt);
-            }
-        });
-
-        buildMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        buildMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
-        buildMenuLbl.setText("Build Menu:");
-
-        buildBtnGroup.add(buildSettlementSRBtn);
-        buildSettlementSRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        buildSettlementSRBtn.setForeground(new java.awt.Color(255, 255, 225));
-        buildSettlementSRBtn.setSelected(true);
-        buildSettlementSRBtn.setText("Settlement");
-        buildSettlementSRBtn.setOpaque(false);
-
-        buildBtnGroup.add(buildSettlementLRBtn);
-        buildSettlementLRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        buildSettlementLRBtn.setForeground(new java.awt.Color(255, 255, 225));
-        buildSettlementLRBtn.setText("City");
-        buildSettlementLRBtn.setOpaque(false);
-
-        buildBtnGroup.add(buildRoadRBtn);
-        buildRoadRBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
-        buildRoadRBtn.setText("Road");
-        buildRoadRBtn.setEnabled(false);
-        buildRoadRBtn.setOpaque(false);
-
-        buildBtn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        buildBtn.setText("Build");
-        buildBtn.setToolTipText("");
-        buildBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buildBtnActionPerformed(evt);
-            }
-        });
-
-        backNoSaveBtn.setText("< Exit without saving");
-        backNoSaveBtn.setFocusable(false);
-        backNoSaveBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backNoSaveBtnActionPerformed(evt);
-            }
-        });
-
         titleLbl.setFont(new java.awt.Font("Times New Roman", 1, 40)); // NOI18N
         titleLbl.setForeground(new java.awt.Color(255, 255, 225));
         titleLbl.setText("Settlers of Catan");
-
-        trade3to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        trade3to1Btn.setText("Trade 3:1");
-        trade3to1Btn.setToolTipText("");
-        trade3to1Btn.setMaximumSize(null);
-        trade3to1Btn.setMinimumSize(null);
-        trade3to1Btn.setPreferredSize(null);
-        trade3to1Btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                trade3to1BtnActionPerformed(evt);
-            }
-        });
-
-        trade4to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        trade4to1Btn.setText("Trade 4:1");
-        trade4to1Btn.setToolTipText("");
-        trade4to1Btn.setMaximumSize(null);
-        trade4to1Btn.setMinimumSize(null);
-        trade4to1Btn.setPreferredSize(null);
-        trade4to1Btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                trade4to1BtnActionPerformed(evt);
-            }
-        });
-
-        trade2to1Btn.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        trade2to1Btn.setText("Trade 2:1");
-        trade2to1Btn.setToolTipText("");
-        trade2to1Btn.setMaximumSize(null);
-        trade2to1Btn.setMinimumSize(null);
-        trade2to1Btn.setPreferredSize(null);
-        trade2to1Btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                trade2to1BtnActionPerformed(evt);
-            }
-        });
-
-        tradeMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        tradeMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
-        tradeMenuLbl.setText("Trade Menu:");
-
-        devCardMenuLbl.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        devCardMenuLbl.setForeground(new java.awt.Color(255, 255, 225));
-        devCardMenuLbl.setText("Development Card Menu:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -632,23 +545,7 @@ public class GamePanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buildSettlementSRBtn)
-                    .addComponent(turnSwitchBtn)
-                    .addComponent(buildMenuLbl)
-                    .addComponent(buildRoadRBtn)
-                    .addComponent(titleLbl)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(backBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(backNoSaveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(trade2to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addComponent(trade3to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(trade4to1Btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buildBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buildSettlementLRBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(tradeMenuLbl)
-                    .addComponent(devCardMenuLbl))
+                .addComponent(titleLbl)
                 .addContainerGap(1625, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -656,33 +553,7 @@ public class GamePanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(titleLbl)
-                .addGap(18, 18, 18)
-                .addComponent(turnSwitchBtn)
-                .addGap(95, 95, 95)
-                .addComponent(buildMenuLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(buildRoadRBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buildSettlementSRBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buildSettlementLRBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(buildBtn)
-                .addGap(18, 18, 18)
-                .addComponent(tradeMenuLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(trade4to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(trade3to1Btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(trade2to1Btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(devCardMenuLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 464, Short.MAX_VALUE)
-                .addComponent(backNoSaveBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(backBtn)
-                .addContainerGap())
+                .addContainerGap(1022, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -697,10 +568,18 @@ public class GamePanel extends javax.swing.JPanel {
         //set up the prompt
         instructionPromptLbl = new SettlerLbl("Instructions:");
 
+        devCardMenuLbl = new SettlerLbl("Development Card Menu:");
+        tradeMenuLbl = new SettlerLbl("Trade Menu:");
+        buildMenuLbl = new SettlerLbl("Build Menu:");
+
         //set up the colours
         instructionLbl.setForeground(new Color(255, 255, 225));
         subInstructionLbl.setForeground(new Color(255, 255, 225));
         instructionPromptLbl.setForeground(new Color(255, 255, 225));
+
+        devCardMenuLbl.setForeground(new Color(255, 255, 225));
+        tradeMenuLbl.setForeground(new Color(255, 255, 225));
+        buildMenuLbl.setForeground(new Color(255, 255, 225));
 
         //set the instructions to do line wrap
         instructionLbl.setLineWrap(true);
@@ -708,9 +587,9 @@ public class GamePanel extends javax.swing.JPanel {
     }
 
     /**
-     * Update the coordinates for the custom labels
+     * Update the coordinates for the custom labels and buttons
      */
-    private void settlerLblPos(Graphics2D g2d) {
+    private void settlerVarPos(Graphics2D g2d) {
         //calc the number of lines for the labels that will be multi line
         for (SettlerLbl lbl : settlerLbls) {
             if (lbl.getLineWrap()) {
@@ -718,8 +597,13 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
-        instructionPromptLbl.setXPos(scaleInt(10));
-        instructionPromptLbl.setYPos(turnSwitchBtn.getY() + turnSwitchBtn.getHeight() + scaleInt(30));
+        //most buttons and labels aligned to the top
+        //set the turn button to the correct location
+        turnSwitchBtn.setXPos(titleLbl.getX());
+        turnSwitchBtn.setYPos(titleLbl.getY() + titleLbl.getHeight() + scaleInt(5));
+
+        instructionPromptLbl.setXPos(titleLbl.getX());
+        instructionPromptLbl.setYPos(turnSwitchBtn.getYPos() + getImgHeight(turnSwitchBtn.getBaseImage()) + scaleInt(30));
 
         //get the length of the instruction prompt
         g2d.setFont(instructionPromptLbl.getFont());
@@ -730,9 +614,66 @@ public class GamePanel extends javax.swing.JPanel {
 
         subInstructionLbl.setXPos(instructionLbl.getXPos());
         subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
+
+        buildMenuLbl.setXPos(turnSwitchBtn.getXPos());
+        buildMenuLbl.setYPos((int) (scaleInt(225) * ((1920.0 / 1080.0) - ((double) frameWidth / (double) frameHeight) + 1.0)));
+
+        //set the radio build buttons
+        buildRoadRBtn.setXPos(turnSwitchBtn.getXPos());
+        buildRoadRBtn.setYPos(buildMenuLbl.getYPos() + scaleInt(10));
+
+        //set the radio build buttons
+        buildSettlementSRBtn.setXPos(turnSwitchBtn.getXPos());
+        buildSettlementSRBtn.setYPos(buildRoadRBtn.getYPos() + getImgHeight(buildRoadRBtn.getBaseImage()) + scaleInt(6));
+
+        //set the radio build buttons
+        buildSettlementLRBtn.setXPos(turnSwitchBtn.getXPos());
+        buildSettlementLRBtn.setYPos(buildSettlementSRBtn.getYPos() + getImgHeight(buildSettlementSRBtn.getBaseImage()) + scaleInt(6));
+
+        //set the build button
+        buildBtn.setXPos(turnSwitchBtn.getXPos());
+        buildBtn.setYPos(buildSettlementLRBtn.getYPos() + getImgHeight(buildSettlementLRBtn.getBaseImage()) + scaleInt(6));
+
+        tradeMenuLbl.setXPos(instructionPromptLbl.getXPos());
+        tradeMenuLbl.setYPos(buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage()) + scaleInt(30));
+
+        //set the trade buttons to the correct location
+        trade4to1Btn.setXPos(tradeMenuLbl.getXPos());
+        trade4to1Btn.setYPos(tradeMenuLbl.getYPos() + scaleInt(10));
+
+        trade3to1Btn.setXPos(trade4to1Btn.getXPos() + getImgWidth(trade4to1Btn.getBaseImage()) + scaleInt(6));
+        trade3to1Btn.setYPos(trade4to1Btn.getYPos());
+
+        trade2to1Btn.setXPos(tradeMenuLbl.getXPos());
+        trade2to1Btn.setYPos(trade4to1Btn.getYPos() + getImgHeight(trade4to1Btn.getBaseImage()) + scaleInt(6));
+
+        tradeDomestic.setXPos(trade2to1Btn.getXPos() + getImgWidth(trade2to1Btn.getBaseImage()) + scaleInt(6));
+        tradeDomestic.setYPos(trade2to1Btn.getYPos());
+
+        devCardMenuLbl.setXPos(instructionPromptLbl.getXPos());
+        devCardMenuLbl.setYPos(trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage()) + scaleInt(30));
+
+        toggleCardBtn.setXPos(trade2to1Btn.getXPos());
+        toggleCardBtn.setYPos(devCardMenuLbl.getYPos() + scaleInt(10));
+
+        buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
+        buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (6 / scaleFactor)));
+
+        useDevCardBtn.setXPos(toggleCardBtn.getXPos());
+        useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (6 / scaleFactor)));
+
+        //the exit buttons aligned to the bottom
+        backBtn.setXPos(turnSwitchBtn.getXPos());
+        backBtn.setYPos(frameHeight - getImgHeight(backBtn.getBaseImage()) - scaleInt(6));
+
+        backNoSaveBtn.setXPos(turnSwitchBtn.getXPos());
+        backNoSaveBtn.setYPos(backBtn.getYPos() - getImgHeight(backNoSaveBtn.getBaseImage()) - scaleInt(6));
     }
 
-    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+    /**
+     * Action to preform when a user wants to save and exit the game
+     */
+    private void backBtnClicked() {
 
         //get the location to save to
         userSaveSelection = saveFileChooser.showSaveDialog(this);
@@ -770,9 +711,12 @@ public class GamePanel extends javax.swing.JPanel {
             }
         }
 
-    }//GEN-LAST:event_backBtnActionPerformed
+    }
 
-    private void buildBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildBtnActionPerformed
+    /**
+     * What to do when a player clicks the build button
+     */
+    private void buildBtnClicked() {
         // If a turn is in progress
         if (!inbetweenTurns) {
             //check to make sure there isn't already another building trying to be made
@@ -846,19 +790,18 @@ public class GamePanel extends javax.swing.JPanel {
                 System.out.println("An error has occoured while building");
             }
             // Change the build button to a cancel button
-            buildBtn.setText("Cancel");
+            buildBtn.setMode(0);//set it to "Cancel"
 
             //update the server if online mode
             onlineUpdateServer();
         }
-    }//GEN-LAST:event_buildBtnActionPerformed
+    }
 
     /**
      * End/start turn button click handling, for turn switching
      *
-     * @param evt The event generated by the button press
      */
-    private void turnSwitchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_turnSwitchBtnActionPerformed
+    private void turnSwitchBtnClicked() {
 
         updateBuildButtons();
         repaint();
@@ -1031,7 +974,7 @@ public class GamePanel extends javax.swing.JPanel {
                 showRoadHitbox = false; // Hide placement hitboxes
                 showSettlementHitbox = false; // Hide placement hitboxes
                 // Change the button back to the build button
-                buildBtn.setText("Build");
+                buildBtn.setMode(1);//set it to "Build"
             }
 
             /* Old code. This is done in the udpateBuildButton method now
@@ -1088,14 +1031,12 @@ public class GamePanel extends javax.swing.JPanel {
             subInstructionLbl.setText("Build them from the build menu below.");
         }
 
-    }//GEN-LAST:event_turnSwitchBtnActionPerformed
+    }
 
     /**
      * Exit the gamePanel without saving
-     *
-     * @param evt
      */
-    private void backNoSaveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backNoSaveBtnActionPerformed
+    private void backNoSaveBtnClicked() {
         int overwrite;
         overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
         //If the user really want to leave let them
@@ -1108,7 +1049,7 @@ public class GamePanel extends javax.swing.JPanel {
             superFrame.getMainMenu().setVisible(true); //show the main menu
             superFrame.setVisible(false); //hide the parent frame 
         }
-    }//GEN-LAST:event_backNoSaveBtnActionPerformed
+    }
 
     /**
      * Tasks that need to be performed when closing out of game from online mode
@@ -1124,12 +1065,15 @@ public class GamePanel extends javax.swing.JPanel {
         }
     }
 
-    private void trade3to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade3to1BtnActionPerformed
+    /**
+     * Actions preformed when a player want to trade 3:1 cards
+     */
+    private void trade3to1BtnClicked() {
         //check what mode of trading the game is in for 3:1
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
             turnBtnEnabled = true;
-            trade3to1Btn.setText("Trade 3:1");
+            trade3to1Btn.setMode(1); //set to "Trade 3:1"
             //remove the intent to trade
             tradingMode = 0;
             minTradeCardsNeeded = 0;
@@ -1150,7 +1094,7 @@ public class GamePanel extends javax.swing.JPanel {
             //diable turn switching
             turnBtnEnabled = false;
             //update the text of the button
-            trade3to1Btn.setText("Cancel");
+            trade3to1Btn.setMode(0); //set to "Cancel"
             //show the hitboxes
             showResStackHitbox = true;
             //canbel any building if there is any
@@ -1165,14 +1109,17 @@ public class GamePanel extends javax.swing.JPanel {
 
         //update the server if online mode
         onlineUpdateServer();
-    }//GEN-LAST:event_trade3to1BtnActionPerformed
+    }
 
-    private void trade4to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade4to1BtnActionPerformed
+    /**
+     * Actions preformed when a player want to trade 4:1 cards
+     */
+    private void trade4to1BtnClicked() {
         //check what mode of trading the game is in for 4:1
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
             turnBtnEnabled = true;
-            trade4to1Btn.setText("Trade 4:1");
+            trade4to1Btn.setMode(1); //set to "Trade 4:1"
             //remove the intent to trade
             tradingMode = 0;
             minTradeCardsNeeded = 0;
@@ -1193,7 +1140,7 @@ public class GamePanel extends javax.swing.JPanel {
             //diable turn switching
             turnBtnEnabled = false;
             //update the text of the button
-            trade4to1Btn.setText("Cancel");
+            trade4to1Btn.setMode(0); //set to "Cancel"
             //show the hitboxes
             showResStackHitbox = true;
             //canbel any building if there is any
@@ -1208,14 +1155,17 @@ public class GamePanel extends javax.swing.JPanel {
 
         //update the server if online mode
         onlineUpdateServer();
-    }//GEN-LAST:event_trade4to1BtnActionPerformed
+    }
 
-    private void trade2to1BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trade2to1BtnActionPerformed
+    /**
+     * Actions preformed when a player want to trade 2:1 cards
+     */
+    private void trade2to1BtnClicked() {
         //check what mode of trading the game is in for 2:1
         if (tradingMode != 0) {
             //if the user clicked the cancel button reenable the turnswitch button and update the button lable
             turnBtnEnabled = true;
-            trade2to1Btn.setText("Trade 2:1");
+            trade2to1Btn.setMode(1); //set to "Trade 2:1"
             //remove the intent to trade
             tradingMode = 0;
             minTradeCardsNeeded = 0;
@@ -1236,7 +1186,7 @@ public class GamePanel extends javax.swing.JPanel {
             //diable turn switching
             turnBtnEnabled = false;
             //update the text of the button
-            trade2to1Btn.setText("Cancel");
+            trade2to1Btn.setMode(0); //set to "Cancel"
             //show the hitboxes
             showResStackHitbox = true;
             //canbel any building if there is any
@@ -1251,7 +1201,7 @@ public class GamePanel extends javax.swing.JPanel {
 
         //update the server if online mode
         onlineUpdateServer();
-    }//GEN-LAST:event_trade2to1BtnActionPerformed
+    }
 
     /**
      * Handles mouse input, based on the state of the game
@@ -1343,7 +1293,46 @@ public class GamePanel extends javax.swing.JPanel {
 
                         updateBuildButtons();
                         repaint();
+                    } else if (btn.equals(turnSwitchBtn)) { //if the user clicked to end/start their turn
+                        turnSwitchBtnClicked();
+                    } else if (btn.equals(trade4to1Btn)) { //if the user clicked to trade with a 4:1 ratio
+                        trade4to1BtnClicked();
+                    } else if (btn.equals(trade3to1Btn)) { //if the user clicked to trade with a 3:1 ratio
+                        trade3to1BtnClicked();
+                    } else if (btn.equals(trade2to1Btn)) { //if the user clicked to trade with a 3:1 ratio
+                        trade2to1BtnClicked();
+                    } else if (btn.equals(buildBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        buildBtnClicked();
+                    } else if (btn.equals(backNoSaveBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        backNoSaveBtnClicked();
+                    } else if (btn.equals(backBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        backBtnClicked();
                     }
+                }
+            }
+        }
+
+        //check if the player clicked on one of the Settler Radio Buttons
+        //loop through all the custom radio buttons
+        for (SettlerRadioBtn radioBtn : settlerRadioBtns) {
+            if (event.getX() > radioBtn.getXPos()
+                    && event.getY() > radioBtn.getYPos()
+                    && event.getX() < (radioBtn.getXPos() + getImgWidth(radioBtn.getBaseImage()))
+                    && event.getY() < (radioBtn.getYPos() + getImgHeight(radioBtn.getBaseImage()))
+                    && radioBtn.isEnabled()) { //and that it is enabled
+
+                //only check the other buttons if there is and authroiazed user
+                if (authorizedUser) {
+
+                    if (radioBtn.equals(buildRoadRBtn)) {
+                        buildRoadRBtn.setSelected(true);
+                    } else if (radioBtn.equals(buildSettlementSRBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        buildSettlementSRBtn.setSelected(true);
+                    } else if (radioBtn.equals(buildSettlementLRBtn)) { //if the user clicked to trade with a 3:1 ratio
+                        buildSettlementLRBtn.setSelected(true);
+                    }
+
+                    repaint();
                 }
             }
         }
@@ -1488,7 +1477,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 buildingObject = 0;
                                 showRoadHitbox = false;
                                 // Change the button back to the build button
-                                buildBtn.setText("Build");
+                                buildBtn.setMode(1);//set it to "Build"
                                 // Redraw the board
                                 repaint();
                             }
@@ -1565,7 +1554,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 buildingObject = 0;
                                 showSettlementHitbox = false;
                                 // Change the button back to the build button
-                                buildBtn.setText("Build");
+                                buildBtn.setMode(1);//set it to "Build"
                                 // Redraw the board
                                 repaint();
                             }
@@ -1626,7 +1615,7 @@ public class GamePanel extends javax.swing.JPanel {
                                 buildingObject = 0;
                                 showSettlementHitbox = false;
                                 // Change the button back to the build button
-                                buildBtn.setText("Build");
+                                buildBtn.setMode(1);//set it to "Build"
                                 // Redraw the board
                                 repaint();
                             }
@@ -2154,9 +2143,9 @@ public class GamePanel extends javax.swing.JPanel {
 
                                     //turn off behavior as if the cancel button was pressed.
                                     turnBtnEnabled = true;
-                                    trade4to1Btn.setText("Trade 4:1");
-                                    trade3to1Btn.setText("Trade 3:1");
-                                    trade2to1Btn.setText("Trade 2:1");
+                                    trade4to1Btn.setMode(1); //set to "Trade 4:1"
+                                    trade3to1Btn.setMode(1); //set to "Trade 3:1"
+                                    trade2to1Btn.setMode(1); //set to "Trade 2:1"
                                     //remove the intent to trade
                                     tradingMode = 0;
                                     minTradeCardsNeeded = 0;
@@ -2220,9 +2209,9 @@ public class GamePanel extends javax.swing.JPanel {
 
                                     //turn off behavior as if the cancel button was pressed.
                                     turnBtnEnabled = true;
-                                    trade4to1Btn.setText("Trade 4:1");
-                                    trade3to1Btn.setText("Trade 3:1");
-                                    trade2to1Btn.setText("Trade 2:1");
+                                    trade4to1Btn.setMode(1); //set to "Trade 4:1"
+                                    trade3to1Btn.setMode(1); //set to "Trade 3:1"
+                                    trade2to1Btn.setMode(1); //set to "Trade 2:1"
                                     //remove the intent to trade
                                     tradingMode = 0;
                                     minTradeCardsNeeded = 0;
@@ -2564,7 +2553,7 @@ public class GamePanel extends javax.swing.JPanel {
             //save the button states
             //turn switch
             saveFile.println("turnSwitchBtn.isEnabled");
-            saveFile.println(turnSwitchBtn.isEnabled());
+            saveFile.println(turnSwitchBtn.getEnabled());
             //Settler buttons
             //toggleCardBtn
             saveFile.println("toggleCardBtn.getEnabled");
@@ -3532,10 +3521,10 @@ public class GamePanel extends javax.swing.JPanel {
 
         //reset the trade and build buttons if in online mode
         if (onlineMode != -1 && onlineMode != currentPlayer) {
-            trade4to1Btn.setText("Trade 4:1");
-            trade3to1Btn.setText("Trade 3:1");
-            trade2to1Btn.setText("Trade 2:1");
-            buildBtn.setText("Build");
+            trade4to1Btn.setMode(1); //set to "Trade 4:1"
+            trade3to1Btn.setMode(1); //set to "Trade 3:1"
+            trade2to1Btn.setMode(1); //set to "Trade 2:1"
+            buildBtn.setMode(1);//set it to "Build"
         }
 
         //update the instructions
@@ -3561,20 +3550,20 @@ public class GamePanel extends javax.swing.JPanel {
         //update the text of the Swing buttons
         //check if building
         if (buildingObject != 0) {
-            buildBtn.setText("Cancel");
+            buildBtn.setMode(0);//set it to "Cancel"
         }
         //check if trading
         if (tradingMode != 0) {
             //check which button needs to say cancel
             switch (tradingMode) {
                 case 1:
-                    trade4to1Btn.setText("Cancel");
+                    trade4to1Btn.setMode(0); //set to "Cancel"
                     break;
                 case 2:
-                    trade3to1Btn.setText("Cancel");
+                    trade3to1Btn.setMode(0); //set to "Cancel"
                     break;
                 case 3:
-                    trade2to1Btn.setText("Cancel");
+                    trade2to1Btn.setMode(0); //set to "Cancel"
                     break;
                 default:
                     break;
@@ -3675,7 +3664,7 @@ public class GamePanel extends javax.swing.JPanel {
         boolean canTrade4to;
         boolean canTrade3to;
         boolean canTrade2to;
-        ButtonModel oldSelection; // The button selected before this update began
+        SettlerRadioBtn oldSelection; // The button selected before this update began
 
         //first check if the game is inbetween turns
         //of if it's online and the player is not the active one
@@ -3837,22 +3826,24 @@ public class GamePanel extends javax.swing.JPanel {
         }
 
         // Save what button was selected before this update began
-        oldSelection = buildBtnGroup.getSelection();
+        oldSelection = SettlerRadioBtn.getGroupSelection(settlerRadioBtns);
 
         // Select the first enabled button on the list
         if (canBuildRoad) {
             // Select the road button
-            buildBtnGroup.setSelected(buildRoadRBtn.getModel(), true);
+            buildRoadRBtn.setSelected(true);
         } else if (canBuildSettlement) {
             // Select the settlement button
-            buildBtnGroup.setSelected(buildSettlementSRBtn.getModel(), true);
+            buildSettlementSRBtn.setSelected(true);
         } else if (canBuildCity) {
             // Select the city button
-            buildBtnGroup.setSelected(buildSettlementLRBtn.getModel(), true);
+            buildSettlementLRBtn.setSelected(true);
         } // If no buttons are selected and the game is not in setup
         else if (inSetup == false) {
             // If no buttons are enabled clear the selection
-            buildBtnGroup.clearSelection();
+            if (SettlerRadioBtn.getGroupSelection(settlerRadioBtns) != null) {
+                SettlerRadioBtn.getGroupSelection(settlerRadioBtns).setSelected(false);
+            }
 
             if (inbetweenTurns) {
                 //show this message for when not in set up (differnt code does this for when in setup)
@@ -3923,7 +3914,9 @@ public class GamePanel extends javax.swing.JPanel {
         } // If no buttons are selected and the game IS in setup 
         else {
             // If no buttons are enabled clear the selection
-            buildBtnGroup.clearSelection();
+            if (SettlerRadioBtn.getGroupSelection(settlerRadioBtns) != null) {
+                SettlerRadioBtn.getGroupSelection(settlerRadioBtns).setSelected(false);
+            }
 
             //check if the game is in online mode
             if (onlineMode == -1 || onlineMode == currentPlayer) {
@@ -3956,29 +3949,10 @@ public class GamePanel extends javax.swing.JPanel {
         trade3to1Btn.setEnabled(canTrade3to);                //trade 3:1
         trade2to1Btn.setEnabled(canTrade2to);                //trade 2:1
 
-        //update the colours of the radio buttons to reflect whether or not they are enabled. The stoped being done automatically when the default forground colour was changed.
-        if (canBuildRoad) {
-            buildRoadRBtn.setForeground(new java.awt.Color(255, 255, 225));
-        } else {
-            buildRoadRBtn.setForeground(new java.awt.Color(30, 30, 30));
-        }
-
-        if (canBuildSettlement) {
-            buildSettlementSRBtn.setForeground(new java.awt.Color(255, 255, 225));
-        } else {
-            buildSettlementSRBtn.setForeground(new java.awt.Color(30, 30, 30));
-        }
-
-        if (canBuildCity) {
-            buildSettlementLRBtn.setForeground(new java.awt.Color(255, 255, 225));
-        } else {
-            buildSettlementLRBtn.setForeground(new java.awt.Color(30, 30, 30));
-        }
-
         // If the button selected before this update is still enabled, select it
         // instead of the selection made in the if/else block above
         if (oldSelection != null && oldSelection.isEnabled()) { // Also make sure the saved button is not null
-            buildBtnGroup.setSelected(oldSelection, true);
+            oldSelection.setSelected(true);
         }
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
@@ -5188,7 +5162,8 @@ public class GamePanel extends javax.swing.JPanel {
                 cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 //check if the cards would go off the screen
-                if ((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(CARD_CLAY)))) {
+                //by checking if the start pos of the cards would be past the ending of the exit button
+                if (cardStartPosition < (backNoSaveBtn.getXPos() + getImgWidth(backNoSaveBtn.getBaseImage()))) {
                     drawCardStacks[playerID] = true;
 
                     //draw the number of cards the payer has of each type
@@ -5370,7 +5345,8 @@ public class GamePanel extends javax.swing.JPanel {
                 devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(DEV_CARD_KNIGHT) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 //check if the cards would go off the screen
-                if ((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * listSize) > (superFrame.getWidth() - (getImgWidth(DEV_CARD_KNIGHT)))) {
+                //by checking if the start pos of the cards would be past the ending of the exit button
+                if ((devCardStartPosition < (backNoSaveBtn.getXPos() + getImgWidth(backNoSaveBtn.getBaseImage())))) {
                     drawDevCardStacks[playerID] = true;
 
                     //draw the number of cards the payer has of each type
@@ -5551,17 +5527,8 @@ public class GamePanel extends javax.swing.JPanel {
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */
-        //check the card button and check if it needs to get it's real coords
-        if (toggleCardBtn.getXPos() == -1 && toggleCardBtn.getYPos() == -1) {
-            toggleCardBtn.setXPos((int) trade2to1Btn.getBounds().getX());
-            toggleCardBtn.setYPos((int) (devCardMenuLbl.getBounds().getY() + devCardMenuLbl.getBounds().getHeight() + (10 / scaleFactor)));
-
-            buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
-            buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (10 / scaleFactor)));
-
-            useDevCardBtn.setXPos(toggleCardBtn.getXPos());
-            useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (10 / scaleFactor)));
-        }
+        //make sure the buttons are all in the right spot
+        settlerVarPos(g2d); //update the positions of the custon labels because some buttons are bassed off of them
 
         //draw the custom SettlerBtns
         //loop through the buttons
@@ -5582,10 +5549,23 @@ public class GamePanel extends javax.swing.JPanel {
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          * 
+         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterRadioBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         *
+         */
+        settlerVarPos(g2d); //update the positions of the custon labels
+        //go through and draw all the labels
+        for (SettlerRadioBtn settlerRadioBtn : settlerRadioBtns) {
+            settlerRadioBtn.draw(g2d, this);
+        }
+
+        /*
+         * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterRadioBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         *
+         *
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */
-        settlerLblPos(g2d); //update the positions of the custon labels
+        settlerVarPos(g2d); //update the positions of the custon labels
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
@@ -5603,20 +5583,20 @@ public class GamePanel extends javax.swing.JPanel {
         if (showMenuBoarder) {
             g2d.setStroke(new BasicStroke(scaleInt(2))); //make the stroke a little thicker
             //the trade box
-            g2d.drawRect(tradeMenuLbl.getX() - scaleInt(5),
-                    tradeMenuLbl.getY() - scaleInt(5),
-                    trade4to1Btn.getWidth() + scaleInt(10),
-                    (trade2to1Btn.getY() + trade2to1Btn.getHeight()) - tradeMenuLbl.getY() + scaleInt(10));
+            g2d.drawRect(tradeMenuLbl.getXPos() - scaleInt(5),
+                    tradeMenuLbl.getYPos() - scaleInt(17),
+                    (trade3to1Btn.getXPos() + getImgWidth(trade3to1Btn.getBaseImage()) + scaleInt(10)) - (tradeMenuLbl.getXPos()),
+                    (trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage())) - tradeMenuLbl.getYPos() + scaleInt(22));
             //the build box
-            g2d.drawRect(buildMenuLbl.getX() - scaleInt(5),
-                    buildMenuLbl.getY() - scaleInt(5),
-                    buildBtn.getWidth() + scaleInt(10),
-                    (buildBtn.getY() + buildBtn.getHeight()) - buildMenuLbl.getY() + scaleInt(10));
+            g2d.drawRect(buildMenuLbl.getXPos() - scaleInt(5),
+                    buildMenuLbl.getYPos() - scaleInt(17),
+                    getImgWidth(buildRoadRBtn.getBaseImage()) + scaleInt(10),
+                    (buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage())) - buildMenuLbl.getYPos() + scaleInt(22));
             //the dev card box
-            g2d.drawRect(devCardMenuLbl.getX() - scaleInt(5),
-                    devCardMenuLbl.getY() - scaleInt(5),
+            g2d.drawRect(devCardMenuLbl.getXPos() - scaleInt(5),
+                    devCardMenuLbl.getYPos() - scaleInt(17),
                     getImgWidth(toggleCardBtn.getBaseImage()) + scaleInt(10),
-                    (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getY() + scaleInt(10));
+                    (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getYPos() + scaleInt(22));
             //the dice menu box
             g2d.drawRect(rightDrawMargin - scaleInt(5),
                     scaleInt(385) - scaleInt(5),
@@ -6256,7 +6236,7 @@ public class GamePanel extends javax.swing.JPanel {
         showRoadHitbox = false;
         showSettlementHitbox = false;
         // Change the button back to the build button
-        buildBtn.setText("Build");
+        buildBtn.setMode(1);//set it to "Build"
     }
 
     /**
@@ -6621,14 +6601,14 @@ public class GamePanel extends javax.swing.JPanel {
      * Set the turn button text to show the "End player turn"
      */
     private void setTurnBtbTextEnd() {
-        turnSwitchBtn.setText("End Current Player's Turn");
+        turnSwitchBtn.setMode(0); //set mode to "End Current Player's Turn"
     }
 
     /**
      * Set the turn button text to show the "Start player turn"
      */
     private void setTurnBtnTextStart() {
-        turnSwitchBtn.setText("Start Player " + currentPlayer + "'s Turn");
+        turnSwitchBtn.setMode(currentPlayer);//set mode to "Start Player " + currentPlayer + "'s Turn"
     }
 
     /**
@@ -6791,21 +6771,7 @@ public class GamePanel extends javax.swing.JPanel {
     // </editor-fold>
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton backBtn;
-    private javax.swing.JButton backNoSaveBtn;
-    private javax.swing.JButton buildBtn;
-    private javax.swing.ButtonGroup buildBtnGroup;
-    private javax.swing.JLabel buildMenuLbl;
-    private javax.swing.JRadioButton buildRoadRBtn;
-    private javax.swing.JRadioButton buildSettlementLRBtn;
-    private javax.swing.JRadioButton buildSettlementSRBtn;
-    private javax.swing.JLabel devCardMenuLbl;
     private javax.swing.JLabel titleLbl;
-    private javax.swing.JButton trade2to1Btn;
-    private javax.swing.JButton trade3to1Btn;
-    private javax.swing.JButton trade4to1Btn;
-    private javax.swing.JLabel tradeMenuLbl;
-    private javax.swing.JButton turnSwitchBtn;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -26,6 +26,10 @@ public class SettlerBtn extends WorldObject {
     private Image textImage; //the text of the button
 
     //static button images
+    /**
+     * =-=-=-=-=-=-=-=-=-=-=-= FONT FOR THE BUTTON TEXT =-=-=-=-=-=-=-=-=-=-=-=
+     * Calibri, size 17, dual layer with 1 pixel horizontal translation
+     */
     private final static Image CARD_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtn.png")).getImage();
     private final static Image CARD_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnDisabled.png")).getImage();
     private final static Image CARD_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnText1.png")).getImage();
@@ -36,9 +40,40 @@ public class SettlerBtn extends WorldObject {
     private final static Image USE_DEV_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/useDevBtnText1.png")).getImage();
     private final static Image USE_DEV_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/useDevBtnText2.png")).getImage();
 
+    //turn switch button images
+    private final static Image TURN_SWITCH_TBN_TEXT0 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText0.png")).getImage();
+    private final static Image TURN_SWITCH_TBN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText1.png")).getImage();
+    private final static Image TURN_SWITCH_TBN_TEXT2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText2.png")).getImage();
+    private final static Image TURN_SWITCH_TBN_TEXT3 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText3.png")).getImage();
+    private final static Image TURN_SWITCH_TBN_TEXT4 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText4.png")).getImage();
+
+    //trade buttons
+    private final static Image TRADE_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeBtn.png")).getImage();
+    private final static Image TRADE_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeBtnDisabled.png")).getImage();
+    private final static Image TRADE_CANCEL = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeBtnCancel.png")).getImage();
+    private final static Image TRADE_4 = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/trade4to1Text.png")).getImage();
+    private final static Image TRADE_3 = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/trade3to1Text.png")).getImage();
+    private final static Image TRADE_2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/trade2to1Text.png")).getImage();
+    private final static Image TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeDomesticText.png")).getImage();
+
+    //util buttons
+    //build
+    private final static Image BUILD_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/buildBtnText.png")).getImage();
+    //exit buttons
+    private final static Image EXIT_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitSaveText.png")).getImage();
+    private final static Image EXIT_NO_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitNoSaveText.png")).getImage();
+
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
     private final static Image[] USE_DEV_BTN_TEXTS = new Image[]{USE_DEV_BTN_TEXT1, USE_DEV_BTN_TEXT2};
+    private final static Image[] TURN_SWITCH_BTN_TEXTS = new Image[]{TURN_SWITCH_TBN_TEXT0, TURN_SWITCH_TBN_TEXT1, TURN_SWITCH_TBN_TEXT2, TURN_SWITCH_TBN_TEXT3, TURN_SWITCH_TBN_TEXT4};
+    //trade button ones
+    private final static Image[] TRADE_BTN_4TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_4};
+    private final static Image[] TRADE_BTN_3TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_3};
+    private final static Image[] TRADE_BTN_2TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_2};
+    private final static Image[] TRADE_BTN_DOM_TEXTS = new Image[]{TRADE_CANCEL, TRADE_DOMESTIC};
+    //util arrays
+    private final static Image[] BUILD_BTN_TEXTS = new Image[]{TRADE_CANCEL, BUILD_TEXT};
 
     //constructors
     /**
@@ -115,6 +150,46 @@ public class SettlerBtn extends WorldObject {
                 baseImage = CARD_BTN;
                 disabledImage = CARD_DISABLED_BTN;
                 break;
+            case 3:
+                //if the type is a turn switch button
+                baseImage = CARD_BTN; //still has the right length
+                disabledImage = CARD_DISABLED_BTN;
+                break;
+            case 4:
+                //if the type is a trade 4:1 button
+                baseImage = TRADE_BTN; //still has the right length
+                disabledImage = TRADE_DISABLED_BTN;
+                break;
+            case 5:
+                //if the type is a trade 3:1 button
+                baseImage = TRADE_BTN; //still has the right length
+                disabledImage = TRADE_DISABLED_BTN;
+                break;
+            case 6:
+                //if the type is a trade 2:1 button
+                baseImage = TRADE_BTN; //still has the right length
+                disabledImage = TRADE_DISABLED_BTN;
+                break;
+            case 7:
+                //if the type is a dosmestic trade button
+                baseImage = TRADE_BTN; //still has the right length
+                disabledImage = TRADE_DISABLED_BTN;
+                break;
+            case 8:
+                //if the type is a build button
+                baseImage = TRADE_BTN; //still has the right length
+                disabledImage = TRADE_DISABLED_BTN;
+                break;
+            case 9:
+                //if the type is an exit without saving button
+                baseImage = CARD_BTN; //still has the right length
+                disabledImage = ERROR_IMAGE;
+                break;
+            case 10:
+                //if the type is an exit with saving button
+                baseImage = CARD_BTN; //still has the right length
+                disabledImage = ERROR_IMAGE;
+                break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
@@ -140,6 +215,38 @@ public class SettlerBtn extends WorldObject {
             case 2:
                 //if the type is dev card buy button
                 textImage = USE_DEV_BTN_TEXTS[mode];
+                break;
+            case 3:
+                //if the type is a turn switch button
+                textImage = TURN_SWITCH_BTN_TEXTS[mode];
+                break;
+            case 4:
+                //if the type is a trade 4:1 button
+                textImage = TRADE_BTN_4TO_TEXTS[mode];
+                break;
+            case 5:
+                //if the type is a trade 4:1 button
+                textImage = TRADE_BTN_3TO_TEXTS[mode];
+                break;
+            case 6:
+                //if the type is a trade 4:1 button
+                textImage = TRADE_BTN_2TO_TEXTS[mode];
+                break;
+            case 7:
+                //if the type is a trade 4:1 button
+                textImage = TRADE_BTN_DOM_TEXTS[mode];
+                break;
+            case 8:
+                //if the type is a trade 4:1 button
+                textImage = BUILD_BTN_TEXTS[mode];
+                break;
+            case 9:
+                //if the type is a trade 4:1 button
+                textImage = EXIT_NO_SAVE_TEXT;
+                break;
+            case 10:
+                //if the type is a trade 4:1 button
+                textImage = EXIT_SAVE_TEXT;
                 break;
             default:
                 //deflault to error image
