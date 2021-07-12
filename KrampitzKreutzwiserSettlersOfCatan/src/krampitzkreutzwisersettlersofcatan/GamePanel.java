@@ -670,6 +670,9 @@ public class GamePanel extends javax.swing.JPanel {
         backNoSaveBtn.setYPos(backBtn.getYPos() - getImgHeight(backNoSaveBtn.getBaseImage()) - scaleInt(6));
     }
 
+    /**
+     * Action to preform when a user wants to save and exit the game
+     */
     private void backBtnClicked() {
 
         //get the location to save to
@@ -1032,8 +1035,6 @@ public class GamePanel extends javax.swing.JPanel {
 
     /**
      * Exit the gamePanel without saving
-     *
-     * @param evt
      */
     private void backNoSaveBtnClicked() {
         int overwrite;
@@ -1156,6 +1157,9 @@ public class GamePanel extends javax.swing.JPanel {
         onlineUpdateServer();
     }
 
+    /**
+     * Actions preformed when a player want to trade 2:1 cards
+     */
     private void trade2to1BtnClicked() {
         //check what mode of trading the game is in for 2:1
         if (tradingMode != 0) {
@@ -5158,6 +5162,7 @@ public class GamePanel extends javax.swing.JPanel {
                 cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 //check if the cards would go off the screen
+                //by checking if the start pos of the cards would be past the ending of the exit button
                 if (cardStartPosition < (backNoSaveBtn.getXPos() + getImgWidth(backNoSaveBtn.getBaseImage()))) {
                     drawCardStacks[playerID] = true;
 
@@ -5340,6 +5345,7 @@ public class GamePanel extends javax.swing.JPanel {
                 devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(DEV_CARD_KNIGHT) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 //check if the cards would go off the screen
+                //by checking if the start pos of the cards would be past the ending of the exit button
                 if ((devCardStartPosition < (backNoSaveBtn.getXPos() + getImgWidth(backNoSaveBtn.getBaseImage())))) {
                     drawDevCardStacks[playerID] = true;
 
@@ -5521,8 +5527,7 @@ public class GamePanel extends javax.swing.JPanel {
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Start SetterBtn Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
          *
          */
-        //make sure the buttons are all in the right spot      
-        //keep looping until the dev card buttons are no longer in the top left
+        //make sure the buttons are all in the right spot
         settlerVarPos(g2d); //update the positions of the custon labels because some buttons are bassed off of them
 
         //draw the custom SettlerBtns

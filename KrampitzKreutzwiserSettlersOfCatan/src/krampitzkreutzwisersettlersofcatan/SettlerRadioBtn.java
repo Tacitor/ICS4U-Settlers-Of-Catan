@@ -17,7 +17,7 @@ import static textures.ImageRef.ERROR_IMAGE;
  */
 public class SettlerRadioBtn extends WorldObject {
 
-    //data attribu
+    //data attributes
     private boolean enabled; //stores whether or not the button is enabled
     private boolean selected; //is this radio button selected
     private int type; //the type of button. (Road button, city toggle, settlemtn, etc.)
