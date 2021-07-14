@@ -18,12 +18,14 @@ public class SettlerBtn extends WorldObject {
 
     //data attributes
     private boolean enabled; //stores whether or not the button is enabled
+    private boolean mouseHover; //is the mouse currently being hovered over this button
     private int mode; //the mode the button is in. Decides what text to display
     private int type; //the type of button. (Trade button, card toggle, build, etc.)
     //image attributes
     private Image baseImage; //the main image of the button
     private Image disabledImage; //the overlay to dim the button to indecate a disabled button
     private Image textImage; //the text of the button
+    private Image hoverImage; //the layer to add if there is a hover over the button
 
     //static button images
     /**
@@ -32,6 +34,7 @@ public class SettlerBtn extends WorldObject {
      */
     private final static Image CARD_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtn.png")).getImage();
     private final static Image CARD_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnDisabled.png")).getImage();
+    private final static Image HOVER_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnHover.png")).getImage();
     private final static Image CARD_BTN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnText1.png")).getImage();
     private final static Image CARD_BTN_TEXT2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/dev/cardBtnText2.png")).getImage();
 
@@ -84,6 +87,7 @@ public class SettlerBtn extends WorldObject {
         yPos = 0;
 
         enabled = false;
+        mouseHover = false;
         mode = 0;
         type = 0; //set to card togggle button
 
@@ -196,6 +200,8 @@ public class SettlerBtn extends WorldObject {
                 disabledImage = ERROR_IMAGE;
                 break;
         }
+
+        hoverImage = HOVER_BTN;
     }
 
     /**
@@ -317,6 +323,33 @@ public class SettlerBtn extends WorldObject {
     public void setMode(int mode) {
         this.mode = mode;
         updateText();
+    }
+
+    /**
+     * Return the Image for the hover overlay of the button
+     *
+     * @return
+     */
+    public Image getHoverImage() {
+        return hoverImage;
+    }
+
+    /**
+     * Access the enabled state of the mouseHover
+     *
+     * @return mouseHover
+     */
+    public boolean isMouseHover() {
+        return mouseHover;
+    }
+
+    /**
+     * Mutate the enabled state of the mouseHover
+     *
+     * @param mouseHover
+     */
+    public void setmouseHover(boolean mouseHover) {
+        this.mouseHover = mouseHover;
     }
 
     /**
