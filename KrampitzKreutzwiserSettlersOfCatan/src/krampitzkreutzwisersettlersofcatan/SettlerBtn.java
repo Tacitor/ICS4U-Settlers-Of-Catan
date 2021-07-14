@@ -196,7 +196,7 @@ public class SettlerBtn extends SettlerComponent {
         }
 
         hoverImage = HOVER_BTN;
-        tabSelectionImage = ERROR_IMAGE;
+        tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
     }
 
     /**

@@ -6,6 +6,8 @@
 package krampitzkreutzwisersettlersofcatan;
 
 import java.awt.Image;
+import javax.swing.ImageIcon;
+import textures.ImageRef;
 
 /**
  *
@@ -23,7 +25,11 @@ public abstract class SettlerComponent extends WorldObject {
     protected Image disabledImage; //the overlay to dim the button to indecate a disabled button
     protected Image textImage; //the text of the button
     protected Image hoverImage; //the layer to add if there is a hover over the button
-    protected Image tabSelectionImage;
+    protected Image[] tabSelectionImages;
+
+    //tab selection focus images
+    protected final static Image FOCUS_LEFT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/tabFocusLeft.png")).getImage();
+    protected final static Image FOCUS_RIGHT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/tabFocusRight.png")).getImage();
 
     //methods
     public abstract void updateButtonImages();
@@ -56,14 +62,14 @@ public abstract class SettlerComponent extends WorldObject {
     public Image getDisabledImage() {
         return disabledImage;
     }
-    
+
     /**
      * Return the Image for the overlay of the button when tab selected
      *
      * @return
      */
-    public Image getTabSelectionImage() {
-        return tabSelectionImage;
+    public Image[] getTabSelectionImage() {
+        return tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
     }
 
     /**

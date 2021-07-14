@@ -126,7 +126,7 @@ public class SettlerRadioBtn extends SettlerComponent {
         }
         
         hoverImage = RADIO_BTN_HOVER;
-        tabSelectionImage = ERROR_IMAGE;
+        tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
     }
 
     /**
@@ -188,11 +188,18 @@ public class SettlerRadioBtn extends SettlerComponent {
         
         //draw the tab selected overlay if required
         if (tabSelected) {
-            g2d.drawImage(tabSelectionImage,
-                    xPos,
-                    yPos,
-                    theGamePanel.getImgWidth(tabSelectionImage),
-                    theGamePanel.getImgHeight(tabSelectionImage), null);
+            //draw the left
+            g2d.drawImage(tabSelectionImages[0],
+                    xPos - GamePanel.scaleInt(3),
+                    yPos - GamePanel.scaleInt(3),
+                    theGamePanel.getImgWidth(tabSelectionImages[0]),
+                    theGamePanel.getImgHeight(tabSelectionImages[0]), null);
+            //draw the right
+            g2d.drawImage(tabSelectionImages[1],
+                    xPos + theGamePanel.getImgWidth(baseImage) + GamePanel.scaleInt(3) - theGamePanel.getImgWidth(tabSelectionImages[1]),
+                    yPos - GamePanel.scaleInt(3),
+                    theGamePanel.getImgWidth(tabSelectionImages[1]),
+                    theGamePanel.getImgHeight(tabSelectionImages[1]), null);
         }
 
         //draw the disabled overlay if required
