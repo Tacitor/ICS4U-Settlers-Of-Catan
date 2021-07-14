@@ -80,6 +80,7 @@ public class SettlerBtn extends SettlerComponent {
 
         enabled = false;
         mouseHover = false;
+        tabSelected = false;
         mode = 0;
         type = 0; //set to card togggle button
 
@@ -195,6 +196,7 @@ public class SettlerBtn extends SettlerComponent {
         }
 
         hoverImage = HOVER_BTN;
+        tabSelectionImage = ERROR_IMAGE;
     }
 
     /**

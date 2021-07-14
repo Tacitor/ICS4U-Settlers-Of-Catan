@@ -12,21 +12,24 @@ import java.awt.Image;
  * @author Tacitor
  */
 public abstract class SettlerComponent extends WorldObject {
-    
+
     //data attribute
     protected boolean enabled; //stores whether or not the button is enabled    
     protected int type; //the type of button. (Trade button, card toggle, build, etc.)
     protected boolean mouseHover; //is the mouse currently being hovered over this button
-    
+    protected boolean tabSelected; //has this button been selected by "tabbing" over to it
+
     protected Image baseImage; //the main image of the button
     protected Image disabledImage; //the overlay to dim the button to indecate a disabled button
     protected Image textImage; //the text of the button
     protected Image hoverImage; //the layer to add if there is a hover over the button
-    
+    protected Image tabSelectionImage;
+
     //methods
     public abstract void updateButtonImages();
+
     public abstract void updateText();
-    
+
     /**
      * Return the Image for the base of the button
      *
@@ -52,6 +55,15 @@ public abstract class SettlerComponent extends WorldObject {
      */
     public Image getDisabledImage() {
         return disabledImage;
+    }
+    
+    /**
+     * Return the Image for the overlay of the button when tab selected
+     *
+     * @return
+     */
+    public Image getTabSelectionImage() {
+        return tabSelectionImage;
     }
 
     /**
@@ -98,8 +110,24 @@ public abstract class SettlerComponent extends WorldObject {
     public void setmouseHover(boolean mouseHover) {
         this.mouseHover = mouseHover;
     }
-    
-    
+
+    /**
+     * Access the enabled state of tabSelected
+     *
+     * @return tabSelected
+     */
+    public boolean isTabSelected() {
+        return tabSelected;
+    }
+
+    /**
+     * Mutate the enabled state of tabSelected
+     *
+     * @param tabSelected
+     */
+    public void setTabSelected(boolean tabSelected) {
+        this.tabSelected = tabSelected;
+    }
 
     /**
      * Access the button type dictating the shape and text of the button
@@ -120,5 +148,5 @@ public abstract class SettlerComponent extends WorldObject {
         updateButtonImages();
         updateText();
     }
-    
+
 }

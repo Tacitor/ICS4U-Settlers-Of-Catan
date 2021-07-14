@@ -44,6 +44,7 @@ public class SettlerRadioBtn extends SettlerComponent {
         enabled = false;
         selected = false;
         mouseHover = false;
+        tabSelected = false;
         type = 0; //set to road radio button
 
         //set up the button group
@@ -125,6 +126,7 @@ public class SettlerRadioBtn extends SettlerComponent {
         }
         
         hoverImage = RADIO_BTN_HOVER;
+        tabSelectionImage = ERROR_IMAGE;
     }
 
     /**
@@ -182,6 +184,15 @@ public class SettlerRadioBtn extends SettlerComponent {
                     yPos,
                     theGamePanel.getImgWidth(selectionImage),
                     theGamePanel.getImgHeight(selectionImage), null);
+        }
+        
+        //draw the tab selected overlay if required
+        if (tabSelected) {
+            g2d.drawImage(tabSelectionImage,
+                    xPos,
+                    yPos,
+                    theGamePanel.getImgWidth(tabSelectionImage),
+                    theGamePanel.getImgHeight(tabSelectionImage), null);
         }
 
         //draw the disabled overlay if required

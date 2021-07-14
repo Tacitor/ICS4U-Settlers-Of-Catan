@@ -199,13 +199,16 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     //array of the radio buttons
     private SettlerRadioBtn[] settlerRadioBtns;
 
+    //array of Settler Componets
+    private SettlerComponent[] settlerComponents;
+
     //fonts
     private final Font timesNewRoman;
 
     //mouse motion listener vars
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
     private int mouseMotionPosY;
-    
+
     //tab selected Settler button
     private int tabSelectedButton; //the int of the index of the button that is tab selected    
 
@@ -508,6 +511,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         settlerLbls = new SettlerLbl[]{titleLbl, instructionLbl, subInstructionLbl, instructionPromptLbl, buildMenuLbl, tradeMenuLbl, devCardMenuLbl};
         //setup the radio button array
         settlerRadioBtns = new SettlerRadioBtn[]{buildRoadRBtn, buildSettlementSRBtn, buildSettlementLRBtn};
+
+        //set up the full array of both buttons and radio buttons
+        settlerComponents = new SettlerComponent[settlerBtns.length + settlerRadioBtns.length - 2]; //-2 because the last 2 exit buttons should not be tabbable
+        populateSettlerComponents();
+        //set the first button as the default tab selected
+        tabSelectedButton = 0;
+        settlerComponents[tabSelectedButton].setTabSelected(true);
 
         //setup the custom radio buttons to go into the groups
         SettlerRadioBtn.setUpGroup(settlerRadioBtns);
@@ -1207,7 +1217,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             }
 
         }
-        
+
         //check if the player moved the mouse over one of the SettlerRadioBtns
         //loop through all the custom buttons
         for (SettlerRadioBtn Rbtn : settlerRadioBtns) {
@@ -1238,6 +1248,20 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param event The event triggered by the mouse click
      */
     public void mouseClick(MouseEvent event) {
+        //advance the tabed button
+        //turn off the current one
+        settlerComponents[tabSelectedButton].setTabSelected(false);
+        //increment by 1
+        tabSelectedButton++;
+        //check for over flow
+        if (tabSelectedButton == settlerComponents.length) {
+            //reset it
+            tabSelectedButton = 0;
+        }
+        //set the new one
+        settlerComponents[tabSelectedButton].setTabSelected(true);
+        repaint();
+
         boolean authorizedUser; //stores whether or not the click can from an autheroized user
         // debug click listener
         //System.out.println("Click recieved at clock: " + Catan.clock); 
@@ -5567,18 +5591,23 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //loop through the buttons
         for (SettlerBtn btn : settlerBtns) {
             //draw the base        
-            drawSettlerBtn(g2d, btn.getBaseImage(), btn);
+            drawSettlerBtn(g2d, btn.getBaseImage(), btn, 0);
 
             //draw the text
-            drawSettlerBtn(g2d, btn.getTextImage(), btn);
+            drawSettlerBtn(g2d, btn.getTextImage(), btn, 0);
+
+            //draw the tabSelected overlay if required
+            if (btn.isTabSelected()) {
+                drawSettlerBtn(g2d, btn.getTabSelectionImage(), btn, 0);
+            }
 
             //draw the disabled overlay if required
             if (!btn.isEnabled()) {
-                drawSettlerBtn(g2d, btn.getDisabledImage(), btn);
+                drawSettlerBtn(g2d, btn.getDisabledImage(), btn, 0);
             }
             //draw the mouseHover overlay if required
             if (btn.isMouseHover()) {
-                drawSettlerBtn(g2d, btn.getHoverImage(), btn);
+                drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1);
             }
 
         }
@@ -6380,12 +6409,23 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param btnImage
      * @param btn
      */
-    private void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn) {
+    private void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn, int drawMode) {
+        //get the width and height of the image
+        int width;
+        int height;
+        if (drawMode == 0) { //draw mode is image dimensions
+            width = getImgWidth(btnImage);
+            height = getImgHeight(btnImage);
+        } else { //1 is button dimensions
+            width = getImgWidth(btn.getBaseImage());
+            height = getImgHeight(btn.getBaseImage());
+        }
+
         g2d.drawImage(btnImage,
                 btn.xPos,
                 btn.yPos,
-                getImgWidth(btn.getBaseImage()),
-                getImgHeight(btn.getBaseImage()), null);
+                width,
+                height, null);
     }
 
     /**
@@ -6613,6 +6653,17 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
     }
 
+    private void populateSettlerComponents() {
+        //copy over the same first turn button
+        settlerComponents[0] = turnSwitchBtn;
+        //add the radio buttons
+        System.arraycopy(settlerRadioBtns, 0, settlerComponents, 1, settlerRadioBtns.length);
+        //add the rest of the regular buttons
+        System.arraycopy(settlerBtns, 1, settlerComponents, settlerRadioBtns.length + 1, settlerBtns.length - 3); 
+        //-3 because it leaves out the first turn button (already added), 
+        //and the two exit buttons (not added)
+    }
+
     /**
      * If the game is in online mode update the server with the current game.
      */
@@ -6815,7 +6866,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     // </editor-fold>
     @Override
     public void mouseDragged(MouseEvent e) {
-        System.out.println("Dragged");
+        //System.out.println("Dragged");
     }
 
     @Override
