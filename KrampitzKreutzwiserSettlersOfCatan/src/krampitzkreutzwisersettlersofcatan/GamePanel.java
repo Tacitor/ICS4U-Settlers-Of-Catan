@@ -1223,8 +1223,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             settlerComponents[tabSelectedButton].setTabSelected(true);
             repaint();
 
-        } else //if it's an enter key
-        if (evt.getKeyCode() == 10) {
+        } else //if it's an enter key or a space key
+        if (evt.getKeyCode() == 10 || evt.getKeyCode() == 32) {
             //click that button
             //make a fake click event
             mouseClick(new MouseEvent(this, 502, System.currentTimeMillis(), 16,
