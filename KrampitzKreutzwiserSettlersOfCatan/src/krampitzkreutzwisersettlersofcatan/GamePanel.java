@@ -1227,8 +1227,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         if (evt.getKeyCode() == 10) {
             //click that button
             //make a fake click event
-            mouseClick(new MouseEvent(this, 502, System.currentTimeMillis(), 16, 
-                    settlerComponents[tabSelectedButton].getXPos() + scaleInt(10), 
+            mouseClick(new MouseEvent(this, 502, System.currentTimeMillis(), 16,
+                    settlerComponents[tabSelectedButton].getXPos() + scaleInt(10),
                     settlerComponents[tabSelectedButton].getYPos() + scaleInt(10), 1, false));
         }
 
@@ -1314,6 +1314,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         showDevCards = false;
                     }
 
+                    //tab select this button
+                    tabSelectBtn(toggleCardBtn);
+
                     repaint();
 
                 }
@@ -1386,6 +1389,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     } else if (btn.equals(backBtn)) { //if the user clicked to trade with a 3:1 ratio
                         backBtnClicked();
                     }
+
+                    //tab select this button
+                    tabSelectBtn(btn);
                 }
             }
         }
@@ -6687,6 +6693,25 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         System.arraycopy(settlerBtns, 1, settlerComponents, settlerRadioBtns.length + 1, settlerBtns.length - 3);
         //-3 because it leaves out the first turn button (already added), 
         //and the two exit buttons (not added)
+    }
+
+    /**
+     * Given a SettlerComponent, set it to the one that is tab selected
+     * (focused)
+     *
+     * @param btn
+     */
+    private void tabSelectBtn(SettlerComponent btn) {
+        //focus this button with the tab selection
+        settlerComponents[tabSelectedButton].setTabSelected(false);
+        //loop through the settlerComponents to get the index
+        for (int i = 0; i < settlerComponents.length; i++) {
+            if (settlerComponents[i] == btn) {
+                tabSelectedButton = i;
+            }
+        }
+        //set it selected
+        settlerComponents[tabSelectedButton].setTabSelected(true);
     }
 
     /**
