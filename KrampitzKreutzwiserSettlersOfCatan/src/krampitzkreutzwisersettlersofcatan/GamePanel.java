@@ -15,6 +15,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Stroke;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -1194,6 +1195,16 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //update the server if online mode
         onlineUpdateServer();
+    }
+
+    /**
+     * What to do when the user clicks a key on their keyboard
+     * This will be called by the GameFrame
+     * @param evt 
+     */
+    public void keyPress(KeyEvent evt) {
+        System.out.println("key");
+
     }
 
     private void mouseMoveAction() {
@@ -6659,7 +6670,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //add the radio buttons
         System.arraycopy(settlerRadioBtns, 0, settlerComponents, 1, settlerRadioBtns.length);
         //add the rest of the regular buttons
-        System.arraycopy(settlerBtns, 1, settlerComponents, settlerRadioBtns.length + 1, settlerBtns.length - 3); 
+        System.arraycopy(settlerBtns, 1, settlerComponents, settlerRadioBtns.length + 1, settlerBtns.length - 3);
         //-3 because it leaves out the first turn button (already added), 
         //and the two exit buttons (not added)
     }

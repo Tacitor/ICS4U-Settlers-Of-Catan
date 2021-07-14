@@ -7,6 +7,8 @@ package krampitzkreutzwisersettlersofcatan;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import textures.ImageRef;
 
 /**
@@ -14,7 +16,7 @@ import textures.ImageRef;
  * @author Tacitor
  */
 
-public class GameFrame extends javax.swing.JFrame {
+public class GameFrame extends javax.swing.JFrame implements KeyListener {
   
     private final MainMenu mainMenuFrame; //ref to the main menu
     private Dimension screenSize; //keeps track of the display the game is being played on
@@ -51,6 +53,7 @@ public class GameFrame extends javax.swing.JFrame {
         //setExtendedState(JFrame.MAXIMIZED_BOTH); //this would normaly set the size to the display size but I don't want to deal with scaling elemnts nor do I have the time
         setUndecorated(true); //removes the boarders and control buttons, this makes it full screen for 1080p displays and just a really wierd borderless window for anything higher. Most likly broken for anything lower
         setVisible(false);
+        addKeyListener(this);
         
         //debug screen size
         //System.out.println("Width: " + this.getWidth());
@@ -100,6 +103,22 @@ public class GameFrame extends javax.swing.JFrame {
      */
     public void loadFromFile(String filePathString) {
         theGamePanel.load(filePathString);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        //do nothing
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        //send this to the gamePanel
+        theGamePanel.keyPress(e);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        //do nothing
     }
 
 }
