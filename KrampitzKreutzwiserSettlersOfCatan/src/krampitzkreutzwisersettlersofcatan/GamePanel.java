@@ -1205,7 +1205,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public void keyPress(KeyEvent evt) {
         //get the key type
-        System.out.println(evt.getKeyCode());
+        //System.out.println(evt.getKeyCode());
 
         //if a tab key
         if (evt.getKeyCode() == 9) {
@@ -1223,6 +1223,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             settlerComponents[tabSelectedButton].setTabSelected(true);
             repaint();
 
+        } else //if it's an enter key
+        if (evt.getKeyCode() == 10) {
+            //click that button
+            //make a fake click event
+            mouseClick(new MouseEvent(this, 502, System.currentTimeMillis(), 16, 
+                    settlerComponents[tabSelectedButton].getXPos() + scaleInt(10), 
+                    settlerComponents[tabSelectedButton].getYPos() + scaleInt(10), 1, false));
         }
 
     }
