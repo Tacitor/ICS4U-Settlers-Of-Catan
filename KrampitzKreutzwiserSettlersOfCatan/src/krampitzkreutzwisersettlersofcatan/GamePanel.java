@@ -205,6 +205,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     //mouse motion listener vars
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
     private int mouseMotionPosY;
+    
+    //tab selected Settler button
+    private int tabSelectedButton; //the int of the index of the button that is tab selected    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructor">
@@ -1192,7 +1195,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     && mouseMotionPosY > btn.getYPos()
                     && mouseMotionPosX < (btn.getXPos() + getImgWidth(btn.getBaseImage()))
                     && mouseMotionPosY < (btn.getYPos() + getImgHeight(btn.getBaseImage()))
-                    && btn.getEnabled()) { //and that it is enabled
+                    && btn.isEnabled()) { //and that it is enabled
 
                 //set the hover
                 btn.setmouseHover(true);
@@ -1249,7 +1252,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     && event.getY() > btn.getYPos()
                     && event.getX() < (btn.getXPos() + getImgWidth(btn.getBaseImage()))
                     && event.getY() < (btn.getYPos() + getImgHeight(btn.getBaseImage()))
-                    && btn.getEnabled()) { //and that it is enabled
+                    && btn.isEnabled()) { //and that it is enabled
 
                 //check the button that was pressed
                 if (btn.equals(toggleCardBtn)) { //if it was the toggle button
@@ -2580,19 +2583,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //save the button states
             //turn switch
             saveFile.println("turnSwitchBtn.isEnabled");
-            saveFile.println(turnSwitchBtn.getEnabled());
+            saveFile.println(turnSwitchBtn.isEnabled());
             //Settler buttons
             //toggleCardBtn
             saveFile.println("toggleCardBtn.getEnabled");
-            saveFile.println(toggleCardBtn.getEnabled());
+            saveFile.println(toggleCardBtn.isEnabled());
             saveFile.println("toggleCardBtn.getMode");
             saveFile.println(toggleCardBtn.getMode());
             //buyDevCardBtn
             saveFile.println("buyDevCardBtn.getEnabled");
-            saveFile.println(buyDevCardBtn.getEnabled());
+            saveFile.println(buyDevCardBtn.isEnabled());
             //useDevCardBtn
             saveFile.println("useDevCardBtn.getEnabled");
-            saveFile.println(useDevCardBtn.getEnabled());
+            saveFile.println(useDevCardBtn.isEnabled());
             saveFile.println("useDevCardBtn.getMode");
             saveFile.println(useDevCardBtn.getMode());
 
@@ -5570,7 +5573,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             drawSettlerBtn(g2d, btn.getTextImage(), btn);
 
             //draw the disabled overlay if required
-            if (!btn.getEnabled()) {
+            if (!btn.isEnabled()) {
                 drawSettlerBtn(g2d, btn.getDisabledImage(), btn);
             }
             //draw the mouseHover overlay if required
