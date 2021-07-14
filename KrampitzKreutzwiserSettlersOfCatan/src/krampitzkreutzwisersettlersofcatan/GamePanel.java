@@ -1198,12 +1198,32 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     /**
-     * What to do when the user clicks a key on their keyboard
-     * This will be called by the GameFrame
-     * @param evt 
+     * What to do when the user clicks a key on their keyboard This will be
+     * called by the GameFrame
+     *
+     * @param evt
      */
     public void keyPress(KeyEvent evt) {
-        System.out.println("key");
+        //get the key type
+        System.out.println(evt.getKeyCode());
+
+        //if a tab key
+        if (evt.getKeyCode() == 9) {
+            //advance the tabed button
+            //turn off the current one
+            settlerComponents[tabSelectedButton].setTabSelected(false);
+            //increment by 1
+            tabSelectedButton++;
+            //check for over flow
+            if (tabSelectedButton == settlerComponents.length) {
+                //reset it
+                tabSelectedButton = 0;
+            }
+            //set the new one
+            settlerComponents[tabSelectedButton].setTabSelected(true);
+            repaint();
+
+        }
 
     }
 
@@ -1259,19 +1279,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param event The event triggered by the mouse click
      */
     public void mouseClick(MouseEvent event) {
-        //advance the tabed button
-        //turn off the current one
-        settlerComponents[tabSelectedButton].setTabSelected(false);
-        //increment by 1
-        tabSelectedButton++;
-        //check for over flow
-        if (tabSelectedButton == settlerComponents.length) {
-            //reset it
-            tabSelectedButton = 0;
-        }
-        //set the new one
-        settlerComponents[tabSelectedButton].setTabSelected(true);
-        repaint();
 
         boolean authorizedUser; //stores whether or not the click can from an autheroized user
         // debug click listener
