@@ -5631,14 +5631,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             if (btn.isTabSelected()) {
                 //draw the left
                 g2d.drawImage(btn.getTabSelectionImage()[0],
-                        btn.getXPos() - GamePanel.scaleInt(6),
-                        btn.getYPos() - GamePanel.scaleInt(6),
+                        btn.getXPos() - GamePanel.scaleInt(5),
+                        btn.getYPos() - GamePanel.scaleInt(5),
                         getImgWidth(btn.getTabSelectionImage()[0]),
                         getImgHeight(btn.getTabSelectionImage()[0]), null);
                 //draw the right
                 g2d.drawImage(btn.getTabSelectionImage()[1],
-                        btn.getXPos() + getImgWidth(btn.getBaseImage()) + GamePanel.scaleInt(6) - getImgWidth(btn.getTabSelectionImage()[1]),
-                        btn.getYPos() - GamePanel.scaleInt(6),
+                        btn.getXPos() + getImgWidth(btn.getBaseImage()) + GamePanel.scaleInt(5) - getImgWidth(btn.getTabSelectionImage()[1]),
+                        btn.getYPos() - GamePanel.scaleInt(5),
                         getImgWidth(btn.getTabSelectionImage()[1]),
                         getImgHeight(btn.getTabSelectionImage()[1]), null);
             }

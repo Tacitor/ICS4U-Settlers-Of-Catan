@@ -190,14 +190,14 @@ public class SettlerRadioBtn extends SettlerComponent {
         if (tabSelected) {
             //draw the left
             g2d.drawImage(tabSelectionImages[0],
-                    xPos - GamePanel.scaleInt(6),
-                    yPos - GamePanel.scaleInt(6),
+                    xPos - GamePanel.scaleInt(5),
+                    yPos - GamePanel.scaleInt(5),
                     theGamePanel.getImgWidth(tabSelectionImages[0]),
                     theGamePanel.getImgHeight(tabSelectionImages[0]), null);
             //draw the right
             g2d.drawImage(tabSelectionImages[1],
-                    xPos + theGamePanel.getImgWidth(baseImage) + GamePanel.scaleInt(6) - theGamePanel.getImgWidth(tabSelectionImages[1]),
-                    yPos - GamePanel.scaleInt(6),
+                    xPos + theGamePanel.getImgWidth(baseImage) + GamePanel.scaleInt(5) - theGamePanel.getImgWidth(tabSelectionImages[1]),
+                    yPos - GamePanel.scaleInt(5),
                     theGamePanel.getImgWidth(tabSelectionImages[1]),
                     theGamePanel.getImgHeight(tabSelectionImages[1]), null);
         }
