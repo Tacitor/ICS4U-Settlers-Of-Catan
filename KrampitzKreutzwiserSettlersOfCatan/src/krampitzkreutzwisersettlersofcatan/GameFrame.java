@@ -53,8 +53,8 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         //setExtendedState(JFrame.MAXIMIZED_BOTH); //this would normaly set the size to the display size but I don't want to deal with scaling elemnts nor do I have the time
         setUndecorated(true); //removes the boarders and control buttons, this makes it full screen for 1080p displays and just a really wierd borderless window for anything higher. Most likly broken for anything lower
         setVisible(false);
-        addKeyListener(this);
-        this.setFocusTraversalKeysEnabled(false);
+        addKeyListener(this); //allow the game to access presses on the keyboard
+        this.setFocusTraversalKeysEnabled(false); //set to ignore tabbing keys and treat them like regular presses
         
         //debug screen size
         //System.out.println("Width: " + this.getWidth());

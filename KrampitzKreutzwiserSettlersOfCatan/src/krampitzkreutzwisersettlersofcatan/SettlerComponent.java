@@ -1,7 +1,7 @@
 /*
  * Lukas Krampitz
  * Jul 14, 2021
- * 
+ * A Custom type of button. Is extened by SettlerBtn and SettlerRadioBtn
  */
 package krampitzkreutzwisersettlersofcatan;
 
