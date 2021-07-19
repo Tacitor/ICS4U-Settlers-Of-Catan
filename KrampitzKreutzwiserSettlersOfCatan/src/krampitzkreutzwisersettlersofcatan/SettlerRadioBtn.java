@@ -15,20 +15,13 @@ import static textures.ImageRef.ERROR_IMAGE;
  *
  * @author Tacitor
  */
-public class SettlerRadioBtn extends WorldObject {
+public class SettlerRadioBtn extends SettlerComponent {
 
     //data attributes
-    private boolean enabled; //stores whether or not the button is enabled
     private boolean selected; //is this radio button selected
-    private int type; //the type of button. (Road button, city toggle, settlemtn, etc.)    
-    private boolean mouseHover; //is the mouse currently being hovered over this button
     private SettlerRadioBtn[] groupedRadioBtns; //other radio buttons that ARE NOT this one. They will be deselected whenever this one is
-    //image attributes
-    private Image baseImage; //the main image of the button
-    private Image disabledImage; //the overlay to dim the button to indecate a disabled button
-    private Image textImage; //the text of the button
+    //image attribute
     private Image selectionImage; //the 'x' to show that this is the selected button
-    private Image hoverImage; //the layer to add if there is a hover over the button
 
     //static radio button images
     private final static Image RADIO_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioBtn.png")).getImage();
@@ -51,6 +44,7 @@ public class SettlerRadioBtn extends WorldObject {
         enabled = false;
         selected = false;
         mouseHover = false;
+        tabSelected = false;
         type = 0; //set to road radio button
 
         //set up the button group
@@ -102,6 +96,7 @@ public class SettlerRadioBtn extends WorldObject {
     /**
      * Update the base image and disabled image
      */
+    @Override
     public void updateButtonImages() {
         switch (type) {
             case 0:
@@ -131,12 +126,14 @@ public class SettlerRadioBtn extends WorldObject {
         }
         
         hoverImage = RADIO_BTN_HOVER;
+        tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
     }
 
     /**
      * Update the textImage variable to reflect the text assigned by the mode
      * variable
      */
+    @Override
     public void updateText() {
         switch (type) {
             case 0:
@@ -188,6 +185,22 @@ public class SettlerRadioBtn extends WorldObject {
                     theGamePanel.getImgWidth(selectionImage),
                     theGamePanel.getImgHeight(selectionImage), null);
         }
+        
+        //draw the tab selected overlay if required
+        if (tabSelected) {
+            //draw the left
+            g2d.drawImage(tabSelectionImages[0],
+                    xPos - GamePanel.scaleInt(5),
+                    yPos - GamePanel.scaleInt(5),
+                    theGamePanel.getImgWidth(tabSelectionImages[0]),
+                    theGamePanel.getImgHeight(tabSelectionImages[0]), null);
+            //draw the right
+            g2d.drawImage(tabSelectionImages[1],
+                    xPos + theGamePanel.getImgWidth(baseImage) + GamePanel.scaleInt(5) - theGamePanel.getImgWidth(tabSelectionImages[1]),
+                    yPos - GamePanel.scaleInt(5),
+                    theGamePanel.getImgWidth(tabSelectionImages[1]),
+                    theGamePanel.getImgHeight(tabSelectionImages[1]), null);
+        }
 
         //draw the disabled overlay if required
         if (!enabled) {
@@ -207,78 +220,6 @@ public class SettlerRadioBtn extends WorldObject {
                     theGamePanel.getImgHeight(hoverImage), null);
         }
 
-    }
-
-    /**
-     * Return the Image for the base of the button
-     *
-     * @return
-     */
-    public Image getBaseImage() {
-        return baseImage;
-    }
-
-    /**
-     * Return the Image for the text of the button
-     *
-     * @return
-     */
-    public Image getTextImage() {
-        return textImage;
-    }
-
-    /**
-     * Return the Image for the disable overlay of the button
-     *
-     * @return
-     */
-    public Image getDisabledImage() {
-        return disabledImage;
-    }
-
-    /**
-     * Access the enabled state of the button
-     *
-     * @return
-     */
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    /**
-     * Mutate the enabled state of the button
-     *
-     * @param enabled
-     */
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    /**
-     * Return the Image for the hover overlay of the button
-     *
-     * @return
-     */
-    public Image getHoverImage() {
-        return hoverImage;
-    }
-
-    /**
-     * Access the enabled state of the mouseHover
-     *
-     * @return mouseHover
-     */
-    public boolean isMouseHover() {
-        return mouseHover;
-    }
-
-    /**
-     * Mutate the enabled state of the mouseHover
-     *
-     * @param mouseHover
-     */
-    public void setmouseHover(boolean mouseHover) {
-        this.mouseHover = mouseHover;
     }
 
     /**
@@ -306,26 +247,6 @@ public class SettlerRadioBtn extends WorldObject {
         }
 
         this.selected = selected;
-    }
-
-    /**
-     * Access the button type dictating the shape and text of the button
-     *
-     * @return
-     */
-    public int getType() {
-        return type;
-    }
-
-    /**
-     * Mutate the button type dictating the shape and text of the button
-     *
-     * @param type
-     */
-    public void setType(int type) {
-        this.type = type;
-        updateButtonImages();
-        updateText();
     }
 
     /**
