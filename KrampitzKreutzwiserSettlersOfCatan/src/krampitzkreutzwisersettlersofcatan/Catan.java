@@ -14,7 +14,8 @@ public class Catan {
     public static int clock = 0;
     public static GamePanel gamePanel;
     public static MainMenu menu;
-    public static final String SAVE_FILE_VER = "V13"; //the save file version needed
+    public static final String SAVE_FILE_VER = "V13"; //the save file version needed    
+    public static final String GAME_VER = "v5.1.0 - GUI Update"; //the version of the game/program
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println("Catan startup");

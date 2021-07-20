@@ -5719,7 +5719,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //draw the game version info
         g2d.setColor(new java.awt.Color(255, 255, 225));
-        g2d.drawString("prev5.1.0 - Update", rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
+        g2d.drawString(Catan.GAME_VER, rightDrawMargin, scaleInt(30) + getImgHeight(MATERIAL_KEY));
         //draw the online mode
         String appendText; //the test to append
         //find the text to append
