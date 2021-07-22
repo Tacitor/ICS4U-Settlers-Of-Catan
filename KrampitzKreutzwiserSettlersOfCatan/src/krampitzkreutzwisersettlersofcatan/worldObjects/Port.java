@@ -3,11 +3,11 @@
  * Feb 22, 2021
  * A class representing the trading ports on the outside of the island
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.worldObjects;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
-import static krampitzkreutzwisersettlersofcatan.GamePanel.*;
+import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.*;
 import textures.ImageRef;
 
 /**

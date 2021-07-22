@@ -3,14 +3,18 @@
  * Mar 25 2021
  * Allow the user to select settings that are constant across all games.
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.gui;
 
+import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
+import krampitzkreutzwisersettlersofcatan.Catan;
+import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
+import krampitzkreutzwisersettlersofcatan.sockets.CatanServer;
 import textures.ImageRef;
 
 /**

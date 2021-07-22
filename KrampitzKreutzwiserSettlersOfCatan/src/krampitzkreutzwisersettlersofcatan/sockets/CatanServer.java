@@ -3,7 +3,7 @@
  * Mar 27, 2021
  * 
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.sockets;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -3,11 +3,13 @@
  * Jul 10, 2021
  * A custom radio button that fits the sytle of the game better and is easier to use than Swing button
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
 import textures.ImageRef;
 import static textures.ImageRef.ERROR_IMAGE;
 

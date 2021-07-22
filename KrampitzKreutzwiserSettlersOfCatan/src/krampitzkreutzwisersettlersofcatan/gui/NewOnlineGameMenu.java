@@ -3,8 +3,10 @@
  * Mar 25 2021
  * Allow the user to select settings that are constant across all games.
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.gui;
 
+import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
+import krampitzkreutzwisersettlersofcatan.sockets.CatanServer;
 import textures.ImageRef;
 
 /**

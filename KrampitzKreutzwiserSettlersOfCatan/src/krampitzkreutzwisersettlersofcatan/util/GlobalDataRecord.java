@@ -3,7 +3,7 @@
  * Mar 11, 2021
  * Object that contains all the nessiarry information about any global datums. Can be used for storeing the longest road or largets army
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.util;
 
 /**
  *

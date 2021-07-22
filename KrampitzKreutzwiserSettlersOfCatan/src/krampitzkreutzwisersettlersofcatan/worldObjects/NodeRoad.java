@@ -4,7 +4,7 @@
  * The class representing the road placement areas of the board, and the connections
  * between settlement nodes, forming the node web of the board.
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.worldObjects;
 
 
 public class NodeRoad extends WorldObject {

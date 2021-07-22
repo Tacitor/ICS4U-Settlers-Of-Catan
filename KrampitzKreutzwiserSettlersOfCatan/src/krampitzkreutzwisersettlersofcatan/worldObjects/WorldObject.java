@@ -4,7 +4,7 @@
  * An abstract class extended by the world objects (Settlement and Road nodes and Tiles). 
  * This class handles the position attributes of the objects making up the game board.
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.worldObjects;
 
 /**
  * 

@@ -5,6 +5,9 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
+
 /**
  *
  * @author Tacitor
