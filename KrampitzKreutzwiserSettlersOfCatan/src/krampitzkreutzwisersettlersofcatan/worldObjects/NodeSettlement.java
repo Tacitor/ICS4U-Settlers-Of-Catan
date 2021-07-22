@@ -152,8 +152,6 @@ public class NodeSettlement extends WorldObject {
             //increment the counter
             ageCounter++;
         }
-
-        System.out.println(age);
     }
 
     /**
@@ -387,7 +385,6 @@ public class NodeSettlement extends WorldObject {
             if (settlement.getPlayer() != 0) {
                 //compare if this settlemtns age is older than the one already saved
                 //or if there is none saved, save this one
-                System.out.println(settlement.age);
                 if (oldestSettlementIndex[settlement.getPlayer()] == -1 || (settlementNodes.get(oldestSettlementIndex[settlement.getPlayer()])).age < settlement.age) {
                     oldestSettlementIndex[settlement.getPlayer()] = settlement.getRefNum();
                 }
