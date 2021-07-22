@@ -7,7 +7,6 @@ package krampitzkreutzwisersettlersofcatan.gui;
 
 import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
 import krampitzkreutzwisersettlersofcatan.sockets.CatanServer;
-import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
 import textures.ImageRef;
 
 /**

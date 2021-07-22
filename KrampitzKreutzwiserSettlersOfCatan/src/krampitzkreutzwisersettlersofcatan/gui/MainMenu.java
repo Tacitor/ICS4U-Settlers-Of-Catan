@@ -5,8 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
-import krampitzkreutzwisersettlersofcatan.gui.NewGameSettings;
-import krampitzkreutzwisersettlersofcatan.gui.NewOnlineGameMenu;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;

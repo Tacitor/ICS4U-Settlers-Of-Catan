@@ -5,7 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
-import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
 import java.awt.Toolkit;
 import textures.ImageRef;
 

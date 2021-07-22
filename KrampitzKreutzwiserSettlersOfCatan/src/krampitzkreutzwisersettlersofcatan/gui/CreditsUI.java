@@ -5,7 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
-import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
 import dataFiles.OldCode;
 import java.io.InputStream; // File reference
 import java.util.Scanner; // File reading

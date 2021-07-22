@@ -5,7 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
-import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;

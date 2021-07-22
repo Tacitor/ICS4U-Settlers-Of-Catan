@@ -5,7 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
-import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;

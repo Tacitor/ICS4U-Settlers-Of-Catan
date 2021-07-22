@@ -5,7 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
-import krampitzkreutzwisersettlersofcatan.gui.NewOnlineGameMenu;
 import textures.ImageRef;
 
 /**
