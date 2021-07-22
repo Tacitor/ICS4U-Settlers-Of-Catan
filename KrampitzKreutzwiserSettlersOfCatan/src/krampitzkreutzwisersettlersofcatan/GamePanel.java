@@ -6171,6 +6171,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 setupUpdatePlayerTurnOrder();
 
             } catch (ArrayIndexOutOfBoundsException e) { //if there are no more prescribed turns that means setup is over
+                System.out.println("Do I even run at all? Yes");
+                
                 //ensure that it's the setupTurnOrder that is out of bounds
                 if (setupTurnOrderIndex == setupTurnOrder.length) {
                     inSetup = false;
@@ -6178,6 +6180,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     currentPlayer = 1; //make sure that player 1 is starting
                     // If enabled. give everyone their starting resources
                     if (giveStartingResources) {
+                        System.out.println("I'm running");
                         collectMaterials(0); // 0 makes it collect everything possible
                     }
                 } else {
@@ -6197,26 +6200,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             // And go back to player 1 if the number exceeds the total number of players
             if (currentPlayer > playerCount) {
                 currentPlayer = 1;
-                // If the game was in setup, all of the turns have ended now and the normal game can begin
-                //therefore count down a setup round to get closer to that normal game
-                if (inSetup) {
-                    //count the completion of a setup round
-                    setupRoundsLeft--;
-
-                    //check if snake rules should apply
-                    if (doSnakeRules && setupRoundsLeft % 2 == 1) { //do a reverse round everytime the amount of setup rounds is odd. (if first round, then 2 rounds are left, not true, seconds there is only 1 left)
-
-                    }
-
-                    //check if all setup rounds have been played
-                    if (setupRoundsLeft < 1) {
-                        inSetup = false;
-                        // If enabled. give everyone their starting resources
-                        if (giveStartingResources) {
-                            collectMaterials(0); // 0 makes it collect everything possible
-                        }
-                    }
-                }
             }
         }
     }
