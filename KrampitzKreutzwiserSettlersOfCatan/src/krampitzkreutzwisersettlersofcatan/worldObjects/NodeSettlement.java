@@ -6,11 +6,17 @@
  */
 package krampitzkreutzwisersettlersofcatan.worldObjects;
 
+import java.util.ArrayList;
+
 public class NodeSettlement extends WorldObject {
+
+    //statics vars
+    private static int ageCounter = 0; //keeps track of the age the next settlement should have
 
     // Attributes
     private int player;
     private boolean large;
+    private int age; //the age of the settlement in the order that it was built
     private int refNum; //the index number this will have in the ArrayList
     // References to the connected roads
     private NodeRoad road1;
@@ -35,6 +41,7 @@ public class NodeSettlement extends WorldObject {
         road1 = null; // No connected roads
         road2 = null;
         road3 = null;
+        age = -1; //player is set to 0, so age is -1, it has no age
     }
 
     /**
@@ -135,6 +142,18 @@ public class NodeSettlement extends WorldObject {
      */
     public void setPlayer(int player) {
         this.player = player;
+
+        //update the age
+        if (player == 0) { //is the settlment ownership is being taken away re-set the age
+            age = -1;
+        } else {
+            //set the age to the next one
+            age = ageCounter;
+            //increment the counter
+            ageCounter++;
+        }
+
+        System.out.println(age);
     }
 
     /**
@@ -342,5 +361,62 @@ public class NodeSettlement extends WorldObject {
                 + super.toString() + "\n"
                 + "Player ID: " + player + "\n"
                 + "Is Large: " + large + "\n";
+    }
+
+    /**
+     * Based off an ArrayList of settlementNodes give the cards of the oldest
+     * settlements to the player's card array
+     *
+     * @param settlementNodes
+     * @param cards
+     * @param totalCardsCollected
+     */
+    public static void giveStartingRes(ArrayList<NodeSettlement> settlementNodes, ArrayList<Integer>[] cards, int[] totalCardsCollected) {
+
+        //new array for the index of the oldest settlment for each player
+        int[] oldestSettlementIndex = new int[cards.length];
+        //init that array to all -1's
+        for (int i = 0; i < oldestSettlementIndex.length; i++) {
+            oldestSettlementIndex[i] = -1;
+        }
+
+        //loop through all settlements
+        for (NodeSettlement settlement : settlementNodes) {
+
+            //check the owner of said node
+            if (settlement.getPlayer() != 0) {
+                //compare if this settlemtns age is older than the one already saved
+                //or if there is none saved, save this one
+                System.out.println(settlement.age);
+                if (oldestSettlementIndex[settlement.getPlayer()] == -1 || (settlementNodes.get(oldestSettlementIndex[settlement.getPlayer()])).age < settlement.age) {
+                    oldestSettlementIndex[settlement.getPlayer()] = settlement.getRefNum();
+                }
+            }
+
+        }
+
+        //now give the user the cards from their newest settlment
+        for (int playerID = 1; playerID < oldestSettlementIndex.length; playerID++) {
+            //loop through the 3 tiles
+            for (int tileNum = 1; tileNum < 4; tileNum++) {
+
+                Tile tile = settlementNodes.get(oldestSettlementIndex[playerID]).getTile(tileNum);
+
+                //don't check if the tile is a null tile
+                if (tile != null) {
+
+                    //get the type
+                    int type = tile.getType();
+
+                    //if the type isn't a desert
+                    if (type != 0) {
+
+                        //give them the first res
+                        cards[playerID].add(type);
+                    }
+                }
+            }
+        }
+
     }
 }

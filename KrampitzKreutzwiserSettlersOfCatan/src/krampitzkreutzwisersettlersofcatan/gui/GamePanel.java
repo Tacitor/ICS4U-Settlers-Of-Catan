@@ -6191,7 +6191,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     currentPlayer = 1; //make sure that player 1 is starting
                     // If enabled. give everyone their starting resources
                     if (giveStartingResources) {
-                        collectMaterials(0); // 0 makes it collect everything possible
+                        NodeSettlement.giveStartingRes(settlementNodes, cards, totalCardsCollected); //give each player 1 of each resource from the second setup settlement
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Error changing players during settup\n" + e, "Turn Error", JOptionPane.ERROR_MESSAGE);
