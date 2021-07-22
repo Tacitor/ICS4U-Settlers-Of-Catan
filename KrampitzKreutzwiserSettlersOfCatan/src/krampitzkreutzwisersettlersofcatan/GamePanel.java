@@ -4918,7 +4918,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //show what number the user rolled
         g2d.drawString("You rolled a: " + diceRollVal[2],
                 rightDrawMargin,
-                (int) (400 / scaleFactor));
+                (int) (450 / scaleFactor));
         //draw the dice
         //but only if not in setup
         if (!inSetup) {
@@ -4927,21 +4927,21 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 g2d.drawImage(DICE_IMAGES[0],
                         rightDrawMargin,
-                        (int) (400 / scaleFactor),
+                        (int) (450 / scaleFactor),
                         getImgWidth(DICE_IMAGES[0]),
                         getImgHeight(DICE_IMAGES[0]),
                         null);
             } else { //else draw the dice that go with the roll
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[0])],
                         rightDrawMargin,
-                        (int) (400 / scaleFactor),
+                        (int) (450 / scaleFactor),
                         getImgWidth(DICE_IMAGES[1]),
                         getImgHeight(DICE_IMAGES[1]),
                         null);
 
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
                         rightDrawMargin + getImgWidth(DICE_IMAGES[1]),
-                        (int) (400 / scaleFactor),
+                        (int) (450 / scaleFactor),
                         getImgWidth(DICE_IMAGES[1]),
                         getImgHeight(DICE_IMAGES[1]),
                         null);
@@ -5707,9 +5707,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     (useDevCardBtn.getYPos() + getImgHeight(useDevCardBtn.getBaseImage())) - devCardMenuLbl.getYPos() + scaleInt(22));
             //the dice menu box
             g2d.drawRect(rightDrawMargin - scaleInt(5),
-                    scaleInt(385) - scaleInt(5),
+                    scaleInt(435) - scaleInt(5),
                     getImgWidth(MATERIAL_KEY) + scaleInt(5),
-                    (scaleInt(400) + getImgHeight(DICE_GRAY)) - scaleInt(385) + scaleInt(10));
+                    (scaleInt(450) + getImgHeight(DICE_GRAY)) - scaleInt(435) + scaleInt(10));
             //the score board box
             g2d.drawRect(rightDrawMargin - scaleInt(60) + playerNumOffset - scaleInt(5),
                     scaleInt(580) - scaleInt(5),
@@ -5728,7 +5728,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         } else {
             appendText = "Online";
         }
-        g2d.drawString("Online mode: " + appendText + " with ID of \'" + onlineMode + "\'", rightDrawMargin, scaleInt(60) + getImgHeight(MATERIAL_KEY));
+        g2d.drawString("Online mode: " + appendText + " with ID of \'" + onlineMode + "\'", rightDrawMargin, scaleInt(50) + getImgHeight(MATERIAL_KEY));
 
         // Add alignment lines
         //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
