@@ -731,9 +731,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 // Redraw the board to remove hitbox outlines
                 repaint();
                 // Dont pick a new building to place
-
-                //update the server if online mode
-                onlineUpdateServer();
                 return;
             }
             //Update the vars
@@ -797,9 +794,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             }
             // Change the build button to a cancel button
             buildBtn.setMode(0);//set it to "Cancel"
-
-            //update the server if online mode
-            onlineUpdateServer();
         }
     }
 
@@ -918,9 +912,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //if the thief had just finished set it false, they are done now
             thiefJustFinished = false;
-
-            //update the server if online mode
-            onlineUpdateServer();
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             //set the roll sum to 0. This is for the dice images. When the sum is "" then the blank dice are shown
             diceRollVal[2] = "";
@@ -1024,9 +1015,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            //update the server if online mode
-            onlineUpdateServer();
-
         } else if (playerSetupRoadsLeft != 0) {
             //let the player know that they have more setup roads to place
             instructionLbl.setText("Make sure you place your " + playerSetupRoadsLeft + " remaining road(s).");
@@ -1112,9 +1100,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
-
-        //update the server if online mode
-        onlineUpdateServer();
     }
 
     /**
@@ -1158,9 +1143,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
-
-        //update the server if online mode
-        onlineUpdateServer();
     }
 
     /**
@@ -1204,9 +1186,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
-
-        //update the server if online mode
-        onlineUpdateServer();
     }
 
     /**
@@ -3710,7 +3689,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         if (onlineMode == currentPlayer) {
             playTurnBeep();
             //debug the sound
-            //System.out.println("PLayed");
+            //System.out.println("Played. Online Mode is: " + onlineMode);
         }
 
         //if in online mode also make the game visable
@@ -6183,7 +6162,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 setupUpdatePlayerTurnOrder();
 
             } catch (ArrayIndexOutOfBoundsException e) { //if there are no more prescribed turns that means setup is over
-                
+
                 //ensure that it's the setupTurnOrder that is out of bounds
                 if (setupTurnOrderIndex == setupTurnOrder.length) {
                     inSetup = false;
