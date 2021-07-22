@@ -6171,7 +6171,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 setupUpdatePlayerTurnOrder();
 
             } catch (ArrayIndexOutOfBoundsException e) { //if there are no more prescribed turns that means setup is over
-                System.out.println("Do I even run at all? Yes");
                 
                 //ensure that it's the setupTurnOrder that is out of bounds
                 if (setupTurnOrderIndex == setupTurnOrder.length) {
@@ -6180,7 +6179,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     currentPlayer = 1; //make sure that player 1 is starting
                     // If enabled. give everyone their starting resources
                     if (giveStartingResources) {
-                        System.out.println("I'm running");
                         collectMaterials(0); // 0 makes it collect everything possible
                     }
                 } else {
