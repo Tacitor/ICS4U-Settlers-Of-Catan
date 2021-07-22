@@ -3,12 +3,13 @@
  * Nov 7, 2020
  * The JFrame that will hold the Panel that will be the main part of the game
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import krampitzkreutzwisersettlersofcatan.Catan;
 import textures.ImageRef;
 
 /**
@@ -73,7 +74,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * Provide reference to the main menu to any subclasses
      * @return 
      */
-    protected MainMenu getMainMenu() {
+    public MainMenu getMainMenu() {
         return mainMenuFrame;
     }
     

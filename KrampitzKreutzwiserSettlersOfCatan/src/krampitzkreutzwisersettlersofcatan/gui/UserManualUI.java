@@ -3,7 +3,7 @@
  * Oct 23, 2020, November 4, 2020, and Nov 6 2020
  * Show the User manual so that the usercan play the game
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.gui;
 
 import dataFiles.OldCode;
 import java.io.InputStream; // File reference

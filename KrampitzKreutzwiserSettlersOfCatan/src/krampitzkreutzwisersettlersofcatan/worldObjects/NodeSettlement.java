@@ -4,7 +4,7 @@
  * A class representing the settlement placements of the board, and some of the
  * board node structure
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.worldObjects;
 
 
 public class NodeSettlement extends WorldObject {

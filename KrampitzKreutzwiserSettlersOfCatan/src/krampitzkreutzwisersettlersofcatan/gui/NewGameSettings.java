@@ -3,7 +3,7 @@
  * Feb 14 2021
  * Allow the user to select settings before starting a new game.
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.gui;
 
 import textures.ImageRef;
 

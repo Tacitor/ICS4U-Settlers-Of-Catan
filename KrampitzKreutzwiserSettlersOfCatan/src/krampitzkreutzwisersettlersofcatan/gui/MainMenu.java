@@ -3,7 +3,7 @@
  * Nov 06, 2020
  * The main menu for the game Settlers of Catan
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.gui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,6 +11,7 @@ import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
+import krampitzkreutzwisersettlersofcatan.Catan;
 import textures.ImageRef;
 
 /**

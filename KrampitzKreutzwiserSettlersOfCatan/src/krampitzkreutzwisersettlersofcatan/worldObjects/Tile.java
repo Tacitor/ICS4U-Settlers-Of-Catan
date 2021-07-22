@@ -3,7 +3,7 @@
  * Nov 6, 2020
  * A class representing the hexagonal world tiles of the game board.
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.worldObjects;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;

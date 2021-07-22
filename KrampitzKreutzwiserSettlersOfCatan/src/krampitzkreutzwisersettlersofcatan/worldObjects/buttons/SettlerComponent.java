@@ -3,10 +3,11 @@
  * Jul 14, 2021
  * A Custom type of button. Is extened by SettlerBtn and SettlerRadioBtn
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
 import textures.ImageRef;
 
 /**

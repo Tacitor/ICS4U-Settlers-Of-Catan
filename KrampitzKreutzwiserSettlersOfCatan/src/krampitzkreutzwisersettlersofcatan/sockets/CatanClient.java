@@ -3,7 +3,7 @@
  * Mar 27, 2021
  * 
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.sockets;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.swing.*;
+import krampitzkreutzwisersettlersofcatan.gui.GameFrame;
 import textures.ImageRef;
 
 /**

@@ -4,11 +4,13 @@
  * A modified String that is meant to replace Swing JLabes
  *      Created for allow margin formatting
  */
-package krampitzkreutzwisersettlersofcatan;
+package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
 import static textures.ImageRef.WATER_RING;
 
 /**
