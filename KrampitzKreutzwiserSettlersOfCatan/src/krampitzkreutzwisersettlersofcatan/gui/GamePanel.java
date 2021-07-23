@@ -29,7 +29,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.io.BufferedInputStream;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 import java.io.FileNotFoundException;
@@ -42,11 +41,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -3697,7 +3691,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //play the turn beep if online and it's the user's turn
         if (onlineMode == currentPlayer) {
-            playTurnBeep();
+            AudioRef.playTurnBeep();
             //debug the sound
             //System.out.println("Played. Online Mode is: " + onlineMode);
         }
@@ -5752,42 +5746,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     // </editor-fold>
-    /**
-     * Play some audio from a URL file path
-     *
-     * @param url
-     */
-    private static void playTurnBeep() {
-        try {
-            InputStream TURN_BEEP = (AudioRef.class.getResourceAsStream("turnBeep.wav"));
-
-            InputStream bufferedStream; //add a buffer to the stream
-            AudioInputStream stream; //the stream best used for playing audio
-
-            //decorate it with a buffer
-            bufferedStream = new BufferedInputStream(TURN_BEEP);
-
-            //load it in
-            stream = AudioSystem.getAudioInputStream(bufferedStream);
-
-            Clip clip = AudioSystem.getClip();
-            clip.open(stream);
-
-            clip.start();
-
-            //debug the turn idecator
-            //System.out.println("boop");
-        } catch (FileNotFoundException ex) {
-            System.out.println("Sound File not found\n" + ex);
-        } catch (IOException ex) {
-            System.out.println("Sound File error\n" + ex);
-        } catch (UnsupportedAudioFileException ex) {
-            System.out.println("Sound File is of wrong type\n" + ex);
-        } catch (LineUnavailableException ex) {
-            System.out.println("Sound File error: \n" + ex);
-        }
-    }
-
     public void fire() {
         //debugs. Proof the game is actually redrawing.
         //showRoadHitbox = true;
