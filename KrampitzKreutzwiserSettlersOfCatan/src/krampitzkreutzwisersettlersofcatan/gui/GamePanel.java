@@ -6238,12 +6238,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         for (int i = 0; i < tileTypes.length; i++) {
             if (tileTypes[i] == 0) {
                 desertTile = i;
-                System.out.println("got desert");
             }
             
             if (tileHarvestRollNums[i] == 0) {
                 harvestNum0 = i;
-                System.out.println("got 0");
             }
         }
         //now swap them
