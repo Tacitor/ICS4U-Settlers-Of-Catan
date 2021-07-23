@@ -20,40 +20,62 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * @author Tacitor
  */
 public class AudioRef {
-    
+
     private static boolean playTurnBeep = true;
 
     /**
      * Play some audio from a URL file path
      */
     public static void playTurnBeep() {
-        try {
-            InputStream TURN_BEEP = (AudioRef.class.getResourceAsStream("turnBeep.wav"));
+        //check if the sound should even be playing
+        if (playTurnBeep) {
 
-            InputStream bufferedStream; //add a buffer to the stream
-            AudioInputStream stream; //the stream best used for playing audio
+            try {
+                InputStream TURN_BEEP = (AudioRef.class.getResourceAsStream("turnBeep.wav"));
 
-            //decorate it with a buffer
-            bufferedStream = new BufferedInputStream(TURN_BEEP);
+                InputStream bufferedStream; //add a buffer to the stream
+                AudioInputStream stream; //the stream best used for playing audio
 
-            //load it in
-            stream = AudioSystem.getAudioInputStream(bufferedStream);
+                //decorate it with a buffer
+                bufferedStream = new BufferedInputStream(TURN_BEEP);
 
-            Clip clip = AudioSystem.getClip();
-            clip.open(stream);
+                //load it in
+                stream = AudioSystem.getAudioInputStream(bufferedStream);
 
-            clip.start();
+                Clip clip = AudioSystem.getClip();
+                clip.open(stream);
 
-            //debug the turn idecator
-            //System.out.println("boop");
-        } catch (FileNotFoundException ex) {
-            System.out.println("Sound File not found\n" + ex);
-        } catch (IOException ex) {
-            System.out.println("Sound File error\n" + ex);
-        } catch (UnsupportedAudioFileException ex) {
-            System.out.println("Sound File is of wrong type\n" + ex);
-        } catch (LineUnavailableException ex) {
-            System.out.println("Sound File error: \n" + ex);
+                clip.start();
+
+                //debug the turn idecator
+                //System.out.println("boop");
+            } catch (FileNotFoundException ex) {
+                System.out.println("Sound File not found\n" + ex);
+            } catch (IOException ex) {
+                System.out.println("Sound File error\n" + ex);
+            } catch (UnsupportedAudioFileException ex) {
+                System.out.println("Sound File is of wrong type\n" + ex);
+            } catch (LineUnavailableException ex) {
+                System.out.println("Sound File error: \n" + ex);
+            }
         }
+    }
+
+    /**
+     * Mutate whether or not the player receives a turn indication chime
+     *
+     * @param playTurnBeep
+     */
+    public static void setPlayTurnBeep(boolean playTurnBeep) {
+        AudioRef.playTurnBeep = playTurnBeep;
+    }
+
+    /**
+     * Access whether or not the player receives a turn indication chime
+     *
+     * @return
+     */
+    public static boolean getPlayTurnBeep() {
+        return playTurnBeep;
     }
 }
