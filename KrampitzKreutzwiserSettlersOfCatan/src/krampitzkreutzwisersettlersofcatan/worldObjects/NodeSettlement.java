@@ -195,6 +195,24 @@ public class NodeSettlement extends WorldObject {
     }
 
     /**
+     * Get the age of the settlement.
+     *
+     * @return age
+     */
+    public int getAge() {
+        return age;
+    }
+
+    /**
+     * Set the age of the settlement.
+     *
+     * @param age
+     */
+    private void setAge(int age) {
+        this.age = age;
+    }
+
+    /**
      * Get one of the connected roads
      *
      * @param id Which road to get (1-3)
