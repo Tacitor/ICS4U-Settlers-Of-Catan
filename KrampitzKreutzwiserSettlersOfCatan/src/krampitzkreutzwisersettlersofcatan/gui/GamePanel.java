@@ -2541,6 +2541,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 saveFile.println(settlementNodes.get(i).getPlayer());
                 saveFile.println("Is Large:");
                 saveFile.println(settlementNodes.get(i).isLarge());
+                //add the age
+                saveFile.println("Age:");
+                saveFile.println(settlementNodes.get(i).getAge());
                 saveFile.println(); //add a line break below
             }
 
@@ -3077,6 +3080,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                     if (scanner.nextLine().equals("Is Large:")) {
                         settlementNodes.get(settlementNodeNum).setLarge(Boolean.parseBoolean(scanner.nextLine()));
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                    if (scanner.nextLine().equals("Age:")) {
+                        settlementNodes.get(settlementNodeNum).setAge(Integer.parseInt(scanner.nextLine()));
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }

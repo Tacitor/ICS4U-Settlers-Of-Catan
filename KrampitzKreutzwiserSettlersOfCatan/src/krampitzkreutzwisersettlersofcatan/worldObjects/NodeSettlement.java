@@ -208,7 +208,7 @@ public class NodeSettlement extends WorldObject {
      *
      * @param age
      */
-    private void setAge(int age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
