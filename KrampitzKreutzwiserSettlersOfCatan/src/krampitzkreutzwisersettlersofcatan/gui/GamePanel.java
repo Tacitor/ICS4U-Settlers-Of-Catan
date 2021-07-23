@@ -1310,7 +1310,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                     repaint();
 
+                } else if (btn.equals(backNoSaveBtn)) { //if the user clicked to trade with a 3:1 ratio
+                    backNoSaveBtnClicked();
+                } else if (btn.equals(backBtn)) { //if the user clicked to trade with a 3:1 ratio
+                    backBtnClicked();
                 }
+
                 //only check the other buttons if there is and authroiazed user
                 if (authorizedUser) {
 
@@ -1375,10 +1380,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         trade2to1BtnClicked();
                     } else if (btn.equals(buildBtn)) { //if the user clicked to trade with a 3:1 ratio
                         buildBtnClicked();
-                    } else if (btn.equals(backNoSaveBtn)) { //if the user clicked to trade with a 3:1 ratio
-                        backNoSaveBtnClicked();
-                    } else if (btn.equals(backBtn)) { //if the user clicked to trade with a 3:1 ratio
-                        backBtnClicked();
                     }
 
                     //tab select this button
@@ -2421,7 +2422,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             file.setWritable(true);
 
             PrintWriter saveFile = new PrintWriter(file); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV13"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSave" + Catan.SAVE_FILE_VER); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -2750,7 +2751,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV13")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
                 //System.out.println("Yuppers");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
