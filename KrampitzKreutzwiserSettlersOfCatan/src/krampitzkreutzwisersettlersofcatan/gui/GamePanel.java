@@ -69,7 +69,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
     //the old deflaut order                  {1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}
-    private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 2, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom    
+    private final int[] tileHarvestRollNums = new int[]{0, 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12}; //the harvest roll num of the tile from left to right, and top to bottom    
     private final int[] tileDrawOrder = new int[]{7, 3, 0, 12, 8, 4, 1, 16, 13, 9, 5, 2, 17, 14, 10, 6, 18, 15, 11}; //the order tiles are drawin in, in 3d tile mode to account fot the over lap
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
     private ArrayList<Integer> playerTurnOrder; //the oder the players go in. index 0 is always the current player and index 1 is always the next up, etc.
@@ -4803,7 +4803,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         getImgWidth(tiles.get(tileID).getImage()),
                         getImgHeight(tiles.get(tileID).getImage()), null);
             }
-
+            
             //draw the resource harvest number only if it is not a desert
             if (tiles.get(tileID).getType() != 0) {
                 g2d.setColor(Color.DARK_GRAY);
@@ -4835,7 +4835,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //check where the thief is and draw it there
             if (tiles.get(tileID).hasThief()) {
-
+            
                 int imageWidth = getImgWidth(THIEF);
                 int imageHeight = getImgHeight(THIEF);
 
@@ -6194,6 +6194,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         int tempNumHold; //the value that is being swapped
         int numSlot1; //the index being swaped from
         int numSlot2; //the index being swapped to
+        int harvestNum0 = 0; //has the harvest num 0
+        int desertTile = 0; //the desert Tile
 
         //shuffle the board types
         for (int i = 0; i < numShuffle; i++) {
@@ -6230,6 +6232,24 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //now overwrite the second with what used to be in the first
             tileHarvestRollNums[numSlot2] = tempNumHold;
         }
+
+        //now go through and find the 0 harvest num, and the desert Tile and pair them up        
+        //loop through the tile type nums
+        for (int i = 0; i < tileTypes.length; i++) {
+            if (tileTypes[i] == 0) {
+                desertTile = i;
+                System.out.println("got desert");
+            }
+            
+            if (tileHarvestRollNums[i] == 0) {
+                harvestNum0 = i;
+                System.out.println("got 0");
+            }
+        }
+        //now swap them
+        tileHarvestRollNums[harvestNum0] = (tileHarvestRollNums[desertTile]);
+        tileHarvestRollNums[desertTile] = 0;
+
         //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
