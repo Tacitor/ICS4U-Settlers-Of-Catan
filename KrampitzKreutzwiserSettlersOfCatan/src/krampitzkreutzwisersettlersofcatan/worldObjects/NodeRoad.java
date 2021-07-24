@@ -43,6 +43,8 @@ public class NodeRoad extends WorldObject {
         // Set the position to the passed values
         this.xPos = xPos;
         this.yPos = yPos;
+        unscaledXPos = xPos;
+        unscaledYPos = yPos;
     }
     
     /**
