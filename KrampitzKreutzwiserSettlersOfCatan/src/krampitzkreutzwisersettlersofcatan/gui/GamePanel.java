@@ -29,7 +29,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.io.BufferedInputStream;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 import java.io.FileNotFoundException;
@@ -42,11 +41,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -75,7 +69,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
     //the old deflaut order                  {1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5}
-    private final int[] tileHarvestRollNums = new int[]{5, 3, 8, 6, 4, 12, 11, 10, 3, 2, 5, 9, 10, 6, 9, 11, 2, 8, 4}; //the harvest roll num of the tile from left to right, and top to bottom    
+    private final int[] tileHarvestRollNums = new int[]{0, 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12}; //the harvest roll num of the tile from left to right, and top to bottom    
     private final int[] tileDrawOrder = new int[]{7, 3, 0, 12, 8, 4, 1, 16, 13, 9, 5, 2, 17, 14, 10, 6, 18, 15, 11}; //the order tiles are drawin in, in 3d tile mode to account fot the over lap
     private final int[][] tilePos = new int[19 * 2][2]; //the x, y position to draw the tile images
     private ArrayList<Integer> playerTurnOrder; //the oder the players go in. index 0 is always the current player and index 1 is always the next up, etc.
@@ -126,9 +120,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private ArrayList<NodeSettlement>[] portSettlements; //Contains settlments that are on ports. One arrayList for each of the 9 ports.
     private final int victoryPoints[];
     private final int totalCardsCollected[];
-    private final int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
-    private final int[] devCardStackXPositions; //the x positions to draw dev cards when in stacked mode
-    private final int[] resourceStackXPositions; //the x coords for the resource type stacks
+    private int[] cardStackXPositions; //the x positions to draw cards when in stacked mode
+    private int[] devCardStackXPositions; //the x positions to draw dev cards when in stacked mode
+    private int[] resourceStackXPositions; //the x coords for the resource type stacks
     private int[] stealCardNum; //the number of cards to steal from each player
     private int cardStartPosition; //the xPos to start drawing cards at 
     private int devCardStartPosition; //the xPos to start drawing dev cards at 
@@ -148,14 +142,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private int playerSetupSettlementLeft; //number of settlements to place
 
     //var used for scaling
-    private final int tileYOffset;
-    private final int tileXOffset;
+    private int tileYOffset;
+    private int tileXOffset;
     public static double scaleFactor;
-    private final int newTileWidth;
-    private final int newTileHeight;
-    private final int threeDTileOffset;
-    private static int frameWidth; //the dimentions of the JFrame holding the gamePanel
-    private static int frameHeight;
+    private int newTileWidth;
+    private int newTileHeight;
+    private int threeDTileOffset;
+    private static int panelWidth; //the dimentions of the JFrame holding the gamePanel
+    private static int panelHeight;
 
     //new dice roll lable
     private String[] diceRollVal;
@@ -236,8 +230,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         // Initalize variables
         superFrame = frame; //save refernce
-        frameWidth = superFrame.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
-        frameHeight = superFrame.getHeight();
+        panelWidth = this.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
+        panelHeight = this.getHeight();
         tiles = new ArrayList(); //init the master tile array list
         settlementNodes = new ArrayList(); // Init the settlement node array list
         ports = new ArrayList();
@@ -272,25 +266,27 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //the 6 is for the six types of ports ^
         totalCardsCollected = new int[5];
         setupTurnOrder = new int[playerCount * setupRoundsLeft]; //accounds for all the players for every setup round there will be
-        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
-        cardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
-            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
-            superFrame.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
-            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
-            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
-        //and now the dev cards
-        devCardStackXPositions = new int[]{superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            superFrame.getWidth() / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
-        //and simularly the resouce stacks
-        resourceStackXPositions = new int[]{0, //have the first index be a position of 0
-            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
-            superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[2]) / 4,
-            superFrame.getWidth() / 2 - getImgWidth(RES_STACKS[3]) / 2,
-            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - ((getImgWidth(RES_STACKS[4]) / 4) * 3),
-            superFrame.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(RES_STACKS[5])};
+
+        // Initialize the window and board
+        initSettlerLbl();
+
+        //randomize the board
+        randomizeTiles();
+
+        loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
+        loadTiles(); //load the ArrayList of tiles with position and type data
+        loadNodes(); // Create and link all of the board's settlement and road nodes
+        loadPorts(); //read in all the data about the ports and populate the Array List with Ports
+
+        //port supporting vars
+        portSettlements = new ArrayList[ports.size()]; //create the same amount of ArrayLists as there are ports
+
+        //fill the array of ports settlements with new arrayLists
+        for (int i = 0; i < portSettlements.length; i++) {
+            portSettlements[i] = new ArrayList<>();
+        }
+
+        generatePortSettlements(); //Get a list of the settlements that allow access to each port
 
         buildingObject = 0;
         usingDevCard = -1; //set it to normal value for when no dev card is being used
@@ -421,27 +417,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         }
 
-        // Initialize the window and board
-        initSettlerLbl();
-
-        //randomize the board
-        randomizeTiles();
-
-        loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
-        loadTiles(); //load the ArrayList of tiles with position and type data
-        loadNodes(); // Create and link all of the board's settlement and road nodes
-        loadPorts(); //read in all the data about the ports and populate the Array List with Ports
-
-        //port supporting vars
-        portSettlements = new ArrayList[ports.size()]; //create the same amount of ArrayLists as there are ports
-
-        //fill the array of ports settlements with new arrayLists
-        for (int i = 0; i < portSettlements.length; i++) {
-            portSettlements[i] = new ArrayList<>();
-        }
-
-        generatePortSettlements(); //Get a list of the settlements that allow access to each port
-
         //add a mouse motion listener for hovering over button
         addMouseMotionListener(this);
 
@@ -459,40 +434,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 mouseClick(evt);
             }
         });
-
-        //the dimentions of a hex Tile after scaling. Saves making this calculation over and over again
-        newTileWidth = getImgWidth(tiles.get(0).getImage());
-        newTileHeight = getImgHeight(tiles.get(0).getImage());
-
-        //set up the scaling vars
-        //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
-        //first get a centered frame of reference
-        tileYOffset = (int) ((superFrame.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2
-                //then account for the tile height
-                + newTileHeight)
-                //then subtract the current position to find the difference
-                - getTileYPos(tiles.get(7).getYPos())
-                //add some fine tuning for smaller resulutions
-                + (superFrame.getHeight() / (float) superFrame.getWidth()));
-
-        //same as the y offset but now for the x
-        tileXOffset = (superFrame.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2
-                + (int) (newTileWidth - (newTileWidth / 4))) //get the distance from the left most vertex to the center recangle of the hexagon
-                - getTileXPos(tiles.get(0).getXPos());
-
-        //set up the circle scaler
-        if (superFrame.getWidth() <= superFrame.getHeight()) {
-            scaleFactor = (1920.0 / superFrame.getWidth());
-        } else {
-            scaleFactor = (1080.0 / superFrame.getHeight());
-        }
-
-        //apply the scaling to the tiles
-        scaleWorldObjectPos(tiles, 1);
-        scaleWorldObjectPos(roadNodes, 1);
-        scaleWorldObjectPos(settlementNodes, 0);
-        scaleWorldObjectPos(ports, 0);
-        updatePortPos();
 
         //get the fonts
         timesNewRoman = new Font("Times New Roman", Font.PLAIN, 18);
@@ -535,21 +476,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //setup the custom radio buttons to go into the groups
         SettlerRadioBtn.setUpGroup(settlerRadioBtns);
 
-        buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-        tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-        devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-
-        instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
-        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
-        subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
-
-        titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
-
         //initialize the dice roll value
         diceRollVal = new String[]{"0", "0", ""}; //the first two indexies are the rollecd values and the third is the sum
-
-        //init the offset for the "3d" overlap tiles
-        threeDTileOffset = (int) (-20 / scaleFactor);
 
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
@@ -621,7 +549,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
 
         buildMenuLbl.setXPos(turnSwitchBtn.getXPos());
-        buildMenuLbl.setYPos((int) (scaleInt(225) * ((1920.0 / 1080.0) - ((double) frameWidth / (double) frameHeight) + 1.0)));
+        buildMenuLbl.setYPos((int) (scaleInt(225) * ((1920.0 / 1080.0) - ((double) panelWidth / (double) panelHeight) + 1.0)));
 
         //set the radio build buttons
         buildRoadRBtn.setXPos(turnSwitchBtn.getXPos());
@@ -669,7 +597,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //the exit buttons aligned to the bottom
         backBtn.setXPos(turnSwitchBtn.getXPos());
-        backBtn.setYPos(frameHeight - getImgHeight(backBtn.getBaseImage()) - scaleInt(6));
+        backBtn.setYPos(panelHeight - getImgHeight(backBtn.getBaseImage()) - scaleInt(6));
 
         backNoSaveBtn.setXPos(turnSwitchBtn.getXPos());
         backNoSaveBtn.setYPos(backBtn.getYPos() - getImgHeight(backNoSaveBtn.getBaseImage()) - scaleInt(6));
@@ -731,9 +659,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 // Redraw the board to remove hitbox outlines
                 repaint();
                 // Dont pick a new building to place
-
-                //update the server if online mode
-                onlineUpdateServer();
                 return;
             }
             //Update the vars
@@ -797,9 +722,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             }
             // Change the build button to a cancel button
             buildBtn.setMode(0);//set it to "Cancel"
-
-            //update the server if online mode
-            onlineUpdateServer();
         }
     }
 
@@ -918,9 +840,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //if the thief had just finished set it false, they are done now
             thiefJustFinished = false;
-
-            //update the server if online mode
-            onlineUpdateServer();
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             //set the roll sum to 0. This is for the dice images. When the sum is "" then the blank dice are shown
             diceRollVal[2] = "";
@@ -1024,9 +943,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            //update the server if online mode
-            onlineUpdateServer();
-
         } else if (playerSetupRoadsLeft != 0) {
             //let the player know that they have more setup roads to place
             instructionLbl.setText("Make sure you place your " + playerSetupRoadsLeft + " remaining road(s).");
@@ -1112,9 +1028,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
-
-        //update the server if online mode
-        onlineUpdateServer();
     }
 
     /**
@@ -1158,9 +1071,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
-
-        //update the server if online mode
-        onlineUpdateServer();
     }
 
     /**
@@ -1204,9 +1114,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             subInstructionLbl.setText("Click the port that corresponds to the resource you would like to end up with.");
             repaint();
         }
-
-        //update the server if online mode
-        onlineUpdateServer();
     }
 
     /**
@@ -1331,7 +1238,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                     repaint();
 
+                } else if (btn.equals(backNoSaveBtn)) { //if the user clicked to trade with a 3:1 ratio
+                    backNoSaveBtnClicked();
+                } else if (btn.equals(backBtn)) { //if the user clicked to trade with a 3:1 ratio
+                    backBtnClicked();
                 }
+
                 //only check the other buttons if there is and authroiazed user
                 if (authorizedUser) {
 
@@ -1396,10 +1308,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         trade2to1BtnClicked();
                     } else if (btn.equals(buildBtn)) { //if the user clicked to trade with a 3:1 ratio
                         buildBtnClicked();
-                    } else if (btn.equals(backNoSaveBtn)) { //if the user clicked to trade with a 3:1 ratio
-                        backNoSaveBtnClicked();
-                    } else if (btn.equals(backBtn)) { //if the user clicked to trade with a 3:1 ratio
-                        backBtnClicked();
                     }
 
                     //tab select this button
@@ -1724,7 +1632,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0 && !thiefJustStarted) { //check if the user clicked to select a card and the thief didn't just start
 
                 //get the y position for the cards
-                int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
+                int cardYPos = (int) (this.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
 
                 //check what mode the card drawing is in
                 if (drawCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
@@ -1762,7 +1670,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //check if the user clicked on any card
                     for (int i = 0; i < cards[currentPlayer].size(); i++) {
                         //get the x position for that card
-                        int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
+                        int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + scaleInt(10)) * i);
 
                         //check if there was a click on a card
                         if (event.getX() > cardXPos
@@ -1790,7 +1698,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             } else if (showDevCardHitbox && usingDevCard == 0) { //check if the player clicked on a dev card to actiavet it and use it
                 //get the y position for the cards
-                int devCardYPos = (int) (superFrame.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125));
+                int devCardYPos = (int) (this.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125));
 
                 //check what mode the card drawing is in
                 if (drawDevCardStacks[currentPlayer]) { //check for a click on a cards in the stacked mode
@@ -1852,7 +1760,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //check if the user clicked on any card
                     for (int i = 0; i < devCards[currentPlayer].size(); i++) {
                         //get the x position for that card
-                        int cardXPos = (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i);
+                        int cardXPos = (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + scaleInt(10)) * i);
 
                         //check if there was a click on a card
                         if (event.getX() > cardXPos
@@ -1985,13 +1893,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 //debug
                 //System.out.println("Got a steal click");
 
-                int subPlayerPosY = superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED);
+                int subPlayerPosY = this.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED);
                 int subPlayerPosX;
 
                 //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
                 for (int i = 1; i < playerTurnOrder.size(); i++) {
 
-                    subPlayerPosX = superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i);
+                    subPlayerPosX = this.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i);
 
                     //check if there was a click on one of the sub players
                     if (event.getX() > subPlayerPosX
@@ -2054,8 +1962,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 /*
             if (canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) {
                 g2d.setColor(Color.green);
-                g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i), //put it in the corner with some padding space
-                    superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2, //put it in the corner with some padding space
+                g2d.drawRect(this.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(PLAYER_RED) / 2) * i), //put it in the corner with some padding space
+                    this.getHeight() - (int) (10 / scaleFactor) - getImgHeight(PLAYER_RED) / 2, //put it in the corner with some padding space
                     getImgWidth(PLAYER_RED) / 2, //scale the image
                     getImgHeight(PLAYER_RED) / 2);
                 g2d.setColor(Color.black);
@@ -2193,7 +2101,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
                 //get the y position for the cards
-                int cardYPos = (int) (superFrame.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
+                int cardYPos = (int) (this.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
                 boolean validCard;
 
                 //check what mode the card drawing is in
@@ -2267,7 +2175,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         validCard = false;
 
                         //get the x position for that card
-                        int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i);
+                        int cardXPos = (cardStartPosition + (getImgWidth(CARD_CLAY) + scaleInt(10)) * i);
 
                         //check if there was a click on a card
                         if (event.getX() > cardXPos
@@ -2442,7 +2350,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             file.setWritable(true);
 
             PrintWriter saveFile = new PrintWriter(file); //begin writting to the file
-            saveFile.println("SettlersOfCatanSaveV13"); //write a header to easily identify Settlers of Catan save files for loading
+            saveFile.println("SettlersOfCatanSave" + Catan.SAVE_FILE_VER); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
             saveFile.println(playerCount);
             saveFile.println("thiefMoveCounter:");
@@ -2562,6 +2470,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 saveFile.println(settlementNodes.get(i).getPlayer());
                 saveFile.println("Is Large:");
                 saveFile.println(settlementNodes.get(i).isLarge());
+                //add the age
+                saveFile.println("Age:");
+                saveFile.println(settlementNodes.get(i).getAge());
                 saveFile.println(); //add a line break below
             }
 
@@ -2768,7 +2679,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanSaveV13")) {
+            if (scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
                 //System.out.println("Yuppers");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
@@ -3098,6 +3009,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                     if (scanner.nextLine().equals("Is Large:")) {
                         settlementNodes.get(settlementNodeNum).setLarge(Boolean.parseBoolean(scanner.nextLine()));
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                    if (scanner.nextLine().equals("Age:")) {
+                        settlementNodes.get(settlementNodeNum).setAge(Integer.parseInt(scanner.nextLine()));
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
@@ -3708,9 +3625,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //play the turn beep if online and it's the user's turn
         if (onlineMode == currentPlayer) {
-            playTurnBeep();
+            AudioRef.playTurnBeep();
             //debug the sound
-            //System.out.println("PLayed");
+            //System.out.println("Played. Online Mode is: " + onlineMode);
         }
 
         //if in online mode also make the game visable
@@ -4651,8 +4568,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param g
      */
     private void draw(Graphics g) {
+        panelSizeDependantCalculations();
+
         //start local vars
-        int rightDrawMargin = superFrame.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
+        int rightDrawMargin = this.getWidth() - getImgWidth(MATERIAL_KEY) - (int) (10 / scaleFactor);
         boolean drawSpecificHitbox; //local var to hold the value deciding if a specifc Port hitbox should be drawn. Depending on they type of trading mode.
 
         //end local vars
@@ -4668,14 +4587,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         g2d.drawImage(WOOD_BACKGROUND,
                 0,
                 0,
-                getImgWidth(WOOD_BACKGROUND),
-                getImgHeight(WOOD_BACKGROUND), null);
+                this.getWidth(),
+                this.getHeight(), null);
 
         //draw the ring of water
         //also scale it to the current monitor. Coords are to center it relative to the display center
         g2d.drawImage(WATER_RING,
-                superFrame.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
-                superFrame.getHeight() / 2 - getImgHeight(WATER_RING) / 2,
+                this.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
+                this.getHeight() / 2 - getImgHeight(WATER_RING) / 2,
                 getImgWidth(WATER_RING),
                 getImgHeight(WATER_RING), null);
 
@@ -4713,8 +4632,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //draw the current player icon
         g2d.drawImage(currentPlayerImage,
-                superFrame.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
-                superFrame.getHeight() - getImgHeight(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
+                this.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
+                this.getHeight() - getImgHeight(PLAYER_RED) - (int) (10 / scaleFactor), //put it in the corner with some padding space
                 getImgWidth(PLAYER_RED), //scale the image
                 getImgHeight(PLAYER_RED),
                 null);
@@ -4723,8 +4642,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
         g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("Current player:",
-                superFrame.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor),
-                superFrame.getHeight() - getImgHeight(PLAYER_RED) - (int) (20 / scaleFactor));
+                this.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor),
+                this.getHeight() - getImgHeight(PLAYER_RED) - (int) (20 / scaleFactor));
 
         Image subsequentPlayerImage;
 
@@ -4738,8 +4657,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             }
 
             g2d.drawImage(subsequentPlayerImage,
-                    superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(SMALL_PLAYER_RED)) * i), //put it in the corner with some padding space
-                    superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED), //put it in the corner with some padding space
+                    this.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(SMALL_PLAYER_RED)) * i), //put it in the corner with some padding space
+                    this.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED), //put it in the corner with some padding space
                     getImgWidth(SMALL_PLAYER_RED), //scale the image
                     getImgHeight(SMALL_PLAYER_RED),
                     null);
@@ -4754,14 +4673,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 if (drawSpecificHitbox) {
                     //draw the high light
                     g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                    g2d.fillRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
-                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
+                    g2d.fillRect(this.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
+                            this.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
                             getImgWidth(SMALL_PLAYER_RED),
                             getImgHeight(SMALL_PLAYER_RED));
                     //draw the boarder
                     g2d.setColor(new java.awt.Color(255, 255, 225));
-                    g2d.drawRect(superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
-                            superFrame.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
+                    g2d.drawRect(this.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i),
+                            this.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED),
                             getImgWidth(SMALL_PLAYER_RED),
                             getImgHeight(SMALL_PLAYER_RED));
                 }
@@ -4772,8 +4691,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //draw the sub player header
         g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("Next player:",
-                superFrame.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
-                superFrame.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
+                this.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
+                this.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
 
         Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("port/wildcard.png")).getImage();
 
@@ -5259,7 +5178,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 countCardTypes(listSize, playerID);
 
                 // Calculate where the first card must go to center the list
-                cardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
+                cardStartPosition = (int) ((this.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 //check if the cards would go off the screen
                 //by checking if the start pos of the cards would be past the ending of the exit button
@@ -5301,7 +5220,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         //draw the card image
                         g2d.drawImage(image,
                                 cardStackXPositions[i], //align the card to the left edge of the water ring 
-                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                 getImgWidth(image),
                                 getImgHeight(image),
                                 null);
@@ -5309,7 +5228,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         //draw the number of cards of that type
                         g2d.drawString("x" + cardTypeCount[i],
                                 cardStackXPositions[i] + getImgWidth(image), //align the number to the right edge of the card
-                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
+                                (int) (this.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
 
                         //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
                         if (showCardHitbox && cardTypeCount[i] > 0) {
@@ -5330,7 +5249,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 //draw the high light
                                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
                                 g2d.fillRect(cardStackXPositions[i],
-                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                        (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 //draw the boarder
@@ -5338,7 +5257,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 Stroke tempStroke = g2d.getStroke();
                                 g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
                                 g2d.drawRect(cardStackXPositions[i],
-                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                        (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 g2d.setStroke(tempStroke);
@@ -5384,8 +5303,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                         // Draw the card
                         g2d.drawImage(image,
-                                (cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
-                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                (cardStartPosition + (getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                                (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                 getImgWidth(image),
                                 getImgHeight(image),
                                 null);
@@ -5408,16 +5327,16 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             if (drawSpecificHitbox) {
                                 //draw the high light
                                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                                g2d.fillRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
-                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                g2d.fillRect((cardStartPosition + (getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                                        (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 //draw the boarder
                                 g2d.setColor(new java.awt.Color(102, 62, 38));
                                 Stroke tempStroke = g2d.getStroke();
                                 g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                                g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + 10) * i),
-                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                g2d.drawRect((cardStartPosition + (getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                                        (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 g2d.setStroke(tempStroke);
@@ -5442,7 +5361,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 }
 
                 // Calculate where the first card must go to center the list
-                devCardStartPosition = (int) ((superFrame.getWidth() / 2) - (listSize * getImgWidth(DEV_CARD_KNIGHT) + (listSize - 1) * (10 / scaleFactor)) / 2);
+                devCardStartPosition = (int) ((this.getWidth() / 2) - (listSize * getImgWidth(DEV_CARD_KNIGHT) + (listSize - 1) * (10 / scaleFactor)) / 2);
 
                 //check if the cards would go off the screen
                 //by checking if the start pos of the cards would be past the ending of the exit button
@@ -5483,7 +5402,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         //draw the card image
                         g2d.drawImage(image,
                                 devCardStackXPositions[i], //align the card to the left edge of the water ring 
-                                (int) (superFrame.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125)),
+                                (int) (this.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125)),
                                 getImgWidth(image),
                                 getImgHeight(image),
                                 null);
@@ -5502,7 +5421,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         //draw the number of cards of that type
                         g2d.drawString("x" + devCardNum,
                                 devCardStackXPositions[i] + getImgWidth(image), //align the number to the right edge of the card
-                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
+                                (int) (this.getHeight() - (getImgHeight(image) * 1.125) + getImgHeight(image) / 2));
 
                         //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
                         if (showDevCardHitbox && devCardTypeCount[i] > 0) {
@@ -5517,7 +5436,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 //draw the high light
                                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
                                 g2d.fillRect(devCardStackXPositions[i],
-                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                        (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 //draw the boarder
@@ -5525,7 +5444,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 Stroke tempStroke = g2d.getStroke();
                                 g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
                                 g2d.drawRect(devCardStackXPositions[i],
-                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                        (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 g2d.setStroke(tempStroke);
@@ -5583,8 +5502,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                         // Draw the card
                         g2d.drawImage(image,
-                                (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
-                                (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + scaleInt(10)) * i),
+                                (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                 getImgWidth(image),
                                 getImgHeight(image),
                                 null);
@@ -5601,16 +5520,16 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             if (drawSpecificHitbox) {
                                 //draw the high light
                                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                                g2d.fillRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
-                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                g2d.fillRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + scaleInt(10)) * i),
+                                        (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 //draw the boarder
                                 g2d.setColor(new java.awt.Color(102, 62, 38));
                                 Stroke tempStroke = g2d.getStroke();
                                 g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                                g2d.drawRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + 10) * i),
-                                        (int) (superFrame.getHeight() - (getImgHeight(image) * 1.125)),
+                                g2d.drawRect((devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + scaleInt(10)) * i),
+                                        (int) (this.getHeight() - (getImgHeight(image) * 1.125)),
                                         getImgWidth(image),
                                         getImgHeight(image));
                                 g2d.setStroke(tempStroke);
@@ -5743,14 +5662,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         g2d.drawString("Online mode: " + appendText + " with ID of \'" + onlineMode + "\'", rightDrawMargin, scaleInt(50) + getImgHeight(MATERIAL_KEY));
 
         // Add alignment lines
-        //g2d.drawLine(superFrame.getWidth() / 2, 0, superFrame.getWidth() / 2, superFrame.getHeight());
-        //g2d.drawLine(0, superFrame.getHeight() / 2, superFrame.getWidth(), superFrame.getHeight() / 2);
+        //g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
+        //g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
 
         /*
         //draw the boarder overlay
         g2d.drawImage(WATER_RING_OVERLAY, 
-                superFrame.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2,
-                superFrame.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2, 
+                this.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2,
+                this.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2, 
                 getImgWidth(WATER_RING_OVERLAY), 
                 getImgHeight(WATER_RING_OVERLAY), null);
          */
@@ -5763,42 +5682,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     // </editor-fold>
-    /**
-     * Play some audio from a URL file path
-     *
-     * @param url
-     */
-    private static void playTurnBeep() {
-        try {
-            InputStream TURN_BEEP = (AudioRef.class.getResourceAsStream("turnBeep.wav"));
-
-            InputStream bufferedStream; //add a buffer to the stream
-            AudioInputStream stream; //the stream best used for playing audio
-
-            //decorate it with a buffer
-            bufferedStream = new BufferedInputStream(TURN_BEEP);
-
-            //load it in
-            stream = AudioSystem.getAudioInputStream(bufferedStream);
-
-            Clip clip = AudioSystem.getClip();
-            clip.open(stream);
-
-            clip.start();
-
-            //debug the turn idecator
-            //System.out.println("boop");
-        } catch (FileNotFoundException ex) {
-            System.out.println("Sound File not found\n" + ex);
-        } catch (IOException ex) {
-            System.out.println("Sound File error\n" + ex);
-        } catch (UnsupportedAudioFileException ex) {
-            System.out.println("Sound File is of wrong type\n" + ex);
-        } catch (LineUnavailableException ex) {
-            System.out.println("Sound File error: \n" + ex);
-        }
-    }
-
     public void fire() {
         //debugs. Proof the game is actually redrawing.
         //showRoadHitbox = true;
@@ -5856,11 +5739,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @return
      */
     public int getTileYPos(int yPos) {
-        return (int) (yPos / 1080.0 * superFrame.getHeight()
+        return (int) (yPos / 1080.0 * this.getHeight()
                 / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
                 //find the correct spacing factor based off a linear ration between the new apsect ratio and the internal 1080p one. 
                 //This now leaves the tiles in the incorrect position but that can be later corrected by adding a constant value to all of the tiles
-                (1.8 * ((float) superFrame.getHeight() / (float) superFrame.getWidth())));
+                (1.8 * ((float) this.getHeight() / (float) this.getWidth())));
     }
 
     /**
@@ -5871,11 +5754,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @return
      */
     private int getTileXPos(int xPos) {
-        return (int) (xPos / 1920.0 * superFrame.getWidth()
+        return (int) (xPos / 1920.0 * this.getWidth()
                 / //calculate the distorted position. This has spacing between that is an artifact of locking the aspect ratio when scaling
                 //find the correct spacing factor based off a linear ration between the new apsect ratio and the internal 1080p one. 
                 //This now leaves the tiles in the incorrect position but that can be later corrected by adding a constant value to all of the tiles
-                (0.5625 * ((float) superFrame.getWidth() / (float) superFrame.getHeight())));
+                (0.5625 * ((float) this.getWidth() / (float) this.getHeight())));
     }
 
     /**
@@ -5886,10 +5769,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public final int getImgWidth(Image image) {
 
-        if (superFrame.getWidth() > superFrame.getHeight()) {
+        if (this.getWidth() > this.getHeight()) {
             return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
         } else {
-            return (int) (image.getWidth(null) / 1920.0 * superFrame.getWidth());
+            return (int) (image.getWidth(null) / 1920.0 * this.getWidth());
         }
 
     }
@@ -5901,8 +5784,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @return
      */
     public final int getImgHeight(Image image) {
-        if (superFrame.getWidth() > superFrame.getHeight()) {
-            return (int) (image.getHeight(null) / 1080.0 * superFrame.getHeight());
+        if (this.getWidth() > this.getHeight()) {
+            return (int) (image.getHeight(null) / 1080.0 * this.getHeight());
         } else {
             return (int) (getImgWidth(image) / ((float) image.getWidth(null) / image.getHeight(null)));
         }
@@ -6064,18 +5947,95 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //pick a way to add the corrdinates for scaling
             //choose a drawing type. One corrects for width and one corrects for height
-            if (superFrame.getWidth() <= superFrame.getHeight()) {
+            if (this.getWidth() <= this.getHeight()) {
                 //set the x
-                arrayList.get(i).setXPos((int) (arrayList.get(i).getXPos() / 1920.0 * superFrame.getWidth()));
+                arrayList.get(i).setXPos((int) (arrayList.get(i).getUnscaledXPos() / 1920.0 * this.getWidth()));
                 //set the y
-                arrayList.get(i).setYPos((getTileYPos(arrayList.get(i).getYPos()) + tileYOffset));
+                arrayList.get(i).setYPos((getTileYPos(arrayList.get(i).getUnscaledYPos()) + tileYOffset));
             } else {
                 //set the x
-                arrayList.get(i).setXPos((getTileXPos(arrayList.get(i).getXPos()) + tileXOffset));
+                arrayList.get(i).setXPos((getTileXPos(arrayList.get(i).getUnscaledXPos()) + tileXOffset));
                 //set the y
-                arrayList.get(i).setYPos(((int) (arrayList.get(i).getYPos() / 1080.0 * superFrame.getHeight())));
+                arrayList.get(i).setYPos(((int) (arrayList.get(i).getUnscaledYPos() / 1080.0 * this.getHeight())));
             }
         }
+    }
+
+    /**
+     * Make calculations and update variables that have to do with scaling and
+     * depend on knowing the width or height of the gamePanel
+     */
+    private void panelSizeDependantCalculations() {
+        panelWidth = this.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
+        panelHeight = this.getHeight();
+
+        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
+        cardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
+            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
+            this.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
+        //and now the dev cards
+        devCardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            this.getWidth() / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
+        //and simularly the resouce stacks
+        resourceStackXPositions = new int[]{0, //have the first index be a position of 0
+            this.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
+            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[2]) / 4,
+            this.getWidth() / 2 - getImgWidth(RES_STACKS[3]) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - ((getImgWidth(RES_STACKS[4]) / 4) * 3),
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(RES_STACKS[5])};
+
+        //the dimentions of a hex Tile after scaling. Saves making this calculation over and over again
+        newTileWidth = getImgWidth(tiles.get(0).getImage());
+        newTileHeight = getImgHeight(tiles.get(0).getImage());
+
+        //set up the scaling vars
+        //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
+        //first get a centered frame of reference
+        tileYOffset = (int) ((this.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2
+                //then account for the tile height
+                + newTileHeight)
+                //then subtract the current position to find the difference
+                - getTileYPos(tiles.get(7).getUnscaledYPos())
+                //add some fine tuning for smaller resulutions
+                + (this.getHeight() / (float) this.getWidth()));
+
+        //same as the y offset but now for the x
+        tileXOffset = (this.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2
+                + (int) (newTileWidth - (newTileWidth / 4))) //get the distance from the left most vertex to the center recangle of the hexagon
+                - getTileXPos(tiles.get(0).getUnscaledXPos());
+
+        //set up the circle scaler
+        if (this.getWidth() <= this.getHeight()) {
+            scaleFactor = (1920.0 / this.getWidth());
+        } else {
+            scaleFactor = (1080.0 / this.getHeight());
+        }
+
+        //apply the scaling to the tiles
+        scaleWorldObjectPos(tiles, 1);
+        scaleWorldObjectPos(roadNodes, 1);
+        scaleWorldObjectPos(settlementNodes, 0);
+        scaleWorldObjectPos(ports, 0);
+        updatePortPos();
+
+        //init the offset for the "3d" overlap tiles
+        threeDTileOffset = (int) (-20 / scaleFactor);
+
+        //Settler Label Font Size
+        buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+
+        instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+        subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
+
+        titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
     }
 
     /**
@@ -6183,7 +6143,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 setupUpdatePlayerTurnOrder();
 
             } catch (ArrayIndexOutOfBoundsException e) { //if there are no more prescribed turns that means setup is over
-                
+
                 //ensure that it's the setupTurnOrder that is out of bounds
                 if (setupTurnOrderIndex == setupTurnOrder.length) {
                     inSetup = false;
@@ -6191,7 +6151,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     currentPlayer = 1; //make sure that player 1 is starting
                     // If enabled. give everyone their starting resources
                     if (giveStartingResources) {
-                        collectMaterials(0); // 0 makes it collect everything possible
+                        NodeSettlement.giveStartingRes(settlementNodes, cards, totalCardsCollected); //give each player 1 of each resource from the second setup settlement
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Error changing players during settup\n" + e, "Turn Error", JOptionPane.ERROR_MESSAGE);
@@ -6247,6 +6207,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         int tempNumHold; //the value that is being swapped
         int numSlot1; //the index being swaped from
         int numSlot2; //the index being swapped to
+        int harvestNum0 = 0; //has the harvest num 0
+        int desertTile = 0; //the desert Tile
 
         //shuffle the board types
         for (int i = 0; i < numShuffle; i++) {
@@ -6283,6 +6245,23 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //now overwrite the second with what used to be in the first
             tileHarvestRollNums[numSlot2] = tempNumHold;
         }
+
+        //now go through and find the 0 harvest num, and the desert Tile and pair them up        
+        //loop through the tile type nums
+        for (int i = 0; i < tileTypes.length; i++) {
+            //check for the desert tile
+            if (tileTypes[i] == 0) {
+                desertTile = i;
+            }
+            //check for the tile with the 0 harvest roll num
+            if (tileHarvestRollNums[i] == 0) {
+                harvestNum0 = i;
+            }
+        }
+        //now swap them
+        tileHarvestRollNums[harvestNum0] = (tileHarvestRollNums[desertTile]);
+        tileHarvestRollNums[desertTile] = 0;
+
         //tileTypes = new int[]{1, 3, 4, 2, 2, 5, 1, 4, 3, 0, 4, 2, 4, 5, 1, 2, 3, 3, 5};
         //tileTypes = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
@@ -6868,17 +6847,17 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      *
      * @return
      */
-    public static int getFrameWidth() {
-        return frameWidth;
+    public static int getPanelWidth() {
+        return panelWidth;
     }
 
     /**
      * Set the width of the JFrame holding the GamePanel
      *
-     * @param frameWidth
+     * @param panelWidth
      */
-    public static void setFrameWidth(int frameWidth) {
-        GamePanel.frameWidth = frameWidth;
+    public static void setPanelWidth(int panelWidth) {
+        GamePanel.panelWidth = panelWidth;
     }
 
     /**
@@ -6886,17 +6865,17 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      *
      * @return
      */
-    public static int getFrameHeight() {
-        return frameHeight;
+    public static int getPanelHeight() {
+        return panelHeight;
     }
 
     /**
      * Set the height of the JFrame holding the GamePanel
      *
-     * @param frameHeight
+     * @param panelHeight
      */
-    public static void setFrameHeight(int frameHeight) {
-        GamePanel.frameHeight = frameHeight;
+    public static void setPanelHeight(int panelHeight) {
+        GamePanel.panelHeight = panelHeight;
     }
 
     /**

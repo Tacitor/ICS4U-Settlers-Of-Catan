@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
+import Audio.AudioRef;
 import java.awt.Toolkit;
 import textures.ImageRef;
 
@@ -50,6 +51,7 @@ public class ClientSettings extends javax.swing.JFrame {
 
         borderGrp = new javax.swing.ButtonGroup();
         windowedGrp = new javax.swing.ButtonGroup();
+        beepGrp = new javax.swing.ButtonGroup();
         backBtn = new javax.swing.JButton();
         saveBtn = new javax.swing.JButton();
         titleLbl = new javax.swing.JLabel();
@@ -60,6 +62,9 @@ public class ClientSettings extends javax.swing.JFrame {
         displayFullRbtn = new javax.swing.JRadioButton();
         displayWindowRbtn = new javax.swing.JRadioButton();
         resCmbBox = new javax.swing.JComboBox<>();
+        beepLbl = new javax.swing.JLabel();
+        beepFalseRbtn = new javax.swing.JRadioButton();
+        beepTrueRbtn = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -123,6 +128,21 @@ public class ClientSettings extends javax.swing.JFrame {
         resCmbBox.setToolTipText("");
         resCmbBox.setEnabled(false);
 
+        beepLbl.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        beepLbl.setText("Play Turn Beep");
+
+        beepGrp.add(beepFalseRbtn);
+        beepFalseRbtn.setText("No");
+        beepFalseRbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                beepFalseRbtnActionPerformed(evt);
+            }
+        });
+
+        beepGrp.add(beepTrueRbtn);
+        beepTrueRbtn.setSelected(true);
+        beepTrueRbtn.setText("Yes");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -142,7 +162,10 @@ public class ClientSettings extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(boarderLbl)
                             .addComponent(boarderFalseRbtn)
-                            .addComponent(boarderTrueRbtn))
+                            .addComponent(boarderTrueRbtn)
+                            .addComponent(beepLbl)
+                            .addComponent(beepFalseRbtn)
+                            .addComponent(beepTrueRbtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(boarderLbl1)
@@ -171,8 +194,15 @@ public class ClientSettings extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(displayWindowRbtn)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(resCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(88, 88, 88)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(resCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(beepLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(beepFalseRbtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(beepTrueRbtn)))
+                .addGap(43, 43, 43)
                 .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backBtn)
@@ -227,6 +257,13 @@ public class ClientSettings extends javax.swing.JFrame {
             mainMenuFrame.getGameFrame().setSize(Integer.parseInt(resWidth), Integer.parseInt(resHight));
         }
 
+        //get and set the playing of the turn beep
+        if (beepTrueRbtn.isSelected()) {
+            AudioRef.setPlayTurnBeep(true);
+        } else if (beepFalseRbtn.isSelected()) {
+            AudioRef.setPlayTurnBeep(false);
+        }
+
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void boarderFalseRbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boarderFalseRbtnActionPerformed
@@ -243,8 +280,16 @@ public class ClientSettings extends javax.swing.JFrame {
         resCmbBox.setEnabled(true);
     }//GEN-LAST:event_displayWindowRbtnActionPerformed
 
+    private void beepFalseRbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beepFalseRbtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_beepFalseRbtnActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
+    private javax.swing.JRadioButton beepFalseRbtn;
+    private javax.swing.ButtonGroup beepGrp;
+    private javax.swing.JLabel beepLbl;
+    private javax.swing.JRadioButton beepTrueRbtn;
     private javax.swing.JRadioButton boarderFalseRbtn;
     private javax.swing.JLabel boarderLbl;
     private javax.swing.JLabel boarderLbl1;

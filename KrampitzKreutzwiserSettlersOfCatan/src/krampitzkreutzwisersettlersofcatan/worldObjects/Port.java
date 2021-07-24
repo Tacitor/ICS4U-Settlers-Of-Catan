@@ -173,10 +173,10 @@ public class Port extends WorldObject {
      */
     public final int getImgWidth(Image image) {
 
-        if (getFrameWidth() > getFrameHeight()) {
+        if (getPanelWidth() > getPanelHeight()) {
             return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
         } else {
-            return (int) (image.getWidth(null) / 1920.0 * getFrameWidth());
+            return (int) (image.getWidth(null) / 1920.0 * getPanelWidth());
         }
 
     }
@@ -189,8 +189,8 @@ public class Port extends WorldObject {
      */
     public final int getImgHeight(Image image) {
 
-        if (getFrameWidth() > getFrameHeight()) {
-            return (int) (image.getHeight(null) / 1080.0 * getFrameHeight());
+        if (getPanelWidth() > getPanelHeight()) {
+            return (int) (image.getHeight(null) / 1080.0 * getPanelHeight());
         } else {
             return (int) (getImgWidth(image) / ((float) image.getWidth(null) / image.getHeight(null)));
         }
