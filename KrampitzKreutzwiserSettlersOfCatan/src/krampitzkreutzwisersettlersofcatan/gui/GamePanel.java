@@ -5962,6 +5962,83 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     /**
+     * Make calculations and update variables that have to do with scaling and
+     * depend on knowing the width or height of the gamePanel
+     */
+    private void panelSizeDependantCalculations() {
+        panelWidth = this.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
+        panelHeight = this.getHeight();
+
+        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
+        cardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
+            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
+            this.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
+        //and now the dev cards
+        devCardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            this.getWidth() / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
+        //and simularly the resouce stacks
+        resourceStackXPositions = new int[]{0, //have the first index be a position of 0
+            this.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
+            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[2]) / 4,
+            this.getWidth() / 2 - getImgWidth(RES_STACKS[3]) / 2,
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - ((getImgWidth(RES_STACKS[4]) / 4) * 3),
+            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(RES_STACKS[5])};
+
+        //the dimentions of a hex Tile after scaling. Saves making this calculation over and over again
+        newTileWidth = getImgWidth(tiles.get(0).getImage());
+        newTileHeight = getImgHeight(tiles.get(0).getImage());
+
+        //set up the scaling vars
+        //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
+        //first get a centered frame of reference
+        tileYOffset = (int) ((this.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2
+                //then account for the tile height
+                + newTileHeight)
+                //then subtract the current position to find the difference
+                - getTileYPos(tiles.get(7).getUnscaledYPos())
+                //add some fine tuning for smaller resulutions
+                + (this.getHeight() / (float) this.getWidth()));
+
+        //same as the y offset but now for the x
+        tileXOffset = (this.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2
+                + (int) (newTileWidth - (newTileWidth / 4))) //get the distance from the left most vertex to the center recangle of the hexagon
+                - getTileXPos(tiles.get(0).getUnscaledXPos());
+
+        //set up the circle scaler
+        if (this.getWidth() <= this.getHeight()) {
+            scaleFactor = (1920.0 / this.getWidth());
+        } else {
+            scaleFactor = (1080.0 / this.getHeight());
+        }
+
+        //apply the scaling to the tiles
+        scaleWorldObjectPos(tiles, 1);
+        scaleWorldObjectPos(roadNodes, 1);
+        scaleWorldObjectPos(settlementNodes, 0);
+        scaleWorldObjectPos(ports, 0);
+        updatePortPos();
+
+        //init the offset for the "3d" overlap tiles
+        threeDTileOffset = (int) (-20 / scaleFactor);
+
+        //Settler Label Font Size
+        buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+
+        instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+        subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
+
+        titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
+    }
+
+    /**
      * Updated the image positions of the type images for the ports. This only
      * brings them to where they need to be before major scaling point
      * re-mapping.
@@ -6172,10 +6249,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //now go through and find the 0 harvest num, and the desert Tile and pair them up        
         //loop through the tile type nums
         for (int i = 0; i < tileTypes.length; i++) {
+            //check for the desert tile
             if (tileTypes[i] == 0) {
                 desertTile = i;
             }
-
+            //check for the tile with the 0 harvest roll num
             if (tileHarvestRollNums[i] == 0) {
                 harvestNum0 = i;
             }
@@ -6830,82 +6908,5 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         mouseMotionPosX = e.getX();
         mouseMotionPosY = e.getY();
         mouseMoveAction();
-    }
-
-    /**
-     * Make calculations and update variables that have to do with scaling and
-     * depend on knowing the width or height of the gamePanel
-     */
-    private void panelSizeDependantCalculations() {
-        panelWidth = this.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
-        panelHeight = this.getHeight();
-
-        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
-        cardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
-        //and now the dev cards
-        devCardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
-        //and simularly the resouce stacks
-        resourceStackXPositions = new int[]{0, //have the first index be a position of 0
-            this.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
-            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(RES_STACKS[2]) / 4,
-            this.getWidth() / 2 - getImgWidth(RES_STACKS[3]) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - ((getImgWidth(RES_STACKS[4]) / 4) * 3),
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(RES_STACKS[5])};
-
-        //the dimentions of a hex Tile after scaling. Saves making this calculation over and over again
-        newTileWidth = getImgWidth(tiles.get(0).getImage());
-        newTileHeight = getImgHeight(tiles.get(0).getImage());
-
-        //set up the scaling vars
-        //a constant offset used to correct the position of the tiles in cases where the height of the display is larger than the width
-        //first get a centered frame of reference
-        tileYOffset = (int) ((this.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2
-                //then account for the tile height
-                + newTileHeight)
-                //then subtract the current position to find the difference
-                - getTileYPos(tiles.get(7).getUnscaledYPos())
-                //add some fine tuning for smaller resulutions
-                + (this.getHeight() / (float) this.getWidth()));
-
-        //same as the y offset but now for the x
-        tileXOffset = (this.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2
-                + (int) (newTileWidth - (newTileWidth / 4))) //get the distance from the left most vertex to the center recangle of the hexagon
-                - getTileXPos(tiles.get(0).getUnscaledXPos());
-
-        //set up the circle scaler
-        if (this.getWidth() <= this.getHeight()) {
-            scaleFactor = (1920.0 / this.getWidth());
-        } else {
-            scaleFactor = (1080.0 / this.getHeight());
-        }
-
-        //apply the scaling to the tiles
-        scaleWorldObjectPos(tiles, 1);
-        scaleWorldObjectPos(roadNodes, 1);
-        scaleWorldObjectPos(settlementNodes, 0);
-        scaleWorldObjectPos(ports, 0);
-        updatePortPos();
-
-        //init the offset for the "3d" overlap tiles
-        threeDTileOffset = (int) (-20 / scaleFactor);
-
-        //Settler Label Font Size
-        buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-        tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-        devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-
-        instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
-        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
-        subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
-
-        titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
     }
 }
