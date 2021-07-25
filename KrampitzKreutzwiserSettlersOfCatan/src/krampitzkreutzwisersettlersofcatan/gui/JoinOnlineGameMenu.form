@@ -75,10 +75,10 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="titleLbl" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="200" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="210" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="ipLbl" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="ipTxtFld" min="-2" max="-2" attributes="0"/>
@@ -91,7 +91,7 @@
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="colourSelectLbl" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -105,7 +105,7 @@
                   </Group>
                   <Component id="requestColourBtn" min="-2" pref="72" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -151,7 +151,7 @@
             <Property name="columns" type="int" value="20"/>
             <Property name="lineWrap" type="boolean" value="true"/>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="To join an online game please ensure the folowing:&#xa; 1) You have a connection to the Internet&#xa; 2) You have another player hosting the server on their local machine and they also have a connection to the Internet.&#xa;     2.5) This player must also port forward port number 25570 using TCP&#xa;&#xa;Then connect to the Catan server using the public IP of the host and the port 25570.&#xa;&#xa;Once all the players have connected the game will begin."/>
+            <Property name="text" type="java.lang.String" value="To join an online game please ensure the folowing:&#xa; 1) You have a connection to the Internet&#xa; 2) You have another player hosting the server on their local machine and they also have a connection to the Internet.&#xa;     2.5) This player must also port forward port number 25570 using TCP&#xa;&#xa;Then connect to the Catan server using the public IP of the host and the port 25570 (this is only the default, your host may be using a different port).&#xa;&#xa;Once all the players have connected the game will begin."/>
             <Property name="wrapStyleWord" type="boolean" value="true"/>
             <Property name="enabled" type="boolean" value="false"/>
             <Property name="opaque" type="boolean" value="false"/>

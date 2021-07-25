@@ -52,7 +52,7 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="titleLbl" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="150" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="224" max="32767" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="createBtn" min="-2" pref="72" max="-2" attributes="0"/>
@@ -99,7 +99,7 @@
             <Property name="columns" type="int" value="20"/>
             <Property name="lineWrap" type="boolean" value="true"/>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="Select a port to create your game server.&#xa;&#xa;You have created a new Online Catan Game! A server has been started on you local machine and the first client has automatically connected you as player 1 (Red). For the other players to connect you must open port 25570 to you local machine. Then the players can connect over your IP using port 25570."/>
+            <Property name="text" type="java.lang.String" value="Select a port to create your game server. Then click &quot;Create Server&quot;.&#xa;&#xa;You have created a new Online Catan Game! A server has been started on you local machine and the first client has automatically connected you as player 1 (Red). For the other players to connect you must open port 25570 to you local machine. Then the players can connect over your IP using port 25570.&#xa;&#xa;YOU are REQUIRED to portforward the port number of choosing.&#xa;&#xa;NOTE: The game board will automatically display only after ALL users have connected. This is determined by how many you selected on the previous screen.&#xa;"/>
             <Property name="wrapStyleWord" type="boolean" value="true"/>
             <Property name="enabled" type="boolean" value="false"/>
             <Property name="opaque" type="boolean" value="false"/>
