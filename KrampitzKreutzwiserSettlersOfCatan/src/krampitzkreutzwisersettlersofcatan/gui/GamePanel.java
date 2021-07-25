@@ -4849,7 +4849,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //show what number the user rolled
         g2d.drawString("You rolled a: " + diceRollVal[2],
                 rightDrawMargin,
-                (int) (450 / scaleFactor));
+                (int) (440 / scaleFactor));
         //draw the dice
         //but only if not in setup
         if (!inSetup) {
@@ -4858,23 +4858,23 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 g2d.drawImage(DICE_IMAGES[0],
                         rightDrawMargin,
-                        (int) (450 / scaleFactor),
-                        getImgWidth(DICE_IMAGES[0]),
-                        getImgHeight(DICE_IMAGES[0]),
+                        (int) (435 / scaleFactor),
+                        (int) (getImgWidth(DICE_IMAGES[0]) * 1.5),
+                        (int) (getImgHeight(DICE_IMAGES[0]) * 1.5),
                         null);
             } else { //else draw the dice that go with the roll
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[0])],
                         rightDrawMargin,
-                        (int) (450 / scaleFactor),
-                        getImgWidth(DICE_IMAGES[1]),
-                        getImgHeight(DICE_IMAGES[1]),
+                        (int) (435 / scaleFactor),
+                        (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
+                        (int) (getImgHeight(DICE_IMAGES[1]) * 1.5),
                         null);
 
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
-                        rightDrawMargin + getImgWidth(DICE_IMAGES[1]),
-                        (int) (450 / scaleFactor),
-                        getImgWidth(DICE_IMAGES[1]),
-                        getImgHeight(DICE_IMAGES[1]),
+                        rightDrawMargin + (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
+                        (int) (435 / scaleFactor),
+                        (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
+                        (int) (getImgHeight(DICE_IMAGES[1]) * 1.5),
                         null);
 
             }
