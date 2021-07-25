@@ -98,7 +98,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("To join an online game please ensure the folowing:\n 1) You have a connection to the Internet\n 2) You have another player hosting the server on their local machine and they also have a connection to the Internet.\n     2.5) This player must also port forward port number 25570 using TCP\n\nThen connect to the Catan server using the public IP of the host and the port 25570.\n\nOnce all the players have connected the game will begin.");
+        jTextArea1.setText("To join an online game please ensure the folowing:\n 1) You have a connection to the Internet\n 2) You have another player hosting the server on their local machine and they also have a connection to the Internet.\n     2.5) This player must also port forward port number 25570 using TCP\n\nThen connect to the Catan server using the public IP of the host and the port 25570 (this is only the default, your host may be using a different port).\n\nOnce all the players have connected the game will begin.");
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setEnabled(false);
         jTextArea1.setOpaque(false);
@@ -194,8 +194,8 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(titleLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(ipLbl)
@@ -219,7 +219,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(backBtn))
                     .addComponent(requestColourBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();

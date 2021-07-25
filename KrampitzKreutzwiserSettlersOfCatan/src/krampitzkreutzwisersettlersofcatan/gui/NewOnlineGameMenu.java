@@ -133,7 +133,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Select a port to create your game server.\n\nYou have created a new Online Catan Game! A server has been started on you local machine and the first client has automatically connected you as player 1 (Red). For the other players to connect you must open port 25570 to you local machine. Then the players can connect over your IP using port 25570.");
+        jTextArea1.setText("Select a port to create your game server. Then click \"Create Server\".\n\nYou have created a new Online Catan Game! A server has been started on you local machine and the first client has automatically connected you as player 1 (Red). For the other players to connect you must open port 25570 to you local machine. Then the players can connect over your IP using port 25570.\n\nYOU are REQUIRED to portforward the port number of choosing.\n\nNOTE: The game board will automatically display only after ALL users have connected. This is determined by how many you selected on the previous screen.\n");
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setEnabled(false);
         jTextArea1.setOpaque(false);
@@ -183,7 +183,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(titleLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(createBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
