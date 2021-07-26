@@ -45,6 +45,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import krampitzkreutzwisersettlersofcatan.Catan;
+import krampitzkreutzwisersettlersofcatan.util.CardUtil;
 import krampitzkreutzwisersettlersofcatan.util.GlobalDataRecord;
 import textures.ImageRef;
 import static textures.ImageRef.*;
@@ -62,7 +63,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private static String saveAddress; //The path to where to save to
     private static JFileChooser saveFileChooser;
     private static int userSaveSelection;
-
+    
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
     private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
     private final ArrayList<Port> ports; //every trading port, its type, location, and orientation.
@@ -272,7 +273,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //randomize the board
         randomizeTiles();
-
+        
         loadTilePos(); //read in the coodinates of where each of the 19 tiles goes
         loadTiles(); //load the ArrayList of tiles with position and type data
         loadNodes(); // Create and link all of the board's settlement and road nodes
@@ -285,7 +286,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         for (int i = 0; i < portSettlements.length; i++) {
             portSettlements[i] = new ArrayList<>();
         }
-
+        
         generatePortSettlements(); //Get a list of the settlements that allow access to each port
 
         buildingObject = 0;
@@ -414,7 +415,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     setupTurnOrder[i * playerCount + j] = j + 1; //regular round (1,2,3,4)
                 }
             }
-
+            
         }
 
         //add a mouse motion listener for hovering over button
@@ -481,7 +482,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
-
+        
     }
     // </editor-fold>
 
@@ -495,7 +496,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         subInstructionLbl = new SettlerLbl();
         //set up the prompt
         instructionPromptLbl = new SettlerLbl("Instructions:");
-
+        
         devCardMenuLbl = new SettlerLbl("Development Card Menu:");
         tradeMenuLbl = new SettlerLbl("Trade Menu:");
         buildMenuLbl = new SettlerLbl("Build Menu:");
@@ -505,7 +506,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         instructionLbl.setForeground(new Color(255, 255, 225));
         subInstructionLbl.setForeground(new Color(255, 255, 225));
         instructionPromptLbl.setForeground(new Color(255, 255, 225));
-
+        
         devCardMenuLbl.setForeground(new Color(255, 255, 225));
         tradeMenuLbl.setForeground(new Color(255, 255, 225));
         buildMenuLbl.setForeground(new Color(255, 255, 225));
@@ -534,20 +535,20 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //set the turn button to the correct location
         turnSwitchBtn.setXPos(titleLbl.getXPos());
         turnSwitchBtn.setYPos(titleLbl.getYPos() + scaleInt(15));
-
+        
         instructionPromptLbl.setXPos(titleLbl.getXPos());
         instructionPromptLbl.setYPos(turnSwitchBtn.getYPos() + getImgHeight(turnSwitchBtn.getBaseImage()) + scaleInt(30));
 
         //get the length of the instruction prompt
         g2d.setFont(instructionPromptLbl.getFont());
         int stringWidth = g2d.getFontMetrics().stringWidth(instructionPromptLbl.getText());
-
+        
         instructionLbl.setXPos(instructionPromptLbl.getXPos() + stringWidth + scaleInt(5));
         instructionLbl.setYPos(instructionPromptLbl.getYPos());
-
+        
         subInstructionLbl.setXPos(instructionLbl.getXPos());
         subInstructionLbl.setYPos(instructionLbl.getYPos() + (scaleInt(22) * instructionLbl.getNumLines()));
-
+        
         buildMenuLbl.setXPos(turnSwitchBtn.getXPos());
         buildMenuLbl.setYPos((int) (scaleInt(225) * ((1920.0 / 1080.0) - ((double) panelWidth / (double) panelHeight) + 1.0)));
 
@@ -566,39 +567,39 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //set the build button
         buildBtn.setXPos(turnSwitchBtn.getXPos());
         buildBtn.setYPos(buildSettlementLRBtn.getYPos() + getImgHeight(buildSettlementLRBtn.getBaseImage()) + scaleInt(6));
-
+        
         tradeMenuLbl.setXPos(instructionPromptLbl.getXPos());
         tradeMenuLbl.setYPos(buildBtn.getYPos() + getImgHeight(buildBtn.getBaseImage()) + scaleInt(30));
 
         //set the trade buttons to the correct location
         trade4to1Btn.setXPos(tradeMenuLbl.getXPos());
         trade4to1Btn.setYPos(tradeMenuLbl.getYPos() + scaleInt(10));
-
+        
         trade3to1Btn.setXPos(trade4to1Btn.getXPos() + getImgWidth(trade4to1Btn.getBaseImage()) + scaleInt(6));
         trade3to1Btn.setYPos(trade4to1Btn.getYPos());
-
+        
         trade2to1Btn.setXPos(tradeMenuLbl.getXPos());
         trade2to1Btn.setYPos(trade4to1Btn.getYPos() + getImgHeight(trade4to1Btn.getBaseImage()) + scaleInt(6));
-
+        
         tradeDomestic.setXPos(trade2to1Btn.getXPos() + getImgWidth(trade2to1Btn.getBaseImage()) + scaleInt(6));
         tradeDomestic.setYPos(trade2to1Btn.getYPos());
-
+        
         devCardMenuLbl.setXPos(instructionPromptLbl.getXPos());
         devCardMenuLbl.setYPos(trade2to1Btn.getYPos() + getImgHeight(trade2to1Btn.getBaseImage()) + scaleInt(30));
-
+        
         toggleCardBtn.setXPos(trade2to1Btn.getXPos());
         toggleCardBtn.setYPos(devCardMenuLbl.getYPos() + scaleInt(10));
-
+        
         buyDevCardBtn.setXPos(toggleCardBtn.getXPos());
         buyDevCardBtn.setYPos((int) (toggleCardBtn.getYPos() + getImgHeight(toggleCardBtn.getBaseImage()) + (6 / scaleFactor)));
-
+        
         useDevCardBtn.setXPos(toggleCardBtn.getXPos());
         useDevCardBtn.setYPos((int) (buyDevCardBtn.getYPos() + getImgHeight(buyDevCardBtn.getBaseImage()) + (6 / scaleFactor)));
 
         //the exit buttons aligned to the bottom
         backBtn.setXPos(turnSwitchBtn.getXPos());
         backBtn.setYPos(panelHeight - getImgHeight(backBtn.getBaseImage()) - scaleInt(6));
-
+        
         backNoSaveBtn.setXPos(turnSwitchBtn.getXPos());
         backNoSaveBtn.setYPos(backBtn.getYPos() - getImgHeight(backNoSaveBtn.getBaseImage()) - scaleInt(6));
     }
@@ -644,7 +645,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 superFrame.setVisible(false); //hide the parent frame 
             }
         }
-
+        
     }
 
     /**
@@ -681,7 +682,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     showRoadHitbox = true;
                     repaint();
                 }
-
+                
             } else if (buildSettlementSRBtn.isSelected()) {
                 buildingObject = 2;
 
@@ -702,7 +703,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     showSettlementHitbox = true;
                     repaint();
                 }
-
+                
             } else if (buildSettlementLRBtn.isSelected()) {
                 buildingObject = 3;
                 //make sure you're not in setup mode
@@ -715,7 +716,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     showSettlementHitbox = true;
                     repaint();
                 }
-
+                
             } else {
                 buildingObject = -1;
                 System.out.println("An error has occoured while building");
@@ -730,7 +731,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      *
      */
     private void turnSwitchBtnClicked() {
-
+        
         updateBuildButtons();
         repaint();
 
@@ -763,11 +764,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                     //disable the turn switch button so that players must give away cards until the quota is met
                     turnBtnEnabled = false;
-
+                    
                 }
-
+                
                 repaint();
-
+                
                 int theifLeftToRob = 0; //how many players need to get robbed still
 
                 //count how many still need to get robed
@@ -816,7 +817,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             canStealCardPlayers.clear();
                         }
                     }
-
+                    
                 }
             } else { // If a turn of the real game is starting (not setup)
 
@@ -828,7 +829,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 // Set the instruction labels to tell the user they can build
                 instructionLbl.setText("Use your cards to build roads or settlements");
                 subInstructionLbl.setText("Or end your turn to continue the game");
-
+                
             }
 
             // Update the build buttons to reflect the current player's cards
@@ -918,10 +919,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             useDevCardBtn.setEnabled(false);*/
             //reset the boolean to false because the turn just ended and the user hasn't used a card yet
             userPlayedDevCard = false;
+            //reset the cards that were bought this turn because now the turn is over
+            CardUtil.clearNewlyBoughtDevCard();
 
             // Change the button to the Start Next Turn button
             setTurnBtnTextStart();
-
+            
             updateBuildButtons();
 
             // Redraw the board so the next player doesnt see the other player's cards
@@ -942,7 +945,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } catch (IOException ex) {
                 Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+            
         } else if (playerSetupRoadsLeft != 0) {
             //let the player know that they have more setup roads to place
             instructionLbl.setText("Make sure you place your " + playerSetupRoadsLeft + " remaining road(s).");
@@ -952,7 +955,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             instructionLbl.setText("Make sure you place your " + playerSetupSettlementLeft + " remaining settlement(s).");
             subInstructionLbl.setText("Build them from the build menu below.");
         }
-
+        
     }
 
     /**
@@ -1141,7 +1144,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //set the new one
             settlerComponents[tabSelectedButton].setTabSelected(true);
             repaint();
-
+            
         } else //if it's an enter key or a space key
         if (evt.getKeyCode() == 10 || evt.getKeyCode() == 32) {
             //click that button
@@ -1150,9 +1153,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     settlerComponents[tabSelectedButton].getXPos() + scaleInt(10),
                     settlerComponents[tabSelectedButton].getYPos() + scaleInt(10), 1, false));
         }
-
+        
     }
-
+    
     private void mouseMoveAction() {
 
         //check if the player moved the mouse over one of the SettlerBtns
@@ -1166,13 +1169,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //set the hover
                 btn.setmouseHover(true);
-
+                
             } else {
 
                 //make suer there is no hover over that button
                 btn.setmouseHover(false);
             }
-
+            
         }
 
         //check if the player moved the mouse over one of the SettlerRadioBtns
@@ -1186,17 +1189,17 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //set the hover
                 Rbtn.setmouseHover(true);
-
+                
             } else {
 
                 //make suer there is no hover over that button
                 Rbtn.setmouseHover(false);
             }
-
+            
         }
-
+        
         repaint();
-
+        
     }
 
     /**
@@ -1205,7 +1208,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param event The event triggered by the mouse click
      */
     public void mouseClick(MouseEvent event) {
-
+        
         boolean authorizedUser; //stores whether or not the click can from an autheroized user
         // debug click listener
         //System.out.println("Click recieved at clock: " + Catan.clock); 
@@ -1235,9 +1238,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                     //tab select this button
                     tabSelectBtn(toggleCardBtn);
-
+                    
                     repaint();
-
+                    
                 } else if (btn.equals(backNoSaveBtn)) { //if the user clicked to trade with a 3:1 ratio
                     backNoSaveBtnClicked();
                 } else if (btn.equals(backBtn)) { //if the user clicked to trade with a 3:1 ratio
@@ -1246,7 +1249,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //only check the other buttons if there is and authroiazed user
                 if (authorizedUser) {
-
+                    
                     if (btn.equals(buyDevCardBtn)) { //if there was a click on the buy card button
                         //since it was already confirmed the player has the corret amount of cards by the update build buttons method remove them
                         cards[currentPlayer].remove(new Integer("3"));
@@ -1264,12 +1267,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             victoryPoints[currentPlayer]++;
                         }
 
+                        //set that card as a freshly bought one
+                        CardUtil.addNewlyBoughtDevCard(availableDevCards.get(randCardIndex));
+
                         //remove it from the ArrayList as it is no longer available
                         availableDevCards.remove(randCardIndex);
 
                         //sort the dev cards
                         quickSortCards(devCards[currentPlayer], 0, devCards[currentPlayer].size() - 1);
-
+                        
                         updateBuildButtons();
                         repaint();
                     } else if (btn.equals(useDevCardBtn)) { //if the player clicked the use dev card btn
@@ -1295,7 +1301,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             //reset the dev card being used to no card
                             usingDevCard = -1;
                         }
-
+                        
                         updateBuildButtons();
                         repaint();
                     } else if (btn.equals(turnSwitchBtn)) { //if the user clicked to end/start their turn
@@ -1327,7 +1333,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //only check the other buttons if there is and authroiazed user
                 if (authorizedUser) {
-
+                    
                     if (radioBtn.equals(buildRoadRBtn)) {
                         buildRoadRBtn.setSelected(true);
                     } else if (radioBtn.equals(buildSettlementSRBtn)) { //if the user clicked to trade with a 3:1 ratio
@@ -1335,7 +1341,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     } else if (radioBtn.equals(buildSettlementLRBtn)) { //if the user clicked to trade with a 3:1 ratio
                         buildSettlementLRBtn.setSelected(true);
                     }
-
+                    
                     repaint();
                 }
             }
@@ -1383,7 +1389,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                             if (newestSetupSettlment.getRoad(1) == roadNodes.get(i)
                                                     || newestSetupSettlment.getRoad(2) == roadNodes.get(i)
                                                     || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
-
+                                                
                                                 roadNodes.get(i).setPlayer(currentPlayer);
                                                 playerSetupRoadsLeft--;
                                                 // Update thwe build buttons to relfect the remaining setup buildings
@@ -1396,7 +1402,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                             instructionLbl.setText("Sorry but you must build a new settlement first.");
                                             subInstructionLbl.setText("Try building the road after.");
                                         }
-
+                                        
                                     } // If the real game is in progress and the player can build there
                                     else if (canBuildRoad(roadNodes.get(i))) {
 
@@ -1410,7 +1416,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                             if (playerSetupRoadsLeft == 0) {
                                                 resetUsingDevCards();
                                             }
-
+                                            
                                         } else { //for normally bought roads
 
                                             // The card check has already been made, and the user has the right cards
@@ -1438,7 +1444,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                             //check to not use the null road
                                             if (road != null) {
-
+                                                
                                                 checkForLongestRoad(road, 0, currentPlayer); //pass the road and the current branch length
 
                                                 //clear the array for checked roads
@@ -1446,7 +1452,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                                 //also clear the settlments
                                                 alreadyCheckedSettlements.clear();
                                             }
-
+                                            
                                         }
 
                                         //add the points to who ever has the longest road
@@ -1465,7 +1471,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                          */
                                         // Update the building buttons to reflect the player's new list of cards
                                         updateBuildButtons();
-
+                                        
                                     } // If the player could not build there
                                     else {
                                         // Print out why the player could not build there
@@ -1535,7 +1541,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                                 //save that the new settlement is on a port and which one
                                                 playerHasPort[currentPlayer][ports.get(j).getType()] = true;
                                             }
-
+                                            
                                         }
 
                                         //save the settelment just built
@@ -1548,7 +1554,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                         // or number of setup buildings
                                         updateBuildButtons();
                                     }
-
+                                    
                                 } else {
                                     instructionLbl.setText("Sorry but you can't take a claimed settlement.");
                                     subInstructionLbl.setText("Try building where there isn't already another settlement");
@@ -1659,12 +1665,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                     showCardHitbox = false;
                                 }
                             }
-
+                            
                             updateBuildButtons();
                             repaint();
                         }
                     }
-
+                    
                 } else { //check for a click on a card in the full layout mode
 
                     //check if the user clicked on any card
@@ -1687,15 +1693,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 turnBtnEnabled = true;
                                 showCardHitbox = false;
                             }
-
+                            
                             updateBuildButtons();
                             repaint();
-
+                            
                         }
                     }
-
+                    
                 }
-
+                
             } else if (showDevCardHitbox && usingDevCard == 0) { //check if the player clicked on a dev card to actiavet it and use it
                 //get the y position for the cards
                 int devCardYPos = (int) (this.getHeight() - (getImgHeight(DEV_CARD_KNIGHT) * 1.125));
@@ -1709,7 +1715,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         if (event.getX() > devCardStackXPositions[i]
                                 && event.getX() < (devCardStackXPositions[i] + getImgWidth(DEV_CARD_KNIGHT))
                                 && event.getY() > devCardYPos
-                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))
+                                && CardUtil.canUseDevCard(devCards[currentPlayer], i + 1)) {
                             //debug click detection
                             //System.out.println("Stack Dev Card Clicked!");
 
@@ -1723,22 +1730,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                     case 0:
                                         //if knight
                                         clickedKnightCard();
-
+                                        
                                         break;
                                     case 1:
                                         //if vp road
                                         clickedRoadCard();
-
+                                        
                                         break;
                                     case 2:
                                         //if vp monopoly
                                         clickedMonopolyCard();
-
+                                        
                                         break;
                                     case 3:
                                         //if vp YOP
                                         clickedYOPCard();
-
+                                        
                                         break;
                                     default:
                                         //if anything else
@@ -1748,13 +1755,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                 //hide dev card hitbox
                                 showDevCardHitbox = false;
-
+                                
                                 updateBuildButtons();
                                 repaint();
                             }
                         }
                     }
-
+                    
                 } else { //check for a click on a card in the full layout mode
 
                     //check if the user clicked on any card
@@ -1762,20 +1769,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         //get the x position for that card
                         int cardXPos = (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + scaleInt(10)) * i);
 
+                        //save the card type
+                        int devCardType = devCards[currentPlayer].get(i);
+
                         //check if there was a click on a card
+                        //and that card is allowed to be played
                         if (event.getX() > cardXPos
                                 && event.getY() > devCardYPos
                                 && event.getX() < (cardXPos + getImgWidth(DEV_CARD_KNIGHT))
-                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))
+                                && CardUtil.canUseDevCard(devCards[currentPlayer], devCardType)) {
                             //debug click detection
                             //System.out.println("Dev Card Clicked!");
 
-                            //save the card type
-                            int devCardType = devCards[currentPlayer].get(i);
-
                             //make sure the dev card type is a useable one and not VP
                             if (devCardType < 5) {
-
+                                
                                 usingDevCard = devCardType;
 
                                 //get the type of dev card clicked
@@ -1783,41 +1792,41 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                     case 1:
                                         //if knight
                                         clickedKnightCard();
-
+                                        
                                         break;
                                     case 2:
                                         //if vp road
                                         clickedRoadCard();
-
+                                        
                                         break;
                                     case 3:
                                         //if vp monopoly
                                         clickedMonopolyCard();
-
+                                        
                                         break;
                                     case 4:
                                         //if vp YOP
                                         clickedYOPCard();
-
+                                        
                                         break;
                                     default:
                                         //if anything else
-                                        System.out.println("Invalid card clicked");
+                                        System.out.println("Invalid dev card clicked");
                                         break;
                                 }
 
                                 //hide dev card hitbox
                                 showDevCardHitbox = false;
-
+                                
                             }
-
+                            
                             updateBuildButtons();
                             repaint();
                         }
                     }
-
+                    
                 }
-
+                
             } else if ((thiefIsStealing && thiefJustStarted && currentPlayer == playerRolled7) || (usingDevCard == 1 && showTileHitbox)) { //check if the player clicked on a Tile to move the thief
                 // ^^^ either for when a 7 is rolled or when a knight card is used.
 
@@ -1876,19 +1885,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 } else {
                                     resetUsingDevCards();
                                 }
-
+                                
                             } else {
                                 //renable the turnSwitchBtn because the player has now succefully moved the theif and they can now move 
                                 //onto slecting the cards they would like to discard if the requirements are met.
                                 turnBtnEnabled = true;
                             }
                         }
-
+                        
                         updateBuildButtons();
                         repaint();
                     }
                 }
-
+                
             } else if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns) || (showSubPlayerHitbox && usingDevCard == 1)) { //check if the player just clicked to select another player to seal from
                 //debug
                 //System.out.println("Got a steal click");
@@ -1898,7 +1907,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
                 for (int i = 1; i < playerTurnOrder.size(); i++) {
-
+                    
                     subPlayerPosX = this.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED) * i);
 
                     //check if there was a click on one of the sub players
@@ -1954,9 +1963,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             updateBuildButtons();
                             repaint();
                         }
-
+                        
                     }
-
+                    
                 }
 
                 /*
@@ -2011,7 +2020,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                 //update the screen
                                 repaint();
-
+                                
                                 break;
                             case 3:
                                 //Monopoly card
@@ -2044,9 +2053,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                         while (cardDeck.contains(resourceType)) {
                                             cardDeck.remove(new Integer(resourceType));
                                         }
-
+                                        
                                     }
-
+                                    
                                 }
 
                                 //sort the current players card
@@ -2061,7 +2070,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                 //update the screen
                                 repaint();
-
+                                
                                 break;
                             default:
                                 //if its for trading
@@ -2093,12 +2102,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                     //update the screen
                                     repaint();
                                 }
-
+                                
                                 break;
                         }
                     }
                 }
-
+                
             } else if (showCardHitbox && tradingMode != 0 && tradeResource != 0) { //check if a player clicked a card for trading purposes
                 //get the y position for the cards
                 int cardYPos = (int) (this.getHeight() - (getImgHeight(CARD_CLAY) * 1.125));
@@ -2167,7 +2176,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             }
                         }
                     }
-
+                    
                 } else { //check for a click on a card in the full layout mode
 
                     //check if the user clicked on any card
@@ -2231,10 +2240,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                     subInstructionLbl.setText("You may now continue your turn how ever you please.");
                                 }
                             }
-
+                            
                         }
                     }
-
+                    
                 }
 
                 //update the screen
@@ -2243,9 +2252,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //update the server if online mode and the click came from an authroiazed user
             onlineUpdateServer();
-
+            
         }
-
+        
     }
 
     /**
@@ -2280,7 +2289,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //show the port hitboxes so the player can select a resource
         showResStackHitbox = true;
-
+        
     }
 
     /**
@@ -2321,15 +2330,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     JOptionPane.showMessageDialog(null, "File overwritten: " + myObj.getName(), "Save Success", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
-
+            
             myObj.setReadOnly();
             myObj.setExecutable(true);
-
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "An error occurred while trying to save the game.", "Saving Error", JOptionPane.ERROR_MESSAGE);
             success = false;
         }
-
+        
         return success;
     }
 
@@ -2341,14 +2350,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @throws FileNotFoundException
      */
     public boolean writeToFile(String writeAdress) throws FileNotFoundException {
-
+        
         try {
             //try to create the file
             File file = new File(writeAdress);
             //ensure it is mutable
             file.setExecutable(true);
             file.setWritable(true);
-
+            
             PrintWriter saveFile = new PrintWriter(file); //begin writting to the file
             saveFile.println("SettlersOfCatanSave" + Catan.SAVE_FILE_VER); //write a header to easily identify Settlers of Catan save files for loading
             saveFile.println("playerCount:");
@@ -2384,17 +2393,17 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             saveFile.println(playerSetupRoadsLeft);
             saveFile.println("playerSetupSettlementLeft:");
             saveFile.println(playerSetupSettlementLeft);
-
+            
             saveFile.println("longestRoadData length:");
             saveFile.println(longestRoadData.getSize());
             saveFile.println("longestRoadData playerNum:");
             saveFile.println(longestRoadData.getPlayerNum());
-
+            
             saveFile.println("largestArmyData size:");
             saveFile.println(largestArmyData.getSize());
             saveFile.println("largestArmyData playerNum:");
             saveFile.println(largestArmyData.getPlayerNum());
-
+            
             saveFile.println("setupTurnOrder:");
             saveFile.println("length:");
             saveFile.println(setupTurnOrder.length);
@@ -2402,26 +2411,26 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             for (int i = 0; i < setupTurnOrder.length; i++) {
                 saveFile.println(setupTurnOrder[i]);
             }
-
+            
             saveFile.println();
-
+            
             saveFile.println("Total cards collected:");
             for (int i = 0; i < totalCardsCollected.length; i++) {
                 saveFile.println(totalCardsCollected[i]);
             }
-
+            
             saveFile.println();
-
+            
             saveFile.println("victoryPoints:");
             for (int i = 1; i < victoryPoints.length; i++) {
                 saveFile.println(victoryPoints[i]);
             }
-
+            
             saveFile.println("playerArmySize:");
             for (int i = 1; i < playerArmySize.length; i++) {
                 saveFile.println(playerArmySize[i]);
             }
-
+            
             saveFile.println();
 
             //add the card data
@@ -2576,7 +2585,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             saveFile.println(useDevCardBtn.isEnabled());
             saveFile.println("useDevCardBtn.getMode");
             saveFile.println(useDevCardBtn.getMode());
-
+            
             saveFile.println();//add linebreak
 
             //save the players that can be stolen from
@@ -2587,7 +2596,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             for (Integer playerNum : canStealCardPlayers) {
                 saveFile.println(playerNum);
             }
-
+            
             saveFile.println();//add linebreak
 
             //save the building object
@@ -2616,7 +2625,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //save the player who rolled a 7
             saveFile.println("playerRolled7:");
             saveFile.println(playerRolled7);
-
+            
             saveFile.println();//add linebreak
 
             //save the playerTurnOrder
@@ -2675,7 +2684,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             savefile.setExecutable(true);
             savefile.setWritable(true);
             savefile.setReadable(true);
-
+            
             Scanner scanner = new Scanner(savefile);
 
             //check if it is valid (again)
@@ -2684,84 +2693,84 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("playerCount:")) {
                 playerCount = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers1");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("thiefMoveCounter:")) {
                 thiefMoveCounter = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers2");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("tileWithThief:")) {
                 tileWithThief = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers2.5");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("victoryPointsToWin:")) {
                 victoryPointsToWin = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers3");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("currentPlayer:")) {
                 currentPlayer = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers4");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("giveStartingResources:")) {
                 giveStartingResources = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers4.5");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("doSnakeRules:")) {
                 doSnakeRules = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers4.6");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("setupTurnOrderIndex:")) {
                 setupTurnOrderIndex = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers4.7");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("inSetup:")) {
                 inSetup = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("inbetweenTurns:")) {
                 inbetweenTurns = Boolean.parseBoolean(scanner.nextLine());
                 //System.out.println("Yuppers5");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("setupRoundsLeft:")) {
                 setupRoundsLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("YuppersSetupRounds");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("newestSetupSettlmentRefNum:")) {
                 //read in the line
                 String newestSetupSettlmentRefNum = scanner.nextLine();
@@ -2775,28 +2784,28 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("playerSetupRoadsLeft:")) {
                 playerSetupRoadsLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers6");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("playerSetupSettlementLeft:")) {
                 playerSetupSettlementLeft = Integer.parseInt(scanner.nextLine());
                 //System.out.println("Yuppers7");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("longestRoadData length:")) {
                 longestRoadData.setSize(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.1");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("longestRoadData playerNum:")) {
                 longestRoadData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.2");
@@ -2811,36 +2820,36 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("largestArmyData playerNum:")) {
                 largestArmyData.setPlayerNum(Integer.parseInt(scanner.nextLine()));
                 //System.out.println("Yuppers7.4");
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("setupTurnOrder:") && scanner.nextLine().equals("length:")) {
                 //System.out.println("Yuppers7.5");
 
                 int length = Integer.parseInt(scanner.nextLine());
-
+                
                 if (scanner.nextLine().equals("order:")) {
-
+                    
                     for (int i = 0; i < length; i++) {
                         setupTurnOrder[i] = Integer.parseInt(scanner.nextLine());
                     }
-
+                    
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             scanner.nextLine();
 
             //get the total cards collected
             if (scanner.nextLine().equals("Total cards collected:")) {
-
+                
                 for (int i = 0; i < 5; i++) {
                     totalCardsCollected[i] = Integer.parseInt(scanner.nextLine());
                 }
@@ -2854,7 +2863,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //but first skip a line
             scanner.nextLine();
             if (scanner.nextLine().equals("victoryPoints:")) {
-
+                
                 for (int i = 0; i < playerCount; i++) {
                     victoryPoints[i + 1] = Integer.parseInt(scanner.nextLine());
                 }
@@ -2866,7 +2875,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //get the playerArmySize
             if (scanner.nextLine().equals("playerArmySize:")) {
-
+                
                 for (int i = 0; i < playerCount; i++) {
                     playerArmySize[i + 1] = Integer.parseInt(scanner.nextLine());
                 }
@@ -2888,16 +2897,16 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("size:")) {
                         tempScannerVal = Integer.parseInt(scanner.nextLine());
                         //System.out.println("Yuppers10.2");
 
                         //clear the arrayList
                         cards[i].clear();
-
+                        
                         if (scanner.nextLine().equals("cards:")) {
-
+                            
                             for (int j = 0; j < tempScannerVal; j++) {
                                 cards[i].add(Integer.parseInt(scanner.nextLine()));
                             }
@@ -2910,18 +2919,18 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             thrownLoadError = throwLoadError(thrownLoadError);
                             //System.out.println("Its me");
                         }
-
+                        
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                         //System.out.println("no me");
                     }
-
+                    
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("Tiles:")) {
                 //System.out.println("Yuppers11");
 
@@ -2934,19 +2943,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("Type:")) {
                         tiles.get(tileNum).setType(Integer.parseInt(scanner.nextLine()));
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("Has Thief:")) {
                         tiles.get(tileNum).setThief(Boolean.parseBoolean(scanner.nextLine()));
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("Harvesting Dice Roll:")) {
                         tiles.get(tileNum).setHarvestRollNum(Integer.parseInt(scanner.nextLine()));
                     } else {
@@ -2956,11 +2965,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //skip a line
                     scanner.nextLine();
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("NodeRoads:")) {
                 //System.out.println("Yuppers12");
 
@@ -2973,7 +2982,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("Player ID:")) {
                         roadNodes.get(roadNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
                     } else {
@@ -2983,11 +2992,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //skip a line
                     scanner.nextLine();
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("NodeSettlements:")) {
                 //System.out.println("Yuppers13");
 
@@ -3000,19 +3009,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("Player ID:")) {
                         settlementNodes.get(settlementNodeNum).setPlayer(Integer.parseInt(scanner.nextLine()));
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("Is Large:")) {
                         settlementNodes.get(settlementNodeNum).setLarge(Boolean.parseBoolean(scanner.nextLine()));
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("Age:")) {
                         settlementNodes.get(settlementNodeNum).setAge(Integer.parseInt(scanner.nextLine()));
                     } else {
@@ -3022,11 +3031,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //skip a line
                     scanner.nextLine();
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-
+            
             if (scanner.nextLine().equals("Ports:")) {
                 //System.out.println("Yuppers13");
 
@@ -3039,19 +3048,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("LinkedTile:")) {
                         ports.get(portNum).setLinkedTile(tiles.get(Integer.parseInt(scanner.nextLine())));
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("Orientation:")) {
                         ports.get(portNum).setOrientation(Integer.parseInt(scanner.nextLine()));
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("Type:")) {
                         ports.get(portNum).setType(Integer.parseInt(scanner.nextLine()));
                     } else {
@@ -3065,7 +3074,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     ports.get(portNum).applyCoordinates();
                     ports.get(portNum).applyTypeImageCoordinates();
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -3075,15 +3084,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //System.out.println("Yuppers14");
                 for (int i = 1; i < playerCount + 1; i++) {
-
+                    
                     if (scanner.nextLine().equals("Player: " + (i))) {
                         //System.out.println("Yuppers10.1");
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("hasPorts:")) {
-
+                        
                         for (int j = 0; j < playerHasPort[i].length; j++) {
                             playerHasPort[i][j] = Boolean.parseBoolean(scanner.nextLine());
                         }
@@ -3096,9 +3105,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         thrownLoadError = throwLoadError(thrownLoadError);
                         //System.out.println("uh oh");
                     }
-
+                    
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -3130,16 +3139,16 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                     if (scanner.nextLine().equals("size:")) {
                         tempScannerVal = Integer.parseInt(scanner.nextLine());
                         //System.out.println("Yuppers10.2");
 
                         //clear the arrayList
                         devCards[i].clear();
-
+                        
                         if (scanner.nextLine().equals("dev cards:")) {
-
+                            
                             for (int j = 0; j < tempScannerVal; j++) {
                                 devCards[i].add(Integer.parseInt(scanner.nextLine()));
                             }
@@ -3152,28 +3161,28 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             thrownLoadError = throwLoadError(thrownLoadError);
                             //System.out.println("Its me");
                         }
-
+                        
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                         //System.out.println("no me");
                     }
-
+                    
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             //get the availableDevCards data
             if (scanner.nextLine().equals("availableDevCards:")) {
-
+                
                 if (scanner.nextLine().equals("size:")) {
-
+                    
                     tempScannerVal = Integer.parseInt(scanner.nextLine());
 
                     //remove any cards in there
                     availableDevCards.clear();
-
+                    
                     if (scanner.nextLine().equals("available cards:")) {
 
                         //then add back the ones that are in the save file
@@ -3186,7 +3195,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -3287,9 +3296,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 //System.out.println("Got it");
 
                 if (onlineMode == -1) {
-
+                    
                     toggleCardBtn.setEnabled(Boolean.parseBoolean(scanner.nextLine()));
-
+                    
                 } else {
                     //skip a line
                     scanner.nextLine();
@@ -3301,7 +3310,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 //System.out.println("Got it");
 
                 if (onlineMode == -1) {
-
+                    
                     toggleCardBtn.setMode(Integer.parseInt(scanner.nextLine()));
                 } else {
                     //skip a line
@@ -3339,25 +3348,25 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //clear the arrayList
                 canStealCardPlayers.clear();
-
+                
                 if (scanner.nextLine().equals("size:")) {
-
+                    
                     tempScannerVal = Integer.parseInt(scanner.nextLine());
-
+                    
                     if (scanner.nextLine().equals("players:")) {
-
+                        
                         for (int i = 0; i < tempScannerVal; i++) {
                             canStealCardPlayers.add(Integer.parseInt(scanner.nextLine()));
                         }
-
+                        
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -3437,81 +3446,81 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //clear the current order
                 playerTurnOrder.clear();
-
+                
                 if (scanner.nextLine().equals("size:")) {
-
+                    
                     tempScannerVal = Integer.parseInt(scanner.nextLine());
-
+                    
                     if (scanner.nextLine().equals("order:")) {
-
+                        
                         for (int i = 0; i < tempScannerVal; i++) {
                             playerTurnOrder.add(Integer.parseInt(scanner.nextLine()));
                         }
-
+                        
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             //load in the stealCardNum
             if (scanner.nextLine().equals("stealCardNum:")) {
-
+                
                 if (scanner.nextLine().equals("size:")) {
-
+                    
                     tempScannerVal = Integer.parseInt(scanner.nextLine());
-
+                    
                     if (scanner.nextLine().equals("players:")) {
-
+                        
                         for (int i = 0; i < tempScannerVal; i++) {
                             stealCardNum[i] = Integer.parseInt(scanner.nextLine());
                         }
-
+                        
                     } else {
                         thrownLoadError = throwLoadError(thrownLoadError);
                     }
-
+                    
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
             //load in the dice roll values
             if (scanner.nextLine().equals("diceRollVals:")) {
-
+                
                 if (scanner.nextLine().equals("roll-1:")) {
-
+                    
                     diceRollVal[0] = scanner.nextLine();
-
+                    
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
                 }
-
+                
                 if (scanner.nextLine().equals("roll-2:")) {
-
+                    
                     diceRollVal[1] = scanner.nextLine();
-
+                    
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
                 }
-
+                
                 if (scanner.nextLine().equals("total:")) {
-
+                    
                     diceRollVal[2] = scanner.nextLine();
-
+                    
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
                 }
-
+                
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
@@ -3528,7 +3537,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
              */
             //close the scanner
             scanner.close();
-
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "There was an error handling the save file.\nError: " + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -3611,7 +3620,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //check to not use the null road
                 if (road != null) {
-
+                    
                     checkForLongestRoad(road, 0, i); //pass the road and the current branch length
 
                     //clear the array for checked roads
@@ -3619,7 +3628,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //also clear the settlments
                     alreadyCheckedSettlements.clear();
                 }
-
+                
             }
         }
 
@@ -3640,10 +3649,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //check for a wining game
         checkForWin();
-
+        
         updateBuildButtons();
         repaint();
-
+        
         return !thrownLoadError; //return the success of loading. If no error was thrown then the load was a success.
     }
 
@@ -3656,7 +3665,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             JOptionPane.showMessageDialog(null, "Error loading the save file.\nThere may be file corruptions.", "Bad File", JOptionPane.ERROR_MESSAGE);
             hasThrownLoadError = true;
         }
-
+        
         return hasThrownLoadError;
     }
 
@@ -3673,7 +3682,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         //reset the font
         instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
-
+        
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
         boolean canBuildCity;
@@ -3695,10 +3704,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(false);
-
+            
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(false);
-
+            
         } else if (onlineMode != -1 && onlineMode != currentPlayer) {
             canBuildRoad = false;
             canBuildSettlement = false;
@@ -3709,7 +3718,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(true);
-
+            
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(false);
         } // If the game is in setup
@@ -3720,7 +3729,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
-
+            
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(false);
@@ -3738,7 +3747,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             toggleCardBtn.setEnabled(false);
             toggleCardBtn.setMode(0);
             showDevCards = false;
-
+            
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(false);
         } //else if the player is currently trading
@@ -3752,7 +3761,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             toggleCardBtn.setEnabled(false);
             toggleCardBtn.setMode(0);
             showDevCards = false;
-
+            
             buyDevCardBtn.setEnabled(false);
             useDevCardBtn.setEnabled(false);
             //check the trading type
@@ -3782,7 +3791,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     canTrade2to = false;
                     break;
             }
-
+            
         } else if (usingDevCard > -1) { //if the game is in a mode for using dev cards
             // ^^^ -1 because that is the neutral/resting value. 0 is for when a card is being selected but its unkown which one
             canBuildRoad = (playerSetupRoadsLeft > 0); //if the player clicked the road building card allow them to build roads
@@ -3796,12 +3805,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             toggleCardBtn.setEnabled(false);
             toggleCardBtn.setMode(1);
             showDevCards = true;
-
+            
             buyDevCardBtn.setEnabled(false);
             //do not allow the user to cancel if they used a road building card
             //of if it's the knight card and the user is selecting a sub player
             useDevCardBtn.setEnabled(!(usingDevCard == 2 || (usingDevCard == 1 && showSubPlayerHitbox)));
-
+            
         } else { // If the game is NOT in setup
             // Check if the player has enough cards to use the build buttons
             canBuildRoad = hasCards(0); // Roads
@@ -3810,7 +3819,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = hasTradeCards(4, currentPlayer);
             canTrade3to = hasTradeCards(3, currentPlayer) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
             canTrade2to = hasSpecializedPort(currentPlayer);
-
+            
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
             useDevCardBtn.setEnabled(hasDevCards() && !userPlayedDevCard); //only if the user has dev cards and hasn't already used oene this turn
@@ -3838,7 +3847,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         if (usingDevCard == 2 && playerSetupRoadsLeft > 0) {
             instructionLbl.setText("You have " + playerSetupRoadsLeft + " free road(s) from the development card");
             subInstructionLbl.setText("Please build them in order to continue your turn.");
-
+            
         }
 
         // Save what button was selected before this update began
@@ -3860,7 +3869,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             if (SettlerRadioBtn.getGroupSelection(settlerRadioBtns) != null) {
                 SettlerRadioBtn.getGroupSelection(settlerRadioBtns).setSelected(false);
             }
-
+            
             if (inbetweenTurns) {
                 //show this message for when not in set up (differnt code does this for when in setup)
                 instructionLbl.setText("Please allow the next player to use the mouse");
@@ -3885,12 +3894,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     instructionLbl.setText("A Thief! They will steal cards. Select a hex to move the thief.");
                     subInstructionLbl.setText("Afterwards, you can then end your turn so the thief can decide the next person to steal from");
                 }
-
+                
             } else if (thiefJustFinished && subPlayersHaveEnoughcards) {
                 // Set the instruction labels to tell the player that they need to select a play to steal from
                 instructionLbl.setText("The thief is done stealing. But you are not!");
                 subInstructionLbl.setText("Select one of your fellow players to take one of their cards at random");
-
+                
             } else if (usingDevCard > -1) { // check if the player is using a dev card
                 //check which dev card
                 switch (usingDevCard) {
@@ -3917,7 +3926,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     default:
                         break;
                 }
-
+                
             } else if ((onlineMode != -1 && onlineMode != currentPlayer)) {
                 //set the lables so the player knows that they need to wait
                 instructionLbl.setText("You are player " + onlineMode + " please wait for your turn");
@@ -3973,7 +3982,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // If any of the buttons are enabled, enable the build button
         // Otherwise disable it
         buildBtn.setEnabled(canBuildRoad || canBuildSettlement || canBuildCity);
-
+        
     }// </editor-fold>
 
     /**
@@ -3987,13 +3996,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //create an array to store how many cards of each type the player has
         countNumCardTypes(playerNumber);
-
+        
         for (int i = 1; i < 6; i++) { //loop thorugh indexes 1-5
             if (playerHasPort[currentPlayer][i] && numCardType[i] >= 2) { //check if the player has that port and atleast 2 cards of that type
                 has2to1 = true;
             }
         }
-
+        
         return has2to1;
     }
 
@@ -4021,9 +4030,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     hasEnoughCards = true;
                 }
             }
-
+            
         }
-
+        
         return hasEnoughCards;
     }
 
@@ -4046,9 +4055,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     hasCards = true;
                 }
             }
-
+            
         }
-
+        
         return hasCards;
     }
 
@@ -4062,11 +4071,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @return If the current player has enough cards
      */
     private boolean hasCards(int buildingType) {
-
+        
         int listSize; // The number of cards the player has. Used to reduce calls to the size method
         int typeToFind; // What type of card is currently being searched for
         int amountFound;
-
+        
         int findCards[] = new int[6]; // How many cards of each type must be found
         // Index 0 is unused. Numbers are stored in 1-5 to correspond to type IDs
 
@@ -4149,7 +4158,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @return
      */
     private void quickSortCards(ArrayList<Integer> array, int left, int right) {
-
+        
         Integer temp; // For swapping values
         // Get the player's ArrayList of cards
         //ArrayList<Integer> array = cards[player];
@@ -4263,7 +4272,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 return true;
             }
         }
-
+        
         return false;
     }
 
@@ -4302,7 +4311,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         // Set the labels to show why the player could not build there
                         instructionLbl.setText("Sorry but you can't build a settlement there.");
                         subInstructionLbl.setText("That position is blocked by another player");
-
+                        
                         return false; // Node is blocked, cannot build here
                     }
                     // Record the road's user ID
@@ -4320,10 +4329,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         instructionLbl.setText("Sorry but you can't build a settlement there.");
                         subInstructionLbl.setText("Try building farther away from exsisting buildings");
                     }
-
+                    
                     return false; // Cannot build here
                 }
-
+                
             }
         }
 
@@ -4369,7 +4378,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //check what the value is
         if (Integer.parseInt(diceRollVal[2]) == 0) { //if the sum is 0 replace it with an empty String
             diceRollVal[2] = "zero";
-
+            
         }
 
         // Act on the dice roll
@@ -4423,7 +4432,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                      */
                 }
             }
-
+            
         } else { // Otherwise collect materials
             // Search for tiles with the number rolled as their harvest number,
             // And give players the materials
@@ -4485,7 +4494,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             // Sort the player's cards using a quick sort algorithm
             quickSortCards(cards[i], 0, cards[i].size() - 1);
         }
-
+        
     }
 
     /**
@@ -4532,7 +4541,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         msg += "<br> - Total: " + (totalCardsCollected[0]
                 + totalCardsCollected[1] + totalCardsCollected[2]
                 + totalCardsCollected[3] + totalCardsCollected[4]) + "</h4>";
-
+        
         msg += "<h3>Thief moved " + thiefMoveCounter + " times</h3>";
 
         // Close off the html tags
@@ -4556,7 +4565,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     @Override
     public void paintComponent(Graphics g) {
-
+        
         super.paintComponent(g);//does the necessary work to prepare the panel for drawing
         draw(g); //add the custom drawing (the game)
     }
@@ -4627,7 +4636,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     getImgHeight(LARGEST_ARMY),
                     null);
         }
-
+        
         Image currentPlayerImage = getPlayerImage(currentPlayer, false);
 
         //draw the current player icon
@@ -4644,7 +4653,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         g2d.drawString("Current player:",
                 this.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor),
                 this.getHeight() - getImgHeight(PLAYER_RED) - (int) (20 / scaleFactor));
-
+        
         Image subsequentPlayerImage;
 
         //draw the subsequent other players but smaller
@@ -4655,7 +4664,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } else {
                 subsequentPlayerImage = getPlayerImage(playerTurnOrder.get(i), true);
             }
-
+            
             g2d.drawImage(subsequentPlayerImage,
                     this.getWidth() - (getImgWidth(PLAYER_RED)) - ((getImgWidth(SMALL_PLAYER_RED)) * i), //put it in the corner with some padding space
                     this.getHeight() - (int) (10 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED), //put it in the corner with some padding space
@@ -4666,7 +4675,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //draw the hitbox for the subsequent players
             //make sure the criteria is met before drawing.
             if ((canStealCardPlayers.size() > 0 && currentPlayer == playerRolled7 && !thiefIsStealing && !inbetweenTurns && subPlayersHaveEnoughcards) || showSubPlayerHitbox) {
-
+                
                 drawSpecificHitbox = cards[playerTurnOrder.get(i)].size() > 0 && canStealCardPlayers.contains(playerTurnOrder.get(i));
 
                 //only draw the the hitbox around that specific player if they have more than 0 cards and if they are on the steal list
@@ -4685,7 +4694,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             getImgHeight(SMALL_PLAYER_RED));
                 }
             }
-
+            
         }
 
         //draw the sub player header
@@ -4693,7 +4702,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         g2d.drawString("Next player:",
                 this.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
                 this.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
-
+        
         Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("port/wildcard.png")).getImage();
 
         //draw the ports
@@ -4729,7 +4738,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
                         getImgWidth(tiles.get(tileID).getImage()),
                         getImgHeight(tiles.get(tileID).getImage()), null);
-
+                
             } else {
 
                 //draw the tile
@@ -4771,7 +4780,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //check where the thief is and draw it there
             if (tiles.get(tileID).hasThief()) {
-
+                
                 int imageWidth = getImgWidth(THIEF);
                 int imageHeight = getImgHeight(THIEF);
 
@@ -4855,7 +4864,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         if (!inSetup) {
             //draw the non rolled dice if there is no roll
             if (diceRollVal[2].equals("")) {
-
+                
                 g2d.drawImage(DICE_IMAGES[0],
                         rightDrawMargin,
                         (int) (435 / scaleFactor),
@@ -4869,17 +4878,17 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
                         (int) (getImgHeight(DICE_IMAGES[1]) * 1.5),
                         null);
-
+                
                 g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
                         rightDrawMargin + (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
                         (int) (435 / scaleFactor),
                         (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
                         (int) (getImgHeight(DICE_IMAGES[1]) * 1.5),
                         null);
-
+                
             }
         }
-
+        
         int playerNumOffset;
         if (playerCount > 3) {
             playerNumOffset = 0;
@@ -5158,7 +5167,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         // If a turn is currently going on, render the current player's cards
         if (!inbetweenTurns) {
-
+            
             int playerID;
 
             //if online then always show the local player's cards
@@ -5244,7 +5253,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 //has to have more than the minimum or more cards and cannot be the same type of card the play wants to end up with.
                                 drawSpecificHitbox = cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource;
                             }
-
+                            
                             if (drawSpecificHitbox) {
                                 //draw the high light
                                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
@@ -5264,12 +5273,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 g2d.setColor(new java.awt.Color(255, 255, 225));
                             }
                         }
-
+                        
                     }
 
                     //restore the old font
                     g2d.setFont(tempFont);
-
+                    
                 } else { //if the cards would NOT go off the screen
                     drawCardStacks[playerID] = false;
 
@@ -5323,7 +5332,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
                                 drawSpecificHitbox = numCardType[type] >= minTradeCardsNeeded && cards[playerID].get(i) != tradeResource;
                             }
-
+                            
                             if (drawSpecificHitbox) {
                                 //draw the high light
                                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
@@ -5342,7 +5351,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 g2d.setStroke(tempStroke);
                             }
                         }
-
+                        
                     }
                 }
             } else { //if the dev cards are being drawn instead
@@ -5356,7 +5365,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 //loop thorugh and populate the array
                 for (int i = 0; i < listSize; i++) {
-
+                    
                     devCardTypeCount[devCards[playerID].get(i) - 1]++;
                 }
 
@@ -5376,7 +5385,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                     //loop through and draw the stacked cards
                     for (int i = 0; i < 5; i++) {
-
+                        
                         switch (i) {
                             case 0:
                                 image = DEV_CARD_KNIGHT;
@@ -5406,7 +5415,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 getImgWidth(image),
                                 getImgHeight(image),
                                 null);
-
+                        
                         String devCardNum; //the number of dev cards the player has of that catagory
 
                         //get the number to write next to the card
@@ -5428,10 +5437,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             //decide if to draw this one in the loop
                             if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
                                 drawSpecificHitbox = false;
-                            } else { //make sure the card is an action type card
-                                drawSpecificHitbox = i < 4;
+                            } else { //make sure the card is an action type card and that is is not a newly bought card
+                                drawSpecificHitbox = i < 4 && CardUtil.canUseDevCard(devCards[playerID], i + 1);
                             }
-
+                            
                             if (drawSpecificHitbox) {
                                 //draw the high light
                                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
@@ -5451,12 +5460,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 g2d.setColor(new java.awt.Color(255, 255, 225));
                             }
                         }
-
+                        
                     }
 
                     //restore the old font
                     g2d.setFont(tempFont);
-
+                    
                 } else { //if the dev cards would NOT go off screen
                     drawDevCardStacks[playerID] = false;
 
@@ -5514,9 +5523,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
                                 drawSpecificHitbox = false;
                             } else {
-                                drawSpecificHitbox = type < 5; //make sure the card is an action type card
+                                drawSpecificHitbox = type < 5 && CardUtil.canUseDevCard(devCards[playerID], type); //make sure the card is an action type card && hasn't been bought this turn
                             }
-
+                            
                             if (drawSpecificHitbox) {
                                 //draw the high light
                                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
@@ -5535,9 +5544,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 g2d.setStroke(tempStroke);
                             }
                         }
-
+                        
                     }
-
+                    
                 }
             }
         }
@@ -5582,7 +5591,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             if (btn.isMouseHover()) {
                 drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1);
             }
-
+            
         }
 
         /*
@@ -5697,7 +5706,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     private Image getPlayerImage(int playerID, boolean smallImage) {
         Image playerImage;
-
+        
         if (smallImage) {
             if (inbetweenTurns) {
                 playerImage = SMALL_PLAYER_NONE;
@@ -5727,7 +5736,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 playerImage = PLAYER_NONE;
             }
         }
-
+        
         return playerImage;
     }
 
@@ -5768,13 +5777,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @return
      */
     public final int getImgWidth(Image image) {
-
+        
         if (this.getWidth() > this.getHeight()) {
             return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
         } else {
             return (int) (image.getWidth(null) / 1920.0 * this.getWidth());
         }
-
+        
     }
 
     /**
@@ -5927,9 +5936,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             settlementNodes.get(i).setTile(1, tiles.get(settlementLinkToHex1[i]));
             settlementNodes.get(i).setTile(2, tiles.get(settlementLinkToHex2[i]));
             settlementNodes.get(i).setTile(3, tiles.get(settlementLinkToHex3[i]));
-
+            
         }
-
+        
     }
 
     /**
@@ -6030,11 +6039,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
         devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-
+        
         instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
         instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
         subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
-
+        
         titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
     }
 
@@ -6089,7 +6098,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * read in the port positions and types. Also populate the Array List
      */
     private void loadPorts() {
-
+        
         Port newPort; //the latest port being read in
 
         // Declare variables
@@ -6128,20 +6137,20 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * first player
      */
     private void nextPlayer() {
-
+        
         newestSetupSettlment = null; //remove the most recent built house as the turn just changed
 
         //check if the game is in setup
         if (inSetup) {
-
+            
             try { //try progressing the setup phase
                 currentPlayer = setupTurnOrder[setupTurnOrderIndex]; //set the current player to the next one on the sequence
 
                 //progress the "cursor"
                 setupTurnOrderIndex++;
-
+                
                 setupUpdatePlayerTurnOrder();
-
+                
             } catch (ArrayIndexOutOfBoundsException e) { //if there are no more prescribed turns that means setup is over
 
                 //ensure that it's the setupTurnOrder that is out of bounds
@@ -6161,7 +6170,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 superFrame.setVisible(false);
                 superFrame.getMainMenu().setVisible(true);
             }
-
+            
         } else { //for regular turn changing
 
             currentPlayer++; //switch to the next player
@@ -6199,7 +6208,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             playerTurnOrder.add(i + 1);
         }
     }
-
+    
     private void randomizeTiles() {
         //randomly select a number of times to shuffle the board
         int numShuffle/* = (int) (Math.random() * 15) + 25*/;
@@ -6284,7 +6293,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 showPort = true;
             }
         }
-
+        
         return showPort;
     }
 
@@ -6310,7 +6319,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 }
             }
         }
-
+        
         return showPort;
     }
 
@@ -6360,7 +6369,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param branchLength
      */
     private void checkForLongestRoad(NodeRoad road, int branchLength, int playerNum) {
-
+        
         ArrayList<NodeRoad> roadsToCheck = new ArrayList<>(); //List of roads to check with recusion
 
         //check if the given branch length is larger than the current longest road
@@ -6397,7 +6406,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             && road.getSettlement(i).getRoad(j).getPlayer() == playerNum
                             && !road.equals(road.getSettlement(i).getRoad(j))
                             && !alreadyCheckedRoad.contains(road)) {
-
+                        
                         roadsToCheck.add(road.getSettlement(i).getRoad(j));
                     }
                 }
@@ -6434,7 +6443,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             width = getImgWidth(btn.getBaseImage());
             height = getImgHeight(btn.getBaseImage());
         }
-
+        
         g2d.drawImage(btnImage,
                 btn.getXPos(),
                 btn.getYPos(),
@@ -6452,7 +6461,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //hide the hitbox again
         showSubPlayerHitbox = false;
-
+        
         useDevCardBtn.setMode(0);
 
         //remove a dev card
@@ -6517,7 +6526,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * Get a list of the settlements that allow access to each port.
      */
     private void generatePortSettlements() {
-
+        
         ArrayList<Tile> portTiles = new ArrayList<>();
         boolean onCoast;
         boolean onPortTile;
@@ -6576,13 +6585,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     portSettlements[altPortNum].add(node);
                 }
             }
-
+            
         }
 
         //of the max three settlements elimite the one that is not for that port
         //only run the emimination if that port has three
         for (int i = 0; i < portSettlements.length; i++) {
-
+            
             if (portSettlements[i].size() > 3) {
                 System.out.println("ERROR SETTING UP PORT SETTLEMENTS. More than 3 settlemtns");
                 instructionLbl.setText("ERROR SETTING UP PORT SETTLEMENTS. More than 3 settlemtns");
@@ -6644,11 +6653,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             default:
                                 break;
                         }
-
+                        
                     }
-
+                    
                 }
-
+                
                 if (safe1 != null) {
                     //elimate the incorrect one
                     for (NodeSettlement node : portSettlements[i]) {
@@ -6662,11 +6671,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 System.out.println("ERROR SETTING UP PORT SETTLEMENTS. Less than 2 settlemtns. Port: " + i);
                 instructionLbl.setText("ERROR SETTING UP PORT SETTLEMENTS. Less than 2 settlemtns");
             }
-
+            
         }
-
+        
     }
-
+    
     private void populateSettlerComponents() {
         //copy over the same first turn button
         settlerComponents[0] = turnSwitchBtn;
@@ -6901,7 +6910,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Dragged");
     }
-
+    
     @Override
     public void mouseMoved(MouseEvent e) {
         //System.out.println("Moved: " + e.getX() + ", an " + e.getY());
