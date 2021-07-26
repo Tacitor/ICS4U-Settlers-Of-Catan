@@ -2656,6 +2656,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             saveFile.println("total:");
             saveFile.println(diceRollVal[2]);
 
+            //add the newlyBoughtDevCards with linebreak
+            saveFile.println("\n" + CardUtil.newlyBoughtDevCardsToString());
+
             //add the close
             saveFile.close();
             return true;
@@ -3525,17 +3528,42 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
+            
+            //skip line
+            scanner.nextLine();
 
-            /*
-            //save the dice roll
-            saveFile.println("diceRollVals:");
-            saveFile.println("roll-1:");
-            saveFile.println(diceRollVal[0]);
-            saveFile.println("roll-2:");
-            saveFile.println(diceRollVal[1]);
-            saveFile.println("total:");
-            saveFile.println(diceRollVal[2]);
-             */
+            //load in the newlyBoughtDevCards
+            if (scanner.nextLine().equals("newlyBoughtDevCards:")) {
+
+                //clear the current list 
+                CardUtil.clearNewlyBoughtDevCard();
+
+                int size = 0;
+
+                //get the size
+                if (scanner.nextLine().equals("size:")) {
+                    size = Integer.parseInt(scanner.nextLine());
+
+                    //get the dev card types
+                    if (scanner.nextLine().equals("cardTypes:")) {
+
+                        //loop through and get the new cards
+                        for (int i = 0; i < size; i++) {
+                            CardUtil.addNewlyBoughtDevCard(Integer.parseInt(scanner.nextLine()));
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
             //close the scanner
             scanner.close();
 

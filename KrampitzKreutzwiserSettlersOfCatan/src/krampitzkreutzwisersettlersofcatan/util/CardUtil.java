@@ -18,7 +18,7 @@ public class CardUtil {
 
     public static boolean canUseDevCard(ArrayList<Integer> playersDevCards, int devCardType) {
 
-        boolean canUse = false;
+        boolean canUse;
         int boughtNum; //the number of that type that is newly bought
         int hasNum; //the number of the type of card that the player has
 
@@ -53,6 +53,26 @@ public class CardUtil {
      */
     public static void clearNewlyBoughtDevCard() {
         newlyBoughtDevCards.clear();
+    }
+
+    /**
+     * Return the newlyBoughtDevCards is a state that is ready to be added to
+     * the save File
+     *
+     * @return
+     */
+    public static String newlyBoughtDevCardsToString() {
+        String output = "newlyBoughtDevCards:";
+        output += "\nsize:\n" + newlyBoughtDevCards.size();
+        output += "\ncardTypes:\n";
+        
+        //add in the types
+        for (int i = 0; i < newlyBoughtDevCards.size(); i++) {
+            output += newlyBoughtDevCards.get(i) + "\n";
+        }
+
+        return output;
+
     }
 
 }
