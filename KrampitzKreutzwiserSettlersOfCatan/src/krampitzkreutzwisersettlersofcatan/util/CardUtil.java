@@ -24,11 +24,13 @@ public class CardUtil {
 
         //count how many of the card the player has
         boughtNum = Collections.frequency(newlyBoughtDevCards, devCardType);
-        System.out.println("Bought: " + boughtNum);
+        //debug card nums
+        //System.out.println("Bought: " + boughtNum);
 
         //count the number of cards of the type the player owns
         hasNum = Collections.frequency(playersDevCards, devCardType);
-        System.out.println("Has: " + hasNum);
+        //debug card nums
+        //System.out.println("Has: " + hasNum);
 
         //if the user has more of a card type than they bought that round, let them use it
         canUse = (hasNum - boughtNum) > 0;
