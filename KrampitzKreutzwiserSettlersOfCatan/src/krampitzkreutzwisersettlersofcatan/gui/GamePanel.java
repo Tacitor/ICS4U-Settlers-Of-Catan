@@ -1712,6 +1712,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //loop though four of the 5 stacks. They last one doesn't need to be checked as it isn't playable
                     for (int i = 0; i < 4; i++) {
                         //check for a click
+                        //and make sure that the card that would be clicked is also not a new card bought this round
                         if (event.getX() > devCardStackXPositions[i]
                                 && event.getX() < (devCardStackXPositions[i] + getImgWidth(DEV_CARD_KNIGHT))
                                 && event.getY() > devCardYPos
