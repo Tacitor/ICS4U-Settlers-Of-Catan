@@ -45,6 +45,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import krampitzkreutzwisersettlersofcatan.Catan;
+import krampitzkreutzwisersettlersofcatan.util.CardUtil;
 import krampitzkreutzwisersettlersofcatan.util.GlobalDataRecord;
 import textures.ImageRef;
 import static textures.ImageRef.*;
@@ -918,6 +919,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             useDevCardBtn.setEnabled(false);*/
             //reset the boolean to false because the turn just ended and the user hasn't used a card yet
             userPlayedDevCard = false;
+            //reset the cards that were bought this turn because now the turn is over
+            CardUtil.clearNewlyBoughtDevCard();
 
             // Change the button to the Start Next Turn button
             setTurnBtnTextStart();
@@ -1263,6 +1266,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         if (availableDevCards.get(randCardIndex) > 4) { //greater than 4 is 5-9
                             victoryPoints[currentPlayer]++;
                         }
+
+                        //set that card as a freshly bought one
+                        CardUtil.addNewlyBoughtDevCard(availableDevCards.get(randCardIndex));
 
                         //remove it from the ArrayList as it is no longer available
                         availableDevCards.remove(randCardIndex);
@@ -1706,10 +1712,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //loop though four of the 5 stacks. They last one doesn't need to be checked as it isn't playable
                     for (int i = 0; i < 4; i++) {
                         //check for a click
+                        //and make sure that the card that would be clicked is also not a new card bought this round
                         if (event.getX() > devCardStackXPositions[i]
                                 && event.getX() < (devCardStackXPositions[i] + getImgWidth(DEV_CARD_KNIGHT))
                                 && event.getY() > devCardYPos
-                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))
+                                && CardUtil.canUseDevCard(devCards[currentPlayer], i + 1)) {
                             //debug click detection
                             //System.out.println("Stack Dev Card Clicked!");
 
@@ -1762,16 +1770,18 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         //get the x position for that card
                         int cardXPos = (devCardStartPosition + (getImgWidth(DEV_CARD_KNIGHT) + scaleInt(10)) * i);
 
+                        //save the card type
+                        int devCardType = devCards[currentPlayer].get(i);
+
                         //check if there was a click on a card
+                        //and that card is allowed to be played
                         if (event.getX() > cardXPos
                                 && event.getY() > devCardYPos
                                 && event.getX() < (cardXPos + getImgWidth(DEV_CARD_KNIGHT))
-                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))) {
+                                && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))
+                                && CardUtil.canUseDevCard(devCards[currentPlayer], devCardType)) {
                             //debug click detection
                             //System.out.println("Dev Card Clicked!");
-
-                            //save the card type
-                            int devCardType = devCards[currentPlayer].get(i);
 
                             //make sure the dev card type is a useable one and not VP
                             if (devCardType < 5) {
@@ -1802,7 +1812,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                         break;
                                     default:
                                         //if anything else
-                                        System.out.println("Invalid card clicked");
+                                        System.out.println("Invalid dev card clicked");
                                         break;
                                 }
 
@@ -2645,6 +2655,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             saveFile.println(diceRollVal[1]);
             saveFile.println("total:");
             saveFile.println(diceRollVal[2]);
+
+            //add the newlyBoughtDevCards with linebreak
+            saveFile.println("\n" + CardUtil.newlyBoughtDevCardsToString());
 
             //add the close
             saveFile.close();
@@ -3515,17 +3528,42 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
+            
+            //skip line
+            scanner.nextLine();
 
-            /*
-            //save the dice roll
-            saveFile.println("diceRollVals:");
-            saveFile.println("roll-1:");
-            saveFile.println(diceRollVal[0]);
-            saveFile.println("roll-2:");
-            saveFile.println(diceRollVal[1]);
-            saveFile.println("total:");
-            saveFile.println(diceRollVal[2]);
-             */
+            //load in the newlyBoughtDevCards
+            if (scanner.nextLine().equals("newlyBoughtDevCards:")) {
+
+                //clear the current list 
+                CardUtil.clearNewlyBoughtDevCard();
+
+                int size = 0;
+
+                //get the size
+                if (scanner.nextLine().equals("size:")) {
+                    size = Integer.parseInt(scanner.nextLine());
+
+                    //get the dev card types
+                    if (scanner.nextLine().equals("cardTypes:")) {
+
+                        //loop through and get the new cards
+                        for (int i = 0; i < size; i++) {
+                            CardUtil.addNewlyBoughtDevCard(Integer.parseInt(scanner.nextLine()));
+                        }
+
+                    } else {
+                        thrownLoadError = throwLoadError(thrownLoadError);
+                    }
+
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
             //close the scanner
             scanner.close();
 
@@ -5428,8 +5466,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             //decide if to draw this one in the loop
                             if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
                                 drawSpecificHitbox = false;
-                            } else { //make sure the card is an action type card
-                                drawSpecificHitbox = i < 4;
+                            } else { //make sure the card is an action type card and that is is not a newly bought card
+                                drawSpecificHitbox = i < 4 && CardUtil.canUseDevCard(devCards[playerID], i + 1);
                             }
 
                             if (drawSpecificHitbox) {
@@ -5514,7 +5552,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
                                 drawSpecificHitbox = false;
                             } else {
-                                drawSpecificHitbox = type < 5; //make sure the card is an action type card
+                                drawSpecificHitbox = type < 5 && CardUtil.canUseDevCard(devCards[playerID], type); //make sure the card is an action type card && hasn't been bought this turn
                             }
 
                             if (drawSpecificHitbox) {
