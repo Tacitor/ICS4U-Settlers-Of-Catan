@@ -3528,7 +3528,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //skip line
             scanner.nextLine();
 
@@ -4956,7 +4956,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     getImgWidth(PLAYER_DOTS[i]),
                     getImgHeight(PLAYER_DOTS[i]), null);
             //draw the players VPs
-            g2d.drawString("" + victoryPoints[i],
+            //do not show the exact value. Show the (sometimes) hidden value that excludes VPs from dev cards
+            g2d.drawString("" + CardUtil.concealedVictoryPointCount(onlineMode, i, victoryPoints[i], devCards[i], victoryPointsToWin),
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     scaleInt(635));
             //draw the players number of resource cards
@@ -6758,6 +6759,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private void checkForWin() {
         // Check if the player has enough points to win
         if (victoryPoints[currentPlayer] >= victoryPointsToWin) {
+            repaint();//redraw the board
             // If they have a winning amount of points end the game
             endGame();
         }
