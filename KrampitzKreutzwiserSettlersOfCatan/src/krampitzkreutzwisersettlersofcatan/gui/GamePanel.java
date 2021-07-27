@@ -3528,7 +3528,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             } else {
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
-            
+
             //skip line
             scanner.nextLine();
 
@@ -3538,7 +3538,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 //clear the current list 
                 CardUtil.clearNewlyBoughtDevCard();
 
-                int size = 0;
+                int size;
 
                 //get the size
                 if (scanner.nextLine().equals("size:")) {
@@ -4938,14 +4938,18 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         g2d.drawString("Resource Cards:",
                 rightDrawMargin - scaleInt(60) + playerNumOffset,
                 scaleInt(670));
+        //draw size of unplayed dev cards header
+        g2d.drawString("Dev. Cards:",
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
+                scaleInt(705));
         //draw playerLongestRoadSegments header
         g2d.drawString("Road Length:",
                 rightDrawMargin - scaleInt(60) + playerNumOffset,
-                scaleInt(705));
+                scaleInt(740));
         //draw playerArmySize header
         g2d.drawString("Size of Army:",
                 rightDrawMargin - scaleInt(60) + playerNumOffset,
-                scaleInt(740));
+                scaleInt(775));
 
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
@@ -4956,21 +4960,26 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     getImgWidth(PLAYER_DOTS[i]),
                     getImgHeight(PLAYER_DOTS[i]), null);
             //draw the players VPs
-            g2d.drawString("" + victoryPoints[i],
+            //do not show the exact value. Show the (sometimes) hidden value that excludes VPs from dev cards
+            g2d.drawString("" + CardUtil.concealedVictoryPointCount(onlineMode, i, victoryPoints[i], devCards[i], victoryPointsToWin),
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     scaleInt(635));
             //draw the players number of resource cards
             g2d.drawString("" + cards[i].size(),
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     scaleInt(670));
+            //draw the players number of development cards
+            g2d.drawString("" + devCards[i].size(),
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
+                    scaleInt(705));
             //draw the players playerLongestRoadSegment
             g2d.drawString("" + playerLongestRoadSegments[i],
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
-                    scaleInt(705));
+                    scaleInt(740));
             //draw the players playerArmySize
             g2d.drawString("" + playerArmySize[i],
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
-                    scaleInt(740));
+                    scaleInt(775));
         }
 
         // Draw the 72 road nodes
@@ -6758,6 +6767,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private void checkForWin() {
         // Check if the player has enough points to win
         if (victoryPoints[currentPlayer] >= victoryPointsToWin) {
+            repaint();//redraw the board so that the stats board updates to reveal the correct number of VPs each player has
             // If they have a winning amount of points end the game
             endGame();
         }

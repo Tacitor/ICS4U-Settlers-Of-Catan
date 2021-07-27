@@ -65,13 +65,68 @@ public class CardUtil {
         String output = "newlyBoughtDevCards:";
         output += "\nsize:\n" + newlyBoughtDevCards.size();
         output += "\ncardTypes:\n";
-        
+
         //add in the types
         for (int i = 0; i < newlyBoughtDevCards.size(); i++) {
             output += newlyBoughtDevCards.get(i) + "\n";
         }
 
         return output;
+
+    }
+
+    /**
+     * Determine if the value to display for a player's victory points. Accounts
+     * for if the game is online or offline. Always gives the real value when
+     * offline. When online it also only gives the real value when it is the the
+     * player's client. Everyone else in online mode get the value with the
+     * point awarded from development cards removed.
+     *
+     * @param onlineMode Is the game online of offline? If online what is the
+     * player for this game?
+     * @param playerFor What player are these points for?
+     * @param trueVPCount The correct and full count of victory points
+     * @param devCards A full ArrayList of the developments cards the playerFor
+     * has to count how many VP card points need to be hidden
+     * @param victoryPointsToWin
+     * @return The number of VPs to display for the playerFor
+     */
+    public static int concealedVictoryPointCount(int onlineMode, int playerFor, int trueVPCount, ArrayList<Integer> devCards, int victoryPointsToWin) {
+
+        //check for offline play
+        if (onlineMode == -1) {
+            return trueVPCount;
+        } else { //else in online mode
+
+            //check if this is for the same player's online client
+            //and that they have less than the point threshold for winning
+            if (onlineMode == playerFor || trueVPCount >= victoryPointsToWin) {
+
+                return trueVPCount;
+            } else { //compute the fake value
+                return calcConcealedVictoryPointCount(trueVPCount, devCards);
+            }
+
+        }
+    }
+
+    private static int calcConcealedVictoryPointCount(int thetrueVPCount, ArrayList<Integer> theDevCards) {
+
+        int numDevVPCard = 0; //count how many of the dev cards are vps
+
+        //loop through the dev cards
+        for (Integer num : theDevCards) {
+            //check if it's a vp card
+            //vp cards are 5, 6, 7, 8, 9
+            if (num >= 5 && num <= 9) {
+                numDevVPCard++;
+            } else if (num > 9) {
+                System.out.println("ERROR WITH DEV CARDS. VALUE \'9\' EXEEDED with: " + num + "\n\t\tFrom CardUtil class");
+            }
+        }
+
+        //remove the number of VP card points from the total VP count
+        return thetrueVPCount - numDevVPCard;
 
     }
 
