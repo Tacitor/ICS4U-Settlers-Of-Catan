@@ -4938,14 +4938,18 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         g2d.drawString("Resource Cards:",
                 rightDrawMargin - scaleInt(60) + playerNumOffset,
                 scaleInt(670));
+        //draw size of unplayed dev cards header
+        g2d.drawString("Dev. Cards:",
+                rightDrawMargin - scaleInt(60) + playerNumOffset,
+                scaleInt(705));
         //draw playerLongestRoadSegments header
         g2d.drawString("Road Length:",
                 rightDrawMargin - scaleInt(60) + playerNumOffset,
-                scaleInt(705));
+                scaleInt(740));
         //draw playerArmySize header
         g2d.drawString("Size of Army:",
                 rightDrawMargin - scaleInt(60) + playerNumOffset,
-                scaleInt(740));
+                scaleInt(775));
 
         //loop in all the data for the players
         for (int i = 1; i < playerCount + 1; i++) {
@@ -4964,14 +4968,18 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             g2d.drawString("" + cards[i].size(),
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
                     scaleInt(670));
+            //draw the players number of development cards
+            g2d.drawString("" + devCards[i].size(),
+                    rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
+                    scaleInt(705));
             //draw the players playerLongestRoadSegment
             g2d.drawString("" + playerLongestRoadSegments[i],
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
-                    scaleInt(705));
+                    scaleInt(740));
             //draw the players playerArmySize
             g2d.drawString("" + playerArmySize[i],
                     rightDrawMargin + scaleInt(15) + scaleInt(65 * i) + playerNumOffset,
-                    scaleInt(740));
+                    scaleInt(775));
         }
 
         // Draw the 72 road nodes
