@@ -16,23 +16,22 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-
 public class GameFrame extends javax.swing.JFrame implements KeyListener {
-  
+
     private final MainMenu mainMenuFrame; //ref to the main menu
     private Dimension screenSize; //keeps track of the display the game is being played on
     private GamePanel theGamePanel; //referance to *a* GamePanel
-    
+
     public GameFrame(MainMenu m) {
-        
+
         setIcon();
 
         mainMenuFrame = m;
         screenSize = Toolkit.getDefaultToolkit().getScreenSize(); //acctually gets the data for the display
-        
+
         initFrame();
     }
-    
+
     /**
      * Set up the JFrame
      */
@@ -56,37 +55,37 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         setVisible(false);
         addKeyListener(this); //allow the game to access presses on the keyboard
         this.setFocusTraversalKeysEnabled(false); //set to ignore tabbing keys and treat them like regular presses
-        
+
         //debug screen size
         //System.out.println("Width: " + this.getWidth());
         //System.out.println("Height: " + this.getHeight());
-        
     }
-    
+
     /**
      * Set the icon for the JFRame
      */
     private void setIcon() {
         this.setIconImage(ImageRef.ICON);
     }
-    
+
     /**
      * Provide reference to the main menu to any subclasses
-     * @return 
+     *
+     * @return
      */
     public MainMenu getMainMenu() {
         return mainMenuFrame;
     }
-    
+
     /**
      * Return the game panel
-     * 
-     * @return 
+     *
+     * @return
      */
     public GamePanel getGamePanel() {
         return theGamePanel;
     }
-    
+
     /**
      * Removes the old game and replaces it with a new one
      */
@@ -94,13 +93,14 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         remove(theGamePanel);
         theGamePanel = new GamePanel(this);
         add(theGamePanel);
-        
+
         //update the gamepanel in the main method
         Catan.updateGamePanel();
     }
-    
+
     /**
-     * Passes the load address on to the GamePanel 
+     * Passes the load address on to the GamePanel
+     *
      * @param filePathString
      */
     public void loadFromFile(String filePathString) {
