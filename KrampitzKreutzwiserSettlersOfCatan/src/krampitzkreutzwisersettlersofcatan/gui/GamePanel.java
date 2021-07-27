@@ -6767,7 +6767,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private void checkForWin() {
         // Check if the player has enough points to win
         if (victoryPoints[currentPlayer] >= victoryPointsToWin) {
-            repaint();//redraw the board
+            repaint();//redraw the board so that the stats board updates to reveal the correct number of VPs each player has
             // If they have a winning amount of points end the game
             endGame();
         }
