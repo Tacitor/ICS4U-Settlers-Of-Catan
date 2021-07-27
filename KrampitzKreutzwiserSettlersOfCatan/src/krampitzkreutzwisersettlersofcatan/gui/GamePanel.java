@@ -3538,7 +3538,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 //clear the current list 
                 CardUtil.clearNewlyBoughtDevCard();
 
-                int size = 0;
+                int size;
 
                 //get the size
                 if (scanner.nextLine().equals("size:")) {
