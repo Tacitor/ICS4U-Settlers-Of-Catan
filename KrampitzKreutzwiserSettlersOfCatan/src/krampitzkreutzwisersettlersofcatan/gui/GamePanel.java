@@ -3851,7 +3851,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
-            useDevCardBtn.setEnabled(hasDevCards() && !userPlayedDevCard); //only if the user has dev cards and hasn't already used oene this turn
+            //only if the user has dev cards and hasn't already used oene this turn
+            //and also if they did not buy that card this turn
+            useDevCardBtn.setEnabled(CardUtil.hasDevCards(devCards[currentPlayer]) && !userPlayedDevCard);
         }
 
         //if in online mode and not the current player they should not be able to chick the turn switch button
@@ -4063,31 +4065,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         }
 
         return hasEnoughCards;
-    }
-
-    /**
-     * Determines if the current player has the right development cards to
-     * enable the use development cards button
-     *
-     * @param buildingType
-     * @return
-     */
-    private boolean hasDevCards() {
-        boolean hasCards = false;
-
-        //if there are any cards
-        if (devCards[currentPlayer].size() > 0) {
-
-            //loop through the first few types and see if they are contained in the list
-            for (int i = 1; i < 5; i++) { //go thorugh card types 1, 2, 3, 4
-                if (devCards[currentPlayer].contains(i)) {
-                    hasCards = true;
-                }
-            }
-
-        }
-
-        return hasCards;
     }
 
     /**

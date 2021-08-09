@@ -16,6 +16,15 @@ public class CardUtil {
 
     private static ArrayList<Integer> newlyBoughtDevCards = new ArrayList<>(); //an ArrayList containing the cards that cannot be played this round because they were just bought
 
+    /**
+     * Determines whether or not a development card from a given set of
+     * development cards is able to be played with regards other development
+     * cards that may have been bought this round.
+     *
+     * @param playersDevCards
+     * @param devCardType
+     * @return
+     */
     public static boolean canUseDevCard(ArrayList<Integer> playersDevCards, int devCardType) {
 
         boolean canUse;
@@ -36,6 +45,33 @@ public class CardUtil {
         canUse = (hasNum - boughtNum) > 0;
 
         return canUse;
+    }
+
+    /**
+     * Determines if a given player has the right development cards to enable
+     * the use development cards button. Also takes into account cards that were
+     * bought this round
+     *
+     * @param playersDevCards
+     * @return
+     */
+    public static boolean hasDevCards(ArrayList<Integer> playersDevCards) {
+        boolean hasCards = false;
+
+        //if there are any cards
+        if (playersDevCards.size() > 0) {
+
+            //loop through the first few types and see if they are contained in the list
+            //and also if the user has not bought this card this round
+            for (int i = 1; i < 5; i++) { //go thorugh card types 1, 2, 3, 4
+                if (playersDevCards.contains(i) && canUseDevCard(playersDevCards, i)) {
+                    hasCards = true;
+                }
+            }
+
+        }
+
+        return hasCards;
     }
 
     /**
