@@ -444,7 +444,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         buyDevCardBtn = new SettlerBtn(false, 0, 1); //but as of right here the Swing btns do not have coords.
         useDevCardBtn = new SettlerBtn(false, 0, 2); //play a dev card and use it's abilities
         //turn btn
-        turnSwitchBtn = new SettlerBtn(true, 0, 3);
+        turnSwitchBtn = new SettlerBtn(true, 5, 3);
         //trade buttons as of here (down) have mode 0 as cancel. Buttons above ^^^ have the last mode as cancel (usually)
         trade4to1Btn = new SettlerBtn(false, 1, 4); //trade at a 4:1 cost
         trade3to1Btn = new SettlerBtn(false, 1, 5); //trade at a 3:1 cost
@@ -5581,6 +5581,26 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //draw the text
             drawSettlerBtn(g2d, btn.getTextImage(), btn, 0);
+            
+            //draw the player's colour dot if it's a turn switch button
+            if (btn == turnSwitchBtn && btn.getType() == 3) {
+                int playerDotNum = btn.getMode();
+                int dotEndModeOffset = 0; //the number of pixels the dot should move to fit the space when in end text mode
+                
+                //take away the +4 offset if it's in "End turn" mode
+                if (playerDotNum > 4) {
+                    playerDotNum-=4;
+                    dotEndModeOffset = scaleInt(7);
+                }
+                
+                //draw the dot 
+                g2d.drawImage(PLAYER_DOTS[playerDotNum], 
+                        btn.getXPos() + scaleInt(81) - dotEndModeOffset, 
+                        btn.getYPos() + getImgHeight(btn.getTextImage()) / 2 - getImgHeight(PLAYER_DOTS[playerDotNum]) / 4, 
+                        getImgWidth(PLAYER_DOTS[playerDotNum]) / 2,
+                        getImgHeight(PLAYER_DOTS[playerDotNum]) / 2,
+                        null);
+            }
 
             //draw the tabSelected overlay if required
             if (btn.isTabSelected()) {
@@ -6754,7 +6774,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * Set the turn button text to show the "End player turn"
      */
     private void setTurnBtbTextEnd() {
-        turnSwitchBtn.setMode(0); //set mode to "End Current Player's Turn"
+        turnSwitchBtn.setMode(currentPlayer + 4); //set mode to "End Current Player's Turn"
+        //offset the current player number by 4 to account for the end text. The non-4-offset are the modes for the start text
     }
 
     /**

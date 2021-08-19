@@ -39,9 +39,6 @@ public class SettlerBtn extends SettlerComponent {
     //turn switch button images
     private final static Image TURN_SWITCH_TBN_TEXT0 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText0.png")).getImage();
     private final static Image TURN_SWITCH_TBN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText1.png")).getImage();
-    private final static Image TURN_SWITCH_TBN_TEXT2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText2.png")).getImage();
-    private final static Image TURN_SWITCH_TBN_TEXT3 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText3.png")).getImage();
-    private final static Image TURN_SWITCH_TBN_TEXT4 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText4.png")).getImage();
 
     //trade buttons
     private final static Image TRADE_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeBtn.png")).getImage();
@@ -62,7 +59,6 @@ public class SettlerBtn extends SettlerComponent {
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
     private final static Image[] USE_DEV_BTN_TEXTS = new Image[]{USE_DEV_BTN_TEXT1, USE_DEV_BTN_TEXT2};
-    private final static Image[] TURN_SWITCH_BTN_TEXTS = new Image[]{TURN_SWITCH_TBN_TEXT0, TURN_SWITCH_TBN_TEXT1, TURN_SWITCH_TBN_TEXT2, TURN_SWITCH_TBN_TEXT3, TURN_SWITCH_TBN_TEXT4};
     //trade button ones
     private final static Image[] TRADE_BTN_4TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_4};
     private final static Image[] TRADE_BTN_3TO_TEXTS = new Image[]{TRADE_CANCEL, TRADE_3};
@@ -221,7 +217,15 @@ public class SettlerBtn extends SettlerComponent {
                 break;
             case 3:
                 //if the type is a turn switch button
-                textImage = TURN_SWITCH_BTN_TEXTS[mode];
+                //check its in end turn mode or start turn mode
+                if (mode > 4 && mode < 9) { //if the mode is greater than 4 then it's the ending text
+                    textImage = TURN_SWITCH_TBN_TEXT0;
+                } else if (mode > 0 && mode < 5) { //if in the range 1-4 it's a start text mode
+                    textImage = TURN_SWITCH_TBN_TEXT1;
+                } else {
+                    textImage = ERROR_IMAGE;
+                }
+                
                 break;
             case 4:
                 //if the type is a trade 4:1 button
