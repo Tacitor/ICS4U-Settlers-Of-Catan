@@ -444,7 +444,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         buyDevCardBtn = new SettlerBtn(false, 0, 1); //but as of right here the Swing btns do not have coords.
         useDevCardBtn = new SettlerBtn(false, 0, 2); //play a dev card and use it's abilities
         //turn btn
-        turnSwitchBtn = new SettlerBtn(true, 0, 3);
+        turnSwitchBtn = new SettlerBtn(true, 5, 3);
         //trade buttons as of here (down) have mode 0 as cancel. Buttons above ^^^ have the last mode as cancel (usually)
         trade4to1Btn = new SettlerBtn(false, 1, 4); //trade at a 4:1 cost
         trade3to1Btn = new SettlerBtn(false, 1, 5); //trade at a 3:1 cost
@@ -3851,7 +3851,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
-            useDevCardBtn.setEnabled(hasDevCards() && !userPlayedDevCard); //only if the user has dev cards and hasn't already used oene this turn
+            //only if the user has dev cards and hasn't already used oene this turn
+            //and also if they did not buy that card this turn
+            useDevCardBtn.setEnabled(CardUtil.hasDevCards(devCards[currentPlayer]) && !userPlayedDevCard);
         }
 
         //if in online mode and not the current player they should not be able to chick the turn switch button
@@ -4063,31 +4065,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         }
 
         return hasEnoughCards;
-    }
-
-    /**
-     * Determines if the current player has the right development cards to
-     * enable the use development cards button
-     *
-     * @param buildingType
-     * @return
-     */
-    private boolean hasDevCards() {
-        boolean hasCards = false;
-
-        //if there are any cards
-        if (devCards[currentPlayer].size() > 0) {
-
-            //loop through the first few types and see if they are contained in the list
-            for (int i = 1; i < 5; i++) { //go thorugh card types 1, 2, 3, 4
-                if (devCards[currentPlayer].contains(i)) {
-                    hasCards = true;
-                }
-            }
-
-        }
-
-        return hasCards;
     }
 
     /**
@@ -5604,6 +5581,26 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //draw the text
             drawSettlerBtn(g2d, btn.getTextImage(), btn, 0);
+            
+            //draw the player's colour dot if it's a turn switch button
+            if (btn == turnSwitchBtn && btn.getType() == 3) {
+                int playerDotNum = btn.getMode();
+                int dotEndModeOffset = 0; //the number of pixels the dot should move to fit the space when in end text mode
+                
+                //take away the +4 offset if it's in "End turn" mode
+                if (playerDotNum > 4) {
+                    playerDotNum-=4;
+                    dotEndModeOffset = scaleInt(7);
+                }
+                
+                //draw the dot 
+                g2d.drawImage(PLAYER_DOTS[playerDotNum], 
+                        btn.getXPos() + scaleInt(81) - dotEndModeOffset, 
+                        btn.getYPos() + getImgHeight(btn.getTextImage()) / 2 - getImgHeight(PLAYER_DOTS[playerDotNum]) / 4, 
+                        getImgWidth(PLAYER_DOTS[playerDotNum]) / 2,
+                        getImgHeight(PLAYER_DOTS[playerDotNum]) / 2,
+                        null);
+            }
 
             //draw the tabSelected overlay if required
             if (btn.isTabSelected()) {
@@ -6777,7 +6774,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * Set the turn button text to show the "End player turn"
      */
     private void setTurnBtbTextEnd() {
-        turnSwitchBtn.setMode(0); //set mode to "End Current Player's Turn"
+        turnSwitchBtn.setMode(currentPlayer + 4); //set mode to "End Current Player's Turn"
+        //offset the current player number by 4 to account for the end text. The non-4-offset are the modes for the start text
     }
 
     /**
