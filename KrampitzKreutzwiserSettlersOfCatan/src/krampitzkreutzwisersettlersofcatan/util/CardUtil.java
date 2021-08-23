@@ -5,8 +5,11 @@
  */
 package krampitzkreutzwisersettlersofcatan.util;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collections;
+import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import textures.ImageRef;
 
 /**
  *
@@ -146,6 +149,17 @@ public class CardUtil {
         }
     }
 
+    /**
+     * Given a player's Victory points and their set of Development cards,
+     * computer how many of those points are from VP development cards. Remove
+     * said VP card points and return the new concealed value. If the player has
+     * no VP development cards the concealed victory point count is the same as
+     * the true one.
+     *
+     * @param thetrueVPCount
+     * @param theDevCards
+     * @return
+     */
     private static int calcConcealedVictoryPointCount(int thetrueVPCount, ArrayList<Integer> theDevCards) {
 
         int numDevVPCard = 0; //count how many of the dev cards are vps
@@ -163,6 +177,22 @@ public class CardUtil {
 
         //remove the number of VP card points from the total VP count
         return thetrueVPCount - numDevVPCard;
+
+    }
+
+    public static void checkForDevCardTooltip(ArrayList<Integer> theDevCards, int mouseX, int mouseY) {
+
+    }
+
+    public static int getCardStartPosition(int type, int listSize, GamePanel gamePanel) {
+
+        Image[] typeImageList = new Image[]{ImageRef.CARD_CLAY, ImageRef.DEV_CARD_KNIGHT};
+
+        int cardStartPosition;
+
+        cardStartPosition = (int) ((GamePanel.getPanelWidth() / 2) - (listSize * gamePanel.getImgWidth(typeImageList[type]) + (listSize - 1) * GamePanel.scaleInt(10)) / 2);
+
+        return cardStartPosition;
 
     }
 
