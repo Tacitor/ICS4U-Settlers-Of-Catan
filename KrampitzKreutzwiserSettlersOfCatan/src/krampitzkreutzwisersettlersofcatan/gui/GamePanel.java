@@ -46,6 +46,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.util.CardUtil;
+import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.util.GlobalDataRecord;
 import textures.ImageRef;
 import static textures.ImageRef.*;
@@ -1197,6 +1198,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             }
 
         }
+        
+        //check if a user moused over a dev card for a tool tip
+        
 
         repaint();
 
@@ -5183,14 +5187,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // If a turn is currently going on, render the current player's cards
         if (!inbetweenTurns) {
 
-            int playerID;
-
-            //if online then always show the local player's cards
-            if (onlineMode != -1) {
-                playerID = onlineMode;
-            } else { //show the current players cards
-                playerID = currentPlayer;
-            }
+            int playerID = GenUtil.getDisplayUserNum(onlineMode, currentPlayer);
 
             //decide which cards to draw: development or resource
             if (!showDevCards) {
