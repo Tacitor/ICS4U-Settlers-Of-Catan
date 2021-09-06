@@ -58,6 +58,7 @@ import static textures.ImageRef.*;
  */
 public class GamePanel extends javax.swing.JPanel implements MouseMotionListener {
 
+    private static boolean prevCheck = false;
     // <editor-fold defaultstate="collapsed" desc="Attributes"> 
     private final GameFrame superFrame; //ref to the JFrame this kept in
 
@@ -5739,8 +5740,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         if (showDevCards && !inbetweenTurns) {
             CardUtil.checkForDevCardTooltip(devCards[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)], mouseMotionPosX, mouseMotionPosY, this, drawDevCardStacks[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)]);
         }
-
-        System.out.println(CardUtil.toolTipDevCardIndex);
+        
+        //debug check the tooltip state check        
+        if (CardUtil.showDevCardToolTip != prevCheck) {
+            System.out.println(CardUtil.showDevCardToolTip);
+            //update it
+            prevCheck = CardUtil.showDevCardToolTip;
+        }
 
     }
 

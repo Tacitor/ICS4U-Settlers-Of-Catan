@@ -22,10 +22,11 @@ public class CardUtil {
     //card vars
     private static ArrayList<Integer> newlyBoughtDevCards = new ArrayList<>(); //an ArrayList containing the cards that cannot be played this round because they were just bought
     //time and hover vars
-    private static long timeOfCheck = 0; //the time in miliseconds when the last check was preformed for tool tips
-    private static int toolTipMouseX; //the X positions of the mouse for where the tool tip is
-    private static int toolTipMouseY;
+    public static boolean showDevCardToolTip; //whether or not the game is showing a tool tip right now
     public static int toolTipDevCardIndex = -1; //the index of the dev cards that is getting the tool tip
+    private static int prevMouseX = -1; //the previous X position of the mouse, used to see if it moved since the last check
+    private static int prevMouseY = -1;
+    private static long timeOfMousePosTaken = 0; //the time in miliseconds when the current mouse position was taken. Any time the mouse position is not the same as the time of the last check this set to the System.currentTimeMillis()
 
     /**
      * Determines whether or not a development card from a given set of
@@ -190,6 +191,69 @@ public class CardUtil {
 
     public static void checkForDevCardTooltip(ArrayList<Integer> theDevCards, int mouseX, int mouseY, GamePanel gamePanel, boolean drawStacks) {
 
+        //step 1 is to check if a new tool tip needs to be created
+        //see if the mouse is staying in the same place for a while
+        //start with pos
+        if (mouseX == prevMouseX && mouseY == prevMouseY) {
+            //System.out.println("yes");
+
+            //since it's in the same place now also check if it has been there for atleast 1 second
+            //and make sure it ignore the startup state
+            if (timeOfMousePosTaken != 0 && (System.currentTimeMillis() - timeOfMousePosTaken) >= 1000) {
+                //System.out.println("yes");
+                //now check if this resting state is ontop of a devcard
+
+                //set up needed vars
+                int devCardYPos = (int) (gamePanel.getHeight() - (gamePanel.getImgHeight(DEV_CARD_KNIGHT) * 1.125));
+                int devCardXPos;
+
+                //different check for differnt layouts
+                if (!drawStacks) { //for full layout
+
+                    boolean foundOnCard = false; //is the cursor found on any card at all
+
+                    //loop through every card
+                    for (int i = 0; i < theDevCards.size(); i++) {
+
+                        //get the x pos of that card
+                        devCardXPos = (getCardStartPosition(1, theDevCards.size(), gamePanel) + (gamePanel.getImgWidth(DEV_CARD_KNIGHT) + GamePanel.scaleInt(10)) * i);
+
+                        //check if the user has their mouse over a dev card
+                        if (mouseX > devCardXPos
+                                && mouseY > devCardYPos
+                                && mouseX < (devCardXPos + gamePanel.getImgWidth(DEV_CARD_KNIGHT))
+                                && mouseY < (devCardYPos + gamePanel.getImgHeight(DEV_CARD_KNIGHT))) {
+
+                            foundOnCard = true;
+
+                        }
+                    }
+
+                    //update the results of the querry
+                    if (foundOnCard) {
+                        //System.out.println("yes");
+                        showDevCardToolTip = true;
+                    }
+                }
+
+            } else {
+                //System.out.println("no");
+            }
+
+        } else {
+            //System.out.println("no");
+            //since the mouse is not in the same place it means it has moved
+            //thefore update the time it took this new position
+            timeOfMousePosTaken = System.currentTimeMillis();
+        }
+
+        //then update the mouse positions for the next check
+        prevMouseX = mouseX;
+        prevMouseY = mouseY;
+
+        //step two is to check in an existing tool tip needs to be removed
+
+        /*
         int devCardYPos = (int) (gamePanel.getHeight() - (gamePanel.getImgHeight(DEV_CARD_KNIGHT) * 1.125));
 
         //if in full layout
@@ -248,7 +312,7 @@ public class CardUtil {
                 toolTipDevCardIndex = -1;
             }
         }
-
+         */
     }
 
     public static int getCardStartPosition(int type, int listSize, GamePanel gamePanel) {
