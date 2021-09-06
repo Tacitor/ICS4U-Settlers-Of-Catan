@@ -20,8 +20,14 @@ public class Catan {
     public static final String SAVE_FILE_VER = "V14"; //the save file version needed    
     public static final String GAME_VER = "prev5.1.3 - V5 Jason Patch"; //the version of the game/program
 
+    //fast pulse vars
+    private static long prevTime;
+    private static int fastPulseTime; //the number of miliseconds between fast pulses
+
     public static void main(String[] args) throws InterruptedException {
         System.out.println("Catan startup");
+        //record the time
+        prevTime = System.currentTimeMillis();
 
         /* Set the Windows 10 look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -50,17 +56,64 @@ public class Catan {
         menu.setVisible(true);
         updateGamePanel();
 
+        //set up the fast game pulse
+        FastGamePulseRunnable fastGamePulseRunnable = new FastGamePulseRunnable();
+        fastGamePulseRunnable.setDaemon(true);
+        fastGamePulseRunnable.start();
+
+        //run the slow game pulse
         while (true) {
             clock++;
-            gamePanel.fire();
-            //gamePanel.fire();
+            gamePanel.catanTickUpdate();
             Thread.sleep(1000); //time a spent sleeping is subject to change
             //the way sleep is envoked is also subject to change.
         }
     }
-    
+
     public static void updateGamePanel() {
         gamePanel = menu.getGameFrame().getGamePanel();
+    }
+
+    /**
+     * A 10ms pulse clock for the game Faster than the 1 second animation
+     * pulse/Tick update
+     */
+    private static void fastGamePulse() {
+        //test the pulse regularity
+        fastPulseTime = (int) (System.currentTimeMillis() - prevTime);
+        //record new time
+        prevTime = System.currentTimeMillis();
+        
+        //now call the game panel
+        gamePanel.catanFastTickUpdate();
+
+    }
+
+    private static class FastGamePulseRunnable extends Thread implements Runnable {
+
+        private boolean stopRequested = false;
+
+        public synchronized void requestStop() {
+            stopRequested = true;
+        }
+
+        @Override
+        public void run() {
+
+            //check if this thread should stop
+            while (!stopRequested) {
+
+                //apply the pulse
+                fastGamePulse();
+
+                try {
+                    //wait 10ms to apply it again
+                    Thread.sleep(15l);
+                } catch (InterruptedException ex) {
+                    System.out.println("ERROR: " + ex);
+                }
+            }
+        }
     }
 
 }

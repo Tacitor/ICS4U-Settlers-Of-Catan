@@ -1199,8 +1199,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         }
 
-        //check if a user moused over a dev card for a tool tip
-
         repaint();
 
     }
@@ -5722,10 +5720,26 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     // </editor-fold>
-    public void fire() {
-        //debugs. Proof the game is actually redrawing.
-        //showRoadHitbox = true;
+    /**
+     * The Catan.java class calls this method. It is used to update the game
+     * panel and other time related calls.
+     */
+    public void catanTickUpdate() {
+
         repaint();
+    }
+
+    /**
+     * The Catan.java class calls this method. It is used to make frequent
+     * checks that are too slow for the catanTickUpdate() method
+     */
+    public void catanFastTickUpdate() {
+
+        //check if a user moused over a dev card for a tool tip
+        if (showDevCards && !inbetweenTurns) {
+            CardUtil.checkForDevCardTooltip(devCards[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)], mouseMotionPosX, mouseMotionPosY, this, drawDevCardStacks[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)]);
+        }
+
     }
 
     /**
