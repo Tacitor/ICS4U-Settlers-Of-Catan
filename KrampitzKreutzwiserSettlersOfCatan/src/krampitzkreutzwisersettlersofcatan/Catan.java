@@ -52,13 +52,12 @@ public class Catan {
 
         while (true) {
             clock++;
-            gamePanel.fire();
-            //gamePanel.fire();
+            gamePanel.catanTickUpdate();
             Thread.sleep(1000); //time a spent sleeping is subject to change
             //the way sleep is envoked is also subject to change.
         }
     }
-    
+
     public static void updateGamePanel() {
         gamePanel = menu.getGameFrame().getGamePanel();
     }

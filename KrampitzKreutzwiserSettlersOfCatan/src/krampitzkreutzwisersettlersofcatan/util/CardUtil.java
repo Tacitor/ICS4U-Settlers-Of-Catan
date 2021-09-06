@@ -9,7 +9,8 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collections;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
-import textures.ImageRef;
+import static textures.ImageRef.CARD_CLAY;
+import static textures.ImageRef.DEV_CARD_KNIGHT;
 
 /**
  *
@@ -17,7 +18,14 @@ import textures.ImageRef;
  */
 public class CardUtil {
 
+    //static vars
+    //card vars
     private static ArrayList<Integer> newlyBoughtDevCards = new ArrayList<>(); //an ArrayList containing the cards that cannot be played this round because they were just bought
+    //time and hover vars
+    private static long timeOfCheck = 0; //the time in miliseconds when the last check was preformed for tool tips
+    private static int toolTipMouseX; //the X positions of the mouse for where the tool tip is
+    private static int toolTipMouseY;
+    public static int toolTipDevCardIndex = -1; //the index of the dev cards that is getting the tool tip
 
     /**
      * Determines whether or not a development card from a given set of
@@ -180,13 +188,72 @@ public class CardUtil {
 
     }
 
-    public static void checkForDevCardTooltip(ArrayList<Integer> theDevCards, int mouseX, int mouseY) {
+    public static void checkForDevCardTooltip(ArrayList<Integer> theDevCards, int mouseX, int mouseY, GamePanel gamePanel, boolean drawStacks) {
+
+        int devCardYPos = (int) (gamePanel.getHeight() - (gamePanel.getImgHeight(DEV_CARD_KNIGHT) * 1.125));
+
+        //if in full layout
+        if (!drawStacks) {
+
+            boolean getHover = false;
+
+            //check if the user is hovering the mouse over dev card
+            for (int i = 0; i < theDevCards.size(); i++) {
+
+                //get the x position for that card
+                int cardXPos = (getCardStartPosition(1, theDevCards.size(), gamePanel) + (gamePanel.getImgWidth(DEV_CARD_KNIGHT) + GamePanel.scaleInt(10)) * i);
+
+                //save the card type
+                //int devCardType = theDevCards.get(i);
+                //check if the user has thier mouse over a dev card
+                if (mouseX > cardXPos
+                        && mouseY > devCardYPos
+                        && mouseX < (cardXPos + gamePanel.getImgWidth(DEV_CARD_KNIGHT))
+                        && mouseY < (devCardYPos + gamePanel.getImgHeight(DEV_CARD_KNIGHT))) {
+
+                    getHover = true;
+
+                    //check if the mouse is still in the same place
+                    if (mouseX == toolTipMouseX && mouseY == toolTipMouseY) {
+
+                        //check if there is a current tool tip
+                        if (toolTipDevCardIndex == -1) { //if no tool tip
+
+                            //now check if the time if the user has had the same mouse position for aleast a second
+                            //and that is this is switching the tool tip
+                            if ((System.currentTimeMillis() - timeOfCheck) >= 500 && toolTipDevCardIndex != i) {
+                                toolTipDevCardIndex = i;
+                            }
+
+                        }
+                    } else { //record the time and mouse position
+
+                        //check if there is a tool tip
+                        if (toolTipDevCardIndex == -1) { //if there is no overwite the pos and time data
+                            //System.out.println("yuh: " + (System.currentTimeMillis() - timeOfCheck));
+                            timeOfCheck = System.currentTimeMillis();
+                            toolTipMouseX = mouseX;
+                            toolTipMouseY = mouseY;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            //if no hover remove the tool tip
+            if (!getHover) {
+                toolTipDevCardIndex = -1;
+            }
+        }
 
     }
 
     public static int getCardStartPosition(int type, int listSize, GamePanel gamePanel) {
 
-        Image[] typeImageList = new Image[]{ImageRef.CARD_CLAY, ImageRef.DEV_CARD_KNIGHT};
+        Image[] typeImageList = new Image[]{CARD_CLAY, DEV_CARD_KNIGHT};
 
         int cardStartPosition;
 
