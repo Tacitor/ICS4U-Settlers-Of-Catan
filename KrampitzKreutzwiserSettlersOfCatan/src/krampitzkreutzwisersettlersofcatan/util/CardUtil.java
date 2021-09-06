@@ -230,6 +230,16 @@ public class CardUtil {
         } //step two is to check in an existing tool tip needs to be removed
         else { //if there is already a tool tip being drawn
             //check if the mouse is still anywhere on the card where the tool tip is being drawn
+            
+            //get the index the mouse is on
+            int index = getIndexOfListMouseIsOn(theDevCards, mouseX, mouseY, gamePanel, drawStacks);
+            
+            //check if it's the same card
+            if (index != toolTipDevCardIndex) {
+                //if it's not turn off the tool tip
+                showDevCardToolTip = false;
+                toolTipDevCardIndex = -1;
+            }
         }
     }
 
