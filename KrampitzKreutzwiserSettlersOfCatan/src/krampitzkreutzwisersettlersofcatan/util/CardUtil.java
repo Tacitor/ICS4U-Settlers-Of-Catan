@@ -304,11 +304,21 @@ public class CardUtil {
         //check if there is a tool tip to draw
         if (showDevCardToolTip) {
 
-            //draw
-            g2d.drawImage(ImageRef.ERROR_IMAGE,
-                    0,
-                    0,
-                    theGamePanel);
+            int devCardYPos = (int) (theGamePanel.getHeight() - (theGamePanel.getImgHeight(DEV_CARD_KNIGHT) * 1.125));
+            int devCardXPos;
+
+            //check what mode the cards are being drawn in
+            if (!drawStacks) {
+
+                //find the card to draw it own
+                devCardXPos = (getCardStartPosition(1, theDevCards.size(), theGamePanel) + (theGamePanel.getImgWidth(DEV_CARD_KNIGHT) + GamePanel.scaleInt(10)) * toolTipDevCardIndex);
+                
+                //draw
+                g2d.drawImage(ImageRef.ERROR_IMAGE,
+                        devCardXPos,
+                        devCardYPos,
+                        theGamePanel);
+            }
         }
 
     }
