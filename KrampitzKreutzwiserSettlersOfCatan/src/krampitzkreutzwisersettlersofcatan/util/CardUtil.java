@@ -5,10 +5,12 @@
  */
 package krampitzkreutzwisersettlersofcatan.util;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collections;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import textures.ImageRef;
 import static textures.ImageRef.CARD_CLAY;
 import static textures.ImageRef.DEV_CARD_KNIGHT;
 
@@ -22,7 +24,7 @@ public class CardUtil {
     //card vars
     private static ArrayList<Integer> newlyBoughtDevCards = new ArrayList<>(); //an ArrayList containing the cards that cannot be played this round because they were just bought
     //time and hover vars
-    public static boolean showDevCardToolTip; //whether or not the game is showing a tool tip right now
+    private static boolean showDevCardToolTip; //whether or not the game is showing a tool tip right now
     public static int toolTipDevCardIndex = -1; //the index of the dev cards that is getting the tool tip
     private static int prevMouseX = -1; //the previous X position of the mouse, used to see if it moved since the last check
     private static int prevMouseY = -1;
@@ -204,7 +206,7 @@ public class CardUtil {
                 if (timeOfMousePosTaken != 0 && (System.currentTimeMillis() - timeOfMousePosTaken) >= 1000) {
                     //System.out.println("yes");
                     //now check if this resting state is ontop of a devcard
-                    
+
                     int listIndex = getIndexOfListMouseIsOn(theDevCards, mouseX, mouseY, gamePanel, drawStacks);
 
                     //update the results of the querry
@@ -230,10 +232,10 @@ public class CardUtil {
         } //step two is to check in an existing tool tip needs to be removed
         else { //if there is already a tool tip being drawn
             //check if the mouse is still anywhere on the card where the tool tip is being drawn
-            
+
             //get the index the mouse is on
             int index = getIndexOfListMouseIsOn(theDevCards, mouseX, mouseY, gamePanel, drawStacks);
-            
+
             //check if it's the same card
             if (index != toolTipDevCardIndex) {
                 //if it's not turn off the tool tip
@@ -282,11 +284,10 @@ public class CardUtil {
 
                     foundOnCard = true;
                     indexOfFind = i;
-                    
 
                 }
             }
-            
+
             if (foundOnCard) {
                 returnVal = indexOfFind;
             } else {
@@ -296,6 +297,39 @@ public class CardUtil {
         }
 
         return returnVal;
+    }
+
+    public static void drawDevCardTooltip(Graphics2D g2d, ArrayList<Integer> theDevCards, GamePanel theGamePanel, boolean drawStacks) {
+
+        //check if there is a tool tip to draw
+        if (showDevCardToolTip) {
+
+            //draw
+            g2d.drawImage(ImageRef.ERROR_IMAGE,
+                    0,
+                    0,
+                    theGamePanel);
+        }
+
+    }
+
+    //Accessors and Mutators    
+    /**
+     * Access showDevCardToolTip
+     *
+     * @return
+     */
+    public static boolean getShowDevCardToolTip() {
+        return showDevCardToolTip;
+    }
+
+    /**
+     * Access toolTipDevCardIndex
+     *
+     * @return
+     */
+    public static int getToolTipDevCardIndex() {
+        return toolTipDevCardIndex;
     }
 
 }

@@ -5698,7 +5698,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             appendText = "Online";
         }
         g2d.drawString("Online mode: " + appendText + " with ID of \'" + onlineMode + "\'", rightDrawMargin, scaleInt(50) + getImgHeight(MATERIAL_KEY));
-
+        
+        //draw tooltips for the dev cards
+        CardUtil.drawDevCardTooltip(g2d, devCards[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)], this, drawDevCardStacks[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)]);
+        
         // Add alignment lines
         //g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
         //g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
