@@ -314,9 +314,9 @@ public class CardUtil {
                 devCardXPos = (getCardStartPosition(1, theDevCards.size(), theGamePanel) + (theGamePanel.getImgWidth(DEV_CARD_KNIGHT) + GamePanel.scaleInt(10)) * toolTipDevCardIndex);
                 
                 //draw
-                g2d.drawImage(ImageRef.ERROR_IMAGE,
+                g2d.drawImage(ImageRef.TOOLTIP_DEV_CARD_BGD,
                         devCardXPos,
-                        devCardYPos,
+                        devCardYPos - GamePanel.scaleInt(5) - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD),
                         theGamePanel);
             }
         }
