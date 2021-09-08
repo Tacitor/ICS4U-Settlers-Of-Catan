@@ -320,6 +320,8 @@ public class CardUtil {
                 g2d.drawImage(ImageRef.TOOLTIP_DEV_CARD_BGD,
                         devCardXPos,
                         devCardYPos - GamePanel.scaleInt(5) - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD),
+                        theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD),
+                        theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD),
                         theGamePanel);
                 
                 //add the text to the tool tip
@@ -327,8 +329,8 @@ public class CardUtil {
                 tooltipText.setForeground(new Color(57, 39, 32));
                 
                 tooltipText.setFont(new Font("Calibri", Font.BOLD, GamePanel.scaleInt(15)));
-                tooltipText.setXPos(devCardXPos + GamePanel.scaleInt(10));
-                tooltipText.setYPos(devCardYPos - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD) + GamePanel.scaleInt(15));
+                tooltipText.setXPos(devCardXPos + GamePanel.scaleInt(13));
+                tooltipText.setYPos(devCardYPos - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD) + GamePanel.scaleInt(18));
                 
                 //set the line wrap                
                 tooltipText.setLineWrap(true);

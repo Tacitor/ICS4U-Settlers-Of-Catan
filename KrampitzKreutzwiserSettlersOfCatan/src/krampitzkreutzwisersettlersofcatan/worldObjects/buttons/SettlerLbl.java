@@ -170,7 +170,7 @@ public class SettlerLbl extends WorldObject {
                 endChar = getEndingChar(text, (int) spaceForText, g2d);
 
                 //System.out.println(endChar);
-                g2d.drawString(text.substring(0, endChar), xPos, yPos + (GamePanel.scaleInt(22) * i));
+                g2d.drawString(text.substring(0, endChar), xPos, yPos + (GamePanel.scaleInt(font.getSize()) * i));
 
                 //remove the part of the string already displayed so the next line will pick up where the previous left off
                 //only if this is not the last operation
