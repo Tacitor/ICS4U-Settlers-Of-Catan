@@ -326,12 +326,14 @@ public class CardUtil {
                 SettlerLbl tooltipText = new SettlerLbl("Use this card to build two new roads for free.");
                 tooltipText.setForeground(new Color(57, 39, 32));
                 
-                //set the line wrap
-                //tooltipText.setLineWrap(true);
-                
                 tooltipText.setFont(new Font("Calibri", Font.BOLD, GamePanel.scaleInt(15)));
                 tooltipText.setXPos(devCardXPos + GamePanel.scaleInt(10));
                 tooltipText.setYPos(devCardYPos - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD) + GamePanel.scaleInt(15));
+                
+                //set the line wrap                
+                tooltipText.setLineWrap(true);
+                tooltipText.setSpaceForText((double)(GamePanel.scaleInt(75)));
+                tooltipText.calcNumLines(g2d, theGamePanel);
                 
                 tooltipText.draw(g2d);
             }

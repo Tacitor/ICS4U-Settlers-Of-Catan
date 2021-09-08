@@ -5698,10 +5698,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             appendText = "Online";
         }
         g2d.drawString("Online mode: " + appendText + " with ID of \'" + onlineMode + "\'", rightDrawMargin, scaleInt(50) + getImgHeight(MATERIAL_KEY));
-        
+
         //draw tooltips for the dev cards
         CardUtil.drawDevCardTooltip(g2d, devCards[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)], this, drawDevCardStacks[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)]);
-        
+
         // Add alignment lines
         //g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
         //g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
@@ -6093,10 +6093,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
 
         titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
-        
+
         //set the magin spacing for the settler labels
-        instructionLbl.setSpaceForText( (this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (instructionLbl.getXPos())   );
-        subInstructionLbl.setSpaceForText( (this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (subInstructionLbl.getXPos())   );
+        instructionLbl.setSpaceForText((this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (instructionLbl.getXPos()));
+        subInstructionLbl.setSpaceForText((this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (subInstructionLbl.getXPos()));
     }
 
     /**
