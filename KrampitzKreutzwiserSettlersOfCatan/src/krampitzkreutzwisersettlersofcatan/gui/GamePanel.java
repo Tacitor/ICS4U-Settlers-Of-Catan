@@ -6093,6 +6093,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
 
         titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
+        
+        //set the magin spacing for the settler labels
+        instructionLbl.setSpaceForText( (this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (instructionLbl.getXPos())   );
+        subInstructionLbl.setSpaceForText( (this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (subInstructionLbl.getXPos())   );
     }
 
     /**

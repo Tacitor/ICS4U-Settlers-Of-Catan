@@ -11,7 +11,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
-import static textures.ImageRef.WATER_RING;
 
 /**
  *
@@ -36,6 +35,7 @@ public class SettlerLbl extends WorldObject {
         //set the defaults
         doLineWrap = false;
         numLines = 1;
+        spaceForText = 100; //default value (probably never used)
     }
 
     /**
@@ -64,6 +64,24 @@ public class SettlerLbl extends WorldObject {
      */
     public String getText() {
         return text;
+    }
+    
+    /**
+     * Mutator for spaceForText
+     *
+     * @param spaceForText
+     */
+    public void setSpaceForText(double spaceForText) {
+        this.spaceForText = spaceForText;
+    }
+
+    /**
+     * Accessor for spaceForText
+     *
+     * @return
+     */
+    public double getSpaceForText() {
+        return spaceForText;
     }
 
     /**
@@ -181,7 +199,8 @@ public class SettlerLbl extends WorldObject {
     public void calcNumLines(Graphics2D g2d, GamePanel gamePanel) {
         //calculate the number of lines needed
         //spaceForText //the number of pixels there are to work with from edge of the prompt to the edge of the board starts
-        spaceForText = (gamePanel.getSuperFrame().getWidth() / 2 - gamePanel.getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (xPos);
+        //spaceForText = (gamePanel.getSuperFrame().getWidth() / 2 - gamePanel.getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (xPos);
+        // ^^^ this got moved to GamePanel.java because new types of setter labels need line wrap but not to this line
 
         double lineNum; //the number of lines the the text needs to be displayed over
         g2d.setFont(font);
