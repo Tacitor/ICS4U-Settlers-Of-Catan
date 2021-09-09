@@ -43,7 +43,7 @@ public class CardUtil {
      * @return
      */
     public static boolean canUseDevCard(ArrayList<Integer> playersDevCards, int devCardType) {
-        
+
         boolean canUse;
         int boughtNum; //the number of that type that is newly bought
         int hasNum; //the number of the type of card that the player has
@@ -60,7 +60,7 @@ public class CardUtil {
 
         //if the user has more of a card type than they bought that round, let them use it
         canUse = (hasNum - boughtNum) > 0;
-        
+
         return canUse;
     }
 
@@ -85,9 +85,9 @@ public class CardUtil {
                     hasCards = true;
                 }
             }
-            
+
         }
-        
+
         return hasCards;
     }
 
@@ -123,9 +123,9 @@ public class CardUtil {
         for (int i = 0; i < newlyBoughtDevCards.size(); i++) {
             output += newlyBoughtDevCards.get(i) + "\n";
         }
-        
+
         return output;
-        
+
     }
 
     /**
@@ -154,12 +154,12 @@ public class CardUtil {
             //check if this is for the same player's online client
             //and that they have less than the point threshold for winning
             if (onlineMode == playerFor || trueVPCount >= victoryPointsToWin) {
-                
+
                 return trueVPCount;
             } else { //compute the fake value
                 return calcConcealedVictoryPointCount(trueVPCount, devCards);
             }
-            
+
         }
     }
 
@@ -175,7 +175,7 @@ public class CardUtil {
      * @return
      */
     private static int calcConcealedVictoryPointCount(int thetrueVPCount, ArrayList<Integer> theDevCards) {
-        
+
         int numDevVPCard = 0; //count how many of the dev cards are vps
 
         //loop through the dev cards
@@ -191,9 +191,9 @@ public class CardUtil {
 
         //remove the number of VP card points from the total VP count
         return thetrueVPCount - numDevVPCard;
-        
+
     }
-    
+
     public static void checkForDevCardTooltip(ArrayList<Integer> theDevCards, int mouseX, int mouseY, GamePanel gamePanel, boolean drawStacks) {
 
         //step 1 is to check if a new tool tip needs to be created
@@ -218,9 +218,9 @@ public class CardUtil {
                         showDevCardToolTip = true;
                         toolTipDevCardIndex = listIndex;
                     }
-                    
+
                 }
-                
+
             } else {
                 //System.out.println("no");
                 //since the mouse is not in the same place it means it has moved
@@ -231,7 +231,7 @@ public class CardUtil {
             //then update the mouse positions for the next check
             prevMouseX = mouseX;
             prevMouseY = mouseY;
-            
+
         } //step two is to check in an existing tool tip needs to be removed
         else { //if there is already a tool tip being drawn
             //check if the mouse is still anywhere on the card where the tool tip is being drawn
@@ -247,19 +247,19 @@ public class CardUtil {
             }
         }
     }
-    
+
     public static int getCardStartPosition(int type, int listSize, GamePanel gamePanel) {
-        
+
         Image[] typeImageList = new Image[]{CARD_CLAY, DEV_CARD_KNIGHT};
-        
+
         int cardStartPosition;
-        
+
         cardStartPosition = (int) ((GamePanel.getPanelWidth() / 2) - (listSize * gamePanel.getImgWidth(typeImageList[type]) + (listSize - 1) * GamePanel.scaleInt(10)) / 2);
-        
+
         return cardStartPosition;
-        
+
     }
-    
+
     public static int getIndexOfListMouseIsOn(ArrayList<Integer> theDevCards, int mouseX, int mouseY, GamePanel gamePanel, boolean drawStacks) {
 
         //set up needed vars
@@ -284,29 +284,29 @@ public class CardUtil {
                         && mouseY > devCardYPos
                         && mouseX < (devCardXPos + gamePanel.getImgWidth(DEV_CARD_KNIGHT))
                         && mouseY < (devCardYPos + gamePanel.getImgHeight(DEV_CARD_KNIGHT))) {
-                    
+
                     foundOnCard = true;
                     indexOfFind = i;
-                    
+
                 }
             }
-            
+
             if (foundOnCard) {
                 returnVal = indexOfFind;
             } else {
                 returnVal = -1;
             }
-            
+
         }
-        
+
         return returnVal;
     }
-    
+
     public static void drawDevCardTooltip(Graphics2D g2d, ArrayList<Integer> theDevCards, GamePanel theGamePanel, boolean drawStacks) {
 
         //check if there is a tool tip to draw
         if (showDevCardToolTip) {
-            
+
             int devCardYPos = (int) (theGamePanel.getHeight() - (theGamePanel.getImgHeight(DEV_CARD_KNIGHT) * 1.125));
             int devCardXPos;
 
@@ -325,9 +325,9 @@ public class CardUtil {
                         theGamePanel);
 
                 //add the text to the tool tip
-                SettlerLbl tooltipText = new SettlerLbl("Use this card to build two new roads for free.");
+                SettlerLbl tooltipText = new SettlerLbl("Use this card to build two new roads for free. Regular rules still apply, only build cost is ommited.");
                 tooltipText.setForeground(new Color(57, 39, 32));
-                
+
                 tooltipText.setFont(new Font("Calibri", Font.BOLD, GamePanel.scaleInt(16)));
                 tooltipText.setXPos(devCardXPos + GamePanel.scaleInt(13));
                 tooltipText.setYPos(devCardYPos - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD) + GamePanel.scaleInt(18));
@@ -335,12 +335,13 @@ public class CardUtil {
                 //set the line wrap                
                 tooltipText.setLineWrap(true);
                 tooltipText.setSpaceForText((double) (theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD) - GamePanel.scaleInt(20)));
+                tooltipText.setLinewrapSpace(16);
                 tooltipText.calcNumLines(g2d, theGamePanel);
-                
+
                 tooltipText.draw(g2d);
             }
         }
-        
+
     }
 
     //Accessors and Mutators    
@@ -361,5 +362,5 @@ public class CardUtil {
     public static int getToolTipDevCardIndex() {
         return toolTipDevCardIndex;
     }
-    
+
 }
