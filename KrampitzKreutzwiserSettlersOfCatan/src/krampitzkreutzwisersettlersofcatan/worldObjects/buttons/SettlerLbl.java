@@ -25,6 +25,7 @@ public class SettlerLbl extends WorldObject {
     private boolean doLineWrap;
     private int numLines;
     private double spaceForText;
+    private int linewrapSpace;
 
     /**
      * Basic Constructor
@@ -36,6 +37,7 @@ public class SettlerLbl extends WorldObject {
         doLineWrap = false;
         numLines = 1;
         spaceForText = 100; //default value (probably never used)
+        linewrapSpace = 22; //default 
     }
 
     /**
@@ -130,6 +132,24 @@ public class SettlerLbl extends WorldObject {
     }
 
     /**
+     * Accessor for linewrapSpace
+     *
+     * @return
+     */
+    public int getLinewrapSpace() {
+        return linewrapSpace;
+    }
+
+    /**
+     * Mutator for linewrapSpace
+     *
+     * @param linewrapSpace
+     */
+    public void setLinewrapSpace(int linewrapSpace) {
+        this.linewrapSpace = linewrapSpace;
+    }
+
+    /**
      * Mutator for text attribute
      *
      * @param foregroundColour
@@ -170,7 +190,7 @@ public class SettlerLbl extends WorldObject {
                 endChar = getEndingChar(text, (int) spaceForText, g2d);
 
                 //System.out.println(endChar);
-                g2d.drawString(text.substring(0, endChar), xPos, yPos + (GamePanel.scaleInt(22) * i));
+                g2d.drawString(text.substring(0, endChar), xPos, yPos + (GamePanel.scaleInt(linewrapSpace) * i));
 
                 //remove the part of the string already displayed so the next line will pick up where the previous left off
                 //only if this is not the last operation
