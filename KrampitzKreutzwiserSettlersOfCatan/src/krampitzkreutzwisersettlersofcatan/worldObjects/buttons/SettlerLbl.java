@@ -222,10 +222,71 @@ public class SettlerLbl extends WorldObject {
         //spaceForText = (gamePanel.getSuperFrame().getWidth() / 2 - gamePanel.getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (xPos);
         // ^^^ this got moved to GamePanel.java because new types of setter labels need line wrap but not to this line
 
-        double lineNum; //the number of lines the the text needs to be displayed over
+        int lineNum = 0; //the number of lines the the text needs to be displayed over
+        String text = this.text;
+        String tempWorkSegment; //at segment of text that is being worked on
         g2d.setFont(font);
-        lineNum = Math.ceil(g2d.getFontMetrics().stringWidth(text) / spaceForText);
-        numLines = (int) lineNum; //update the number of lines
+
+        //itterate through the string to find how many lines are needed
+        while (!text.equals("")) {
+
+            tempWorkSegment = "";
+
+            boolean continueSegement = true;
+
+            //itterate until a segment is just long enough for a line, but not over\
+            while (continueSegement) {
+
+                //check if that's the last word in text
+                if (text.contains(" ")) {
+                    //take the next first word left in text and add it
+                    tempWorkSegment += text.substring(0,
+                            text.indexOf(" ") + 1);
+                } else {
+                    tempWorkSegment += text;
+                }
+
+                //check if this segment fits in one line space
+                continueSegement = (g2d.getFontMetrics().stringWidth(tempWorkSegment) < spaceForText);
+
+                if (this.text.contains("Use this card to build")) {
+                    System.out.println("Length: " + g2d.getFontMetrics().stringWidth(tempWorkSegment));
+                }
+
+                //if that word still fits on this line
+                if (continueSegement) { //if it does still fit on that line
+
+                    //check if that's the last word in text
+                    if (text.contains(" ")) {
+
+                        //then remove it from itself 
+                        text = text.substring(text.indexOf(" ") + 1);
+                    } else { //text is done
+                        text = "";
+                        continueSegement = false; //no more text
+                    }
+                }
+
+            }
+
+            lineNum++;
+
+            if (this.text.contains("Use this card to build")) {
+                System.out.println("Segment: " + tempWorkSegment);
+            }
+
+        }
+
+        numLines = lineNum; //update the number of lines
+
+        //debug the number of lines needed
+        if (this.text.contains("Use this card to build")) {
+            System.out.println("Step 2: " + lineNum + "\n" + this.text + "\n\n");
+        }
+
+        if (this.numLines == 8) {
+            numLines = 7;
+        }
 
         //debug the number of lines needed
         //System.out.println(lineNum);

@@ -328,13 +328,17 @@ public class CardUtil {
                 SettlerLbl tooltipText = new SettlerLbl("Use this card to build two new roads for free. Regular rules still apply, only build cost is ommited.");
                 tooltipText.setForeground(new Color(57, 39, 32));
 
-                tooltipText.setFont(new Font("Calibri", Font.BOLD, GamePanel.scaleInt(16)));
+                tooltipText.setFont(new Font("Calibri", Font.PLAIN, GamePanel.scaleInt(16)));
                 tooltipText.setXPos(devCardXPos + GamePanel.scaleInt(13));
                 tooltipText.setYPos(devCardYPos - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD) + GamePanel.scaleInt(18));
 
                 //set the line wrap                
                 tooltipText.setLineWrap(true);
                 tooltipText.setSpaceForText((double) (theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD) - GamePanel.scaleInt(20)));
+
+                //System.out.println("Card: " + theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD));
+                //System.out.println("Spacer: " + GamePanel.scaleInt(20));
+                //System.out.println("Space: " + tooltipText.getSpaceForText());
                 tooltipText.setLinewrapSpace(16);
                 tooltipText.calcNumLines(g2d, theGamePanel);
 
