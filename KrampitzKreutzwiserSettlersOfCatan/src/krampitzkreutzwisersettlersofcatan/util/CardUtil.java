@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.util;
 
+import dataFiles.DevCardToolTips;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -309,6 +310,7 @@ public class CardUtil {
 
             int devCardYPos = (int) (theGamePanel.getHeight() - (theGamePanel.getImgHeight(DEV_CARD_KNIGHT) * 1.125));
             int devCardXPos;
+            String textForTooltip;
 
             //check what mode the cards are being drawn in
             if (!drawStacks) {
@@ -324,8 +326,11 @@ public class CardUtil {
                         theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD),
                         theGamePanel);
 
+                //find the text for the card
+                textForTooltip = DevCardToolTips.getDevCardTooltips()[theDevCards.get(toolTipDevCardIndex) - 1];
+
                 //add the text to the tool tip
-                SettlerLbl tooltipText = new SettlerLbl("Use this card to build two new roads for free. Regular rules still apply, only build cost is ommited.");
+                SettlerLbl tooltipText = new SettlerLbl(textForTooltip);
                 tooltipText.setForeground(new Color(57, 39, 32));
 
                 tooltipText.setFont(new Font("Calibri", Font.BOLD, GamePanel.scaleInt(16)));
