@@ -299,7 +299,7 @@ public class CardUtil {
         //set up needed vars
         int devCardYPos = (int) (gamePanel.getHeight() - (gamePanel.getImgHeight(DEV_CARD_KNIGHT) * 1.125));
         int devCardXPos;
-        int returnVal = -1; //the index of the card or of the stack
+        int returnVal; //the index of the card or of the stack
         int indexOfFind = -1;
 
         //different check for differnt layouts
@@ -331,6 +331,33 @@ public class CardUtil {
                 returnVal = -1;
             }
 
+        } else { //if in stacked mode
+
+            boolean foundOnStackedCard = false; //is the cursor found on any card stack at all
+
+            //loop through every stack
+            for (int i = 0; i < 5; i++) {
+
+                //get the x pos of that card
+                devCardXPos = gamePanel.getDevCardStackXPositions()[i];
+
+                //check if the user has their mouse over a dev card
+                if (mouseX > devCardXPos
+                        && mouseY > devCardYPos
+                        && mouseX < (devCardXPos + gamePanel.getImgWidth(DEV_CARD_KNIGHT))
+                        && mouseY < (devCardYPos + gamePanel.getImgHeight(DEV_CARD_KNIGHT))) {
+
+                    foundOnStackedCard = true;
+                    indexOfFind = i;
+
+                }
+            }
+
+            if (foundOnStackedCard) {
+                returnVal = indexOfFind;
+            } else {
+                returnVal = -1;
+            }
         }
 
         return returnVal;
@@ -363,7 +390,7 @@ public class CardUtil {
                 //draw
                 g2d.drawImage(ImageRef.TOOLTIP_DEV_CARD_BGD,
                         devCardXPos,
-                        devCardYPos - GamePanel.scaleInt(5) - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD),
+                        devCardYPos - GamePanel.scaleInt(5) - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD), //put it above the card
                         theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD),
                         theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD),
                         theGamePanel);
@@ -371,26 +398,40 @@ public class CardUtil {
                 //find the text for the card
                 textForTooltip = DevCardToolTips.getDevCardTooltips()[theDevCards.get(toolTipDevCardIndex) - 1];
 
-                //add the text to the tool tip
-                SettlerLbl tooltipText = new SettlerLbl(textForTooltip);
-                tooltipText.setForeground(new Color(57, 39, 32));
+            } else { //if the dev cards are in stacked mode
+                //draw the tool tip over the stack
+                //find the card to draw it own
+                devCardXPos = theGamePanel.getDevCardStackXPositions()[toolTipDevCardIndex];
 
-                tooltipText.setFont(new Font("Calibri", Font.BOLD, GamePanel.scaleInt(16)));
-                tooltipText.setXPos(devCardXPos + GamePanel.scaleInt(13));
-                tooltipText.setYPos(devCardYPos - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD) + GamePanel.scaleInt(18));
+                //draw
+                g2d.drawImage(ImageRef.TOOLTIP_DEV_CARD_BGD,
+                        devCardXPos,
+                        devCardYPos - GamePanel.scaleInt(5) - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD), //put it above the card
+                        theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD),
+                        theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD),
+                        theGamePanel);
 
-                //set the line wrap                
-                tooltipText.setLineWrap(true);
-                tooltipText.setSpaceForText((double) (theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD) - GamePanel.scaleInt(20)));
+                //get the for the stacked tool tip
+                textForTooltip = DevCardToolTips.getDevCardTooltips()[toolTipDevCardIndex];
 
-                //System.out.println("Card: " + theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD));
-                //System.out.println("Spacer: " + GamePanel.scaleInt(20));
-                //System.out.println("Space: " + tooltipText.getSpaceForText());
-                tooltipText.setLinewrapSpace(16);
-                tooltipText.calcNumLines(g2d, theGamePanel);
-
-                tooltipText.draw(g2d);
             }
+
+            //add the text to the tool tip
+            SettlerLbl tooltipText = new SettlerLbl(textForTooltip);
+            tooltipText.setForeground(new Color(57, 39, 32));
+
+            tooltipText.setFont(new Font("Calibri", Font.BOLD, GamePanel.scaleInt(16)));
+            tooltipText.setXPos(devCardXPos + GamePanel.scaleInt(13));
+            tooltipText.setYPos(devCardYPos - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD) + GamePanel.scaleInt(18));
+
+            //set the line wrap                
+            tooltipText.setLineWrap(true);
+            tooltipText.setSpaceForText((double) (theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD) - GamePanel.scaleInt(20)));
+
+            tooltipText.setLinewrapSpace(16);
+            tooltipText.calcNumLines(g2d, theGamePanel);
+
+            tooltipText.draw(g2d);
         }
 
     }

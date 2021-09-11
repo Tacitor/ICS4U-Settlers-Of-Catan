@@ -6959,6 +6959,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         GamePanel.doSnakeRules = doSnakeRules;
     }
 
+    /**
+     * Accessor for the devCardStackXPositions array.
+     *
+     * @return
+     */
+    public int[] getDevCardStackXPositions() {
+        return devCardStackXPositions;
+    }
+
     // </editor-fold>
     @Override
     public void mouseDragged(MouseEvent e) {
