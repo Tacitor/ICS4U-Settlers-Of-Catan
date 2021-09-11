@@ -195,6 +195,17 @@ public class CardUtil {
 
     }
 
+    /**
+     * Check if a tool tip should be drawn for a Development card. Given the
+     * current mouse position and the development cards that are shown on
+     * screen.
+     *
+     * @param theDevCards
+     * @param mouseX
+     * @param mouseY
+     * @param gamePanel
+     * @param drawStacks
+     */
     public static void checkForDevCardTooltip(ArrayList<Integer> theDevCards, int mouseX, int mouseY, GamePanel gamePanel, boolean drawStacks) {
 
         //step 1 is to check if a new tool tip needs to be created
@@ -249,6 +260,16 @@ public class CardUtil {
         }
     }
 
+    /**
+     * Calculate the X position on screen of where the cards will begin. This is
+     * only for the full layout and not stacked. Uses the gamePanel to determine
+     * this with account to the game resolution for scaling.
+     *
+     * @param type
+     * @param listSize
+     * @param gamePanel
+     * @return
+     */
     public static int getCardStartPosition(int type, int listSize, GamePanel gamePanel) {
 
         Image[] typeImageList = new Image[]{CARD_CLAY, DEV_CARD_KNIGHT};
@@ -261,6 +282,18 @@ public class CardUtil {
 
     }
 
+    /**
+     * Given a list of Development cards and the mouse position find the index
+     * of the list the mouse is on. Also find if the mouse is even on a card to
+     * begin with. If not it returns a value if -1.
+     *
+     * @param theDevCards
+     * @param mouseX
+     * @param mouseY
+     * @param gamePanel
+     * @param drawStacks
+     * @return
+     */
     public static int getIndexOfListMouseIsOn(ArrayList<Integer> theDevCards, int mouseX, int mouseY, GamePanel gamePanel, boolean drawStacks) {
 
         //set up needed vars
@@ -303,6 +336,15 @@ public class CardUtil {
         return returnVal;
     }
 
+    /**
+     * Actually draw the Development card too tip. Gets called by the draw
+     * method in GamePanel.
+     *
+     * @param g2d
+     * @param theDevCards
+     * @param theGamePanel
+     * @param drawStacks
+     */
     public static void drawDevCardTooltip(Graphics2D g2d, ArrayList<Integer> theDevCards, GamePanel theGamePanel, boolean drawStacks) {
 
         //check if there is a tool tip to draw
