@@ -46,6 +46,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.util.CardUtil;
+import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.util.GlobalDataRecord;
 import textures.ImageRef;
 import static textures.ImageRef.*;
@@ -5183,14 +5184,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // If a turn is currently going on, render the current player's cards
         if (!inbetweenTurns) {
 
-            int playerID;
-
-            //if online then always show the local player's cards
-            if (onlineMode != -1) {
-                playerID = onlineMode;
-            } else { //show the current players cards
-                playerID = currentPlayer;
-            }
+            int playerID = GenUtil.getDisplayUserNum(onlineMode, currentPlayer);
 
             //decide which cards to draw: development or resource
             if (!showDevCards) {
@@ -5202,7 +5196,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 countCardTypes(listSize, playerID);
 
                 // Calculate where the first card must go to center the list
-                cardStartPosition = (int) ((this.getWidth() / 2) - (listSize * getImgWidth(CARD_CLAY) + (listSize - 1) * (10 / scaleFactor)) / 2);
+                cardStartPosition = CardUtil.getCardStartPosition(0, listSize, this);
 
                 //check if the cards would go off the screen
                 //by checking if the start pos of the cards would be past the ending of the exit button
@@ -5385,7 +5379,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 }
 
                 // Calculate where the first card must go to center the list
-                devCardStartPosition = (int) ((this.getWidth() / 2) - (listSize * getImgWidth(DEV_CARD_KNIGHT) + (listSize - 1) * (10 / scaleFactor)) / 2);
+                devCardStartPosition = CardUtil.getCardStartPosition(1, listSize, this);
 
                 //check if the cards would go off the screen
                 //by checking if the start pos of the cards would be past the ending of the exit button
@@ -5581,22 +5575,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //draw the text
             drawSettlerBtn(g2d, btn.getTextImage(), btn, 0);
-            
+
             //draw the player's colour dot if it's a turn switch button
             if (btn == turnSwitchBtn && btn.getType() == 3) {
                 int playerDotNum = btn.getMode();
                 int dotEndModeOffset = 0; //the number of pixels the dot should move to fit the space when in end text mode
-                
+
                 //take away the +4 offset if it's in "End turn" mode
                 if (playerDotNum > 4) {
-                    playerDotNum-=4;
+                    playerDotNum -= 4;
                     dotEndModeOffset = scaleInt(7);
                 }
-                
+
                 //draw the dot 
-                g2d.drawImage(PLAYER_DOTS[playerDotNum], 
-                        btn.getXPos() + scaleInt(81) - dotEndModeOffset, 
-                        btn.getYPos() + getImgHeight(btn.getTextImage()) / 2 - getImgHeight(PLAYER_DOTS[playerDotNum]) / 4, 
+                g2d.drawImage(PLAYER_DOTS[playerDotNum],
+                        btn.getXPos() + scaleInt(81) - dotEndModeOffset,
+                        btn.getYPos() + getImgHeight(btn.getTextImage()) / 2 - getImgHeight(PLAYER_DOTS[playerDotNum]) / 4,
                         getImgWidth(PLAYER_DOTS[playerDotNum]) / 2,
                         getImgHeight(PLAYER_DOTS[playerDotNum]) / 2,
                         null);
@@ -5705,6 +5699,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         }
         g2d.drawString("Online mode: " + appendText + " with ID of \'" + onlineMode + "\'", rightDrawMargin, scaleInt(50) + getImgHeight(MATERIAL_KEY));
 
+        //draw tooltips for the dev cards
+        CardUtil.drawDevCardTooltip(g2d, devCards[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)], this, drawDevCardStacks[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)]);
+
         // Add alignment lines
         //g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
         //g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
@@ -5726,10 +5723,26 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     // </editor-fold>
-    public void fire() {
-        //debugs. Proof the game is actually redrawing.
-        //showRoadHitbox = true;
+    /**
+     * The Catan.java class calls this method. It is used to update the game
+     * panel and other time related calls.
+     */
+    public void catanTickUpdate() {
+
         repaint();
+    }
+
+    /**
+     * The Catan.java class calls this method. It is used to make frequent
+     * checks that are too slow for the catanTickUpdate() method
+     */
+    public void catanFastTickUpdate() {
+
+        //check if a user moused over a dev card for a tool tip
+        if (showDevCards && !inbetweenTurns) {
+            CardUtil.checkForDevCardTooltip(devCards[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)], mouseMotionPosX, mouseMotionPosY, this, drawDevCardStacks[GenUtil.getDisplayUserNum(onlineMode, currentPlayer)]);
+        }
+
     }
 
     /**
@@ -6080,6 +6093,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
 
         titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
+
+        //set the magin spacing for the settler labels
+        instructionLbl.setSpaceForText((this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (instructionLbl.getXPos()));
+        subInstructionLbl.setSpaceForText((this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (subInstructionLbl.getXPos()));
     }
 
     /**
@@ -6940,6 +6957,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public static void setDoSnakeRules(boolean doSnakeRules) {
         GamePanel.doSnakeRules = doSnakeRules;
+    }
+
+    /**
+     * Accessor for the devCardStackXPositions array.
+     *
+     * @return
+     */
+    public int[] getDevCardStackXPositions() {
+        return devCardStackXPositions;
     }
 
     // </editor-fold>
