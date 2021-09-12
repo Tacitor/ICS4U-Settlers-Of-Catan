@@ -5,10 +5,16 @@
  */
 package krampitzkreutzwisersettlersofcatan.util;
 
+import dataFiles.DevCardToolTips;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collections;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
+import textures.ImageRef;
 import static textures.ImageRef.CARD_CLAY;
 import static textures.ImageRef.DEV_CARD_KNIGHT;
 
@@ -22,7 +28,7 @@ public class CardUtil {
     //card vars
     private static ArrayList<Integer> newlyBoughtDevCards = new ArrayList<>(); //an ArrayList containing the cards that cannot be played this round because they were just bought
     //time and hover vars
-    public static boolean showDevCardToolTip; //whether or not the game is showing a tool tip right now
+    private static boolean showDevCardToolTip; //whether or not the game is showing a tool tip right now
     public static int toolTipDevCardIndex = -1; //the index of the dev cards that is getting the tool tip
     private static int prevMouseX = -1; //the previous X position of the mouse, used to see if it moved since the last check
     private static int prevMouseY = -1;
@@ -189,6 +195,17 @@ public class CardUtil {
 
     }
 
+    /**
+     * Check if a tool tip should be drawn for a Development card. Given the
+     * current mouse position and the development cards that are shown on
+     * screen.
+     *
+     * @param theDevCards
+     * @param mouseX
+     * @param mouseY
+     * @param gamePanel
+     * @param drawStacks
+     */
     public static void checkForDevCardTooltip(ArrayList<Integer> theDevCards, int mouseX, int mouseY, GamePanel gamePanel, boolean drawStacks) {
 
         //step 1 is to check if a new tool tip needs to be created
@@ -204,7 +221,7 @@ public class CardUtil {
                 if (timeOfMousePosTaken != 0 && (System.currentTimeMillis() - timeOfMousePosTaken) >= 1000) {
                     //System.out.println("yes");
                     //now check if this resting state is ontop of a devcard
-                    
+
                     int listIndex = getIndexOfListMouseIsOn(theDevCards, mouseX, mouseY, gamePanel, drawStacks);
 
                     //update the results of the querry
@@ -230,10 +247,10 @@ public class CardUtil {
         } //step two is to check in an existing tool tip needs to be removed
         else { //if there is already a tool tip being drawn
             //check if the mouse is still anywhere on the card where the tool tip is being drawn
-            
+
             //get the index the mouse is on
             int index = getIndexOfListMouseIsOn(theDevCards, mouseX, mouseY, gamePanel, drawStacks);
-            
+
             //check if it's the same card
             if (index != toolTipDevCardIndex) {
                 //if it's not turn off the tool tip
@@ -243,6 +260,16 @@ public class CardUtil {
         }
     }
 
+    /**
+     * Calculate the X position on screen of where the cards will begin. This is
+     * only for the full layout and not stacked. Uses the gamePanel to determine
+     * this with account to the game resolution for scaling.
+     *
+     * @param type
+     * @param listSize
+     * @param gamePanel
+     * @return
+     */
     public static int getCardStartPosition(int type, int listSize, GamePanel gamePanel) {
 
         Image[] typeImageList = new Image[]{CARD_CLAY, DEV_CARD_KNIGHT};
@@ -255,12 +282,24 @@ public class CardUtil {
 
     }
 
+    /**
+     * Given a list of Development cards and the mouse position find the index
+     * of the list the mouse is on. Also find if the mouse is even on a card to
+     * begin with. If not it returns a value if -1.
+     *
+     * @param theDevCards
+     * @param mouseX
+     * @param mouseY
+     * @param gamePanel
+     * @param drawStacks
+     * @return
+     */
     public static int getIndexOfListMouseIsOn(ArrayList<Integer> theDevCards, int mouseX, int mouseY, GamePanel gamePanel, boolean drawStacks) {
 
         //set up needed vars
         int devCardYPos = (int) (gamePanel.getHeight() - (gamePanel.getImgHeight(DEV_CARD_KNIGHT) * 1.125));
         int devCardXPos;
-        int returnVal = -1; //the index of the card or of the stack
+        int returnVal; //the index of the card or of the stack
         int indexOfFind = -1;
 
         //different check for differnt layouts
@@ -282,20 +321,138 @@ public class CardUtil {
 
                     foundOnCard = true;
                     indexOfFind = i;
-                    
 
                 }
             }
-            
+
             if (foundOnCard) {
                 returnVal = indexOfFind;
             } else {
                 returnVal = -1;
             }
 
+        } else { //if in stacked mode
+
+            boolean foundOnStackedCard = false; //is the cursor found on any card stack at all
+
+            //loop through every stack
+            for (int i = 0; i < 5; i++) {
+
+                //get the x pos of that card
+                devCardXPos = gamePanel.getDevCardStackXPositions()[i];
+
+                //check if the user has their mouse over a dev card
+                if (mouseX > devCardXPos
+                        && mouseY > devCardYPos
+                        && mouseX < (devCardXPos + gamePanel.getImgWidth(DEV_CARD_KNIGHT))
+                        && mouseY < (devCardYPos + gamePanel.getImgHeight(DEV_CARD_KNIGHT))) {
+
+                    foundOnStackedCard = true;
+                    indexOfFind = i;
+
+                }
+            }
+
+            if (foundOnStackedCard) {
+                returnVal = indexOfFind;
+            } else {
+                returnVal = -1;
+            }
         }
 
         return returnVal;
+    }
+
+    /**
+     * Actually draw the Development card too tip. Gets called by the draw
+     * method in GamePanel.
+     *
+     * @param g2d
+     * @param theDevCards
+     * @param theGamePanel
+     * @param drawStacks
+     */
+    public static void drawDevCardTooltip(Graphics2D g2d, ArrayList<Integer> theDevCards, GamePanel theGamePanel, boolean drawStacks) {
+
+        //check if there is a tool tip to draw
+        if (showDevCardToolTip) {
+
+            int devCardYPos = (int) (theGamePanel.getHeight() - (theGamePanel.getImgHeight(DEV_CARD_KNIGHT) * 1.125));
+            int devCardXPos;
+            String textForTooltip;
+
+            //check what mode the cards are being drawn in
+            if (!drawStacks) {
+
+                //find the card to draw it own
+                devCardXPos = (getCardStartPosition(1, theDevCards.size(), theGamePanel) + (theGamePanel.getImgWidth(DEV_CARD_KNIGHT) + GamePanel.scaleInt(10)) * toolTipDevCardIndex);
+
+                //draw
+                g2d.drawImage(ImageRef.TOOLTIP_DEV_CARD_BGD,
+                        devCardXPos,
+                        devCardYPos - GamePanel.scaleInt(5) - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD), //put it above the card
+                        theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD),
+                        theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD),
+                        theGamePanel);
+
+                //find the text for the card
+                textForTooltip = DevCardToolTips.getDevCardTooltips()[theDevCards.get(toolTipDevCardIndex) - 1];
+
+            } else { //if the dev cards are in stacked mode
+                //draw the tool tip over the stack
+                //find the card to draw it own
+                devCardXPos = theGamePanel.getDevCardStackXPositions()[toolTipDevCardIndex];
+
+                //draw
+                g2d.drawImage(ImageRef.TOOLTIP_DEV_CARD_BGD,
+                        devCardXPos,
+                        devCardYPos - GamePanel.scaleInt(5) - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD), //put it above the card
+                        theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD),
+                        theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD),
+                        theGamePanel);
+
+                //get the for the stacked tool tip
+                textForTooltip = DevCardToolTips.getDevCardTooltips()[toolTipDevCardIndex];
+
+            }
+
+            //add the text to the tool tip
+            SettlerLbl tooltipText = new SettlerLbl(textForTooltip);
+            tooltipText.setForeground(new Color(57, 39, 32));
+
+            tooltipText.setFont(new Font("Calibri", Font.BOLD, GamePanel.scaleInt(16)));
+            tooltipText.setXPos(devCardXPos + GamePanel.scaleInt(13));
+            tooltipText.setYPos(devCardYPos - theGamePanel.getImgHeight(ImageRef.TOOLTIP_DEV_CARD_BGD) + GamePanel.scaleInt(18));
+
+            //set the line wrap                
+            tooltipText.setLineWrap(true);
+            tooltipText.setSpaceForText((double) (theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD) - GamePanel.scaleInt(20)));
+
+            tooltipText.setLinewrapSpace(16);
+            tooltipText.calcNumLines(g2d, theGamePanel);
+
+            tooltipText.draw(g2d);
+        }
+
+    }
+
+    //Accessors and Mutators    
+    /**
+     * Access showDevCardToolTip
+     *
+     * @return
+     */
+    public static boolean getShowDevCardToolTip() {
+        return showDevCardToolTip;
+    }
+
+    /**
+     * Access toolTipDevCardIndex
+     *
+     * @return
+     */
+    public static int getToolTipDevCardIndex() {
+        return toolTipDevCardIndex;
     }
 
 }

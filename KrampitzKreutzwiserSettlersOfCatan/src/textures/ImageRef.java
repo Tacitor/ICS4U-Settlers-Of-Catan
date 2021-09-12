@@ -134,6 +134,9 @@ public class ImageRef {
     private final static Image ORE_STACK = new ImageIcon(ImageRef.class.getResource("util/oreStack.png")).getImage();
     //the public array to acces those images
     public final static Image[] RES_STACKS = new Image[]{ERROR_IMAGE, CLAY_STACK, WOOD_STACK, WHEAT_STACK, SHEEP_STACK, ORE_STACK};
+    
+    //the image for dev card too tips
+    public final static Image TOOLTIP_DEV_CARD_BGD = new ImageIcon(ImageRef.class.getResource("util/tooltipBackground.png")).getImage();
 
     public ImageRef() {
     }
