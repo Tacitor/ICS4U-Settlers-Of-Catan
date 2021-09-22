@@ -18,7 +18,7 @@ public class Catan {
     public static GamePanel gamePanel;
     public static MainMenu menu;
     public static final String SAVE_FILE_VER = "V14"; //the save file version needed    
-    public static final String GAME_VER = "v5.1.3 - Jason v5.0.0 Patch"; //the version of the game/program
+    public static final String GAME_VER = "pre-v5.1.4 - Animation Update"; //the version of the game/program
 
     //fast pulse vars
     private static long prevTime;
