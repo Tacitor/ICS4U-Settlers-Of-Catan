@@ -1501,10 +1501,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         for (int i = 0; i < settlementNodes.size(); i++) {
 
                             //if the player clicks in a valid hitbox for a settlement
-                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(BLANK_HOUSE) / 2
+                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(BLANK_HOUSE) / 2 + getImgWidth(BLANK_HOUSE)
+                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(BLANK_HOUSE) / 2
+                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(BLANK_HOUSE) / 2 + getImgHeight(BLANK_HOUSE)) {
                                 //debug settlent build detection
                                 //System.out.println("hitbox match");
 
@@ -1578,10 +1578,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         for (int i = 0; i < settlementNodes.size(); i++) {
 
                             //if the player clicks in a valid hitbox for a settlement
-                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(BLANK_HOUSE) / 2
+                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(BLANK_HOUSE) / 2 + getImgWidth(BLANK_HOUSE)
+                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(BLANK_HOUSE) / 2
+                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(BLANK_HOUSE) / 2 + getImgHeight(BLANK_HOUSE)) {
 
                                 // Check that the current player owns settlement
                                 if (settlementNodes.get(i).getPlayer() == currentPlayer) {
@@ -4963,6 +4963,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // Draw the 72 road nodes
         NodeRoad road;
         Image image;
+        Image[] imageArray;
         for (int i = 0; i < 72; i++) {
             road = roadNodes.get(i);
             switch (road.getOrientation()) {
@@ -5072,28 +5073,31 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 image = BLANK_HOUSE;
             } // Otherwise, check the size of the settlement to see which image to use
             else if (settlement.isLarge() == false) { // settlement
-                // Store the settlement image for the player's color
+                // Store the settlement image array for the player's color
                 switch (settlement.getPlayer()) {
                     // Player 1: Red
                     case 1:
-                        image = RED_HOUSE_S;
+                        imageArray = RED_HOUSES_S;
                         break;
                     // Player 2: Blue
                     case 2:
-                        image = BLUE_HOUSE_S;
+                        imageArray = BLUE_HOUSES_S;
                         break;
                     // Player 3: Orange
                     case 3:
-                        image = ORANGE_HOUSE_S;
+                        imageArray = ORANGE_HOUSES_S;
                         break;
                     // Player 4: White
                     case 4:
-                        image = WHITE_HOUSE_S;
+                        imageArray = WHITE_HOUSES_S;
                         break;
                     default:
-                        image = RED_HOUSE_L;
+                        imageArray = RED_HOUSES_S;
                         break;
                 }
+                
+                //now set the image based on how many frames there are in the animation and what the clock is set to.
+                image = imageArray[(Catan.clock / 7) % imageArray.length];
             } else { // city
                 // Store the city image for the player's color
                 switch (settlement.getPlayer()) {
@@ -5114,7 +5118,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         image = WHITE_HOUSE_L;
                         break;
                     default:
-                        image = RED_HOUSE_S;
+                        image = BLANK_HOUSE;
                         break;
                 }
             }
@@ -5157,10 +5161,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 if (drawHitBox) {
                     //draw the high light
                     g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                    g2d.fillRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
+                    g2d.fillRect(settlement.getXPos() - getImgWidth(BLANK_HOUSE) / 2, settlement.getYPos() - getImgHeight(BLANK_HOUSE) / 2, getImgWidth(BLANK_HOUSE), getImgHeight(BLANK_HOUSE));
                     //draw the boarder
                     g2d.setColor(new java.awt.Color(255, 255, 225));
-                    g2d.drawRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
+                    g2d.drawRect(settlement.getXPos() - getImgWidth(BLANK_HOUSE) / 2, settlement.getYPos() - getImgHeight(BLANK_HOUSE) / 2, getImgWidth(BLANK_HOUSE), getImgHeight(BLANK_HOUSE));
                 }
             }
         }

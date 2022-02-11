@@ -62,15 +62,29 @@ public class ImageRef {
     public final static Image ORANGE_ROAD_L = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeRoadL.png")).getImage(); 
 
     //images for the settlements
-    public final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseL.png")).getImage();
-    public final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseL.png")).getImage();
-    public final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseS.png")).getImage();
-    public final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke.png")).getImage();
     public final static Image BLANK_HOUSE = new ImageIcon(ImageRef.class.getResource("playerPieces/blankHouse.png")).getImage(); // Blank image for unowned settlement nodes 
+    //the red ones
+    public final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseL.png")).getImage();
+    public final static Image RED_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke0.png")).getImage();
+    public final static Image RED_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke1.png")).getImage();
+    public final static Image RED_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke2.png")).getImage();
+    public final static Image[] RED_HOUSES_S = new Image[]{
+        RED_HOUSE_S0, RED_HOUSE_S1, RED_HOUSE_S2, RED_HOUSE_S1};
+    //blue
+    public final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseL.png")).getImage();
+    public final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseS.png")).getImage();
+    public final static Image[] BLUE_HOUSES_S = new Image[]{
+        BLUE_HOUSE_S};
+    //white
     public final static Image WHITE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseL.png")).getImage();
-    public final static Image ORANGE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseL.png")).getImage();
     public final static Image WHITE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseS.png")).getImage();
+    public final static Image[] WHITE_HOUSES_S = new Image[]{
+        WHITE_HOUSE_S};
+    //orange
     public final static Image ORANGE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseS.png")).getImage();
+    public final static Image ORANGE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseL.png")).getImage();
+    public final static Image[] ORANGE_HOUSES_S = new Image[]{
+        ORANGE_HOUSE_S};
 
     //image for the thief
     public final static Image THIEF = new ImageIcon(ImageRef.class.getResource("util/thief.png")).getImage();
