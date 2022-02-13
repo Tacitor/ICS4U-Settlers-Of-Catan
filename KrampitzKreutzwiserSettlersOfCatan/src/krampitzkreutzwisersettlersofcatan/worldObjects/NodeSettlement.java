@@ -551,7 +551,8 @@ public class NodeSettlement extends WorldObject {
         if (System.currentTimeMillis() - lastFrameStart > frameTime) {
             //yes it is time for a new frame
             
-            System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
+            //debug frame times
+            //System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
 
             //calculate the index the frame needs to be pulled from
             frameIndex = currentFrameIndex + 1; //the new frame will just be one after the current one
