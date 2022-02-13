@@ -5068,39 +5068,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             // Get the settlement node from the ArrayList
             settlement = settlementNodes.get(i);
 
-            // If the settlement is unowned use the blank image
-            if (settlement.getPlayer() == 0) {
-                image = NodeSettlement.BLANK_HOUSE;
-            } // Otherwise, check the size of the settlement to see which image to use
-            else if (settlement.isLarge() == false) { // settlement
-
-                //now set the image based on the NodeSettlement class
-                image = settlement.getAnimationFrame();
-
-            } else { // city
-                // Store the city image for the player's color
-                switch (settlement.getPlayer()) {
-                    // Player 1: Red
-                    case 1:
-                        image = NodeSettlement.RED_HOUSE_L;
-                        break;
-                    // Player 2: Blue
-                    case 2:
-                        image = NodeSettlement.BLUE_HOUSE_L;
-                        break;
-                    // Player 3: Orange
-                    case 3:
-                        image = NodeSettlement.ORANGE_HOUSE_L;
-                        break;
-                    // Player 4: White
-                    case 4:
-                        image = NodeSettlement.WHITE_HOUSE_L;
-                        break;
-                    default:
-                        image = NodeSettlement.BLANK_HOUSE;
-                        break;
-                }
-            }
+            //now set the image based on the NodeSettlement class
+            image = settlement.getAnimationFrame();
 
             // Draw the settlement image saved above, at the node's position
             g2d.drawImage(image,

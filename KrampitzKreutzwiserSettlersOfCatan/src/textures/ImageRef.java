@@ -18,6 +18,7 @@ public class ImageRef {
     
     //error image
     public final static Image ERROR_IMAGE = new ImageIcon(ImageRef.class.getResource("util/error.png")).getImage();
+    public final static Image[] ERROR_IMAGES = new Image[]{ERROR_IMAGE};
     
     //icon image for game
     public final static Image ICON = new ImageIcon(ImageRef.class.getResource("util/icon.png")).getImage();

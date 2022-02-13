@@ -30,19 +30,25 @@ public class NodeSettlement extends WorldObject {
     private Tile hex2;
     private Tile hex3;
     //animation related
-    private int frameTime; //the time in miliseconds each from should be displayed for
+    private int frameTimeSmoke; //the time in miliseconds each frame for chimney smoke should be displayed for
+    private int frameTimeLight; //the time in miliseconds each frame for house lights should be displayed for
     private long lastFrameStart; //the system time (in miliseconds) when the previous frame started displaying 
     private int currentFrameIndex; //the index within the image array the 
 
     //Images for the settlements
     public final static Image BLANK_HOUSE = new ImageIcon(ImageRef.class.getResource("playerPieces/blankHouse.png")).getImage(); // Blank image for unowned settlement nodes 
     //the red ones
-    public final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseL.png")).getImage();
+    private final static Image RED_HOUSE_L0 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseLights0.png")).getImage();
+    private final static Image RED_HOUSE_L1 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseLights1.png")).getImage();
+    private final static Image RED_HOUSE_L2 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseLights2.png")).getImage();
+    private final static Image RED_HOUSE_L3 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseLights3.png")).getImage();
     private final static Image RED_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke0.png")).getImage();
     private final static Image RED_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke1.png")).getImage();
     private final static Image RED_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke2.png")).getImage();
     public final static Image[] RED_HOUSES_S = new Image[]{
         RED_HOUSE_S0, RED_HOUSE_S1, RED_HOUSE_S2, RED_HOUSE_S1};
+    public final static Image[] RED_HOUSES_L = new Image[]{
+        RED_HOUSE_L0, RED_HOUSE_L1, RED_HOUSE_L0, RED_HOUSE_L2, RED_HOUSE_L0, RED_HOUSE_L3};
     //blue
     public final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseL.png")).getImage();
     private final static Image BLUE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke0.png")).getImage();
@@ -50,6 +56,8 @@ public class NodeSettlement extends WorldObject {
     private final static Image BLUE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke2.png")).getImage();
     public final static Image[] BLUE_HOUSES_S = new Image[]{
         BLUE_HOUSE_S0, BLUE_HOUSE_S1, BLUE_HOUSE_S2, BLUE_HOUSE_S1};
+    public final static Image[] BLUE_HOUSES_L = new Image[]{
+        BLUE_HOUSE_L};
     //white
     public final static Image WHITE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseL.png")).getImage();
     private final static Image WHITE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke0.png")).getImage();
@@ -57,6 +65,8 @@ public class NodeSettlement extends WorldObject {
     private final static Image WHITE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke2.png")).getImage();
     public final static Image[] WHITE_HOUSES_S = new Image[]{
         WHITE_HOUSE_S0, WHITE_HOUSE_S1, WHITE_HOUSE_S2, WHITE_HOUSE_S1};
+    public final static Image[] WHITE_HOUSES_L = new Image[]{
+        WHITE_HOUSE_L};
     //orange
     public final static Image ORANGE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseL.png")).getImage();
     private final static Image ORANGE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke0.png")).getImage();
@@ -64,6 +74,8 @@ public class NodeSettlement extends WorldObject {
     private final static Image ORANGE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke2.png")).getImage();
     public final static Image[] ORANGE_HOUSES_S = new Image[]{
         ORANGE_HOUSE_S0, ORANGE_HOUSE_S1, ORANGE_HOUSE_S2, ORANGE_HOUSE_S1};
+    public final static Image[] ORANGE_HOUSES_L = new Image[]{
+        WHITE_HOUSE_L};
 
     /**
      * Constructor to create a new blank settlement node
@@ -81,7 +93,8 @@ public class NodeSettlement extends WorldObject {
         road3 = null;
         age = -1; //player is set to 0, so age is -1, it has no age
 
-        frameTime = 500; //the default frame time should be 10ms
+        frameTimeSmoke = 500; //the default frame time should be 500ms
+        frameTimeLight = 2000;
         lastFrameStart = 0; //the last frame has never been displayed so set it to 0
         currentFrameIndex = 0;
     }
@@ -376,23 +389,41 @@ public class NodeSettlement extends WorldObject {
             return 0;
         } // Road not referenced
     }
+
+    /**
+     * Get the time in milliseconds each frame is displayed for
+     *
+     * @return
+     */
+    public int getFrameTimeSmoke() {
+        return frameTimeSmoke;
+    }
+
+    /**
+     * Set the time in milliseconds each frame is displayed for
+     *
+     * @param frameTimeSmoke
+     */
+    public void setFrameTimeSmoke(int frameTimeSmoke) {
+        this.frameTimeSmoke = frameTimeSmoke;
+    }
     
     /**
      * Get the time in milliseconds each frame is displayed for
      *
      * @return
      */
-    public int getFrameTime() {
-        return frameTime;
+    public int getFrameTimeLight() {
+        return frameTimeLight;
     }
 
     /**
      * Set the time in milliseconds each frame is displayed for
      *
-     * @param frameTime
+     * @param frameTimeLight
      */
-    public void setFrameTime(int frameTime) {
-        this.frameTime = frameTime;
+    public void setFrameTimeLight(int frameTimeLight) {
+        this.frameTimeLight = frameTimeLight;
     }
 
     /**
@@ -523,56 +554,91 @@ public class NodeSettlement extends WorldObject {
     public Image getAnimationFrame() {
         //the image the method will return
         Image image;
-        //the array of images to pull from
-        Image[] imageArray;
-        //the index of the array that contains the current frame of animation
-        int frameIndex;
+        int frameTime;
 
-        //decide which array of images to grab
-        switch (player) {
-            case 1:
-                imageArray = RED_HOUSES_S;
-                break;
-            case 2:
-                imageArray = BLUE_HOUSES_S;
-                break;
-            case 3:
-                imageArray = ORANGE_HOUSES_S;
-                break;
-            case 4:
-                imageArray = WHITE_HOUSES_S;
-                break;
-            default:
-                imageArray = RED_HOUSES_S;
-                break;
-        }
+        // If the settlement is unowned use the blank image
+        if (player == 0) {
+            image = NodeSettlement.BLANK_HOUSE;
+        } else { //for all the owned settlements
 
-        //decide if a new frame needs to be displayed or if the current one is still the one it should be on
-        if (System.currentTimeMillis() - lastFrameStart > frameTime) {
-            //yes it is time for a new frame
-            
-            //debug frame times
-            //System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
+            //the array of images to pull from
+            Image[] imageArray;
+            //the index of the array that contains the current frame of animation
+            int frameIndex;
 
-            //calculate the index the frame needs to be pulled from
-            frameIndex = currentFrameIndex + 1; //the new frame will just be one after the current one
+            //decide if to grab the cities or the settlements
+            if (large) { //cities
+                //decide which array of images to grab
+                switch (player) {
+                    case 1:
+                        imageArray = RED_HOUSES_L;
+                        break;
+                    case 2:
+                        imageArray = BLUE_HOUSES_L;
+                        break;
+                    case 3:
+                        imageArray = ORANGE_HOUSES_L;
+                        break;
+                    case 4:
+                        imageArray = WHITE_HOUSES_L;
+                        break;
+                    default:
+                        imageArray = ImageRef.ERROR_IMAGES;
+                        break;
+                }
+                //pick one of the frame times
+                frameTime = frameTimeLight;
+            } else { //settlements
 
-            //and make a check that it won't be out of bounds
-            if (frameIndex >= imageArray.length) {
-                frameIndex = 0; //reset it to the beginning
+                //decide which array of images to grab
+                switch (player) {
+                    case 1:
+                        imageArray = RED_HOUSES_S;
+                        break;
+                    case 2:
+                        imageArray = BLUE_HOUSES_S;
+                        break;
+                    case 3:
+                        imageArray = ORANGE_HOUSES_S;
+                        break;
+                    case 4:
+                        imageArray = WHITE_HOUSES_S;
+                        break;
+                    default:
+                        imageArray = ImageRef.ERROR_IMAGES;
+                        break;
+                }
+                //pick one of the frame times
+                frameTime = frameTimeSmoke;
             }
 
-            //get the new frame
-            image = imageArray[frameIndex];
+            //decide if a new frame needs to be displayed or if the current one is still the one it should be on
+            if (System.currentTimeMillis() - lastFrameStart > frameTime) {
+                //yes it is time for a new frame
 
-            //update the time
-            lastFrameStart = System.currentTimeMillis();
+                //debug frame times
+                //System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
+                //calculate the index the frame needs to be pulled from
+                frameIndex = currentFrameIndex + 1; //the new frame will just be one after the current one
 
-            //update the frame index
-            currentFrameIndex = frameIndex;
+                //and make a check that it won't be out of bounds
+                if (frameIndex >= imageArray.length) {
+                    frameIndex = 0; //reset it to the beginning
+                }
 
-        } else { //if the minimum frame has not yet passed pass the current frame again
-            image = imageArray[currentFrameIndex];
+                //get the new frame
+                image = imageArray[frameIndex];
+
+                //update the time
+                lastFrameStart = System.currentTimeMillis();
+
+                //update the frame index
+                currentFrameIndex = frameIndex;
+
+            } else { //if the minimum frame has not yet passed pass the current frame again
+                image = imageArray[currentFrameIndex];
+            }
+
         }
 
         return image;
