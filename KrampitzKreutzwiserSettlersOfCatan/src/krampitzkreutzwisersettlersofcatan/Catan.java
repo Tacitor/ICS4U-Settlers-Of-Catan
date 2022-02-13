@@ -14,7 +14,6 @@ import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
  */
 public class Catan {
 
-    public static int clock = 0;
     public static GamePanel gamePanel;
     public static MainMenu menu;
     public static final String SAVE_FILE_VER = "V14"; //the save file version needed    
@@ -63,19 +62,13 @@ public class Catan {
 
         //run the slow game pulse
         while (true) {
-            clock++;
-            
+
             //check if clock is at 1000
             //if it is at 1000 reset it to 0 because 100 seconds have passed and all animations should reset
-            if (clock == 1000) {
-                clock = 0;
-            }
-            
             gamePanel.catanTickUpdate();
             Thread.sleep(100); //time a spent sleeping is subject to change
             //the way sleep is envoked is also subject to change.
-            
-            
+
         }
     }
 
@@ -92,7 +85,7 @@ public class Catan {
         fastPulseTime = (int) (System.currentTimeMillis() - prevTime);
         //record new time
         prevTime = System.currentTimeMillis();
-        
+
         //now call the game panel
         gamePanel.catanFastTickUpdate();
 
