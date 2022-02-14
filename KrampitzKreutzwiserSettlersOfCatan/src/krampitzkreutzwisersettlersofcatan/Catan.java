@@ -60,16 +60,6 @@ public class Catan {
         fastGamePulseRunnable.setDaemon(true);
         fastGamePulseRunnable.start();
 
-        //run the slow game pulse
-        while (true) {
-
-            //check if clock is at 1000
-            //if it is at 1000 reset it to 0 because 100 seconds have passed and all animations should reset
-            gamePanel.catanTickUpdate();
-            Thread.sleep(100); //time a spent sleeping is subject to change
-            //the way sleep is envoked is also subject to change.
-
-        }
     }
 
     public static void updateGamePanel() {
@@ -88,6 +78,7 @@ public class Catan {
 
         //now call the game panel
         gamePanel.catanFastTickUpdate();
+        gamePanel.catanAnimationTickUpdate(); //for animation
 
     }
 

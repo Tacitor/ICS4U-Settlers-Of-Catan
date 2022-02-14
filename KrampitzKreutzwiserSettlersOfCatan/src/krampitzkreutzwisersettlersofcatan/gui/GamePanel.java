@@ -5679,14 +5679,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * The Catan.java class calls this method. It is used to update the game
      * panel and other time related calls.
      */
-    public void catanTickUpdate() {
+    public void catanAnimationTickUpdate() {
 
         repaint();
     }
 
     /**
      * The Catan.java class calls this method. It is used to make frequent
-     * checks that are too slow for the catanTickUpdate() method
+     * checks that are too slow for the catanAnimationTickUpdate() method
      */
     public void catanFastTickUpdate() {
 

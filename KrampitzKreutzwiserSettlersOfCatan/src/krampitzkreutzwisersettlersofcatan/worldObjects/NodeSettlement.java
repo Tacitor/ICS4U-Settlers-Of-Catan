@@ -32,6 +32,7 @@ public class NodeSettlement extends WorldObject {
     //animation related
     private int frameTimeSmoke; //the time in miliseconds each frame for chimney smoke should be displayed for
     private int frameTimeLight; //the time in miliseconds each frame for house lights should be displayed for
+    private int frameTimeOffset; //the time in milliseconds the frame times will be offset by 
     private long lastFrameStart; //the system time (in miliseconds) when the previous frame started displaying 
     private int currentFrameIndex; //the index within the image array the 
 
@@ -106,6 +107,8 @@ public class NodeSettlement extends WorldObject {
         frameTimeLight = 2000;
         lastFrameStart = 0; //the last frame has never been displayed so set it to 0
         currentFrameIndex = 0;
+
+        randomizeSmokeAnimation();
     }
 
     /**
@@ -238,6 +241,13 @@ public class NodeSettlement extends WorldObject {
      */
     public void setLarge(boolean isLarge) {
         this.large = isLarge;
+
+        //reset the randomized animation vars for the Node based on the new size
+        if (isLarge) {
+            randomizeLightAnimation();
+        } else {
+            randomizeSmokeAnimation();
+        }
     }
 
     /**
@@ -416,7 +426,7 @@ public class NodeSettlement extends WorldObject {
     public void setFrameTimeSmoke(int frameTimeSmoke) {
         this.frameTimeSmoke = frameTimeSmoke;
     }
-    
+
     /**
      * Get the time in milliseconds each frame is displayed for
      *
@@ -622,7 +632,7 @@ public class NodeSettlement extends WorldObject {
             }
 
             //decide if a new frame needs to be displayed or if the current one is still the one it should be on
-            if (System.currentTimeMillis() - lastFrameStart > frameTime) {
+            if (System.currentTimeMillis() - (lastFrameStart + frameTimeOffset) > frameTime) {
                 //yes it is time for a new frame
 
                 //debug frame times
@@ -651,5 +661,26 @@ public class NodeSettlement extends WorldObject {
         }
 
         return image;
+    }
+
+    /**
+     * Set the animation offset values based on the smoke animation for the
+     * Settlements
+     */
+    private void randomizeSmokeAnimation() {
+        //set the animation radomizer values
+        //as of right now the Node is set to a small size, thefore base this off of the smoke animation
+        frameTimeOffset = (int) (Math.random() * frameTimeSmoke); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
+        currentFrameIndex = (int) (Math.random() * RED_HOUSES_S.length); //pick a random number of frames to offset the animation by
+    }
+
+    /**
+     * Set the animation offset values based on the light animation for the
+     * Cities
+     */
+    private void randomizeLightAnimation() {
+        //set the animation radomizer values
+        frameTimeOffset = (int) (Math.random() * frameTimeLight); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
+        currentFrameIndex = (int) (Math.random() * RED_HOUSES_L.length); //pick a random number of frames to offset the animation by
     }
 }
