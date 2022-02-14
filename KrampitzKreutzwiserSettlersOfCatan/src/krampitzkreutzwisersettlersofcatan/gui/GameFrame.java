@@ -40,8 +40,8 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         setSize(1920, 1080); //set the size to 1080p as a back up 
         setSize(screenSize); //set the JFrame size to match the display
         //setSize(1080, 1920);
-        //setSize(1280, 720);
-        //setSize(720, 1280);
+        //setSize(1280, 720); //720p
+        //setSize(720 /*NOT 720p*/, 1280);
         //setSize(800, 600);
         //setSize(600, 800);
         //setSize(3840 , 2160);        
