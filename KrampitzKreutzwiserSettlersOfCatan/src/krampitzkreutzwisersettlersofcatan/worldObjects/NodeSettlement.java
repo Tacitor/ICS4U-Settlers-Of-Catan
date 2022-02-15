@@ -462,6 +462,42 @@ public class NodeSettlement extends WorldObject {
     public void setLastFrameStart(long lastFrameStart) {
         this.lastFrameStart = lastFrameStart;
     }
+    
+    /**
+     * Get the offset in milliseconds each frame is displayed for
+     *
+     * @return
+     */
+    public int getFrameTimeOffset() {
+        return frameTimeOffset;
+    }
+
+    /**
+     * Set the offset in milliseconds each frame is displayed for
+     *
+     * @param frameTimeOffset
+     */
+    public void setFrameTimeOffset(int frameTimeOffset) {
+        this.frameTimeOffset = frameTimeOffset;
+    }
+    
+    /**
+     * Get the index of the current frame being displayed
+     *
+     * @return
+     */
+    public int getCurrentFrameIndex() {
+        return currentFrameIndex;
+    }
+
+    /**
+     * Set the index of the current frame being displayed
+     *
+     * @param currentFrameIndex
+     */
+    public void setCurrentFrameIndex(int currentFrameIndex) {
+        this.currentFrameIndex = currentFrameIndex;
+    }
 
     /**
      * Create an identical settlement node with the same attributes
@@ -681,6 +717,24 @@ public class NodeSettlement extends WorldObject {
     private void randomizeLightAnimation() {
         //set the animation radomizer values
         frameTimeOffset = (int) (Math.random() * frameTimeLight); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
-        currentFrameIndex = (int) (Math.random() * RED_HOUSES_L.length); //pick a random number of frames to offset the animation by
+        for (int i = 0; i < 50; i++) { //seems to increase the random ness a little more
+            currentFrameIndex = (int) (Math.random() * RED_HOUSES_L.length); //pick a random number of frames to offset the animation by
+        }
+    }
+
+    /**
+     * Get the data for the current state of animations and return them as a
+     * string. The goal of this is to save them to a file that can be loaded
+     * after a client receives a new update from the catan server and needs to
+     * have consistent animations.
+     *
+     * @return
+     */
+    public String getAnimationData() {
+
+        return "refNum:\n" + refNum
+                + "\nframeTimeOffset:\n" + frameTimeOffset
+                + "\nlastFrameStart:\n" + lastFrameStart
+                + "\ncurrentFrameIndex:\n" + currentFrameIndex + "\n";
     }
 }

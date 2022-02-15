@@ -433,9 +433,6 @@ public class CatanClient extends JFrame {
                     //System.out.println("Regular Got file:\n" + Arrays.toString(fileTypeRecieve.getFile()));
                     //write the file
                     try {
-                        String saveToPath = System.getProperty("user.home")
-                                + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan";
-
                         //ensure the directory is there
                         Files.createDirectories(Paths.get(ONLINE_SAVE_LOCATION));
 
@@ -464,8 +461,14 @@ public class CatanClient extends JFrame {
                             //save that a file was recived
                             firstFileRecieve = false;
                         }
-                        //load the save
+                        //save the current animation data to the file
+                        theGameFrame.getGamePanel().saveAnimationData();
+                        
+                        //load the save from the other client in the online game
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
+                        
+                        //load back in the saved animation data after the GamePanel reset the current frames
+                        theGameFrame.getGamePanel().loadAnimationData();
 
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
