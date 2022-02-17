@@ -464,7 +464,7 @@ public class CatanClient extends JFrame {
                         }
                         long oldTime = System.currentTimeMillis();
 
-                        //save the current animation data to the file
+                        //save the current animation data 
                         SettlementAnimationData.saveNodeSettlmentAnimationData(theGameFrame.getGamePanel());
                         //System.out.println("\nBefore: " + theGameFrame.getGamePanel().getSettlementNodes().get(2).getSettlementAnimationData().toString());
 
