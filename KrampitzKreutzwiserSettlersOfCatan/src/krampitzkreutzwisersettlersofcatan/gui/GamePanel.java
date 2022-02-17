@@ -3755,41 +3755,40 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //check if it is valid (again)
             if (scanner.nextLine().equals("SettlersOfCatanLocalAnimationData:")) {
-                System.out.println("Check1");
+
             } else {
                 thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
             }
 
             if (scanner.nextLine().equals("NodeSettlements:")) {
-                System.out.println("Check2");
 
                 int settlementNodeNum = 0;
 
                 //loop through all the tiles
                 for (int i = 0; i < 54; i++) {
                     if (scanner.nextLine().equals("refNum:")) {
-                        System.out.println("Check3");
+
                         settlementNodeNum = Integer.parseInt(scanner.nextLine());
                     } else {
                         thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
                     }
 
                     if (scanner.nextLine().equals("frameTimeOffset:")) {
-                        System.out.println("Check4");
+
                         settlementNodes.get(settlementNodeNum).setFrameTimeOffset(Integer.parseInt(scanner.nextLine()));
                     } else {
                         thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
                     }
 
                     if (scanner.nextLine().equals("lastFrameStart:")) {
-                        System.out.println("Check5");
+
                         settlementNodes.get(settlementNodeNum).setLastFrameStart(Long.parseLong(scanner.nextLine()));
                     } else {
                         thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
                     }
 
                     if (scanner.nextLine().equals("currentFrameIndex:")) {
-                        System.out.println("Check6");
+
                         settlementNodes.get(settlementNodeNum).setCurrentFrameIndex(Integer.parseInt(scanner.nextLine()));
                     } else {
                         thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
@@ -3810,7 +3809,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             JOptionPane.showMessageDialog(null, "There was an error handling the animation save file.\nError: " + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        System.out.println("I threw: " + thrownAnimationLoadError);
         return thrownAnimationLoadError;
 
     }

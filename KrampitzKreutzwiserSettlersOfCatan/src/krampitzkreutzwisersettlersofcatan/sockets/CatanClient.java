@@ -461,6 +461,8 @@ public class CatanClient extends JFrame {
                             //save that a file was recived
                             firstFileRecieve = false;
                         }
+                        long oldTime = System.currentTimeMillis();
+                        
                         //save the current animation data to the file
                         theGameFrame.getGamePanel().saveAnimationData();
                         
@@ -469,6 +471,8 @@ public class CatanClient extends JFrame {
                         
                         //load back in the saved animation data after the GamePanel reset the current frames
                         theGameFrame.getGamePanel().loadAnimationData();
+                        
+                        System.out.println("Animation load time: " + (System.currentTimeMillis() - oldTime));
 
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
