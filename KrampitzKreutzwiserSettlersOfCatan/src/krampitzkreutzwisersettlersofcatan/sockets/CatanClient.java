@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.sockets;
 
+import animation.SettlementAnimationData;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -55,7 +56,7 @@ public class CatanClient extends JFrame {
     private boolean justPressedSend = false; //if this client waiting for the first transmision from the server
     private boolean firstFileRecieve; //is the client waiting for it's first catan file recive and waiting to set up the game
     private boolean firstClientGotStatup = false; //only used if this is client #1. Stores if the startup command has been recived yet
-    
+
     private boolean cscStopRequested = false; //has the client been asked to stop
 
     private ClientSideConnection csc; //the socket type var to hold the connection for this CatanClient
@@ -149,7 +150,7 @@ public class CatanClient extends JFrame {
      * Send a stopping command to the server through the CSC
      */
     public void sendStop() {
-        
+
         //send the requestion
         csc.sendStopCommand();
 
@@ -462,17 +463,19 @@ public class CatanClient extends JFrame {
                             firstFileRecieve = false;
                         }
                         long oldTime = System.currentTimeMillis();
-                        
+
                         //save the current animation data to the file
-                        theGameFrame.getGamePanel().saveAnimationData();
-                        
+                        SettlementAnimationData.saveNodeSettlmentAnimationData(theGameFrame.getGamePanel());
+                        //System.out.println("\nBefore: " + theGameFrame.getGamePanel().getSettlementNodes().get(2).getSettlementAnimationData().toString());
+
                         //load the save from the other client in the online game
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
-                        
+
                         //load back in the saved animation data after the GamePanel reset the current frames
-                        theGameFrame.getGamePanel().loadAnimationData();
+                        SettlementAnimationData.restoreNodeSettlmentAnimationData(theGameFrame.getGamePanel());
+                        //System.out.println("\nAfter: " + theGameFrame.getGamePanel().getSettlementNodes().get(2).getSettlementAnimationData().toString() + "\n\n");
                         
-                        System.out.println("Animation load time: " + (System.currentTimeMillis() - oldTime));
+                        //System.out.println("Animation load time: " + (System.currentTimeMillis() - oldTime));
 
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
@@ -596,15 +599,15 @@ public class CatanClient extends JFrame {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC sendColourRequest():\n" + e);
             }
         }
-        
+
         public void sendStopCommand() {
-            
+
             try {
                 dataOut.writeInt(4); //tell the server it is reveiving a stop command
                 dataOut.flush();
-                
+
                 socket.close();
-                
+
             } catch (IOException e) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC sendStopCommand():\n" + e);
             }
@@ -659,7 +662,7 @@ public class CatanClient extends JFrame {
                 msg = dataIn.readInt();
             } catch (IOException ex) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveType():\n" + ex);
-                
+
                 //request a stop
                 cscStopRequested = true;
             }

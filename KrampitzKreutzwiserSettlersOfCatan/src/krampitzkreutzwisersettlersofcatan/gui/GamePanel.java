@@ -66,7 +66,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private static int userSaveSelection;
 
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
-    private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
+    private ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
     private final ArrayList<Port> ports; //every trading port, its type, location, and orientation.
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
@@ -3699,120 +3699,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         return hasThrownLoadError;
     }
 
-    /**
-     * Write to the save file for animation data. Save the frame timings and
-     * indexes
-     *
-     * @return
-     * @throws FileNotFoundException
-     */
-    public boolean saveAnimationData() throws FileNotFoundException {
-
-        try {
-            //try to create the file
-            File file = new File(CatanClient.ONLINE_SAVE_LOCATION + File.separator + "localAnimationData" + onlineMode + ".catan");
-            //ensure it is mutable
-            file.setExecutable(true);
-            file.setWritable(true);
-
-            PrintWriter saveFile = new PrintWriter(file); //begin writting to the file
-            saveFile.println("SettlersOfCatanLocalAnimationData:"); //write a header to easily identify Settlers of Catan save files for loading
-            //go through all the NodeSettlements
-            saveFile.println("NodeSettlements:");
-            for (NodeSettlement settlement : settlementNodes) {
-                saveFile.println(settlement.getAnimationData());
-            }
-
-            //add the close
-            saveFile.close();
-            return true;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "The game is not able to save the animation data at this time. Invalid state\n" + e, "Saving Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-    }
-
-    /**
-     * Load animation data from a data file
-     *
-     * @return if the operation was successful
-     */
-    public boolean loadAnimationData() {
-
-        int tempScannerVal;
-        boolean thrownAnimationLoadError = false;
-
-        //load the save file 
-        try {
-            File savefile = new File(CatanClient.ONLINE_SAVE_LOCATION + File.separator + "localAnimationData" + onlineMode + ".catan");
-
-            //ensure the correct permisions
-            savefile.setExecutable(true);
-            savefile.setWritable(true);
-            savefile.setReadable(true);
-
-            Scanner scanner = new Scanner(savefile);
-
-            //check if it is valid (again)
-            if (scanner.nextLine().equals("SettlersOfCatanLocalAnimationData:")) {
-
-            } else {
-                thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
-            }
-
-            if (scanner.nextLine().equals("NodeSettlements:")) {
-
-                int settlementNodeNum = 0;
-
-                //loop through all the tiles
-                for (int i = 0; i < 54; i++) {
-                    if (scanner.nextLine().equals("refNum:")) {
-
-                        settlementNodeNum = Integer.parseInt(scanner.nextLine());
-                    } else {
-                        thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
-                    }
-
-                    if (scanner.nextLine().equals("frameTimeOffset:")) {
-
-                        settlementNodes.get(settlementNodeNum).setFrameTimeOffset(Integer.parseInt(scanner.nextLine()));
-                    } else {
-                        thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
-                    }
-
-                    if (scanner.nextLine().equals("lastFrameStart:")) {
-
-                        settlementNodes.get(settlementNodeNum).setLastFrameStart(Long.parseLong(scanner.nextLine()));
-                    } else {
-                        thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
-                    }
-
-                    if (scanner.nextLine().equals("currentFrameIndex:")) {
-
-                        settlementNodes.get(settlementNodeNum).setCurrentFrameIndex(Integer.parseInt(scanner.nextLine()));
-                    } else {
-                        thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
-                    }
-
-                    //skip a line
-                    scanner.nextLine();
-                }
-
-            } else {
-                thrownAnimationLoadError = throwLoadError(thrownAnimationLoadError);
-            }
-
-            //close the scanner
-            scanner.close();
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "There was an error handling the animation save file.\nError: " + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        return thrownAnimationLoadError;
-
-    }
-
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="updateBuildButtons()"> 
     /**
@@ -7038,6 +6924,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     @Override
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Dragged");
+    }
+    
+    /**
+     * Get the ArrayList of all the NodeSettlements
+     * @return 
+     */
+    public ArrayList<NodeSettlement> getSettlementNodes() {
+        return settlementNodes;
+    }
+    
+    /**
+     * Set the ArrayList of all the NodeSettlements 
+     * @param settlementNodes
+     */
+    public void setSettlementNodes(ArrayList<NodeSettlement> settlementNodes) {
+        this.settlementNodes = settlementNodes;
     }
 
     @Override
