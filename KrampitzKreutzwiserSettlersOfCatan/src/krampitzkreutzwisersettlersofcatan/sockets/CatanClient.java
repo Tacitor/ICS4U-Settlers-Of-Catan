@@ -463,14 +463,8 @@ public class CatanClient extends JFrame {
                         }
                         long oldTime = System.currentTimeMillis();
                         
-                        //save the current animation data to the file
-                        theGameFrame.getGamePanel().saveAnimationData();
-                        
                         //load the save from the other client in the online game
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
-                        
-                        //load back in the saved animation data after the GamePanel reset the current frames
-                        theGameFrame.getGamePanel().loadAnimationData();
                         
                         System.out.println("Animation load time: " + (System.currentTimeMillis() - oldTime));
 
