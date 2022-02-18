@@ -43,8 +43,10 @@ public class NodeSettlement extends WorldObject {
     private final static Image RED_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke0.png")).getImage();
     private final static Image RED_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke1.png")).getImage();
     private final static Image RED_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke2.png")).getImage();
+    private final static Image RED_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke3.png")).getImage();
+    private final static Image RED_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke4.png")).getImage();
     public final static Image[] RED_HOUSES_S = new Image[]{
-        RED_HOUSE_S0, RED_HOUSE_S1, RED_HOUSE_S2, RED_HOUSE_S1};
+        RED_HOUSE_S0, RED_HOUSE_S1, RED_HOUSE_S2, RED_HOUSE_S3, RED_HOUSE_S4, RED_HOUSE_S3, RED_HOUSE_S2, RED_HOUSE_S1};
     public final static Image[] RED_HOUSES_L = new Image[]{
         RED_HOUSE_L0, RED_HOUSE_L1, RED_HOUSE_L0, RED_HOUSE_L2, RED_HOUSE_L0, RED_HOUSE_L3};
     //blue
