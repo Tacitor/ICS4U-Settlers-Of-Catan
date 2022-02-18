@@ -66,7 +66,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private static int userSaveSelection;
 
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
-    private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
+    private ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
     private final ArrayList<Port> ports; //every trading port, its type, location, and orientation.
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
@@ -6924,6 +6924,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     @Override
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Dragged");
+    }
+    
+    /**
+     * Get the ArrayList of all the NodeSettlements
+     * @return 
+     */
+    public ArrayList<NodeSettlement> getSettlementNodes() {
+        return settlementNodes;
+    }
+    
+    /**
+     * Set the ArrayList of all the NodeSettlements 
+     * @param settlementNodes
+     */
+    public void setSettlementNodes(ArrayList<NodeSettlement> settlementNodes) {
+        this.settlementNodes = settlementNodes;
     }
 
     @Override

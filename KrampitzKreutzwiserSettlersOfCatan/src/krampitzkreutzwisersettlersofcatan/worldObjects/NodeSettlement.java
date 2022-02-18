@@ -6,6 +6,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.worldObjects;
 
+import animation.SettlementAnimationData;
 import java.awt.Image;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -30,11 +31,7 @@ public class NodeSettlement extends WorldObject {
     private Tile hex2;
     private Tile hex3;
     //animation related
-    private int frameTimeSmoke; //the time in miliseconds each frame for chimney smoke should be displayed for
-    private int frameTimeLight; //the time in miliseconds each frame for house lights should be displayed for
-    private int frameTimeOffset; //the time in milliseconds the frame times will be offset by 
-    private long lastFrameStart; //the system time (in miliseconds) when the previous frame started displaying 
-    private int currentFrameIndex; //the index within the image array the 
+    private SettlementAnimationData settlementAnimationData;
 
     //Images for the settlements
     public final static Image BLANK_HOUSE = new ImageIcon(ImageRef.class.getResource("playerPieces/blankHouse.png")).getImage(); // Blank image for unowned settlement nodes 
@@ -46,8 +43,10 @@ public class NodeSettlement extends WorldObject {
     private final static Image RED_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke0.png")).getImage();
     private final static Image RED_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke1.png")).getImage();
     private final static Image RED_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke2.png")).getImage();
+    private final static Image RED_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke3.png")).getImage();
+    private final static Image RED_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke4.png")).getImage();
     public final static Image[] RED_HOUSES_S = new Image[]{
-        RED_HOUSE_S0, RED_HOUSE_S1, RED_HOUSE_S2, RED_HOUSE_S1};
+        RED_HOUSE_S0, RED_HOUSE_S1, RED_HOUSE_S2, RED_HOUSE_S3, RED_HOUSE_S4, RED_HOUSE_S3, RED_HOUSE_S2, RED_HOUSE_S1};
     public final static Image[] RED_HOUSES_L = new Image[]{
         RED_HOUSE_L0, RED_HOUSE_L1, RED_HOUSE_L0, RED_HOUSE_L2, RED_HOUSE_L0, RED_HOUSE_L3};
     //blue
@@ -58,8 +57,10 @@ public class NodeSettlement extends WorldObject {
     private final static Image BLUE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke0.png")).getImage();
     private final static Image BLUE_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke1.png")).getImage();
     private final static Image BLUE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke2.png")).getImage();
+    private final static Image BLUE_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke3.png")).getImage();
+    private final static Image BLUE_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke4.png")).getImage();
     public final static Image[] BLUE_HOUSES_S = new Image[]{
-        BLUE_HOUSE_S0, BLUE_HOUSE_S1, BLUE_HOUSE_S2, BLUE_HOUSE_S1};
+        BLUE_HOUSE_S0, BLUE_HOUSE_S1, BLUE_HOUSE_S2, BLUE_HOUSE_S3, BLUE_HOUSE_S4, BLUE_HOUSE_S3, BLUE_HOUSE_S2, BLUE_HOUSE_S1};
     public final static Image[] BLUE_HOUSES_L = new Image[]{
         BLUE_HOUSE_L0, BLUE_HOUSE_L1, BLUE_HOUSE_L0, BLUE_HOUSE_L2, BLUE_HOUSE_L0, BLUE_HOUSE_L3};
     //white
@@ -70,8 +71,10 @@ public class NodeSettlement extends WorldObject {
     private final static Image WHITE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke0.png")).getImage();
     private final static Image WHITE_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke1.png")).getImage();
     private final static Image WHITE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke2.png")).getImage();
+    private final static Image WHITE_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke3.png")).getImage();
+    private final static Image WHITE_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke4.png")).getImage();
     public final static Image[] WHITE_HOUSES_S = new Image[]{
-        WHITE_HOUSE_S0, WHITE_HOUSE_S1, WHITE_HOUSE_S2, WHITE_HOUSE_S1};
+        WHITE_HOUSE_S0, WHITE_HOUSE_S1, WHITE_HOUSE_S2, WHITE_HOUSE_S3, WHITE_HOUSE_S4, WHITE_HOUSE_S3, WHITE_HOUSE_S2, WHITE_HOUSE_S1};
     public final static Image[] WHITE_HOUSES_L = new Image[]{
         WHITE_HOUSE_L0, WHITE_HOUSE_L1, WHITE_HOUSE_L0, WHITE_HOUSE_L2, WHITE_HOUSE_L0, WHITE_HOUSE_L3};
     //orange
@@ -82,8 +85,10 @@ public class NodeSettlement extends WorldObject {
     private final static Image ORANGE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke0.png")).getImage();
     private final static Image ORANGE_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke1.png")).getImage();
     private final static Image ORANGE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke2.png")).getImage();
+    private final static Image ORANGE_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke3.png")).getImage();
+    private final static Image ORANGE_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke4.png")).getImage();
     public final static Image[] ORANGE_HOUSES_S = new Image[]{
-        ORANGE_HOUSE_S0, ORANGE_HOUSE_S1, ORANGE_HOUSE_S2, ORANGE_HOUSE_S1};
+        ORANGE_HOUSE_S0, ORANGE_HOUSE_S1, ORANGE_HOUSE_S2, ORANGE_HOUSE_S3, ORANGE_HOUSE_S4, ORANGE_HOUSE_S3, ORANGE_HOUSE_S2, ORANGE_HOUSE_S1};
     public final static Image[] ORANGE_HOUSES_L = new Image[]{
         ORANGE_HOUSE_L0, ORANGE_HOUSE_L1, ORANGE_HOUSE_L0, ORANGE_HOUSE_L2, ORANGE_HOUSE_L0, ORANGE_HOUSE_L3};
 
@@ -103,10 +108,7 @@ public class NodeSettlement extends WorldObject {
         road3 = null;
         age = -1; //player is set to 0, so age is -1, it has no age
 
-        frameTimeSmoke = 500; //the default frame time should be 500ms
-        frameTimeLight = 2000;
-        lastFrameStart = 0; //the last frame has never been displayed so set it to 0
-        currentFrameIndex = 0;
+        settlementAnimationData = new SettlementAnimationData();
 
         randomizeSmokeAnimation();
     }
@@ -410,93 +412,28 @@ public class NodeSettlement extends WorldObject {
     }
 
     /**
-     * Get the time in milliseconds each frame is displayed for
+     * Get the data for the current state of animations. The goal of this is to
+     * save them so they can be loaded after a client receives a new update from
+     * the Catan server and needs to have consistent animations.
      *
      * @return
      */
-    public int getFrameTimeSmoke() {
-        return frameTimeSmoke;
+    public SettlementAnimationData getSettlementAnimationData() {
+        return settlementAnimationData;
     }
 
     /**
-     * Set the time in milliseconds each frame is displayed for
+     * Get the data for the current state of animations. The goal of this is to
+     * save them so they can be loaded after a client receives a new update from
+     * the Catan server and needs to have consistent animations.
      *
-     * @param frameTimeSmoke
+     * @param settlementAnimationData
      */
-    public void setFrameTimeSmoke(int frameTimeSmoke) {
-        this.frameTimeSmoke = frameTimeSmoke;
-    }
-
-    /**
-     * Get the time in milliseconds each frame is displayed for
-     *
-     * @return
-     */
-    public int getFrameTimeLight() {
-        return frameTimeLight;
-    }
-
-    /**
-     * Set the time in milliseconds each frame is displayed for
-     *
-     * @param frameTimeLight
-     */
-    public void setFrameTimeLight(int frameTimeLight) {
-        this.frameTimeLight = frameTimeLight;
-    }
-
-    /**
-     * Get the system time when the previous frame began displaying
-     *
-     * @return
-     */
-    public long getLastFrameStart() {
-        return lastFrameStart;
-    }
-
-    /**
-     * Set the system time when the previous frame began displaying
-     *
-     * @param lastFrameStart
-     */
-    public void setLastFrameStart(long lastFrameStart) {
-        this.lastFrameStart = lastFrameStart;
-    }
-    
-    /**
-     * Get the offset in milliseconds each frame is displayed for
-     *
-     * @return
-     */
-    public int getFrameTimeOffset() {
-        return frameTimeOffset;
-    }
-
-    /**
-     * Set the offset in milliseconds each frame is displayed for
-     *
-     * @param frameTimeOffset
-     */
-    public void setFrameTimeOffset(int frameTimeOffset) {
-        this.frameTimeOffset = frameTimeOffset;
-    }
-    
-    /**
-     * Get the index of the current frame being displayed
-     *
-     * @return
-     */
-    public int getCurrentFrameIndex() {
-        return currentFrameIndex;
-    }
-
-    /**
-     * Set the index of the current frame being displayed
-     *
-     * @param currentFrameIndex
-     */
-    public void setCurrentFrameIndex(int currentFrameIndex) {
-        this.currentFrameIndex = currentFrameIndex;
+    public void setSettlementAnimationData(SettlementAnimationData settlementAnimationData) {
+        this.settlementAnimationData = settlementAnimationData;
+        
+        //System.out.println("Local: " + this.settlementAnimationData.toString());
+        //System.out.println("\nGiven: " + settlementAnimationData.toString() + "\n\n");
     }
 
     /**
@@ -642,7 +579,7 @@ public class NodeSettlement extends WorldObject {
                         break;
                 }
                 //pick one of the frame times
-                frameTime = frameTimeLight;
+                frameTime = settlementAnimationData.getFrameTimeLight();
             } else { //settlements
 
                 //decide which array of images to grab
@@ -664,17 +601,17 @@ public class NodeSettlement extends WorldObject {
                         break;
                 }
                 //pick one of the frame times
-                frameTime = frameTimeSmoke;
+                frameTime = settlementAnimationData.getFrameTimeSmoke();
             }
 
             //decide if a new frame needs to be displayed or if the current one is still the one it should be on
-            if (System.currentTimeMillis() - (lastFrameStart + frameTimeOffset) > frameTime) {
+            if (System.currentTimeMillis() - (settlementAnimationData.getLastFrameStart() + settlementAnimationData.getFrameTimeOffset()) > frameTime) {
                 //yes it is time for a new frame
 
                 //debug frame times
                 //System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
                 //calculate the index the frame needs to be pulled from
-                frameIndex = currentFrameIndex + 1; //the new frame will just be one after the current one
+                frameIndex = settlementAnimationData.getCurrentFrameIndex() + 1; //the new frame will just be one after the current one
 
                 //and make a check that it won't be out of bounds
                 if (frameIndex >= imageArray.length) {
@@ -685,13 +622,13 @@ public class NodeSettlement extends WorldObject {
                 image = imageArray[frameIndex];
 
                 //update the time
-                lastFrameStart = System.currentTimeMillis();
+                settlementAnimationData.setLastFrameStart(System.currentTimeMillis());
 
                 //update the frame index
-                currentFrameIndex = frameIndex;
+                settlementAnimationData.setCurrentFrameIndex(frameIndex);
 
             } else { //if the minimum frame has not yet passed pass the current frame again
-                image = imageArray[currentFrameIndex];
+                image = imageArray[settlementAnimationData.getCurrentFrameIndex()];
             }
 
         }
@@ -706,8 +643,8 @@ public class NodeSettlement extends WorldObject {
     private void randomizeSmokeAnimation() {
         //set the animation radomizer values
         //as of right now the Node is set to a small size, thefore base this off of the smoke animation
-        frameTimeOffset = (int) (Math.random() * frameTimeSmoke); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
-        currentFrameIndex = (int) (Math.random() * RED_HOUSES_S.length); //pick a random number of frames to offset the animation by
+        settlementAnimationData.setFrameTimeOffset((int) (Math.random() * settlementAnimationData.getFrameTimeSmoke())); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
+        settlementAnimationData.setCurrentFrameIndex((int) (Math.random() * RED_HOUSES_S.length)); //pick a random number of frames to offset the animation by
     }
 
     /**
@@ -716,25 +653,9 @@ public class NodeSettlement extends WorldObject {
      */
     private void randomizeLightAnimation() {
         //set the animation radomizer values
-        frameTimeOffset = (int) (Math.random() * frameTimeLight); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
+        settlementAnimationData.setFrameTimeOffset((int) (Math.random() * settlementAnimationData.getFrameTimeLight())); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
         for (int i = 0; i < 50; i++) { //seems to increase the random ness a little more
-            currentFrameIndex = (int) (Math.random() * RED_HOUSES_L.length); //pick a random number of frames to offset the animation by
+            settlementAnimationData.setCurrentFrameIndex((int) (Math.random() * RED_HOUSES_L.length)); //pick a random number of frames to offset the animation by
         }
-    }
-
-    /**
-     * Get the data for the current state of animations and return them as a
-     * string. The goal of this is to save them to a file that can be loaded
-     * after a client receives a new update from the catan server and needs to
-     * have consistent animations.
-     *
-     * @return
-     */
-    public String getAnimationData() {
-
-        return "refNum:\n" + refNum
-                + "\nframeTimeOffset:\n" + frameTimeOffset
-                + "\nlastFrameStart:\n" + lastFrameStart
-                + "\ncurrentFrameIndex:\n" + currentFrameIndex + "\n";
     }
 }
