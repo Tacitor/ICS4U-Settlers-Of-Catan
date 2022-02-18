@@ -462,6 +462,7 @@ public class CatanClient extends JFrame {
                             //save that a file was recived
                             firstFileRecieve = false;
                         }
+                        //save the time before any savinging and reloading of the new save file for online play
                         long oldTime = System.currentTimeMillis();
 
                         //save the current animation data 

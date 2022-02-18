@@ -108,8 +108,10 @@ public class NodeSettlement extends WorldObject {
         road3 = null;
         age = -1; //player is set to 0, so age is -1, it has no age
 
+        //init the Object conaining the data for animating the Settlement Node
         settlementAnimationData = new SettlementAnimationData();
 
+        //Set random values for the variables within settlementAnimationData, and have it based on a small settlement with smoke
         randomizeSmokeAnimation();
     }
 
@@ -431,7 +433,7 @@ public class NodeSettlement extends WorldObject {
      */
     public void setSettlementAnimationData(SettlementAnimationData settlementAnimationData) {
         this.settlementAnimationData = settlementAnimationData;
-        
+
         //System.out.println("Local: " + this.settlementAnimationData.toString());
         //System.out.println("\nGiven: " + settlementAnimationData.toString() + "\n\n");
     }

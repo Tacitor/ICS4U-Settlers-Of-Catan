@@ -4963,7 +4963,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // Draw the 72 road nodes
         NodeRoad road;
         Image image;
-        Image[] imageArray;
         for (int i = 0; i < 72; i++) {
             road = roadNodes.get(i);
             switch (road.getOrientation()) {
@@ -6925,17 +6924,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Dragged");
     }
-    
+
     /**
      * Get the ArrayList of all the NodeSettlements
-     * @return 
+     *
+     * @return
      */
     public ArrayList<NodeSettlement> getSettlementNodes() {
         return settlementNodes;
     }
-    
+
     /**
-     * Set the ArrayList of all the NodeSettlements 
+     * Set the ArrayList of all the NodeSettlements
+     *
      * @param settlementNodes
      */
     public void setSettlementNodes(ArrayList<NodeSettlement> settlementNodes) {
