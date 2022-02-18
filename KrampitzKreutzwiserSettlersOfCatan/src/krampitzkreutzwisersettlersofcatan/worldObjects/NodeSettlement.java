@@ -57,8 +57,10 @@ public class NodeSettlement extends WorldObject {
     private final static Image BLUE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke0.png")).getImage();
     private final static Image BLUE_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke1.png")).getImage();
     private final static Image BLUE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke2.png")).getImage();
+    private final static Image BLUE_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke3.png")).getImage();
+    private final static Image BLUE_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke4.png")).getImage();
     public final static Image[] BLUE_HOUSES_S = new Image[]{
-        BLUE_HOUSE_S0, BLUE_HOUSE_S1, BLUE_HOUSE_S2, BLUE_HOUSE_S1};
+        BLUE_HOUSE_S0, BLUE_HOUSE_S1, BLUE_HOUSE_S2, BLUE_HOUSE_S3, BLUE_HOUSE_S4, BLUE_HOUSE_S3, BLUE_HOUSE_S2, BLUE_HOUSE_S1};
     public final static Image[] BLUE_HOUSES_L = new Image[]{
         BLUE_HOUSE_L0, BLUE_HOUSE_L1, BLUE_HOUSE_L0, BLUE_HOUSE_L2, BLUE_HOUSE_L0, BLUE_HOUSE_L3};
     //white
@@ -69,8 +71,10 @@ public class NodeSettlement extends WorldObject {
     private final static Image WHITE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke0.png")).getImage();
     private final static Image WHITE_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke1.png")).getImage();
     private final static Image WHITE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke2.png")).getImage();
+    private final static Image WHITE_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke3.png")).getImage();
+    private final static Image WHITE_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke4.png")).getImage();
     public final static Image[] WHITE_HOUSES_S = new Image[]{
-        WHITE_HOUSE_S0, WHITE_HOUSE_S1, WHITE_HOUSE_S2, WHITE_HOUSE_S1};
+        WHITE_HOUSE_S0, WHITE_HOUSE_S1, WHITE_HOUSE_S2, WHITE_HOUSE_S3, WHITE_HOUSE_S4, WHITE_HOUSE_S3, WHITE_HOUSE_S2, WHITE_HOUSE_S1};
     public final static Image[] WHITE_HOUSES_L = new Image[]{
         WHITE_HOUSE_L0, WHITE_HOUSE_L1, WHITE_HOUSE_L0, WHITE_HOUSE_L2, WHITE_HOUSE_L0, WHITE_HOUSE_L3};
     //orange
@@ -81,8 +85,10 @@ public class NodeSettlement extends WorldObject {
     private final static Image ORANGE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke0.png")).getImage();
     private final static Image ORANGE_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke1.png")).getImage();
     private final static Image ORANGE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke2.png")).getImage();
+    private final static Image ORANGE_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke3.png")).getImage();
+    private final static Image ORANGE_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke4.png")).getImage();
     public final static Image[] ORANGE_HOUSES_S = new Image[]{
-        ORANGE_HOUSE_S0, ORANGE_HOUSE_S1, ORANGE_HOUSE_S2, ORANGE_HOUSE_S1};
+        ORANGE_HOUSE_S0, ORANGE_HOUSE_S1, ORANGE_HOUSE_S2, ORANGE_HOUSE_S3, ORANGE_HOUSE_S4, ORANGE_HOUSE_S3, ORANGE_HOUSE_S2, ORANGE_HOUSE_S1};
     public final static Image[] ORANGE_HOUSES_L = new Image[]{
         ORANGE_HOUSE_L0, ORANGE_HOUSE_L1, ORANGE_HOUSE_L0, ORANGE_HOUSE_L2, ORANGE_HOUSE_L0, ORANGE_HOUSE_L3};
 
