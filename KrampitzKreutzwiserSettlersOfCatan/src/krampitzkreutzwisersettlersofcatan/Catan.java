@@ -14,11 +14,10 @@ import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
  */
 public class Catan {
 
-    public static int clock = 0;
     public static GamePanel gamePanel;
     public static MainMenu menu;
-    public static final String SAVE_FILE_VER = "V14"; //the save file version needed    
-    public static final String GAME_VER = "v5.1.3 - Jason v5.0.0 Patch"; //the version of the game/program
+    public static final String SAVE_FILE_VER = "V14"; //the save file version needed
+    public static final String GAME_VER = "pre-v5.1.4 - Animation Update"; //the version of the game/program
 
     //fast pulse vars
     private static long prevTime;
@@ -61,13 +60,6 @@ public class Catan {
         fastGamePulseRunnable.setDaemon(true);
         fastGamePulseRunnable.start();
 
-        //run the slow game pulse
-        while (true) {
-            clock++;
-            gamePanel.catanTickUpdate();
-            Thread.sleep(1000); //time a spent sleeping is subject to change
-            //the way sleep is envoked is also subject to change.
-        }
     }
 
     public static void updateGamePanel() {
@@ -83,9 +75,10 @@ public class Catan {
         fastPulseTime = (int) (System.currentTimeMillis() - prevTime);
         //record new time
         prevTime = System.currentTimeMillis();
-        
+
         //now call the game panel
         gamePanel.catanFastTickUpdate();
+        gamePanel.catanAnimationTickUpdate(); //for animation
 
     }
 
@@ -107,7 +100,7 @@ public class Catan {
                 fastGamePulse();
 
                 try {
-                    //wait 10ms to apply it again
+                    //wait 15ms to apply it again
                     Thread.sleep(15l);
                 } catch (InterruptedException ex) {
                     System.out.println("ERROR: " + ex);

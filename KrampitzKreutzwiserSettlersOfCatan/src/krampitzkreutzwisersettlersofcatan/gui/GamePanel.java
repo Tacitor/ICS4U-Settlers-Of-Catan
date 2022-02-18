@@ -66,7 +66,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private static int userSaveSelection;
 
     private final ArrayList<Tile> tiles; //All the data for the tiles in one convient place
-    private final ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
+    private ArrayList<NodeSettlement> settlementNodes; // Every settlement node of the board
     private final ArrayList<Port> ports; //every trading port, its type, location, and orientation.
     private final ArrayList<NodeRoad> roadNodes; // Every road node of the board
     private int[] tileTypes = new int[]{1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 0, 4, 4, 5, 5, 5}; //the type of tile from left to right, and top to bottom
@@ -1501,10 +1501,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         for (int i = 0; i < settlementNodes.size(); i++) {
 
                             //if the player clicks in a valid hitbox for a settlement
-                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(NodeSettlement.BLANK_HOUSE) / 2
+                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(NodeSettlement.BLANK_HOUSE) / 2 + getImgWidth(NodeSettlement.BLANK_HOUSE)
+                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(NodeSettlement.BLANK_HOUSE) / 2
+                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(NodeSettlement.BLANK_HOUSE) / 2 + getImgHeight(NodeSettlement.BLANK_HOUSE)) {
                                 //debug settlent build detection
                                 //System.out.println("hitbox match");
 
@@ -1578,10 +1578,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         for (int i = 0; i < settlementNodes.size(); i++) {
 
                             //if the player clicks in a valid hitbox for a settlement
-                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2
-                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(RED_HOUSE_S) / 2 + getImgWidth(RED_HOUSE_S)
-                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2
-                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(RED_HOUSE_S) / 2 + getImgHeight(RED_HOUSE_S)) {
+                            if (event.getX() > settlementNodes.get(i).getXPos() - getImgWidth(NodeSettlement.BLANK_HOUSE) / 2
+                                    && event.getX() < settlementNodes.get(i).getXPos() - getImgWidth(NodeSettlement.BLANK_HOUSE) / 2 + getImgWidth(NodeSettlement.BLANK_HOUSE)
+                                    && event.getY() > settlementNodes.get(i).getYPos() - getImgHeight(NodeSettlement.BLANK_HOUSE) / 2
+                                    && event.getY() < settlementNodes.get(i).getYPos() - getImgHeight(NodeSettlement.BLANK_HOUSE) / 2 + getImgHeight(NodeSettlement.BLANK_HOUSE)) {
 
                                 // Check that the current player owns settlement
                                 if (settlementNodes.get(i).getPlayer() == currentPlayer) {
@@ -4963,6 +4963,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // Draw the 72 road nodes
         NodeRoad road;
         Image image;
+        Image[] imageArray;
         for (int i = 0; i < 72; i++) {
             road = roadNodes.get(i);
             switch (road.getOrientation()) {
@@ -5067,57 +5068,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             // Get the settlement node from the ArrayList
             settlement = settlementNodes.get(i);
 
-            // If the settlement is unowned use the blank image
-            if (settlement.getPlayer() == 0) {
-                image = BLANK_HOUSE;
-            } // Otherwise, check the size of the settlement to see which image to use
-            else if (settlement.isLarge() == false) { // settlement
-                // Store the settlement image for the player's color
-                switch (settlement.getPlayer()) {
-                    // Player 1: Red
-                    case 1:
-                        image = RED_HOUSE_S;
-                        break;
-                    // Player 2: Blue
-                    case 2:
-                        image = BLUE_HOUSE_S;
-                        break;
-                    // Player 3: Orange
-                    case 3:
-                        image = ORANGE_HOUSE_S;
-                        break;
-                    // Player 4: White
-                    case 4:
-                        image = WHITE_HOUSE_S;
-                        break;
-                    default:
-                        image = RED_HOUSE_L;
-                        break;
-                }
-            } else { // city
-                // Store the city image for the player's color
-                switch (settlement.getPlayer()) {
-                    // Player 1: Red
-                    case 1:
-                        image = RED_HOUSE_L;
-                        break;
-                    // Player 2: Blue
-                    case 2:
-                        image = BLUE_HOUSE_L;
-                        break;
-                    // Player 3: Orange
-                    case 3:
-                        image = ORANGE_HOUSE_L;
-                        break;
-                    // Player 4: White
-                    case 4:
-                        image = WHITE_HOUSE_L;
-                        break;
-                    default:
-                        image = RED_HOUSE_S;
-                        break;
-                }
-            }
+            //now set the image based on the NodeSettlement class
+            image = settlement.getAnimationFrame();
 
             // Draw the settlement image saved above, at the node's position
             g2d.drawImage(image,
@@ -5157,10 +5109,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 if (drawHitBox) {
                     //draw the high light
                     g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                    g2d.fillRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
+                    g2d.fillRect(settlement.getXPos() - getImgWidth(NodeSettlement.BLANK_HOUSE) / 2, settlement.getYPos() - getImgHeight(NodeSettlement.BLANK_HOUSE) / 2, getImgWidth(NodeSettlement.BLANK_HOUSE), getImgHeight(NodeSettlement.BLANK_HOUSE));
                     //draw the boarder
                     g2d.setColor(new java.awt.Color(255, 255, 225));
-                    g2d.drawRect(settlement.getXPos() - getImgWidth(image) / 2, settlement.getYPos() - getImgHeight(image) / 2, getImgWidth(image), getImgHeight(image));
+                    g2d.drawRect(settlement.getXPos() - getImgWidth(NodeSettlement.BLANK_HOUSE) / 2, settlement.getYPos() - getImgHeight(NodeSettlement.BLANK_HOUSE) / 2, getImgWidth(NodeSettlement.BLANK_HOUSE), getImgHeight(NodeSettlement.BLANK_HOUSE));
                 }
             }
         }
@@ -5727,14 +5679,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * The Catan.java class calls this method. It is used to update the game
      * panel and other time related calls.
      */
-    public void catanTickUpdate() {
+    public void catanAnimationTickUpdate() {
 
         repaint();
     }
 
     /**
      * The Catan.java class calls this method. It is used to make frequent
-     * checks that are too slow for the catanTickUpdate() method
+     * checks that are too slow for the catanAnimationTickUpdate() method
      */
     public void catanFastTickUpdate() {
 
@@ -6972,6 +6924,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     @Override
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Dragged");
+    }
+    
+    /**
+     * Get the ArrayList of all the NodeSettlements
+     * @return 
+     */
+    public ArrayList<NodeSettlement> getSettlementNodes() {
+        return settlementNodes;
+    }
+    
+    /**
+     * Set the ArrayList of all the NodeSettlements 
+     * @param settlementNodes
+     */
+    public void setSettlementNodes(ArrayList<NodeSettlement> settlementNodes) {
+        this.settlementNodes = settlementNodes;
     }
 
     @Override

@@ -6,7 +6,11 @@
  */
 package krampitzkreutzwisersettlersofcatan.worldObjects;
 
+import animation.SettlementAnimationData;
+import java.awt.Image;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import textures.ImageRef;
 
 public class NodeSettlement extends WorldObject {
 
@@ -26,6 +30,67 @@ public class NodeSettlement extends WorldObject {
     private Tile hex1;
     private Tile hex2;
     private Tile hex3;
+    //animation related
+    private SettlementAnimationData settlementAnimationData;
+
+    //Images for the settlements
+    public final static Image BLANK_HOUSE = new ImageIcon(ImageRef.class.getResource("playerPieces/blankHouse.png")).getImage(); // Blank image for unowned settlement nodes 
+    //the red ones
+    private final static Image RED_HOUSE_L0 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseLights0.png")).getImage();
+    private final static Image RED_HOUSE_L1 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseLights1.png")).getImage();
+    private final static Image RED_HOUSE_L2 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseLights2.png")).getImage();
+    private final static Image RED_HOUSE_L3 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseLights3.png")).getImage();
+    private final static Image RED_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke0.png")).getImage();
+    private final static Image RED_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke1.png")).getImage();
+    private final static Image RED_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke2.png")).getImage();
+    private final static Image RED_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke3.png")).getImage();
+    private final static Image RED_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseSmoke4.png")).getImage();
+    public final static Image[] RED_HOUSES_S = new Image[]{
+        RED_HOUSE_S0, RED_HOUSE_S1, RED_HOUSE_S2, RED_HOUSE_S3, RED_HOUSE_S4, RED_HOUSE_S3, RED_HOUSE_S2, RED_HOUSE_S1};
+    public final static Image[] RED_HOUSES_L = new Image[]{
+        RED_HOUSE_L0, RED_HOUSE_L1, RED_HOUSE_L0, RED_HOUSE_L2, RED_HOUSE_L0, RED_HOUSE_L3};
+    //blue
+    private final static Image BLUE_HOUSE_L0 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseLights0.png")).getImage();
+    private final static Image BLUE_HOUSE_L1 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseLights1.png")).getImage();
+    private final static Image BLUE_HOUSE_L2 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseLights2.png")).getImage();
+    private final static Image BLUE_HOUSE_L3 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseLights3.png")).getImage();
+    private final static Image BLUE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke0.png")).getImage();
+    private final static Image BLUE_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke1.png")).getImage();
+    private final static Image BLUE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke2.png")).getImage();
+    private final static Image BLUE_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke3.png")).getImage();
+    private final static Image BLUE_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseSmoke4.png")).getImage();
+    public final static Image[] BLUE_HOUSES_S = new Image[]{
+        BLUE_HOUSE_S0, BLUE_HOUSE_S1, BLUE_HOUSE_S2, BLUE_HOUSE_S3, BLUE_HOUSE_S4, BLUE_HOUSE_S3, BLUE_HOUSE_S2, BLUE_HOUSE_S1};
+    public final static Image[] BLUE_HOUSES_L = new Image[]{
+        BLUE_HOUSE_L0, BLUE_HOUSE_L1, BLUE_HOUSE_L0, BLUE_HOUSE_L2, BLUE_HOUSE_L0, BLUE_HOUSE_L3};
+    //white
+    private final static Image WHITE_HOUSE_L0 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseLights0.png")).getImage();
+    private final static Image WHITE_HOUSE_L1 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseLights1.png")).getImage();
+    private final static Image WHITE_HOUSE_L2 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseLights2.png")).getImage();
+    private final static Image WHITE_HOUSE_L3 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseLights3.png")).getImage();
+    private final static Image WHITE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke0.png")).getImage();
+    private final static Image WHITE_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke1.png")).getImage();
+    private final static Image WHITE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke2.png")).getImage();
+    private final static Image WHITE_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke3.png")).getImage();
+    private final static Image WHITE_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseSmoke4.png")).getImage();
+    public final static Image[] WHITE_HOUSES_S = new Image[]{
+        WHITE_HOUSE_S0, WHITE_HOUSE_S1, WHITE_HOUSE_S2, WHITE_HOUSE_S3, WHITE_HOUSE_S4, WHITE_HOUSE_S3, WHITE_HOUSE_S2, WHITE_HOUSE_S1};
+    public final static Image[] WHITE_HOUSES_L = new Image[]{
+        WHITE_HOUSE_L0, WHITE_HOUSE_L1, WHITE_HOUSE_L0, WHITE_HOUSE_L2, WHITE_HOUSE_L0, WHITE_HOUSE_L3};
+    //orange
+    private final static Image ORANGE_HOUSE_L0 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseLights0.png")).getImage();
+    private final static Image ORANGE_HOUSE_L1 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseLights1.png")).getImage();
+    private final static Image ORANGE_HOUSE_L2 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseLights2.png")).getImage();
+    private final static Image ORANGE_HOUSE_L3 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseLights3.png")).getImage();
+    private final static Image ORANGE_HOUSE_S0 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke0.png")).getImage();
+    private final static Image ORANGE_HOUSE_S1 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke1.png")).getImage();
+    private final static Image ORANGE_HOUSE_S2 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke2.png")).getImage();
+    private final static Image ORANGE_HOUSE_S3 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke3.png")).getImage();
+    private final static Image ORANGE_HOUSE_S4 = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseSmoke4.png")).getImage();
+    public final static Image[] ORANGE_HOUSES_S = new Image[]{
+        ORANGE_HOUSE_S0, ORANGE_HOUSE_S1, ORANGE_HOUSE_S2, ORANGE_HOUSE_S3, ORANGE_HOUSE_S4, ORANGE_HOUSE_S3, ORANGE_HOUSE_S2, ORANGE_HOUSE_S1};
+    public final static Image[] ORANGE_HOUSES_L = new Image[]{
+        ORANGE_HOUSE_L0, ORANGE_HOUSE_L1, ORANGE_HOUSE_L0, ORANGE_HOUSE_L2, ORANGE_HOUSE_L0, ORANGE_HOUSE_L3};
 
     /**
      * Constructor to create a new blank settlement node
@@ -42,6 +107,10 @@ public class NodeSettlement extends WorldObject {
         road2 = null;
         road3 = null;
         age = -1; //player is set to 0, so age is -1, it has no age
+
+        settlementAnimationData = new SettlementAnimationData();
+
+        randomizeSmokeAnimation();
     }
 
     /**
@@ -174,6 +243,13 @@ public class NodeSettlement extends WorldObject {
      */
     public void setLarge(boolean isLarge) {
         this.large = isLarge;
+
+        //reset the randomized animation vars for the Node based on the new size
+        if (isLarge) {
+            randomizeLightAnimation();
+        } else {
+            randomizeSmokeAnimation();
+        }
     }
 
     /**
@@ -336,6 +412,31 @@ public class NodeSettlement extends WorldObject {
     }
 
     /**
+     * Get the data for the current state of animations. The goal of this is to
+     * save them so they can be loaded after a client receives a new update from
+     * the Catan server and needs to have consistent animations.
+     *
+     * @return
+     */
+    public SettlementAnimationData getSettlementAnimationData() {
+        return settlementAnimationData;
+    }
+
+    /**
+     * Get the data for the current state of animations. The goal of this is to
+     * save them so they can be loaded after a client receives a new update from
+     * the Catan server and needs to have consistent animations.
+     *
+     * @param settlementAnimationData
+     */
+    public void setSettlementAnimationData(SettlementAnimationData settlementAnimationData) {
+        this.settlementAnimationData = settlementAnimationData;
+        
+        //System.out.println("Local: " + this.settlementAnimationData.toString());
+        //System.out.println("\nGiven: " + settlementAnimationData.toString() + "\n\n");
+    }
+
+    /**
      * Create an identical settlement node with the same attributes
      *
      * @return The new settlement node
@@ -435,5 +536,126 @@ public class NodeSettlement extends WorldObject {
             }
         }
 
+    }
+
+    /**
+     * Get the current frame of the animation
+     *
+     * @return
+     */
+    public Image getAnimationFrame() {
+        //the image the method will return
+        Image image;
+        int frameTime;
+
+        // If the settlement is unowned use the blank image
+        if (player == 0) {
+            image = NodeSettlement.BLANK_HOUSE;
+        } else { //for all the owned settlements
+
+            //the array of images to pull from
+            Image[] imageArray;
+            //the index of the array that contains the current frame of animation
+            int frameIndex;
+
+            //decide if to grab the cities or the settlements
+            if (large) { //cities
+                //decide which array of images to grab
+                switch (player) {
+                    case 1:
+                        imageArray = RED_HOUSES_L;
+                        break;
+                    case 2:
+                        imageArray = BLUE_HOUSES_L;
+                        break;
+                    case 3:
+                        imageArray = ORANGE_HOUSES_L;
+                        break;
+                    case 4:
+                        imageArray = WHITE_HOUSES_L;
+                        break;
+                    default:
+                        imageArray = ImageRef.ERROR_IMAGES;
+                        break;
+                }
+                //pick one of the frame times
+                frameTime = settlementAnimationData.getFrameTimeLight();
+            } else { //settlements
+
+                //decide which array of images to grab
+                switch (player) {
+                    case 1:
+                        imageArray = RED_HOUSES_S;
+                        break;
+                    case 2:
+                        imageArray = BLUE_HOUSES_S;
+                        break;
+                    case 3:
+                        imageArray = ORANGE_HOUSES_S;
+                        break;
+                    case 4:
+                        imageArray = WHITE_HOUSES_S;
+                        break;
+                    default:
+                        imageArray = ImageRef.ERROR_IMAGES;
+                        break;
+                }
+                //pick one of the frame times
+                frameTime = settlementAnimationData.getFrameTimeSmoke();
+            }
+
+            //decide if a new frame needs to be displayed or if the current one is still the one it should be on
+            if (System.currentTimeMillis() - (settlementAnimationData.getLastFrameStart() + settlementAnimationData.getFrameTimeOffset()) > frameTime) {
+                //yes it is time for a new frame
+
+                //debug frame times
+                //System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
+                //calculate the index the frame needs to be pulled from
+                frameIndex = settlementAnimationData.getCurrentFrameIndex() + 1; //the new frame will just be one after the current one
+
+                //and make a check that it won't be out of bounds
+                if (frameIndex >= imageArray.length) {
+                    frameIndex = 0; //reset it to the beginning
+                }
+
+                //get the new frame
+                image = imageArray[frameIndex];
+
+                //update the time
+                settlementAnimationData.setLastFrameStart(System.currentTimeMillis());
+
+                //update the frame index
+                settlementAnimationData.setCurrentFrameIndex(frameIndex);
+
+            } else { //if the minimum frame has not yet passed pass the current frame again
+                image = imageArray[settlementAnimationData.getCurrentFrameIndex()];
+            }
+
+        }
+
+        return image;
+    }
+
+    /**
+     * Set the animation offset values based on the smoke animation for the
+     * Settlements
+     */
+    private void randomizeSmokeAnimation() {
+        //set the animation radomizer values
+        //as of right now the Node is set to a small size, thefore base this off of the smoke animation
+        settlementAnimationData.setFrameTimeOffset((int) (Math.random() * settlementAnimationData.getFrameTimeSmoke())); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
+        settlementAnimationData.setCurrentFrameIndex((int) (Math.random() * RED_HOUSES_S.length)); //pick a random number of frames to offset the animation by
+    }
+
+    /**
+     * Set the animation offset values based on the light animation for the
+     * Cities
+     */
+    private void randomizeLightAnimation() {
+        //set the animation radomizer values
+        settlementAnimationData.setFrameTimeOffset((int) (Math.random() * settlementAnimationData.getFrameTimeLight())); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
+        for (int i = 0; i < 50; i++) { //seems to increase the random ness a little more
+            settlementAnimationData.setCurrentFrameIndex((int) (Math.random() * RED_HOUSES_L.length)); //pick a random number of frames to offset the animation by
+        }
     }
 }

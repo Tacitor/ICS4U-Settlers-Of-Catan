@@ -18,6 +18,7 @@ public class ImageRef {
     
     //error image
     public final static Image ERROR_IMAGE = new ImageIcon(ImageRef.class.getResource("util/error.png")).getImage();
+    public final static Image[] ERROR_IMAGES = new Image[]{ERROR_IMAGE};
     
     //icon image for game
     public final static Image ICON = new ImageIcon(ImageRef.class.getResource("util/icon.png")).getImage();
@@ -61,17 +62,6 @@ public class ImageRef {
     public final static Image ORANGE_ROAD_R = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeRoadR.png")).getImage(); 
     public final static Image ORANGE_ROAD_L = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeRoadL.png")).getImage(); 
 
-    //images for the settlements
-    public final static Image BLUE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseL.png")).getImage();
-    public final static Image RED_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseL.png")).getImage();
-    public final static Image BLUE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("playerPieces/blueHouseS.png")).getImage();
-    public final static Image RED_HOUSE_S = new ImageIcon(ImageRef.class.getResource("playerPieces/redHouseS.png")).getImage();
-    public final static Image BLANK_HOUSE = new ImageIcon(ImageRef.class.getResource("playerPieces/blankHouse.png")).getImage(); // Blank image for unowned settlement nodes 
-    public final static Image WHITE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseL.png")).getImage();
-    public final static Image ORANGE_HOUSE_L = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseL.png")).getImage();
-    public final static Image WHITE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteHouseS.png")).getImage();
-    public final static Image ORANGE_HOUSE_S = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeHouseS.png")).getImage();
-
     //image for the thief
     public final static Image THIEF = new ImageIcon(ImageRef.class.getResource("util/thief.png")).getImage();
 
@@ -83,7 +73,7 @@ public class ImageRef {
     public final static Image WOOD_BACKGROUND = new ImageIcon(ImageRef.class.getResource("util/background.png")).getImage();
 
     //the image for the building materials
-    public final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("bigCard/buildKey.png")).getImage();
+    public final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("bigCard/buildKeySmoke.png")).getImage();
     
     //current player indecator
     public final static Image PLAYER_RED = new ImageIcon(ImageRef.class.getResource("playerIcons/playerRed.png")).getImage();
