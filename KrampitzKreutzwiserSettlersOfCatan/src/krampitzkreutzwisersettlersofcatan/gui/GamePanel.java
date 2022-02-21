@@ -4736,25 +4736,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             tileID = tileDrawOrder[i];
             //tileID = i;
 
-            //check if it is the new type or old size
-            if (tiles.get(tileID).getImage().getHeight(null) == 150) {
-                //draw the tile
-
-                g2d.drawImage(tiles.get(tileID).getImage(),
-                        tiles.get(tileID).getXPos(),
-                        (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
-                        getImgWidth(tiles.get(tileID).getImage()),
-                        getImgHeight(tiles.get(tileID).getImage()), null);
-
-            } else {
-
-                //draw the tile
-                g2d.drawImage(tiles.get(tileID).getImage(),
-                        tiles.get(tileID).getXPos(),
-                        tiles.get(tileID).getYPos(),
-                        getImgWidth(tiles.get(tileID).getImage()),
-                        getImgHeight(tiles.get(tileID).getImage()), null);
-            }
+            //draw the tile
+            g2d.drawImage(tiles.get(tileID).getImage(),
+                    tiles.get(tileID).getXPos(),
+                    /**
+                     * Move the Tile 20 pixels higher because the coordinates
+                     * for the tiles were derived from hexagons with .png files
+                     * 150x130 in size. Now after Alex Eckardt has made new art
+                     * with layering making the map look more 3D, the files
+                     * sizes are and extra 20 pixels higher (150 x 150).
+                     */
+                    (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
+                    getImgWidth(tiles.get(tileID).getImage()),
+                    getImgHeight(tiles.get(tileID).getImage()), null);
 
             //draw the resource harvest number only if it is not a desert
             if (tiles.get(tileID).getType() != 0) {
