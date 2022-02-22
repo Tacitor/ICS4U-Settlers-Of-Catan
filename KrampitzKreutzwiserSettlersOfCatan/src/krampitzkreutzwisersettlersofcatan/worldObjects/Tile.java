@@ -55,7 +55,7 @@ public class Tile extends WorldObject {
 
         tileAnimationData = new TileAnimationData();
 
-        randomizeSmokeAnimation();
+        randomizeSheepAnimation();
     }
 
     /**
@@ -365,7 +365,7 @@ public class Tile extends WorldObject {
      * Set the animation offset values based on the smoke animation for the
      * Settlements
      */
-    private void randomizeSmokeAnimation() {
+    public void randomizeSheepAnimation() {
         //set the animation radomizer values
         //as of right now the Node is set to a small size, thefore base this off of the smoke animation
         tileAnimationData.setFrameTimeOffset((int) (Math.random() * tileAnimationData.getFrameTimeSheep())); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother

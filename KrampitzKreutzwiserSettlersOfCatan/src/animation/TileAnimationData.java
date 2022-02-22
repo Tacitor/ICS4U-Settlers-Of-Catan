@@ -7,8 +7,6 @@
  */
 package animation;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Tacitor
@@ -16,8 +14,6 @@ import java.util.ArrayList;
 public class TileAnimationData {
 
     //Atributes
-    //Static
-    private static ArrayList<TileAnimationData> TileAnimationData; //the local (to this class) copy of the the Tiles animation data
     //animation related
     private int frameTimeSheep; //the time in miliseconds each frame for sheep eating should be displayed for
     private int frameTimeOffset; //the time in milliseconds the frame times will be offset by 
@@ -108,52 +104,39 @@ public class TileAnimationData {
 
     /**
      * Save the data from the gamePanel regarding the animation data of the
-     * Settlements.
+     * Tiles.
      *
      * @param gamePanel
      */
-    /*
-    public static void saveNodeSettlmentAnimationData(GamePanel gamePanel) {
-        //Store the ArrayList of settlements
-        ArrayList<NodeSettlement> settlementNodes = gamePanel.getSettlementNodes();
+    /*public static void saveTileAnimationData(GamePanel gamePanel) {
+        //Store the ArrayList of tiles
+        ArrayList<Tile> tiles = gamePanel.getTiles();
 
         //Init the array list
-        settlementNodesAnimationData = new ArrayList<>();
+        tileAnimationData = new ArrayList<>();
 
-        //go through and add all the animation data from the settlements
-        for (NodeSettlement node : settlementNodes) {
-            //settlementNodesAnimationData.add(node.getSettlementAnimationData().clone());
+        //go through and add all the animation data from the tiles
+        for (Tile tile : tiles) {
+            tileAnimationData.add(tile.getTileAnimationData().clone());
         }
-        
-        //System.out.println("Given1: " + gamePanel.getSettlementNodes().get(2).getSettlementAnimationData().toString());
-        //System.out.println("Local: " + settlementNodesAnimationData.get(2).toString());
-
-    }
-
+    }*/
     /**
-     * Restore the animation data into the NodeSettlements from the gamePanel
+     * Restore the animation data into the Tiles from the gamePanel
      *
      * @param gamePanel
      */
- /*
-    public static void restoreNodeSettlmentAnimationData(GamePanel gamePanel) {
-        //Store the ArrayList of settlements
-        ArrayList<NodeSettlement> settlementNodes = gamePanel.getSettlementNodes();
+    /*public static void restoreTileAnimationData(GamePanel gamePanel) {
+        //Store the ArrayList of tiles
+        ArrayList<Tile> tiles = gamePanel.getTiles();
 
-        //System.out.println("\nBefore: " + settlementNodes.get(2).getSettlementAnimationData().toString());
-
-        //go through and restore all the animation data from the settlements
-        for (int i = 0; i < settlementNodes.size(); i++) {
-            //settlementNodes.get(i).setSettlementAnimationData(settlementNodesAnimationData.get(i));
+        //go through and restore all the animation data from the tiles
+        for (int i = 0; i < tiles.size(); i++) {
+            tiles.get(i).setTileAnimationData(tileAnimationData.get(i));
         }
 
         //then write the new ArrayList of NodeSettlemtns back to the gamePanel
-        gamePanel.setSettlementNodes(settlementNodes);
-
-        //System.out.println("\nAfter: " + settlementNodes.get(2).getSettlementAnimationData().toString());
-        //System.out.println("\nGiven: " + settlementNodesAnimationData.get(2).toString() + "\n\n");
-    }
-     */
+        gamePanel.setTiles(tiles);
+    }*/
     /**
      * Set it to a String
      *

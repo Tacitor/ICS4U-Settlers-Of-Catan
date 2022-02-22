@@ -4749,7 +4749,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
                     getImgWidth(tiles.get(tileID).getImage()),
                     getImgHeight(tiles.get(tileID).getImage()), null);
-            
+
             //draw any layers on top for animation
             tiles.get(tileID).drawAnimationLayer(g2d, this);
 
