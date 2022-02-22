@@ -4736,7 +4736,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             tileID = tileDrawOrder[i];
             //tileID = i;
 
-            //draw the tile
+            //draw the base tile
             g2d.drawImage(tiles.get(tileID).getImage(),
                     tiles.get(tileID).getXPos(),
                     /**
@@ -4749,6 +4749,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
                     getImgWidth(tiles.get(tileID).getImage()),
                     getImgHeight(tiles.get(tileID).getImage()), null);
+            
+            //draw any layers on top for animation
+            tiles.get(tileID).drawAnimationLayer(g2d, this);
 
             //draw the resource harvest number only if it is not a desert
             if (tiles.get(tileID).getType() != 0) {

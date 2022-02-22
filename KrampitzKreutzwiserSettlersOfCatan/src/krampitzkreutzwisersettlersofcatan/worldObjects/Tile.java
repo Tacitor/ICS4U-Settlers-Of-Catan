@@ -5,8 +5,12 @@
  */
 package krampitzkreutzwisersettlersofcatan.worldObjects;
 
+import animation.TileAnimationData;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.scaleFactor;
 import textures.ImageRef;
 
 public class Tile extends WorldObject {
@@ -17,6 +21,7 @@ public class Tile extends WorldObject {
     private int harvestRollNum; // The number that must be rolled to collect from this tile
     private Image image; //the image of the Tile, based off the type
     private int refNum; //the index number this will have in the ArrayList
+    private TileAnimationData tileAnimationData;
 
     //image files
     private final static Image WOOD_TILE = new ImageIcon(ImageRef.class.getResource("tiles/wood.png")).getImage();
@@ -25,6 +30,14 @@ public class Tile extends WorldObject {
     private final static Image ORE_TILE = new ImageIcon(ImageRef.class.getResource("tiles/ore.png")).getImage();
     private final static Image DESERT_TILE = new ImageIcon(ImageRef.class.getResource("tiles/desert.png")).getImage();
     private final static Image CLAY_TILE = new ImageIcon(ImageRef.class.getResource("tiles/clay.png")).getImage();
+
+    //animation files
+    //sheep animation frames
+    private final static Image SHEEP_LAYER_0 = new ImageIcon(ImageRef.class.getResource("animation/sheepLayers/sheep0.png")).getImage();
+    private final static Image SHEEP_LAYER_1 = new ImageIcon(ImageRef.class.getResource("animation/sheepLayers/sheep1.png")).getImage();
+    private final static Image SHEEP_LAYER_2 = new ImageIcon(ImageRef.class.getResource("animation/sheepLayers/sheep2.png")).getImage();
+    private final static Image SHEEP_LAYER_3 = new ImageIcon(ImageRef.class.getResource("animation/sheepLayers/sheep3.png")).getImage();
+    private final static Image[] SHEEP_LAYER_IMAGES = {SHEEP_LAYER_0, SHEEP_LAYER_1, SHEEP_LAYER_2, SHEEP_LAYER_3};
 
     /**
      * Constructor for a blank tile
@@ -39,6 +52,10 @@ public class Tile extends WorldObject {
         type = 0;
         harvestRollNum = 0; // Cannot harvest from here without setup
         image = applyImage();
+
+        tileAnimationData = new TileAnimationData();
+
+        randomizeSmokeAnimation();
     }
 
     /**
@@ -86,6 +103,7 @@ public class Tile extends WorldObject {
      * @param type The type of resource is creates
      * @param harvestRollNum The number that must be rolled to collect the
      * associated resource type
+     * @param refNum
      */
     public Tile(int xPos, int yPos, int type, int harvestRollNum, int refNum) {
         // Initialize the tile and set the position and type
@@ -213,6 +231,93 @@ public class Tile extends WorldObject {
     }
 
     /**
+     * Get the current frame of the animation
+     *
+     * @return
+     */
+    public Image getAnimationFrame() {
+        //the image the method will return
+        Image image;
+        int frameTime;
+
+        //the array of images to pull from
+        Image[] imageArray;
+        //the index of the array that contains the current frame of animation
+        int frameIndex;
+
+        // Check the type
+        if (type == 4) { //for all the sheep tiles
+
+            imageArray = SHEEP_LAYER_IMAGES;
+            //pick one of the frame times
+            frameTime = tileAnimationData.getFrameTimeSheep();
+
+            //decide if a new frame needs to be displayed or if the current one is still the one it should be on
+            if (System.currentTimeMillis() - (tileAnimationData.getLastFrameStart() + tileAnimationData.getFrameTimeOffset()) > frameTime) {
+                //yes it is time for a new frame
+
+                //debug frame times
+                //System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
+                //calculate the index the frame needs to be pulled from
+                frameIndex = tileAnimationData.getCurrentFrameIndex() + 1; //the new frame will just be one after the current one
+
+                //and make a check that it won't be out of bounds
+                if (frameIndex >= imageArray.length) {
+                    frameIndex = 0; //reset it to the beginning
+                }
+
+                //get the new frame
+                image = imageArray[frameIndex];
+
+                //update the time
+                tileAnimationData.setLastFrameStart(System.currentTimeMillis());
+
+                //update the frame index
+                tileAnimationData.setCurrentFrameIndex(frameIndex);
+
+            } else { //if the minimum frame has not yet passed pass the current frame again
+                image = imageArray[tileAnimationData.getCurrentFrameIndex()];
+            }
+
+        } else {
+            image = ImageRef.ERROR_IMAGE;
+        }
+
+        return image;
+    }
+
+    /**
+     * The code for drawing what needs to be drawn when animating the Tile
+     *
+     * @param g2d
+     * @param gamePanel
+     */
+    public void drawAnimationLayer(Graphics2D g2d, GamePanel gamePanel) {
+        //based on the type of Tile decide what kind of animation it should get
+        if (type == 4) { //for the sheep tile
+
+            //save the image that will be drawn
+            Image sheepLayerImage = getAnimationFrame();
+
+            //draw the frame of animation with the sheep
+            //draw code coppied from the draw() method from GamePanel.java
+            g2d.drawImage(sheepLayerImage,
+                    xPos,
+                    /**
+                     * Move the Tile 20 pixels higher because the coordinates
+                     * for the tiles were derived from hexagons with .png files
+                     * 150x130 in size. Now after Alex Eckardt has made new art
+                     * with layering making the map look more 3D, the files
+                     * sizes are and extra 20 pixels higher (150 x 150).
+                     */
+                    (int) (yPos - (20 / scaleFactor)),
+                    gamePanel.getImgWidth(sheepLayerImage),
+                    gamePanel.getImgHeight(sheepLayerImage), null);
+
+        }
+    }
+
+    /**
      * Create an identical copy of the world tile
      *
      * @return the new Tile instance
@@ -254,5 +359,16 @@ public class Tile extends WorldObject {
                 + "Type: " + type + "\n"
                 + "Has Thief: " + hasThief + "\n"
                 + "Harvesting Dice Roll: " + harvestRollNum + "\n";
+    }
+
+    /**
+     * Set the animation offset values based on the smoke animation for the
+     * Settlements
+     */
+    private void randomizeSmokeAnimation() {
+        //set the animation radomizer values
+        //as of right now the Node is set to a small size, thefore base this off of the smoke animation
+        tileAnimationData.setFrameTimeOffset((int) (Math.random() * tileAnimationData.getFrameTimeSheep())); //set it to a random value between 0-500ms. This will shift around when the frames will change in comparison to eachother
+        tileAnimationData.setCurrentFrameIndex((int) (Math.random() * SHEEP_LAYER_IMAGES.length)); //pick a random number of frames to offset the animation by
     }
 }
