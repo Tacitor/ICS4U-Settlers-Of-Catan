@@ -103,41 +103,6 @@ public class TileAnimationData {
     }
 
     /**
-     * Save the data from the gamePanel regarding the animation data of the
-     * Tiles.
-     *
-     * @param gamePanel
-     */
-    /*public static void saveTileAnimationData(GamePanel gamePanel) {
-        //Store the ArrayList of tiles
-        ArrayList<Tile> tiles = gamePanel.getTiles();
-
-        //Init the array list
-        tileAnimationData = new ArrayList<>();
-
-        //go through and add all the animation data from the tiles
-        for (Tile tile : tiles) {
-            tileAnimationData.add(tile.getTileAnimationData().clone());
-        }
-    }*/
-    /**
-     * Restore the animation data into the Tiles from the gamePanel
-     *
-     * @param gamePanel
-     */
-    /*public static void restoreTileAnimationData(GamePanel gamePanel) {
-        //Store the ArrayList of tiles
-        ArrayList<Tile> tiles = gamePanel.getTiles();
-
-        //go through and restore all the animation data from the tiles
-        for (int i = 0; i < tiles.size(); i++) {
-            tiles.get(i).setTileAnimationData(tileAnimationData.get(i));
-        }
-
-        //then write the new ArrayList of NodeSettlemtns back to the gamePanel
-        gamePanel.setTiles(tiles);
-    }*/
-    /**
      * Set it to a String
      *
      * @return

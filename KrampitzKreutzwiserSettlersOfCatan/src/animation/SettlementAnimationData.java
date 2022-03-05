@@ -129,52 +129,6 @@ public class SettlementAnimationData {
     }
 
     /**
-     * Save the data from the gamePanel regarding the animation data of the
-     * Settlements.
-     *
-     * @param gamePanel
-     */
-    public static void saveNodeSettlmentAnimationData(GamePanel gamePanel) {
-        //Store the ArrayList of settlements
-        ArrayList<NodeSettlement> settlementNodes = gamePanel.getSettlementNodes();
-
-        //Init the array list
-        settlementNodesAnimationData = new ArrayList<>();
-
-        //go through and add all the animation data from the settlements
-        for (NodeSettlement node : settlementNodes) {
-            settlementNodesAnimationData.add(node.getSettlementAnimationData().clone());
-        }
-        
-        //System.out.println("Given1: " + gamePanel.getSettlementNodes().get(2).getSettlementAnimationData().toString());
-        //System.out.println("Local: " + settlementNodesAnimationData.get(2).toString());
-
-    }
-
-    /**
-     * Restore the animation data into the NodeSettlements from the gamePanel
-     *
-     * @param gamePanel
-     */
-    public static void restoreNodeSettlmentAnimationData(GamePanel gamePanel) {
-        //Store the ArrayList of settlements
-        ArrayList<NodeSettlement> settlementNodes = gamePanel.getSettlementNodes();
-
-        //System.out.println("\nBefore: " + settlementNodes.get(2).getSettlementAnimationData().toString());
-
-        //go through and restore all the animation data from the settlements
-        for (int i = 0; i < settlementNodes.size(); i++) {
-            settlementNodes.get(i).setSettlementAnimationData(settlementNodesAnimationData.get(i));
-        }
-
-        //then write the new ArrayList of NodeSettlemtns back to the gamePanel
-        gamePanel.setSettlementNodes(settlementNodes);
-
-        //System.out.println("\nAfter: " + settlementNodes.get(2).getSettlementAnimationData().toString());
-        //System.out.println("\nGiven: " + settlementNodesAnimationData.get(2).toString() + "\n\n");
-    }
-
-    /**
      * Set it to a String
      *
      * @return
@@ -187,22 +141,23 @@ public class SettlementAnimationData {
                 + "\nlastFrameStart: " + lastFrameStart
                 + "\ncurrentFrameIndex: " + currentFrameIndex;
     }
-    
+
     /**
      * Return an exact copy
-     * @return 
+     *
+     * @return
      */
     @Override
     public SettlementAnimationData clone() {
         //create a new Object
         SettlementAnimationData copy = new SettlementAnimationData();
-        
+
         copy.frameTimeSmoke = frameTimeSmoke;
         copy.frameTimeLight = frameTimeLight;
         copy.frameTimeOffset = frameTimeOffset;
         copy.lastFrameStart = lastFrameStart;
         copy.currentFrameIndex = currentFrameIndex;
-        
+
         return copy;
     }
 
