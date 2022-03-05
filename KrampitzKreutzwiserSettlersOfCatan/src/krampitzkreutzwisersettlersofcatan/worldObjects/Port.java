@@ -24,6 +24,9 @@ public class Port extends WorldObject {
     private Image typeImage; //the resource image. Get drawn ontop of the main image
     private int typePosX; //the x position of the type image
     private int typePosY; //the y position of the type image
+    private int shipPosX; //the x position of the ship image (Will move around as part of animation)
+    private int shipPosY; //The y position of the ship image
+    private Image shipImage; //the image var for the ship
 
     //image files for base port
     private final static Image TOP_PORT = new ImageIcon(ImageRef.class.getResource("port/peirGroups1.png")).getImage();
@@ -39,6 +42,8 @@ public class Port extends WorldObject {
     private final static Image SHEEP_PORT = new ImageIcon(ImageRef.class.getResource("port/sheepPort.png")).getImage();
     private final static Image ORE_PORT = new ImageIcon(ImageRef.class.getResource("port/orePort.png")).getImage();
     private final static Image WILD_CARD_PORT = new ImageIcon(ImageRef.class.getResource("port/wildcard.png")).getImage();
+    //ship file
+    private final static Image SHIP = new ImageIcon(ImageRef.class.getResource("port/ship.png")).getImage();
 
     /**
      * Constructor for a blank Port
@@ -57,6 +62,9 @@ public class Port extends WorldObject {
         type = 0;
         image = applyImage();
         typeImage = applyTypeImage();
+
+        //set the ship to the ship image
+        shipImage = SHIP;
     }
 
     /**
@@ -68,12 +76,12 @@ public class Port extends WorldObject {
      */
     public Port(Tile linkedTile, int orientation, int type) {
         this();
-        
+
         //apply the specifics for this tile
         this.linkedTile = linkedTile;
         this.orientation = orientation;
         this.type = type;
-        
+
         //update the images and coordinates based upon this new data
         image = applyImage();
         typeImage = applyTypeImage();
@@ -82,8 +90,8 @@ public class Port extends WorldObject {
     }
 
     /**
-     * Using the orientation return where the type image should be drawn. Update
-     * the correct attributes.
+     * Using the orientation return where the type & ship images should be
+     * drawn. Update the correct attributes.
      */
     public void applyTypeImageCoordinates() {
         //get the orientation
@@ -92,31 +100,43 @@ public class Port extends WorldObject {
                 //if above
                 typePosX = (int) (linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 2.0) - (getImgWidth(typeImage) / 2.0));
                 typePosY = (int) (yPos + getImgHeight(image) - (getImgHeight(image) / 5.0) - getImgHeight(typeImage));
+                shipPosX = xPos;
+                shipPosY = yPos;
                 break;
             case 1:
                 //if top right
                 typePosX = (int) (xPos + (25 / scaleFactor) + getImgWidth(typeImage));
                 typePosY = (int) (yPos + getImgHeight(typeImage) / 2.0);
+                shipPosX = xPos;
+                shipPosY = yPos;
                 break;
             case 2:
                 //if bottom right
                 typePosX = (int) (xPos + (25 / scaleFactor) + getImgWidth(typeImage));
                 typePosY = (yPos + getImgHeight(image) - getImgHeight(typeImage));
+                shipPosX = xPos;
+                shipPosY = yPos;
                 break;
             case 3:
                 //if below
                 typePosX = linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 2) - (getImgWidth(typeImage) / 2);
                 typePosY = (int) (yPos + (30 / scaleFactor));
+                shipPosX = xPos;
+                shipPosY = yPos;
                 break;
             case 4:
                 //if bottom left
                 typePosX = (int) (xPos + getImgWidth(image) - (50 / scaleFactor) - getImgWidth(typeImage));
                 typePosY = (yPos + getImgHeight(image) - getImgHeight(typeImage));
+                shipPosX = xPos;
+                shipPosY = yPos;
                 break;
             case 5:
                 //if top left
                 typePosX = (int) (xPos + getImgWidth(image) - (50 / scaleFactor) - getImgWidth(typeImage));
                 typePosY = (int) (yPos + getImgHeight(typeImage) / 2.0);
+                shipPosX = xPos;
+                shipPosY = yPos;
                 break;
             default:
                 break;
@@ -325,6 +345,60 @@ public class Port extends WorldObject {
     }
 
     /**
+     * Get the X position of the top left corner of the ship for this port
+     *
+     * @return
+     */
+    public int getShipPosX() {
+        return shipPosX;
+    }
+
+    /**
+     * Set the X position of the top left corner of the ship for this port
+     *
+     * @param shipPosX
+     */
+    public void setShipPosX(int shipPosX) {
+        this.shipPosX = shipPosX;
+    }
+
+    /**
+     * Get the Y position of the top left corner of the ship for this port
+     *
+     * @return
+     */
+    public int getShipPosY() {
+        return shipPosY;
+    }
+
+    /**
+     * Set the Y position of the top left corner of the ship for this port
+     *
+     * @param shipPosY
+     */
+    public void setShipPosY(int shipPosY) {
+        this.shipPosY = shipPosY;
+    }
+
+    /**
+     * Set the Image of the Ship
+     *
+     * @param shipImage
+     */
+    public void setShipImage(Image shipImage) {
+        this.shipImage = shipImage;
+    }
+
+    /**
+     * Get the Image of the Ship
+     *
+     * @return
+     */
+    public Image getShipImage() {
+        return shipImage;
+    }
+
+    /**
      * Dynamically set the image based on the orientation
      *
      * @return
@@ -386,9 +460,10 @@ public class Port extends WorldObject {
                 + "linkedTile: " + linkedTile.getRefNum() + "\n"
                 + "Orientation: " + orientation + "\n";
     }
-    
+
     /**
      * Create an identical copy of the port
+     *
      * @return the new port instance
      */
     @Override
@@ -403,15 +478,16 @@ public class Port extends WorldObject {
         // Return the copy
         return copy;
     }
-    
+
     /**
      * Compare this tile to another to check if they are the same
+     *
      * @param other The tile to compare to
      * @return If the tiles are equal or not
      */
     public boolean equals(Port other) {
         // Compare all of the properties of the tiles
-        return super.equals(other) 
+        return super.equals(other)
                 && type == other.type
                 && orientation == other.orientation
                 && linkedTile.equals(other.linkedTile);

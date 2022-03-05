@@ -4714,6 +4714,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //draw the ports
         for (int i = 0; i < ports.size(); i++) {
+            //The ship
+            g2d.drawImage(ports.get(i).getShipImage(),
+                    ports.get(i).getShipPosX(),
+                    ports.get(i).getShipPosY(),
+                    getImgWidth(ports.get(i).getShipImage()),
+                    getImgHeight(ports.get(i).getShipImage()),
+                    null);
+
+            //The base (piers)
             g2d.drawImage(ports.get(i).getImage(),
                     ports.get(i).getXPos(),
                     ports.get(i).getYPos(),
