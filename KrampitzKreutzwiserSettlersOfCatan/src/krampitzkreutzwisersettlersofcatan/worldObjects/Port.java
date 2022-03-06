@@ -128,8 +128,8 @@ public class Port extends WorldObject {
                 //if bottom left
                 typePosX = (int) (xPos + getImgWidth(image) - (50 / scaleFactor) - getImgWidth(typeImage));
                 typePosY = (yPos + getImgHeight(image) - getImgHeight(typeImage));
-                shipPosX = xPos;
-                shipPosY = yPos;
+                shipPosX = xPos + (getImgWidth(image) / 2) + scaleInt(7); //centre the ship in the middle of the port image. Then move it 10px down and right.
+                shipPosY = yPos + (getImgHeight(image) / 2) + scaleInt(7);
                 break;
             case 5:
                 //if top left
