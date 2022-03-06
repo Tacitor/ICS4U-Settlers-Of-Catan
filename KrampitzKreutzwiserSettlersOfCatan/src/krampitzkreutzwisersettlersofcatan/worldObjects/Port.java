@@ -121,14 +121,14 @@ public class Port extends WorldObject {
                 //if below
                 typePosX = linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 2) - (getImgWidth(typeImage) / 2);
                 typePosY = (int) (yPos + (30 / scaleFactor));
-                shipPosX = xPos;
-                shipPosY = yPos;
+                shipPosX = xPos + scaleInt(35); //leave the ship in the top left corner and move it down 35px and right 15px
+                shipPosY = yPos + scaleInt(15);
                 break;
             case 4:
                 //if bottom left
                 typePosX = (int) (xPos + getImgWidth(image) - (50 / scaleFactor) - getImgWidth(typeImage));
                 typePosY = (yPos + getImgHeight(image) - getImgHeight(typeImage));
-                shipPosX = xPos + (getImgWidth(image) / 2) + scaleInt(7); //centre the ship in the middle of the port image. Then move it 10px down and right.
+                shipPosX = xPos + (getImgWidth(image) / 2) + scaleInt(7); //centre the ship in the middle of the port image. Then move it 7px down and right.
                 shipPosY = yPos + (getImgHeight(image) / 2) + scaleInt(7);
                 break;
             case 5:
