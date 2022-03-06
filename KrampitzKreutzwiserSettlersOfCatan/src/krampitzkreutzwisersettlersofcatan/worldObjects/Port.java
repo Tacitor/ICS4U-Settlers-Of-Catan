@@ -135,8 +135,8 @@ public class Port extends WorldObject {
                 //if top left
                 typePosX = (int) (xPos + getImgWidth(image) - (50 / scaleFactor) - getImgWidth(typeImage));
                 typePosY = (int) (yPos + getImgHeight(typeImage) / 2.0);
-                shipPosX = xPos;
-                shipPosY = yPos;
+                shipPosX = xPos + (getImgWidth(image) / 2) + scaleInt(6); //move it over by half and add 15 px
+                shipPosY = yPos; //leave the y pos where it is
                 break;
             default:
                 break;
