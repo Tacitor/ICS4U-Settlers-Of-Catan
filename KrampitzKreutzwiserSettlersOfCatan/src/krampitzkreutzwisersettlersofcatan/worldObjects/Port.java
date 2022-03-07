@@ -100,8 +100,8 @@ public class Port extends WorldObject {
                 //if above
                 typePosX = (int) (linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 2.0) - (getImgWidth(typeImage) / 2.0));
                 typePosY = (int) (yPos + getImgHeight(image) - (getImgHeight(image) / 5.0) - getImgHeight(typeImage));
-                shipPosX = xPos;
-                shipPosY = yPos;
+                shipPosX = xPos + getImgWidth(image) - (2 * getImgWidth(shipImage)) - scaleInt(10); //set the position to the bottom right corner of the pier image. Then move it over by twice the size of the ship image
+                shipPosY = yPos + getImgHeight(image) - (2 * getImgHeight(shipImage));
                 break;
             case 1:
                 //if top right
