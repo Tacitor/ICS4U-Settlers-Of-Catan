@@ -107,8 +107,8 @@ public class Port extends WorldObject {
                 //if top right
                 typePosX = (int) (xPos + (25 / scaleFactor) + getImgWidth(typeImage));
                 typePosY = (int) (yPos + getImgHeight(typeImage) / 2.0);
-                shipPosX = xPos;
-                shipPosY = yPos;
+                shipPosX = xPos + getImgWidth(shipImage); //move it diagonal by the size of the ship image
+                shipPosY = yPos + getImgHeight(shipImage) - scaleInt(10);
                 break;
             case 2:
                 //if bottom right
