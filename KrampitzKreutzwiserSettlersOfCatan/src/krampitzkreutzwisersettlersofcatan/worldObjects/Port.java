@@ -52,7 +52,7 @@ public class Port extends WorldObject {
         //init the pos
         xPos = 0;
         yPos = 0;
-
+        
         typePosX = 0;
         typePosY = 0;
 
@@ -114,8 +114,8 @@ public class Port extends WorldObject {
                 //if bottom right
                 typePosX = (int) (xPos + (25 / scaleFactor) + getImgWidth(typeImage));
                 typePosY = (yPos + getImgHeight(image) - getImgHeight(typeImage));
-                shipPosX = xPos;
-                shipPosY = yPos;
+                shipPosX = xPos + (getImgWidth(image) / 2) - scaleInt(20);
+                shipPosY = yPos + (getImgWidth(image) / 2);
                 break;
             case 3:
                 //if below
@@ -192,13 +192,13 @@ public class Port extends WorldObject {
      * @return
      */
     public final int getImgWidth(Image image) {
-
+        
         if (getPanelWidth() > getPanelHeight()) {
             return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
         } else {
             return (int) (image.getWidth(null) / 1920.0 * getPanelWidth());
         }
-
+        
     }
 
     /**
@@ -208,7 +208,7 @@ public class Port extends WorldObject {
      * @return
      */
     public final int getImgHeight(Image image) {
-
+        
         if (getPanelWidth() > getPanelHeight()) {
             return (int) (image.getHeight(null) / 1080.0 * getPanelHeight());
         } else {
@@ -492,5 +492,5 @@ public class Port extends WorldObject {
                 && orientation == other.orientation
                 && linkedTile.equals(other.linkedTile);
     }
-
+    
 }

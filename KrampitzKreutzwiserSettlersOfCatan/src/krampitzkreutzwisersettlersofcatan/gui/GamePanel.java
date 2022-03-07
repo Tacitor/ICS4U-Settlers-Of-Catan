@@ -4723,11 +4723,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     getImgHeight(ports.get(i).getImage()),
                     null);
 
-            g2d.drawRect(ports.get(i).getXPos(),
-                    ports.get(i).getYPos(),
-                    getImgWidth(ports.get(i).getImage()),
-                    getImgHeight(ports.get(i).getImage()));
-
             //The ship
             g2d.drawImage(ports.get(i).getShipImage(),
                     ports.get(i).getShipPosX(),
@@ -4735,11 +4730,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     getImgWidth(ports.get(i).getShipImage()),
                     getImgHeight(ports.get(i).getShipImage()),
                     null);
-
-            /*g2d.drawRect(ports.get(i).getShipPosX(),
-                    ports.get(i).getShipPosY(),
-                    getImgWidth(ports.get(i).getShipImage()),
-                    getImgHeight(ports.get(i).getShipImage()));*/
 
             //draw the recource type on top
             g2d.drawImage(ports.get(i).getTypeImage(),
