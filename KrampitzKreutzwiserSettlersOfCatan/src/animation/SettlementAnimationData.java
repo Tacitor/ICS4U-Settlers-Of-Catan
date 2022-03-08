@@ -8,8 +8,6 @@
 package animation;
 
 import java.util.ArrayList;
-import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
-import krampitzkreutzwisersettlersofcatan.worldObjects.NodeSettlement;
 
 /**
  *

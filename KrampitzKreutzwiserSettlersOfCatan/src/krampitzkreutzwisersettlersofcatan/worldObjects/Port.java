@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.worldObjects;
 
+import animation.PortAnimationData;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.*;
@@ -27,6 +28,7 @@ public class Port extends WorldObject {
     private int shipPosX; //the x position of the ship image (Will move around as part of animation)
     private int shipPosY; //The y position of the ship image
     private Image shipImage; //the image var for the ship
+    private PortAnimationData portAnimationData; //the object that contains the variables for animation
 
     //image files for base port
     private final static Image TOP_PORT = new ImageIcon(ImageRef.class.getResource("port/peirGroups1.png")).getImage();
@@ -65,6 +67,9 @@ public class Port extends WorldObject {
 
         //set the ship to the ship image
         shipImage = SHIP;
+        
+        //set the animation data object
+        portAnimationData = new PortAnimationData();
     }
 
     /**
@@ -444,6 +449,42 @@ public class Port extends WorldObject {
             default:
                 return WILD_CARD_PORT;
         }
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public int[] getShipPos() {
+        int posTime; //the time in milis that this positon will be held for
+        int[] positions = new int[2]; //and array to store the x and y coordinates of the ship
+        
+        posTime = portAnimationData.getPosTimeShip();
+        
+        //decide if a new position needs to be displayed of if the current positon is still the one that it should be
+        if (System.currentTimeMillis() - portAnimationData.getLastPosStart() > posTime) {
+            //yes it is time for the new positions
+            
+            
+            //increment the x pos of the ship (just the x for now while developing the feature)
+            shipPosX = shipPosX - (portAnimationData.getMovePosIncrement() * portAnimationData.getIncrementCyclesPassed());
+            
+            //update the time
+            portAnimationData.setLastPosStart(System.currentTimeMillis());
+            
+            //increment the counter
+            portAnimationData.setIncrementCyclesPassed(portAnimationData.getIncrementCyclesPassed() + 1);
+            
+            //save the new positions
+            positions[0] = shipPosX; //save the x
+            positions[1] = shipPosY; //save the y
+            
+        } else {
+            positions[0] = shipPosX; //save the x
+            positions[1] = shipPosY; //save the y
+        }
+        
+        return positions;
     }
 
     /**

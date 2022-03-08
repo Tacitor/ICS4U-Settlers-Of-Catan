@@ -1,7 +1,7 @@
 /*
  * Lukas Krampitz
  * Feb 16, 2022
- * A data storing class that holds all the variables for animating NodeSettlements
+ * A data storing class that holds all the variables for animating Tiles
  * This class is created as a way to save the current animation type data from being 
  * reset after saving and loading an online game when changing turns.
  */
