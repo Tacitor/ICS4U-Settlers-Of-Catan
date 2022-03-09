@@ -140,7 +140,6 @@ public class Port extends WorldObject {
     }
 
     public void applyShipStarterCoordinates() {
-        System.out.println("xPos: " + xPos);
         //get the orientation
         switch (orientation) {
             case 0:
