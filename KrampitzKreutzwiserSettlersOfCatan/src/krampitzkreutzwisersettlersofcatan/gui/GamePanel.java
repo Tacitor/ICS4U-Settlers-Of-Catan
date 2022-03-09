@@ -41,14 +41,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.util.CardUtil;
 import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.util.GlobalDataRecord;
-import textures.ImageRef;
 import static textures.ImageRef.*;
 // </editor-fold>
 
@@ -4710,8 +4708,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 this.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
                 this.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
 
-        Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("port/wildcard.png")).getImage();
-
         //draw the ports
         for (int i = 0; i < ports.size(); i++) {
 
@@ -6070,6 +6066,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         for (int i = 0; i < ports.size(); i++) {
             ports.get(i).applyCoordinates();
             ports.get(i).applyTypeImageCoordinates();
+            ports.get(i).applyShipStarterCoordinates();
         }
     }
 

@@ -54,9 +54,11 @@ public class Port extends WorldObject {
         //init the pos
         xPos = 0;
         yPos = 0;
-        
+
         typePosX = 0;
         typePosY = 0;
+        shipPosX = 0;
+        shipPosY = 0;
 
         //init the port attributes
         linkedTile = null;
@@ -67,7 +69,7 @@ public class Port extends WorldObject {
 
         //set the ship to the ship image
         shipImage = SHIP;
-        
+
         //set the animation data object
         portAnimationData = new PortAnimationData();
     }
@@ -92,6 +94,7 @@ public class Port extends WorldObject {
         typeImage = applyTypeImage();
         applyCoordinates();
         applyTypeImageCoordinates();
+        applyShipStarterCoordinates();
     }
 
     /**
@@ -105,41 +108,68 @@ public class Port extends WorldObject {
                 //if above
                 typePosX = (int) (linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 2.0) - (getImgWidth(typeImage) / 2.0));
                 typePosY = (int) (yPos + getImgHeight(image) - (getImgHeight(image) / 5.0) - getImgHeight(typeImage));
-                shipPosX = xPos + getImgWidth(image) - (2 * getImgWidth(shipImage)) - scaleInt(10); //set the position to the bottom right corner of the pier image. Then move it over by twice the size of the ship image
-                shipPosY = yPos + getImgHeight(image) - (2 * getImgHeight(shipImage));
                 break;
             case 1:
                 //if top right
                 typePosX = (int) (xPos + (25 / scaleFactor) + getImgWidth(typeImage));
                 typePosY = (int) (yPos + getImgHeight(typeImage) / 2.0);
-                shipPosX = xPos + getImgWidth(shipImage); //move it diagonal by the size of the ship image
-                shipPosY = yPos + getImgHeight(shipImage) - scaleInt(10);
                 break;
             case 2:
                 //if bottom right
                 typePosX = (int) (xPos + (25 / scaleFactor) + getImgWidth(typeImage));
                 typePosY = (yPos + getImgHeight(image) - getImgHeight(typeImage));
-                shipPosX = xPos + (getImgWidth(image) / 2) - scaleInt(20);
-                shipPosY = yPos + (getImgWidth(image) / 2);
                 break;
             case 3:
                 //if below
                 typePosX = linkedTile.getXPos() + (getImgWidth(linkedTile.getImage()) / 2) - (getImgWidth(typeImage) / 2);
                 typePosY = (int) (yPos + (30 / scaleFactor));
-                shipPosX = xPos + scaleInt(35); //leave the ship in the top left corner and move it down 35px and right 15px
-                shipPosY = yPos + scaleInt(15);
                 break;
             case 4:
                 //if bottom left
                 typePosX = (int) (xPos + getImgWidth(image) - (50 / scaleFactor) - getImgWidth(typeImage));
                 typePosY = (yPos + getImgHeight(image) - getImgHeight(typeImage));
-                shipPosX = xPos + (getImgWidth(image) / 2) + scaleInt(7); //centre the ship in the middle of the port image. Then move it 7px down and right.
-                shipPosY = yPos + (getImgHeight(image) / 2) + scaleInt(7);
                 break;
             case 5:
                 //if top left
                 typePosX = (int) (xPos + getImgWidth(image) - (50 / scaleFactor) - getImgWidth(typeImage));
                 typePosY = (int) (yPos + getImgHeight(typeImage) / 2.0);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void applyShipStarterCoordinates() {
+        System.out.println("xPos: " + xPos);
+        //get the orientation
+        switch (orientation) {
+            case 0:
+                //if above
+                shipPosX = xPos + getImgWidth(image) - (2 * getImgWidth(shipImage)) - scaleInt(10); //set the position to the bottom right corner of the pier image. Then move it over by twice the size of the ship image
+                shipPosY = yPos + getImgHeight(image) - (2 * getImgHeight(shipImage));
+                break;
+            case 1:
+                //if top right
+                shipPosX = xPos + getImgWidth(shipImage); //move it diagonal by the size of the ship image
+                shipPosY = yPos + getImgHeight(shipImage) - scaleInt(10);
+                break;
+            case 2:
+                //if bottom right
+                shipPosX = xPos + (getImgWidth(image) / 2) - scaleInt(20);
+                shipPosY = yPos + (getImgWidth(image) / 2);
+                break;
+            case 3:
+                //if below
+                shipPosX = xPos + scaleInt(35); //leave the ship in the top left corner and move it down 35px and right 15px
+                shipPosY = yPos + scaleInt(15);
+                break;
+            case 4:
+                //if bottom left
+                shipPosX = xPos + (getImgWidth(image) / 2) + scaleInt(7); //centre the ship in the middle of the port image. Then move it 7px down and right.
+                shipPosY = yPos + (getImgHeight(image) / 2) + scaleInt(7);
+                break;
+            case 5:
+                //if top left
                 shipPosX = xPos + (getImgWidth(image) / 2) + scaleInt(6); //move it over by half and add 15 px
                 shipPosY = yPos; //leave the y pos where it is
                 break;
@@ -197,13 +227,13 @@ public class Port extends WorldObject {
      * @return
      */
     public final int getImgWidth(Image image) {
-        
+
         if (getPanelWidth() > getPanelHeight()) {
             return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
         } else {
             return (int) (image.getWidth(null) / 1920.0 * getPanelWidth());
         }
-        
+
     }
 
     /**
@@ -213,7 +243,7 @@ public class Port extends WorldObject {
      * @return
      */
     public final int getImgHeight(Image image) {
-        
+
         if (getPanelWidth() > getPanelHeight()) {
             return (int) (image.getHeight(null) / 1080.0 * getPanelHeight());
         } else {
@@ -450,40 +480,36 @@ public class Port extends WorldObject {
                 return WILD_CARD_PORT;
         }
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public int[] getShipPos() {
         int posTime; //the time in milis that this positon will be held for
         int[] positions = new int[2]; //and array to store the x and y coordinates of the ship
-        
+
         posTime = portAnimationData.getPosTimeShip();
-        
+
         //decide if a new position needs to be displayed of if the current positon is still the one that it should be
         if (System.currentTimeMillis() - portAnimationData.getLastPosStart() > posTime) {
             //yes it is time for the new positions
-            
-            
-            //increment the x pos of the ship (just the x for now while developing the feature)
-            shipPosX = shipPosX - (portAnimationData.getMovePosIncrement() * portAnimationData.getIncrementCyclesPassed());
-            
+
             //update the time
             portAnimationData.setLastPosStart(System.currentTimeMillis());
-            
+
             //increment the counter
             portAnimationData.setIncrementCyclesPassed(portAnimationData.getIncrementCyclesPassed() + 1);
-            
-            //save the new positions
-            positions[0] = shipPosX; //save the x
-            positions[1] = shipPosY; //save the y
-            
-        } else {
-            positions[0] = shipPosX; //save the x
-            positions[1] = shipPosY; //save the y
+
         }
-        
+
+        //increment the x pos of the ship (just the x for now while developing the feature)
+        shipPosX = shipPosX - (portAnimationData.getMovePosIncrement() * portAnimationData.getIncrementCyclesPassed());
+
+        //save the new positions
+        positions[0] = shipPosX; //save the x
+        positions[1] = shipPosY; //save the y
+
         return positions;
     }
 
@@ -533,5 +559,5 @@ public class Port extends WorldObject {
                 && orientation == other.orientation
                 && linkedTile.equals(other.linkedTile);
     }
-    
+
 }
