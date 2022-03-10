@@ -5666,9 +5666,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         /*for (int i = 0; i < panelWidth; i+=10) {
             g2d.drawLine(i, 0, i, panelHeight);
         }*/
-
- /*
         //draw the boarder overlay
+        /*        
         g2d.drawImage(WATER_RING_OVERLAY, 
                 this.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2,
                 this.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2, 
