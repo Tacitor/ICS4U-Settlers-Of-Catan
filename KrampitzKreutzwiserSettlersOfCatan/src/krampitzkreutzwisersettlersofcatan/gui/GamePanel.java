@@ -4721,11 +4721,20 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //update the ship position
             int[] shipPos = ports.get(i).getShipPos(this);
+            //get the orientation of the ship
+            boolean outToSea = ports.get(i).getPortAnimationData().isOutToSea(); //whether or not the ship is facing the sea or not
+            int outToSeaMultip = outToSea ? 1 : -1;
+            int flipOffset; //how much to offset the x pos by to account for flipping
+            if (outToSea) {
+                flipOffset = 0;
+            } else {
+                flipOffset = getImgWidth(ports.get(i).getShipImage());
+            }
             //The ship
             g2d.drawImage(ports.get(i).getShipImage(),
-                    shipPos[0],
+                    shipPos[0] + flipOffset,
                     shipPos[1],
-                    getImgWidth(ports.get(i).getShipImage()),
+                    (getImgWidth(ports.get(i).getShipImage()) * (  outToSeaMultip  )   ),
                     getImgHeight(ports.get(i).getShipImage()),
                     null);
 

@@ -434,6 +434,24 @@ public class Port extends WorldObject {
     public Image getShipImage() {
         return shipImage;
     }
+    
+    /**
+     * Set the PortAnimationData of the Port
+     *
+     * @param portAnimationData
+     */
+    public void setPortAnimationData(PortAnimationData portAnimationData) {
+        this.portAnimationData = portAnimationData;
+    }
+
+    /**
+     * Get the PortAnimationData of the Port
+     *
+     * @return
+     */
+    public PortAnimationData getPortAnimationData() {
+        return portAnimationData;
+    }
 
     /**
      * Dynamically set the image based on the orientation
@@ -497,14 +515,8 @@ public class Port extends WorldObject {
             case 2:
                 return SHIP;
             case 4:
-            case 5: {
-                if (portAnimationData.isOutToSea()) {
-
-                    return SHIP;
-                } else {
-                    return ImageRef.ERROR_IMAGE;
-                }
-            }
+            case 5:
+                return SHIP;
             default:
                 return ImageRef.ERROR_IMAGE;
         }
