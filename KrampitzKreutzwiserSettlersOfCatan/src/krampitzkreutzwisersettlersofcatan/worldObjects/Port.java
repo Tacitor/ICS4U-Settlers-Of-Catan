@@ -94,6 +94,7 @@ public class Port extends WorldObject {
         //update the images and coordinates based upon this new data
         image = applyImage();
         typeImage = applyTypeImage();
+        shipImage = applyShipImage();
         applyCoordinates();
         applyTypeImageCoordinates();
         applyShipStarterCoordinates();
@@ -483,6 +484,33 @@ public class Port extends WorldObject {
     }
 
     /**
+     * Set the image of the ship depending on which direction it is sailing
+     *
+     * @return
+     */
+    public Image applyShipImage() {
+        switch (orientation) {
+            case 0:
+            case 3:
+                return SHIP;
+            case 1:
+            case 2:
+                return SHIP;
+            case 4:
+            case 5: {
+                if (portAnimationData.isOutToSea()) {
+
+                    return SHIP;
+                } else {
+                    return ImageRef.ERROR_IMAGE;
+                }
+            }
+            default:
+                return ImageRef.ERROR_IMAGE;
+        }
+    }
+
+    /**
      *
      * @param gamePanel
      * @return
@@ -543,6 +571,9 @@ public class Port extends WorldObject {
         //save the new positions
         positions[0] = shipPosX; //save the x
         positions[1] = shipPosY; //save the y
+
+        //update the ship image
+        shipImage = applyShipImage();
 
         return positions;
     }
