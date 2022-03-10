@@ -490,20 +490,27 @@ public class Port extends WorldObject {
 
         posTime = portAnimationData.getPosTimeShip();
 
+        long time = System.currentTimeMillis();
+
         //decide if a new position needs to be displayed of if the current positon is still the one that it should be
-        if (System.currentTimeMillis() - portAnimationData.getLastPosStart() > posTime) {
+        if ((time - portAnimationData.getLastPosStart()) > posTime) {
             //yes it is time for the new positions
+            
+            System.out.println("Time: " + (time - portAnimationData.getLastPosStart()));
 
             //update the time
-            portAnimationData.setLastPosStart(System.currentTimeMillis());
+            portAnimationData.setLastPosStart(time);
 
             //increment the counter
             portAnimationData.setIncrementCyclesPassed(portAnimationData.getIncrementCyclesPassed() + 1);
+            
+            //update the offset to the new position
+            portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() - portAnimationData.getMovePosIncrement());
 
         }
 
         //increment the x pos of the ship (just the x for now while developing the feature)
-        shipPosX = shipPosX - (portAnimationData.getMovePosIncrement() * portAnimationData.getIncrementCyclesPassed());
+        shipPosX = (int)(shipPosX + portAnimationData.getShipAnimationX());
 
         //save the new positions
         positions[0] = shipPosX; //save the x
