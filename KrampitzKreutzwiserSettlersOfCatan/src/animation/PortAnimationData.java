@@ -18,18 +18,20 @@ public class PortAnimationData {
     private int incrementCyclesPassed; //The number of times the ships's pos has been moved. Gets reset to 0 when the full animation cycle resets.
     private double shipAnimationX;
     private double shipAnimationY; //the x and y offsets from the ships resting/docked position
+    private boolean outToSea; //a boolean that controls whether or not the ship is sailing out to see or coming back to port
 
     //Constructors
     /**
      * Default constructor
      */
     public PortAnimationData() {
-        posTimeShip = 100;
+        posTimeShip = 10;
         lastPosStart = 0; //The last pos has never (yet) been displayed so set it to 0
         movePosIncrement = 0.4;
         incrementCyclesPassed = 0;
         shipAnimationX = 0;
         shipAnimationY = 0;
+        outToSea = true;
     }
 
     //Accessors and Mutators
@@ -139,5 +141,23 @@ public class PortAnimationData {
      */
     public void setShipAnimationY(double shipAnimationY) {
         this.shipAnimationY = shipAnimationY;
+    }
+    
+    /**
+     * Is the ship sailing outToSea?
+     *
+     * @return
+     */
+    public boolean isOutToSea() {
+        return outToSea;
+    }
+
+    /**
+     * Set whether or not the ship is sailing outToSea
+     *
+     * @param outToSea
+     */
+    public void setOutToSea(boolean outToSea) {
+        this.outToSea = outToSea;
     }
 }

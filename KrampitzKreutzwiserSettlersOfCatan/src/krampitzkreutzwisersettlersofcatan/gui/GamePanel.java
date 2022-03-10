@@ -4720,7 +4720,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     null);
 
             //update the ship position
-            int[] shipPos = ports.get(i).getShipPos();
+            int[] shipPos = ports.get(i).getShipPos(this);
             //The ship
             g2d.drawImage(ports.get(i).getShipImage(),
                     shipPos[0],

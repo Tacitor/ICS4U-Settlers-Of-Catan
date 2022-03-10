@@ -8,8 +8,10 @@ package krampitzkreutzwisersettlersofcatan.worldObjects;
 import animation.PortAnimationData;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.*;
 import textures.ImageRef;
+import static textures.ImageRef.WATER_RING;
 
 /**
  *
@@ -482,9 +484,10 @@ public class Port extends WorldObject {
 
     /**
      *
+     * @param gamePanel
      * @return
      */
-    public int[] getShipPos() {
+    public int[] getShipPos(GamePanel gamePanel) {
         int posTime; //the time in milis that this positon will be held for
         int[] positions = new int[2]; //and array to store the x and y coordinates of the ship
 
@@ -507,8 +510,29 @@ public class Port extends WorldObject {
                 //increment the counter
                 portAnimationData.setIncrementCyclesPassed(portAnimationData.getIncrementCyclesPassed() + 1);
 
-                //update the offset to the new position
-                portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() - portAnimationData.getMovePosIncrement());
+                //decide what way the ship is facing
+                if (portAnimationData.isOutToSea()) { //is it facing to the left right now?
+
+                    //see if it should continue to 
+                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) > ((gamePanel.getWidth() / 2 - getImgWidth(WATER_RING) / 2) - (getImgWidth(shipImage)))) { //yes it should
+                        //update the offset to the new position
+                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() - portAnimationData.getMovePosIncrement());
+                    } else { //no it should not
+                        portAnimationData.setOutToSea(false);
+                    }
+
+                } else { //is facing to the right right now
+
+                    //see if it should continue to?
+                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) < shipPosX) {
+                        //update the offset to the new position
+                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() + portAnimationData.getMovePosIncrement());
+                    } else {
+                        portAnimationData.setOutToSea(true);
+                    }
+
+                }
+
             }
 
         }
