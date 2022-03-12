@@ -550,7 +550,7 @@ public class Port extends WorldObject {
             portAnimationData.setIncrementCyclesPassed(portAnimationData.getIncrementCyclesPassed() + 1);
 
             //check what orientation the port is to see how it moves
-            if (orientation == 4 || orientation == 5) {
+            if (orientation == 4 || orientation == 5) { //top left and bottom left
 
                 //decide what way the ship is facing
                 if (portAnimationData.isOutToSea()) { //is it facing to the left right now?
@@ -577,6 +577,33 @@ public class Port extends WorldObject {
 
             }
 
+//            //check what orientation the port is to see how it moves
+//            if (orientation == 1 || orientation == 2) { //top right and bottom right
+//
+//                //decide what way the ship is facing
+//                if (portAnimationData.isOutToSea()) { //is it facing to the left right now?
+//
+//                    //see if it should continue to 
+//                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) > ((gamePanel.getWidth() / 2 - getImgWidth(WATER_RING) / 2) - (getImgWidth(shipImage)))) { //yes it should
+//                        //update the offset to the new position
+//                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() - portAnimationData.getMovePosIncrement());
+//                    } else { //no it should not
+//                        portAnimationData.setOutToSea(false);
+//                    }
+//
+//                } else { //is facing to the right right now
+//
+//                    //see if it should continue to?
+//                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) < shipPosX) {
+//                        //update the offset to the new position
+//                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() + portAnimationData.getMovePosIncrement());
+//                    } else {
+//                        portAnimationData.setOutToSea(true);
+//                    }
+//
+//                }
+//
+//            }
         }
 
         //increment the x pos of the ship (just the x for now while developing the feature)
@@ -590,6 +617,24 @@ public class Port extends WorldObject {
         shipImage = applyShipImage();
 
         return positions;
+    }
+
+    public int getFlipOffset() {
+        //get the orientation of the ship
+        boolean outToSea = portAnimationData.isOutToSea(); //whether or not the ship is facing the sea or not
+
+        int flipOffset; //how much to offset the x pos by to account for flipping
+        if (outToSea) {
+            flipOffset = 0;
+        } else {
+            flipOffset = getImgWidth(shipImage);
+        }
+        
+        return flipOffset;
+    }
+    
+    public int getOutToSeaMultip() {
+        return portAnimationData.isOutToSea() ? 1 : -1;
     }
 
     /**

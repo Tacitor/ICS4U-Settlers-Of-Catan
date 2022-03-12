@@ -4721,20 +4721,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //update the ship position
             int[] shipPos = ports.get(i).getShipPos(this);
-            //get the orientation of the ship
-            boolean outToSea = ports.get(i).getPortAnimationData().isOutToSea(); //whether or not the ship is facing the sea or not
-            int outToSeaMultip = outToSea ? 1 : -1;
-            int flipOffset; //how much to offset the x pos by to account for flipping
-            if (outToSea) {
-                flipOffset = 0;
-            } else {
-                flipOffset = getImgWidth(ports.get(i).getShipImage());
-            }
             //The ship
             g2d.drawImage(ports.get(i).getShipImage(),
-                    shipPos[0] + flipOffset,
+                    shipPos[0] + ports.get(i).getFlipOffset(),
                     shipPos[1],
-                    (getImgWidth(ports.get(i).getShipImage()) * (outToSeaMultip)),
+                    (getImgWidth(ports.get(i).getShipImage()) * (ports.get(i).getOutToSeaMultip())),
                     getImgHeight(ports.get(i).getShipImage()),
                     null);
 
@@ -4748,11 +4739,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         }
         //after drawing the ports draw the layer that hides the ships while they turn around
-        g2d.drawImage(Port.SHIP_TURNAROUND_BOARDER_IMAGE,
-                0,
-                0,
-                getImgWidth(Port.SHIP_TURNAROUND_BOARDER_IMAGE),
-                getImgHeight(Port.SHIP_TURNAROUND_BOARDER_IMAGE), this);
+//        g2d.drawImage(Port.SHIP_TURNAROUND_BOARDER_IMAGE,
+//                0,
+//                0,
+//                getImgWidth(Port.SHIP_TURNAROUND_BOARDER_IMAGE),
+//                getImgHeight(Port.SHIP_TURNAROUND_BOARDER_IMAGE), this);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         int tileID;
