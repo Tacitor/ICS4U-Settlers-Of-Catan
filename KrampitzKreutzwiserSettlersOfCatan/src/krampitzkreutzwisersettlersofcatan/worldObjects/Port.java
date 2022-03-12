@@ -577,33 +577,34 @@ public class Port extends WorldObject {
 
             }
 
-//            //check what orientation the port is to see how it moves
-//            if (orientation == 1 || orientation == 2) { //top right and bottom right
-//
-//                //decide what way the ship is facing
-//                if (portAnimationData.isOutToSea()) { //is it facing to the left right now?
-//
-//                    //see if it should continue to 
-//                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) > ((gamePanel.getWidth() / 2 - getImgWidth(WATER_RING) / 2) - (getImgWidth(shipImage)))) { //yes it should
-//                        //update the offset to the new position
-//                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() - portAnimationData.getMovePosIncrement());
-//                    } else { //no it should not
-//                        portAnimationData.setOutToSea(false);
-//                    }
-//
-//                } else { //is facing to the right right now
-//
-//                    //see if it should continue to?
-//                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) < shipPosX) {
-//                        //update the offset to the new position
-//                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() + portAnimationData.getMovePosIncrement());
-//                    } else {
-//                        portAnimationData.setOutToSea(true);
-//                    }
-//
-//                }
-//
-//            }
+            //check what orientation the port is to see how it moves
+            if (orientation == 1 || orientation == 2) { //top right and bottom right
+
+                //decide what way the ship is facing
+                if (portAnimationData.isOutToSea()) { //is it facing to the left right now?
+                    //facing right
+
+                    //see if it should continue to 
+                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) < ((gamePanel.getWidth() / 2 + getImgWidth(WATER_RING) / 2))) { //yes it should
+                        //update the offset to the new position
+                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() + portAnimationData.getMovePosIncrement());
+                    } else { //no it should not
+                        portAnimationData.setOutToSea(false);
+                    }
+
+                } else { //is facing to the left right now
+
+                    //see if it should continue to?
+                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) > shipPosX) {
+                        //update the offset to the new position
+                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() - portAnimationData.getMovePosIncrement());
+                    } else {
+                        portAnimationData.setOutToSea(true);
+                    }
+
+                }
+
+            }
         }
 
         //increment the x pos of the ship (just the x for now while developing the feature)
@@ -621,20 +622,44 @@ public class Port extends WorldObject {
 
     public int getFlipOffset() {
         //get the orientation of the ship
-        boolean outToSea = portAnimationData.isOutToSea(); //whether or not the ship is facing the sea or not
+        int outToSea = getOutToSeaMultip(); //whether or not the ship is facing the sea or not
 
         int flipOffset; //how much to offset the x pos by to account for flipping
-        if (outToSea) {
+        if (outToSea == 1) {
             flipOffset = 0;
         } else {
             flipOffset = getImgWidth(shipImage);
         }
-        
+
         return flipOffset;
     }
-    
+
     public int getOutToSeaMultip() {
-        return portAnimationData.isOutToSea() ? 1 : -1;
+        //decide if to flip the image of the ship from the regular left facing way
+        //var for storing the result
+        int result = 1; //set this to 1 for no flip, and -1 for an axial flip. Default is no flip (face to left)
+
+        //is it sailing out to sea?
+        if (portAnimationData.isOutToSea()) {
+            /**
+             * Next get the orientation. The flipping is based off what way the
+             * ship is sailing and what way the port itself is facing
+             */
+            if (orientation == 4 || orientation == 5) {
+                result = 1; //no flip
+            } else if (orientation == 1 || orientation == 2) {
+                result = -1; //do flip the image
+            }
+        } else if (!portAnimationData.isOutToSea()) {
+            //exact opposite of when it is outToSea
+            if (orientation == 4 || orientation == 5) {
+                result = -1; //flip
+            } else if (orientation == 1 || orientation == 2) {
+                result = 1; //do not flip the image
+            }
+        }
+
+        return result;
     }
 
     /**

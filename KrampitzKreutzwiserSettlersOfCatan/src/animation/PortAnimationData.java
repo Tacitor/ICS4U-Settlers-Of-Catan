@@ -25,9 +25,9 @@ public class PortAnimationData {
      * Default constructor
      */
     public PortAnimationData() {
-        posTimeShip = 10;
+        posTimeShip = 100;
         lastPosStart = 0; //The last pos has never (yet) been displayed so set it to 0
-        movePosIncrement = 0.4;
+        movePosIncrement = 0.5;
         incrementCyclesPassed = 0;
         shipAnimationX = 0;
         shipAnimationY = 0;

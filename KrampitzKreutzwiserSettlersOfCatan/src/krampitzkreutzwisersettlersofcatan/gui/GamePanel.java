@@ -4739,11 +4739,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         }
         //after drawing the ports draw the layer that hides the ships while they turn around
-//        g2d.drawImage(Port.SHIP_TURNAROUND_BOARDER_IMAGE,
-//                0,
-//                0,
-//                getImgWidth(Port.SHIP_TURNAROUND_BOARDER_IMAGE),
-//                getImgHeight(Port.SHIP_TURNAROUND_BOARDER_IMAGE), this);
+        g2d.drawImage(Port.SHIP_TURNAROUND_BOARDER_IMAGE,
+                0,
+                0,
+                getImgWidth(Port.SHIP_TURNAROUND_BOARDER_IMAGE),
+                getImgHeight(Port.SHIP_TURNAROUND_BOARDER_IMAGE), this);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         int tileID;
