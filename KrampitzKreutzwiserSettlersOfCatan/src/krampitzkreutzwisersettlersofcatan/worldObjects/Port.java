@@ -436,7 +436,7 @@ public class Port extends WorldObject {
     public Image getShipImage() {
         return shipImage;
     }
-    
+
     /**
      * Set the PortAnimationData of the Port
      *
@@ -541,16 +541,16 @@ public class Port extends WorldObject {
         if ((time - portAnimationData.getLastPosStart()) > posTime) {
             //yes it is time for the new positions
 
+            //debug the timing of the ship animation
+            //System.out.println("Time: " + (time - portAnimationData.getLastPosStart()));
+            //update the time
+            portAnimationData.setLastPosStart(time);
+
+            //increment the counter
+            portAnimationData.setIncrementCyclesPassed(portAnimationData.getIncrementCyclesPassed() + 1);
+
             //check what orientation the port is to see how it moves
-            if (orientation == 4) {
-
-                //debug the timing of the ship animation
-                //System.out.println("Time: " + (time - portAnimationData.getLastPosStart()));
-                //update the time
-                portAnimationData.setLastPosStart(time);
-
-                //increment the counter
-                portAnimationData.setIncrementCyclesPassed(portAnimationData.getIncrementCyclesPassed() + 1);
+            if (orientation == 4 || orientation == 5) {
 
                 //decide what way the ship is facing
                 if (portAnimationData.isOutToSea()) { //is it facing to the left right now?
