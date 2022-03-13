@@ -616,6 +616,8 @@ public class Port extends WorldObject {
                     if ((int) (shipPosY + portAnimationData.getShipAnimationY()) > ((gamePanel.getHeight()/ 2 - getImgHeight(WATER_RING) / 2) - (getImgHeight(shipImage)))) { //yes it should
                         //update the offset to the new position
                         portAnimationData.setShipAnimationY(portAnimationData.getShipAnimationY() - portAnimationData.getMovePosIncrement());
+                        //update the x offset to the new position to get some horizontal movement in there too
+                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() - portAnimationData.getMovePosIncrement());
                     } else { //no it should not
                         portAnimationData.setOutToSea(false);
                     }
@@ -626,6 +628,8 @@ public class Port extends WorldObject {
                     if ((int) (shipPosY + portAnimationData.getShipAnimationY()) < shipPosY) {
                         //update the offset to the new position
                         portAnimationData.setShipAnimationY(portAnimationData.getShipAnimationY() + portAnimationData.getMovePosIncrement());
+                        //update the x offset to the new position to get some horizontal movement in there too
+                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() + portAnimationData.getMovePosIncrement());
                     } else {
                         portAnimationData.setOutToSea(true);
                     }
