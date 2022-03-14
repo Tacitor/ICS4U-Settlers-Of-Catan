@@ -4738,10 +4738,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     null);
 
         }
-        //after drawing the ports draw the layer that hides the ships while they turn around
+        //after drawing the ports draw the layer that hides the ships while they turn around        
+        //also scale it to the current monitor. Coords are to center it relative to the display center
         g2d.drawImage(Port.SHIP_TURNAROUND_BOARDER_IMAGE,
-                0,
-                0,
+                this.getWidth() / 2 - getImgWidth(Port.SHIP_TURNAROUND_BOARDER_IMAGE) / 2,
+                this.getHeight() / 2 - getImgHeight(Port.SHIP_TURNAROUND_BOARDER_IMAGE) / 2,
                 getImgWidth(Port.SHIP_TURNAROUND_BOARDER_IMAGE),
                 getImgHeight(Port.SHIP_TURNAROUND_BOARDER_IMAGE), this);
 
