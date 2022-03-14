@@ -4611,6 +4611,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 this.getHeight() / 2 - getImgHeight(WATER_RING) / 2,
                 getImgWidth(WATER_RING),
                 getImgHeight(WATER_RING), null);
+        
+        //draw the boarder ring around the ring of water
+        //base the position pretty much fully off the water ring to minimize any gaps between the two
+        g2d.drawImage(WATER_RING_BOARDER,
+                this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - scaleInt(10),
+                this.getHeight() / 2 - getImgHeight(WATER_RING) / 2 - scaleInt(10),
+                getImgWidth(WATER_RING) + scaleInt(20),
+                getImgHeight(WATER_RING) + scaleInt(20), null);
 
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs

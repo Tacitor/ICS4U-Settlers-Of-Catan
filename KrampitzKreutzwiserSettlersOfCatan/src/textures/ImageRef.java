@@ -67,6 +67,7 @@ public class ImageRef {
 
     //the image for the water ring
     public final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("water/waterRing.png")).getImage();
+    public final static Image WATER_RING_BOARDER = new ImageIcon(ImageRef.class.getResource("water/waterRingBoarder.png")).getImage();
     public final static Image WATER_RING_OVERLAY = new ImageIcon(ImageRef.class.getResource("water/waterRingOverlay.png")).getImage();
     
     //image for the background
