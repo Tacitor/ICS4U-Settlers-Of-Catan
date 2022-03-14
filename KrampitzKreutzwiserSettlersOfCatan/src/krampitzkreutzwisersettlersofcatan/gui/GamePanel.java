@@ -4611,7 +4611,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 this.getHeight() / 2 - getImgHeight(WATER_RING) / 2,
                 getImgWidth(WATER_RING),
                 getImgHeight(WATER_RING), null);
-        
+
         //draw the boarder ring around the ring of water
         //base the position pretty much fully off the water ring to minimize any gaps between the two
         g2d.drawImage(WATER_RING_BOARDER,
@@ -4753,7 +4753,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     null);
 
         }
-        
+
         //after drawing the ports reset the clip
         g2d.setClip(null);
 
@@ -6147,7 +6147,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 //create the new Port
                 newPort = new Port(tiles.get(Integer.parseInt(fileReader.nextLine())),
                         Integer.parseInt(fileReader.nextLine()),
-                        Integer.parseInt(fileReader.nextLine()));
+                        Integer.parseInt(fileReader.nextLine()),
+                        this);
 
                 //add it to the Array List
                 ports.add(newPort);

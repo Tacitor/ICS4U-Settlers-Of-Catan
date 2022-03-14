@@ -12,6 +12,7 @@ import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.*;
 import textures.ImageRef;
 import static textures.ImageRef.WATER_RING;
+import static textures.ImageRef.WATER_RING_BOARDER;
 
 /**
  *
@@ -31,6 +32,7 @@ public class Port extends WorldObject {
     private int shipPosY; //The y position of the ship image
     private Image shipImage; //the image var for the ship
     private PortAnimationData portAnimationData; //the object that contains the variables for animation
+    private GamePanel gamePanel;
 
     //image files for base port
     private final static Image TOP_PORT = new ImageIcon(ImageRef.class.getResource("port/peirGroups1.png")).getImage();
@@ -49,14 +51,21 @@ public class Port extends WorldObject {
     //ship file
     private final static Image SHIP = new ImageIcon(ImageRef.class.getResource("port/ship.png")).getImage();
 
+    //final vars for the margins of the sea. And the farthest the ships should sail.
+    private int leftHandShipMargin;
+    private int rightHandShipMargin;
+    private int topShipMargin;
+    private int bottomShipMargin;
+
     /**
      * Constructor for a full port
      *
      * @param linkedTile
      * @param orientation
      * @param type
+     * @param gamePanel
      */
-    public Port(Tile linkedTile, int orientation, int type) {
+    public Port(Tile linkedTile, int orientation, int type, GamePanel gamePanel) {
         //init the pos
         xPos = 0;
         yPos = 0;
@@ -70,6 +79,7 @@ public class Port extends WorldObject {
         this.linkedTile = linkedTile;
         this.orientation = orientation;
         this.type = type;
+        this.gamePanel = gamePanel;
 
         //set the animation data object
         portAnimationData = new PortAnimationData();
@@ -81,6 +91,11 @@ public class Port extends WorldObject {
         applyCoordinates();
         applyTypeImageCoordinates();
         applyShipStarterCoordinates();
+        
+        generatePortMargins();
+
+        randomizeShipAnimation();
+
     }
 
     /**
@@ -513,6 +528,9 @@ public class Port extends WorldObject {
     public int[] getShipPos(GamePanel gamePanel) {
         int posTime; //the time in milis that this positon will be held for
         int[] positions = new int[2]; //and array to store the x and y coordinates of the ship
+        
+        //update those port margins
+        generatePortMargins();
 
         posTime = portAnimationData.getPosTimeShip();
 
@@ -537,7 +555,7 @@ public class Port extends WorldObject {
                 if (portAnimationData.isOutToSea()) { //is it facing to the left right now?
 
                     //see if it should continue to 
-                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) > ((gamePanel.getWidth() / 2 - getImgWidth(WATER_RING) / 2) - (getImgWidth(shipImage)))) { //yes it should
+                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) > leftHandShipMargin) { //yes it should
                         //update the offset to the new position
                         portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() - portAnimationData.getMovePosIncrement());
                     } else { //no it should not
@@ -566,7 +584,7 @@ public class Port extends WorldObject {
                     //facing right
 
                     //see if it should continue to 
-                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) < ((gamePanel.getWidth() / 2 + getImgWidth(WATER_RING) / 2))) { //yes it should
+                    if ((int) (shipPosX + portAnimationData.getShipAnimationX()) < rightHandShipMargin) { //yes it should
                         //update the offset to the new position
                         portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() + portAnimationData.getMovePosIncrement());
                     } else { //no it should not
@@ -594,7 +612,7 @@ public class Port extends WorldObject {
                 if (portAnimationData.isOutToSea()) { //facing to the left and whill move diagally up and left
 
                     //see if it should continue to by seeing if it is too high
-                    if ((int) (shipPosY + portAnimationData.getShipAnimationY()) > ((gamePanel.getHeight() / 2 - getImgHeight(WATER_RING) / 2) - (getImgHeight(shipImage)) - scaleInt(5))) { //yes it should
+                    if ((int) (shipPosY + portAnimationData.getShipAnimationY()) > topShipMargin) { //yes it should
                         //update the offset to the new position
                         portAnimationData.setShipAnimationY(portAnimationData.getShipAnimationY() - portAnimationData.getMovePosIncrement());
                         //update the x offset to the new position to get some horizontal movement in there too
@@ -626,7 +644,7 @@ public class Port extends WorldObject {
                 if (portAnimationData.isOutToSea()) { //facing to the left and whill move diagally up and left
 
                     //see if it should continue to by seeing if it is too high
-                    if ((int) (shipPosY + portAnimationData.getShipAnimationY()) < ((gamePanel.getHeight() / 2 + getImgHeight(WATER_RING) / 2) + scaleInt(5))) { //yes it should
+                    if ((int) (shipPosY + portAnimationData.getShipAnimationY()) < bottomShipMargin) { //yes it should
                         //update the offset to the new position
                         portAnimationData.setShipAnimationY(portAnimationData.getShipAnimationY() + portAnimationData.getMovePosIncrement());
                         //update the x offset to the new position to get some horizontal movement in there too
@@ -732,7 +750,7 @@ public class Port extends WorldObject {
     @Override
     public Port clone() {
         // Create a new instance with the same properties
-        Port copy = new Port(linkedTile, orientation, type);
+        Port copy = new Port(linkedTile, orientation, type, gamePanel);
         //apply the dynamic attibutes
         copy.applyImage();
         copy.applyTypeImage();
@@ -754,6 +772,17 @@ public class Port extends WorldObject {
                 && type == other.type
                 && orientation == other.orientation
                 && linkedTile.equals(other.linkedTile);
+    }
+
+    private void randomizeShipAnimation() {
+
+    }
+
+    private void generatePortMargins() {
+        leftHandShipMargin = ((gamePanel.getWidth() / 2 - getImgWidth(WATER_RING_BOARDER) / 2) - (getImgWidth(shipImage)));
+        rightHandShipMargin = ((gamePanel.getWidth() / 2 + getImgWidth(WATER_RING_BOARDER) / 2));
+        topShipMargin = ((gamePanel.getHeight() / 2 - getImgHeight(WATER_RING_BOARDER) / 2) - (getImgHeight(shipImage)));
+        bottomShipMargin = ((gamePanel.getHeight() / 2 + getImgHeight(WATER_RING_BOARDER) / 2));
     }
 
 }
