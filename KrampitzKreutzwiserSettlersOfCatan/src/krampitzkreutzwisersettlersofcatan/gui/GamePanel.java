@@ -4708,6 +4708,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 this.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
                 this.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
 
+        //adjust the clip so that the ships are only drawn in the ocean square
+        //base it off the way the water ring is drawn, but move it in for just the water and exclude the boarder from the clip
+        g2d.setClip(this.getWidth() / 2 - getImgWidth(WATER_RING) / 2, //move it over 10px for the boarder
+                this.getHeight() / 2 - getImgHeight(WATER_RING) / 2,
+                getImgWidth(WATER_RING),
+                getImgHeight(WATER_RING));
+
         //draw the ports
         for (int i = 0; i < ports.size(); i++) {
 
@@ -4738,13 +4745,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     null);
 
         }
-        //after drawing the ports draw the layer that hides the ships while they turn around        
-        //also scale it to the current monitor. Coords are to center it relative to the display center
-        g2d.drawImage(Port.SHIP_TURNAROUND_BOARDER_IMAGE,
-                this.getWidth() / 2 - getImgWidth(Port.SHIP_TURNAROUND_BOARDER_IMAGE) / 2,
-                this.getHeight() / 2 - getImgHeight(Port.SHIP_TURNAROUND_BOARDER_IMAGE) / 2,
-                getImgWidth(Port.SHIP_TURNAROUND_BOARDER_IMAGE),
-                getImgHeight(Port.SHIP_TURNAROUND_BOARDER_IMAGE), this);
+        
+        //after drawing the ports reset the clip
+        g2d.setClip(null);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         int tileID;
