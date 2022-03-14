@@ -603,7 +603,7 @@ public class Port extends WorldObject {
                 }
 
             }
-            
+
             //check what orientation the port is to see how it moves
             if (orientation == 0) { //port is on top
 
@@ -611,7 +611,7 @@ public class Port extends WorldObject {
                 if (portAnimationData.isOutToSea()) { //facing to the left and whill move diagally up and left
 
                     //see if it should continue to by seeing if it is too high
-                    if ((int) (shipPosY + portAnimationData.getShipAnimationY()) > ((gamePanel.getHeight()/ 2 - getImgHeight(WATER_RING) / 2) - (getImgHeight(shipImage)))) { //yes it should
+                    if ((int) (shipPosY + portAnimationData.getShipAnimationY()) > ((gamePanel.getHeight() / 2 - getImgHeight(WATER_RING) / 2) - (getImgHeight(shipImage)) - scaleInt(5))) { //yes it should
                         //update the offset to the new position
                         portAnimationData.setShipAnimationY(portAnimationData.getShipAnimationY() - portAnimationData.getMovePosIncrement());
                         //update the x offset to the new position to get some horizontal movement in there too
@@ -628,6 +628,38 @@ public class Port extends WorldObject {
                         portAnimationData.setShipAnimationY(portAnimationData.getShipAnimationY() + portAnimationData.getMovePosIncrement());
                         //update the x offset to the new position to get some horizontal movement in there too
                         portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() + portAnimationData.getMovePosIncrement());
+                    } else {
+                        portAnimationData.setOutToSea(true);
+                    }
+
+                }
+
+            }
+
+            //check what orientation the port is to see how it moves
+            if (orientation == 3) { //port is on bottom
+
+                //decide what way the ship is facing
+                if (portAnimationData.isOutToSea()) { //facing to the left and whill move diagally up and left
+
+                    //see if it should continue to by seeing if it is too high
+                    if ((int) (shipPosY + portAnimationData.getShipAnimationY()) < ((gamePanel.getHeight() / 2 + getImgHeight(WATER_RING) / 2) + scaleInt(5))) { //yes it should
+                        //update the offset to the new position
+                        portAnimationData.setShipAnimationY(portAnimationData.getShipAnimationY() + portAnimationData.getMovePosIncrement());
+                        //update the x offset to the new position to get some horizontal movement in there too
+                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() + portAnimationData.getMovePosIncrement());
+                    } else { //no it should not
+                        portAnimationData.setOutToSea(false);
+                    }
+
+                } else { //is facing to the right right now
+
+                    //see if it should continue to?
+                    if ((int) (shipPosY + portAnimationData.getShipAnimationY()) > shipPosY) {
+                        //update the offset to the new position
+                        portAnimationData.setShipAnimationY(portAnimationData.getShipAnimationY() - portAnimationData.getMovePosIncrement());
+                        //update the x offset to the new position to get some horizontal movement in there too
+                        portAnimationData.setShipAnimationX(portAnimationData.getShipAnimationX() - portAnimationData.getMovePosIncrement());
                     } else {
                         portAnimationData.setOutToSea(true);
                     }
@@ -679,14 +711,14 @@ public class Port extends WorldObject {
              */
             if (orientation == 4 || orientation == 5 || orientation == 0) {
                 result = 1; //no flip
-            } else if (orientation == 1 || orientation == 2) {
+            } else if (orientation == 1 || orientation == 2 || orientation == 3) {
                 result = -1; //do flip the image
             }
         } else if (!portAnimationData.isOutToSea()) {
             //exact opposite of when it is outToSea
             if (orientation == 4 || orientation == 5 || orientation == 0) {
                 result = -1; //flip
-            } else if (orientation == 1 || orientation == 2) {
+            } else if (orientation == 1 || orientation == 2 || orientation == 3) {
                 result = 1; //do not flip the image
             }
         }
