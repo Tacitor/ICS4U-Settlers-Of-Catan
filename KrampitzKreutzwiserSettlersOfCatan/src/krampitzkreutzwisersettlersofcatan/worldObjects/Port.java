@@ -50,9 +50,13 @@ public class Port extends WorldObject {
     private final static Image SHIP = new ImageIcon(ImageRef.class.getResource("port/ship.png")).getImage();
 
     /**
-     * Constructor for a blank Port
+     * Constructor for a full port
+     *
+     * @param linkedTile
+     * @param orientation
+     * @param type
      */
-    public Port() {
+    public Port(Tile linkedTile, int orientation, int type) {
         //init the pos
         xPos = 0;
         yPos = 0;
@@ -62,34 +66,13 @@ public class Port extends WorldObject {
         shipPosX = 0;
         shipPosY = 0;
 
-        //init the port attributes
-        linkedTile = null;
-        orientation = 0;
-        type = 0;
-        image = applyImage();
-        typeImage = applyTypeImage();
-
-        //set the ship to the ship image
-        shipImage = SHIP;
-
-        //set the animation data object
-        portAnimationData = new PortAnimationData();
-    }
-
-    /**
-     * Constructor for a full port
-     *
-     * @param linkedTile
-     * @param orientation
-     * @param type
-     */
-    public Port(Tile linkedTile, int orientation, int type) {
-        this();
-
         //apply the specifics for this tile
         this.linkedTile = linkedTile;
         this.orientation = orientation;
         this.type = type;
+
+        //set the animation data object
+        portAnimationData = new PortAnimationData();
 
         //update the images and coordinates based upon this new data
         image = applyImage();
