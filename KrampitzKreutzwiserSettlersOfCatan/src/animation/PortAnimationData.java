@@ -19,6 +19,7 @@ public class PortAnimationData {
     private double shipAnimationX;
     private double shipAnimationY; //the x and y offsets from the ships resting/docked position
     private boolean outToSea; //a boolean that controls whether or not the ship is sailing out to see or coming back to port
+    private boolean hasBeenRandomized; //has this PortAnimationData object had it's position randomized yet?
 
     //Constructors
     /**
@@ -32,6 +33,7 @@ public class PortAnimationData {
         shipAnimationX = 0;
         shipAnimationY = 0;
         outToSea = true;
+        hasBeenRandomized = false;
     }
 
     //Accessors and Mutators
@@ -142,7 +144,7 @@ public class PortAnimationData {
     public void setShipAnimationY(double shipAnimationY) {
         this.shipAnimationY = shipAnimationY;
     }
-    
+
     /**
      * Is the ship sailing outToSea?
      *
@@ -159,5 +161,23 @@ public class PortAnimationData {
      */
     public void setOutToSea(boolean outToSea) {
         this.outToSea = outToSea;
+    }
+
+    /**
+     * Has the position of the ship been randomized?
+     *
+     * @return
+     */
+    public boolean getHasBeenRandomized() {
+        return hasBeenRandomized;
+    }
+
+    /**
+     * Set whether or not the position of the ship been randomized
+     *
+     * @param hasBeenRandomized
+     */
+    public void setHasBeenRandomized(boolean hasBeenRandomized) {
+        this.hasBeenRandomized = hasBeenRandomized;
     }
 }
