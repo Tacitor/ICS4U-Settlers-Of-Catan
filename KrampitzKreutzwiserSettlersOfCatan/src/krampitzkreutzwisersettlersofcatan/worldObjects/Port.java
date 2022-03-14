@@ -49,7 +49,7 @@ public class Port extends WorldObject {
     //ship file
     private final static Image SHIP = new ImageIcon(ImageRef.class.getResource("port/ship.png")).getImage();
     //the file for the boarder that the ship sailes under when it turns around
-    public final static Image SHIP_TURNAROUND_BOARDER_IMAGE = new ImageIcon(ImageRef.class.getResource("port/shipTurnaroundBoarderpng.png")).getImage();
+    public final static Image SHIP_TURNAROUND_BOARDER_IMAGE = new ImageIcon(ImageRef.class.getResource("port/shipTurnaroundBoarder.png")).getImage();
 
     /**
      * Constructor for a blank Port
