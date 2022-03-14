@@ -68,7 +68,7 @@ public class Port extends WorldObject {
         //init the pos
         xPos = 0;
         yPos = 0;
-        
+
         typePosX = 0;
         typePosY = 0;
         shipPosX = 0;
@@ -90,9 +90,9 @@ public class Port extends WorldObject {
         applyCoordinates();
         applyTypeImageCoordinates();
         applyShipStarterCoordinates();
-        
+
         generatePortMargins();
-        
+
     }
 
     /**
@@ -136,7 +136,7 @@ public class Port extends WorldObject {
                 break;
         }
     }
-    
+
     public void applyShipStarterCoordinates() {
         //get the orientation
         switch (orientation) {
@@ -224,13 +224,13 @@ public class Port extends WorldObject {
      * @return
      */
     public final int getImgWidth(Image image) {
-        
+
         if (getPanelWidth() > getPanelHeight()) {
             return (int) (getImgHeight(image) * ((float) image.getWidth(null) / image.getHeight(null)));
         } else {
             return (int) (image.getWidth(null) / 1920.0 * getPanelWidth());
         }
-        
+
     }
 
     /**
@@ -240,7 +240,7 @@ public class Port extends WorldObject {
      * @return
      */
     public final int getImgHeight(Image image) {
-        
+
         if (getPanelWidth() > getPanelHeight()) {
             return (int) (image.getHeight(null) / 1080.0 * getPanelHeight());
         } else {
@@ -528,9 +528,9 @@ public class Port extends WorldObject {
 
         //update those port margins
         generatePortMargins();
-        
+
         posTime = portAnimationData.getPosTimeShip();
-        
+
         long time = System.currentTimeMillis();
 
         //decide if a new position needs to be displayed of if the current positon is still the one that it should be
@@ -558,7 +558,7 @@ public class Port extends WorldObject {
                     } else { //no it should not
                         portAnimationData.setOutToSea(false);
                     }
-                    
+
                 } else { //is facing to the right right now
 
                     //see if it should continue to?
@@ -568,9 +568,9 @@ public class Port extends WorldObject {
                     } else {
                         portAnimationData.setOutToSea(true);
                     }
-                    
+
                 }
-                
+
             }
 
             //check what orientation the port is to see how it moves
@@ -587,7 +587,7 @@ public class Port extends WorldObject {
                     } else { //no it should not
                         portAnimationData.setOutToSea(false);
                     }
-                    
+
                 } else { //is facing to the left right now
 
                     //see if it should continue to?
@@ -597,9 +597,9 @@ public class Port extends WorldObject {
                     } else {
                         portAnimationData.setOutToSea(true);
                     }
-                    
+
                 }
-                
+
             }
 
             //check what orientation the port is to see how it moves
@@ -617,7 +617,7 @@ public class Port extends WorldObject {
                     } else { //no it should not
                         portAnimationData.setOutToSea(false);
                     }
-                    
+
                 } else { //is facing to the right right now
 
                     //see if it should continue to?
@@ -629,9 +629,9 @@ public class Port extends WorldObject {
                     } else {
                         portAnimationData.setOutToSea(true);
                     }
-                    
+
                 }
-                
+
             }
 
             //check what orientation the port is to see how it moves
@@ -649,7 +649,7 @@ public class Port extends WorldObject {
                     } else { //no it should not
                         portAnimationData.setOutToSea(false);
                     }
-                    
+
                 } else { //is facing to the right right now
 
                     //see if it should continue to?
@@ -661,9 +661,9 @@ public class Port extends WorldObject {
                     } else {
                         portAnimationData.setOutToSea(true);
                     }
-                    
+
                 }
-                
+
             }
         }
 
@@ -678,10 +678,10 @@ public class Port extends WorldObject {
 
         //update the ship image
         shipImage = applyShipImage();
-        
+
         return positions;
     }
-    
+
     public int getFlipOffset() {
         //get the orientation of the ship
         int outToSea = getOutToSeaMultip(); //whether or not the ship is facing the sea or not
@@ -692,10 +692,10 @@ public class Port extends WorldObject {
         } else {
             flipOffset = getImgWidth(shipImage);
         }
-        
+
         return flipOffset;
     }
-    
+
     public int getOutToSeaMultip() {
         //decide if to flip the image of the ship from the regular left facing way
         //var for storing the result
@@ -720,7 +720,7 @@ public class Port extends WorldObject {
                 result = 1; //do not flip the image
             }
         }
-        
+
         return result;
     }
 
@@ -770,7 +770,7 @@ public class Port extends WorldObject {
                 && orientation == other.orientation
                 && linkedTile.equals(other.linkedTile);
     }
-    
+
     public void randomizeShipAnimation() {
         //see if it has been randomized yet
         if (!portAnimationData.getHasBeenRandomized()) {
@@ -779,50 +779,71 @@ public class Port extends WorldObject {
 
             //save that it has been randomized
             portAnimationData.setHasBeenRandomized(true);
-            
-            int portMargin; //save the selected margin here
+
+            int legLength; //How long is a leg of a right angle triangle when useing pythagorean theorm
+            int randDiagOffset; //the number of pixels both the x & y of the ship should be offset by then the ship has diagonal movement
             //pick a margin for each port
             //pick an orientation
             //and randomly pick an x or y coord to put that ship on
             switch (orientation) {
                 case 4:
                 case 5:
-                    //If bottom left
-                    portMargin = leftHandShipMargin;
-
-                    //randomize position
+                    //If left
+                    /**
+                     * Randomize X position. Do this by getting the negative
+                     * number of pixels from the left hand margin to the starter
+                     * position of the ship. Then multiply that by a random
+                     * decimal number from 0-1. All this gives a random negative
+                     * offset for the ship. This random negative offset will
+                     * place the ship within the left margin (on the left) and
+                     * the ships starter position (on the right).
+                     */
                     portAnimationData.setShipAnimationX((int) (Math.random() * (leftHandShipMargin - shipPosX)));
-
-                    //randomize direction
-                    portAnimationData.setOutToSea(Math.random() < 0.5);
                     break;
                 case 1:
                 case 2:
-                    //If bottom left
-                    portMargin = rightHandShipMargin;
+                    //If right 
+                    //randomize position
+                    portAnimationData.setShipAnimationX((int) (Math.random() * (rightHandShipMargin - shipPosX)));
                     break;
                 case 0:
-                    //If bottom left
-                    portMargin = topShipMargin;
+                    //If top 
+                    //calc the length of the legs of the right angle triangle.
+                    //This is the length from port to top margin (straight line)
+                    legLength = shipPosY - topShipMargin;
+
+                    //randomize position
+                    randDiagOffset = (int) (Math.random() * (-legLength));
+                    portAnimationData.setShipAnimationY(randDiagOffset);
+                    portAnimationData.setShipAnimationX(randDiagOffset);
                     break;
                 case 3:
-                    //If bottom left
-                    portMargin = bottomShipMargin;
+                    //If bottom
+                    //calc the length of the legs of the right angle triangle.
+                    //This is the length from port to bottom margin (straight line)
+                    legLength = bottomShipMargin - shipPosY;
+
+                    //randomize position
+                    randDiagOffset = (int) (Math.random() * (legLength));
+                    portAnimationData.setShipAnimationY(randDiagOffset);
+                    portAnimationData.setShipAnimationX(randDiagOffset);
                     break;
                 default:
-                    portMargin = 0;
                     break;
             }
-            
+
+            //randomize direction. 50/50 of facing left or right
+            portAnimationData.setOutToSea(Math.random() < 0.5);
+
         }
-        
+
     }
-    
+
     private void generatePortMargins() {
         leftHandShipMargin = ((gamePanel.getWidth() / 2 - getImgWidth(WATER_RING_BOARDER) / 2) - (getImgWidth(shipImage)));
         rightHandShipMargin = ((gamePanel.getWidth() / 2 + getImgWidth(WATER_RING_BOARDER) / 2));
         topShipMargin = ((gamePanel.getHeight() / 2 - getImgHeight(WATER_RING_BOARDER) / 2) - (getImgHeight(shipImage)));
         bottomShipMargin = ((gamePanel.getHeight() / 2 + getImgHeight(WATER_RING_BOARDER) / 2));
     }
-    
+
 }
