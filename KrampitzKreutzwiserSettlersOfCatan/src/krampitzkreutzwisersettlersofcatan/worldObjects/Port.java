@@ -27,7 +27,7 @@ public class Port extends WorldObject {
     private Image typeImage; //the resource image. Get drawn ontop of the main image
     private int typePosX; //the x position of the type image
     private int typePosY; //the y position of the type image
-    private int shipPosX; //the x position of the ship image (Will move around as part of animation)
+    private int shipPosX; //the x position of the ship image before animation was added. These are the coords of the docked ship.
     private int shipPosY; //The y position of the ship image
     private Image shipImage; //the image var for the ship
     private PortAnimationData portAnimationData; //the object that contains the variables for animation
@@ -96,8 +96,8 @@ public class Port extends WorldObject {
     }
 
     /**
-     * Using the orientation return where the type & ship images should be
-     * drawn. Update the correct attributes.
+     * Using the orientation return where the type image should be drawn. Update
+     * the correct attributes.
      */
     public void applyTypeImageCoordinates() {
         //get the orientation
@@ -137,6 +137,10 @@ public class Port extends WorldObject {
         }
     }
 
+    /**
+     * Using the orientation return where the ship image should be drawn. Update
+     * the correct attributes.
+     */
     public void applyShipStarterCoordinates() {
         //get the orientation
         switch (orientation) {
@@ -518,6 +522,8 @@ public class Port extends WorldObject {
     }
 
     /**
+     * Get the X & Y coordinates of where the ship should be drawn. This is for
+     * each port for animating it.
      *
      * @param gamePanel
      * @return
@@ -682,6 +688,12 @@ public class Port extends WorldObject {
         return positions;
     }
 
+    /**
+     * If the image of the ship needs to be flipped, calculate what offset it
+     * needs to render correctly then.
+     *
+     * @return
+     */
     public int getFlipOffset() {
         //get the orientation of the ship
         int outToSea = getOutToSeaMultip(); //whether or not the ship is facing the sea or not
@@ -696,6 +708,11 @@ public class Port extends WorldObject {
         return flipOffset;
     }
 
+    /**
+     * Decide if to flip the image of the ship from the regular left facing way
+     *
+     * @return
+     */
     public int getOutToSeaMultip() {
         //decide if to flip the image of the ship from the regular left facing way
         //var for storing the result
@@ -771,6 +788,11 @@ public class Port extends WorldObject {
                 && linkedTile.equals(other.linkedTile);
     }
 
+    /**
+     * Assign new X & Y Co-Ords to the ships. These are based off of the
+     * position when docked in port, and where the ship turns around when at
+     * sea. Pick a random spot in between.
+     */
     public void randomizeShipAnimation() {
         //see if it has been randomized yet
         if (!portAnimationData.getHasBeenRandomized()) {
@@ -839,6 +861,9 @@ public class Port extends WorldObject {
 
     }
 
+    /**
+     * Calculate the positions of the margins where the ships turn around at sea.
+     */
     private void generatePortMargins() {
         leftHandShipMargin = ((gamePanel.getWidth() / 2 - getImgWidth(WATER_RING_BOARDER) / 2) - (getImgWidth(shipImage)));
         rightHandShipMargin = ((gamePanel.getWidth() / 2 + getImgWidth(WATER_RING_BOARDER) / 2));

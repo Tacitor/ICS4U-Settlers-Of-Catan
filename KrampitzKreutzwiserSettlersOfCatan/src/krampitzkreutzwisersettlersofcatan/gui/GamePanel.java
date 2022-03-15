@@ -5683,10 +5683,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // Add alignment lines
         //g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
         //g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
-        //draw lines every 10 pixels
-        /*for (int i = 0; i < panelWidth; i+=10) {
-            g2d.drawLine(i, 0, i, panelHeight);
-        }*/
         //draw the boarder overlay
         /*        
         g2d.drawImage(WATER_RING_OVERLAY, 

@@ -13,7 +13,7 @@ public class PortAnimationData {
 
     //Attributes 
     private int posTimeShip; //the time in miliseconds it will hold the position of the ship
-    private long lastPosStart;
+    private long lastPosStart; //the time in miliseconds of when the previous position was assumed by the ship
     private double movePosIncrement; //the amount of pixels the ship will move by every pos update
     private int incrementCyclesPassed; //The number of times the ships's pos has been moved. Gets reset to 0 when the full animation cycle resets.
     private double shipAnimationX;
