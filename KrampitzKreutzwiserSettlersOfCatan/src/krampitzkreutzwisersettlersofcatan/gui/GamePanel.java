@@ -41,14 +41,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.util.CardUtil;
 import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.util.GlobalDataRecord;
-import textures.ImageRef;
 import static textures.ImageRef.*;
 // </editor-fold>
 
@@ -4614,6 +4612,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 getImgWidth(WATER_RING),
                 getImgHeight(WATER_RING), null);
 
+        //draw the boarder ring around the ring of water
+        //base the position pretty much fully off the water ring to minimize any gaps between the two
+        g2d.drawImage(WATER_RING_BOARDER,
+                this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - scaleInt(10),
+                this.getHeight() / 2 - getImgHeight(WATER_RING) / 2 - scaleInt(10),
+                getImgWidth(WATER_RING) + scaleInt(20),
+                getImgHeight(WATER_RING) + scaleInt(20), null);
+
         //debug the game pannel
         //System.out.println("GamePannel draw function called"); //and indecation of how many times the draw function runs
         //draw the building material costs key
@@ -4710,15 +4716,35 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 this.getWidth() - (getImgWidth(PLAYER_RED)) - (getImgWidth(SMALL_PLAYER_RED)),
                 this.getHeight() - (int) (20 / scaleFactor) - getImgHeight(SMALL_PLAYER_RED));
 
-        Image PORT_RESOURCE = new ImageIcon(ImageRef.class.getResource("port/wildcard.png")).getImage();
+        //adjust the clip so that the ships are only drawn in the ocean square
+        //base it off the way the water ring is drawn, but move it in for just the water and exclude the boarder from the clip
+        g2d.setClip(this.getWidth() / 2 - getImgWidth(WATER_RING) / 2, //move it over 10px for the boarder
+                this.getHeight() / 2 - getImgHeight(WATER_RING) / 2,
+                getImgWidth(WATER_RING),
+                getImgHeight(WATER_RING));
 
         //draw the ports
         for (int i = 0; i < ports.size(); i++) {
+
+            //unsure this port has recived a ship randomization yet
+            ports.get(i).randomizeShipAnimation();
+
+            //The base (piers)
             g2d.drawImage(ports.get(i).getImage(),
                     ports.get(i).getXPos(),
                     ports.get(i).getYPos(),
                     getImgWidth(ports.get(i).getImage()),
                     getImgHeight(ports.get(i).getImage()),
+                    null);
+
+            //update the ship position
+            int[] shipPos = ports.get(i).getShipPos(this);
+            //The ship
+            g2d.drawImage(ports.get(i).getShipImage(),
+                    shipPos[0] + ports.get(i).getFlipOffset(),
+                    shipPos[1],
+                    (getImgWidth(ports.get(i).getShipImage()) * (ports.get(i).getOutToSeaMultip())),
+                    getImgHeight(ports.get(i).getShipImage()),
                     null);
 
             //draw the recource type on top
@@ -4728,7 +4754,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     getImgWidth(ports.get(i).getTypeImage()),
                     getImgHeight(ports.get(i).getTypeImage()),
                     null);
+
         }
+
+        //after drawing the ports reset the clip
+        g2d.setClip(null);
 
         //draw the board using the new way. the coordinates inside the tile objects come from the old way of drawing the baord
         int tileID;
@@ -4736,25 +4766,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             tileID = tileDrawOrder[i];
             //tileID = i;
 
-            //check if it is the new type or old size
-            if (tiles.get(tileID).getImage().getHeight(null) == 150) {
-                //draw the tile
+            //draw the base tile
+            g2d.drawImage(tiles.get(tileID).getImage(),
+                    tiles.get(tileID).getXPos(),
+                    /**
+                     * Move the Tile 20 pixels higher because the coordinates
+                     * for the tiles were derived from hexagons with .png files
+                     * 150x130 in size. Now after Alex Eckardt has made new art
+                     * with layering making the map look more 3D, the files
+                     * sizes are and extra 20 pixels higher (150 x 150).
+                     */
+                    (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
+                    getImgWidth(tiles.get(tileID).getImage()),
+                    getImgHeight(tiles.get(tileID).getImage()), null);
 
-                g2d.drawImage(tiles.get(tileID).getImage(),
-                        tiles.get(tileID).getXPos(),
-                        (int) (tiles.get(tileID).getYPos() - (20 / scaleFactor)),
-                        getImgWidth(tiles.get(tileID).getImage()),
-                        getImgHeight(tiles.get(tileID).getImage()), null);
-
-            } else {
-
-                //draw the tile
-                g2d.drawImage(tiles.get(tileID).getImage(),
-                        tiles.get(tileID).getXPos(),
-                        tiles.get(tileID).getYPos(),
-                        getImgWidth(tiles.get(tileID).getImage()),
-                        getImgHeight(tiles.get(tileID).getImage()), null);
-            }
+            //draw any layers on top for animation
+            tiles.get(tileID).drawAnimationLayer(g2d, this);
 
             //draw the resource harvest number only if it is not a desert
             if (tiles.get(tileID).getType() != 0) {
@@ -5656,9 +5683,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // Add alignment lines
         //g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
         //g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
-
-        /*
         //draw the boarder overlay
+        /*        
         g2d.drawImage(WATER_RING_OVERLAY, 
                 this.getWidth() / 2 - getImgWidth(WATER_RING_OVERLAY) / 2,
                 this.getHeight() / 2 - getImgHeight(WATER_RING_OVERLAY) / 2, 
@@ -6060,6 +6086,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         for (int i = 0; i < ports.size(); i++) {
             ports.get(i).applyCoordinates();
             ports.get(i).applyTypeImageCoordinates();
+            ports.get(i).applyShipStarterCoordinates();
         }
     }
 
@@ -6119,7 +6146,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 //create the new Port
                 newPort = new Port(tiles.get(Integer.parseInt(fileReader.nextLine())),
                         Integer.parseInt(fileReader.nextLine()),
-                        Integer.parseInt(fileReader.nextLine()));
+                        Integer.parseInt(fileReader.nextLine()),
+                        this);
 
                 //add it to the Array List
                 ports.add(newPort);

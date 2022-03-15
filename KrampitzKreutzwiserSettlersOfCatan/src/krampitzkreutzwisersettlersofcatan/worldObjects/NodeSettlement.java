@@ -244,14 +244,18 @@ public class NodeSettlement extends WorldObject {
      * settlement
      */
     public void setLarge(boolean isLarge) {
-        this.large = isLarge;
 
         //reset the randomized animation vars for the Node based on the new size
-        if (isLarge) {
-            randomizeLightAnimation();
-        } else {
-            randomizeSmokeAnimation();
+        //but only if the size is acctually changing
+        if (isLarge != isLarge()) {
+            if (isLarge) {
+                randomizeLightAnimation();
+            } else {
+                randomizeSmokeAnimation();
+            }
         }
+
+        this.large = isLarge;
     }
 
     /**

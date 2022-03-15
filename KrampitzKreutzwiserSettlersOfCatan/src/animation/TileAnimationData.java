@@ -1,26 +1,21 @@
 /*
  * Lukas Krampitz
  * Feb 16, 2022
- * A data storing class that holds all the variables for animating NodeSettlements
+ * A data storing class that holds all the variables for animating Tiles
  * This class is created as a way to save the current animation type data from being 
  * reset after saving and loading an online game when changing turns.
  */
 package animation;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Tacitor
  */
-public class SettlementAnimationData {
+public class TileAnimationData {
 
     //Atributes
-    //Static
-    private static ArrayList<SettlementAnimationData> settlementNodesAnimationData; //the local (to this class) copy of the the NodeSettlements animation data
     //animation related
-    private int frameTimeSmoke; //the time in miliseconds each frame for chimney smoke should be displayed for
-    private int frameTimeLight; //the time in miliseconds each frame for house lights should be displayed for
+    private int frameTimeSheep; //the time in miliseconds each frame for sheep eating should be displayed for
     private int frameTimeOffset; //the time in milliseconds the frame times will be offset by 
     private long lastFrameStart; //the system time (in miliseconds) when the previous frame started displaying 
     private int currentFrameIndex; //the index within the image array the 
@@ -29,9 +24,8 @@ public class SettlementAnimationData {
     /**
      * Default constructor
      */
-    public SettlementAnimationData() {
-        frameTimeSmoke = 500; //the default frame time should be 500ms
-        frameTimeLight = 2000; //the lights should change state after 2 seconds
+    public TileAnimationData() {
+        frameTimeSheep = 3000; //the default frame time should be 3 seconds
         lastFrameStart = 0; //the last frame has never (yet) been displayed so set it to 0
         currentFrameIndex = 0;
     }
@@ -41,35 +35,17 @@ public class SettlementAnimationData {
      *
      * @return
      */
-    public int getFrameTimeSmoke() {
-        return frameTimeSmoke;
+    public int getFrameTimeSheep() {
+        return frameTimeSheep;
     }
 
     /**
      * Set the time in milliseconds each frame is displayed for
      *
-     * @param frameTimeSmoke
+     * @param frameTimeSheep
      */
-    public void setFrameTimeSmoke(int frameTimeSmoke) {
-        this.frameTimeSmoke = frameTimeSmoke;
-    }
-
-    /**
-     * Get the time in milliseconds each frame is displayed for
-     *
-     * @return
-     */
-    public int getFrameTimeLight() {
-        return frameTimeLight;
-    }
-
-    /**
-     * Set the time in milliseconds each frame is displayed for
-     *
-     * @param frameTimeLight
-     */
-    public void setFrameTimeLight(int frameTimeLight) {
-        this.frameTimeLight = frameTimeLight;
+    public void setFrameTimeSheep(int frameTimeSheep) {
+        this.frameTimeSheep = frameTimeSheep;
     }
 
     /**
@@ -133,8 +109,7 @@ public class SettlementAnimationData {
      */
     @Override
     public String toString() {
-        return "frameTimeSmoke: " + frameTimeSmoke
-                + "\nframeTimeLight: " + frameTimeLight
+        return "frameTimeSheep: " + frameTimeSheep
                 + "\nframeTimeOffset: " + frameTimeOffset
                 + "\nlastFrameStart: " + lastFrameStart
                 + "\ncurrentFrameIndex: " + currentFrameIndex;
@@ -146,12 +121,11 @@ public class SettlementAnimationData {
      * @return
      */
     @Override
-    public SettlementAnimationData clone() {
+    public TileAnimationData clone() {
         //create a new Object
-        SettlementAnimationData copy = new SettlementAnimationData();
+        TileAnimationData copy = new TileAnimationData();
 
-        copy.frameTimeSmoke = frameTimeSmoke;
-        copy.frameTimeLight = frameTimeLight;
+        copy.frameTimeSheep = frameTimeSheep;
         copy.frameTimeOffset = frameTimeOffset;
         copy.lastFrameStart = lastFrameStart;
         copy.currentFrameIndex = currentFrameIndex;

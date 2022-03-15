@@ -18,6 +18,8 @@ public class Catan {
     public static MainMenu menu;
     public static final String SAVE_FILE_VER = "V14"; //the save file version needed
     public static final String GAME_VER = "pre-v5.1.4 - Animation Update"; //the version of the game/program
+    
+    public static final boolean DEBUG_ONLINE_MODE = false; //if this is true then the game will lauch in decorated windowed 720p
 
     //fast pulse vars
     private static long prevTime;

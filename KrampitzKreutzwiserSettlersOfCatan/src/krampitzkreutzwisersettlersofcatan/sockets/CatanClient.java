@@ -465,20 +465,10 @@ public class CatanClient extends JFrame {
                         //save the time before any savinging and reloading of the new save file for online play
                         long oldTime = System.currentTimeMillis();
 
-                        //save the current animation data 
-                        SettlementAnimationData.saveNodeSettlmentAnimationData(theGameFrame.getGamePanel());
-                        //System.out.println("\nBefore: " + theGameFrame.getGamePanel().getSettlementNodes().get(2).getSettlementAnimationData().toString());
-
                         //load the save from the other client in the online game
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
 
-                        //load back in the saved animation data after the GamePanel reset the current frames
-                        SettlementAnimationData.restoreNodeSettlmentAnimationData(theGameFrame.getGamePanel());
-                        //System.out.println("\nAfter: " + theGameFrame.getGamePanel().getSettlementNodes().get(2).getSettlementAnimationData().toString() + "\n\n");
-                        
                         //System.out.println("Animation load time: " + (System.currentTimeMillis() - oldTime));
-
-
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
                     } catch (IOException exception) {

@@ -59,6 +59,12 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         //debug screen size
         //System.out.println("Width: " + this.getWidth());
         //System.out.println("Height: " + this.getHeight());
+        //Then do another check to see if to run in the online debug mode
+        //This would mean running in 720p windowed with decorations
+        if (Catan.DEBUG_ONLINE_MODE) { //Checks to see if the flag is set in the Main class
+            setSize(1280, 720); //720p
+            setUndecorated(false); //show the boarder
+        }
     }
 
     /**
