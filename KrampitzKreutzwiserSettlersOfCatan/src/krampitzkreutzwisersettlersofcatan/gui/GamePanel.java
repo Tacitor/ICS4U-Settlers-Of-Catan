@@ -4888,42 +4888,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             }
         }
 
-        //set the font for the dice roll indecator
-        g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
-        g2d.setColor(new java.awt.Color(255, 255, 225));
-        //show what number the user rolled
-        g2d.drawString("You rolled a: " + dice.getDiceRollVal(2),
-                rightDrawMargin,
-                (int) (440 / scaleFactor));
-        //draw the dice
-        //but only if not in setup
-        if (!inSetup) {
-            //draw the non rolled dice if there is no roll
-            if (dice.getDiceRollVal(2).equals("")) {
-
-                g2d.drawImage(DICE_IMAGES[0],
-                        rightDrawMargin,
-                        (int) (435 / scaleFactor),
-                        (int) (getImgWidth(DICE_IMAGES[0]) * 1.5),
-                        (int) (getImgHeight(DICE_IMAGES[0]) * 1.5),
-                        null);
-            } else { //else draw the dice that go with the roll
-                g2d.drawImage(DICE_IMAGES[Integer.parseInt(dice.getDiceRollVal(0))],
-                        rightDrawMargin,
-                        (int) (435 / scaleFactor),
-                        (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
-                        (int) (getImgHeight(DICE_IMAGES[1]) * 1.5),
-                        null);
-
-                g2d.drawImage(DICE_IMAGES[Integer.parseInt(dice.getDiceRollVal(1))],
-                        rightDrawMargin + (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
-                        (int) (435 / scaleFactor),
-                        (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
-                        (int) (getImgHeight(DICE_IMAGES[1]) * 1.5),
-                        null);
-
-            }
-        }
+        //draw the dice and the headers for it
+        dice.draw(g2d, rightDrawMargin, inSetup, this);
 
         int playerNumOffset;
         if (playerCount > 3) {

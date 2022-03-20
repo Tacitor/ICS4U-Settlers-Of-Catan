@@ -5,6 +5,12 @@
  */
 package animation;
 
+import java.awt.Font;
+import java.awt.Graphics2D;
+import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.scaleFactor;
+import static textures.ImageRef.DICE_IMAGES;
+
 /**
  *
  * @author Tacitor
@@ -60,6 +66,45 @@ public class Dice {
      */
     public void setDiceRollVal(int index, String value) {
         diceRollVal[index] = value;
+    }
+
+    public void draw(Graphics2D g2d, int rightDrawMargin, boolean inSetup, GamePanel gamePanel) {
+        //set the font for the dice roll indecator
+        g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
+        g2d.setColor(new java.awt.Color(255, 255, 225));
+        //show what number the user rolled
+        g2d.drawString("You rolled a: " + diceRollVal[2],
+                rightDrawMargin,
+                (int) (440 / scaleFactor));
+        //draw the dice
+        //but only if not in setup
+        if (!inSetup) {
+            //draw the non rolled dice if there is no roll
+            if (diceRollVal[2].equals("")) {
+
+                g2d.drawImage(DICE_IMAGES[0],
+                        rightDrawMargin,
+                        (int) (435 / scaleFactor),
+                        (int) (gamePanel.getImgWidth(DICE_IMAGES[0]) * 1.5),
+                        (int) (gamePanel.getImgHeight(DICE_IMAGES[0]) * 1.5),
+                        null);
+            } else { //else draw the dice that go with the roll
+                g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[0])],
+                        rightDrawMargin,
+                        (int) (435 / scaleFactor),
+                        (int) (gamePanel.getImgWidth(DICE_IMAGES[1]) * 1.5),
+                        (int) (gamePanel.getImgHeight(DICE_IMAGES[1]) * 1.5),
+                        null);
+
+                g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
+                        rightDrawMargin + (int) (gamePanel.getImgWidth(DICE_IMAGES[1]) * 1.5),
+                        (int) (435 / scaleFactor),
+                        (int) (gamePanel.getImgWidth(DICE_IMAGES[1]) * 1.5),
+                        (int) (gamePanel.getImgHeight(DICE_IMAGES[1]) * 1.5),
+                        null);
+
+            }
+        }
     }
 
 }
