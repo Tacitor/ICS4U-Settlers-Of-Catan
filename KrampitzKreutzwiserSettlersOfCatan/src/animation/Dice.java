@@ -7,9 +7,11 @@ package animation;
 
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.scaleFactor;
-import static textures.ImageRef.DICE_IMAGES;
+import textures.ImageRef;
 
 /**
  *
@@ -19,6 +21,19 @@ public class Dice {
 
     //Attributes
     private String[] diceRollVal;
+
+    //image vars
+    //dice images
+    private final static Image DIE_IMAGE_1 = new ImageIcon(ImageRef.class.getResource("dice/die1.png")).getImage();
+    private final static Image DIE_IMAGE_2 = new ImageIcon(ImageRef.class.getResource("dice/die2.png")).getImage();
+    private final static Image DIE_IMAGE_3 = new ImageIcon(ImageRef.class.getResource("dice/die3.png")).getImage();
+    private final static Image DIE_IMAGE_4 = new ImageIcon(ImageRef.class.getResource("dice/die4.png")).getImage();
+    private final static Image DIE_IMAGE_5 = new ImageIcon(ImageRef.class.getResource("dice/die5.png")).getImage();
+    private final static Image DIE_IMAGE_6 = new ImageIcon(ImageRef.class.getResource("dice/die6.png")).getImage();
+    private final static Image DICE_GRAY = new ImageIcon(ImageRef.class.getResource("dice/diceGray.png")).getImage();
+
+    private final static Image[] DICE_IMAGES = new Image[]{
+        DICE_GRAY, DIE_IMAGE_1, DIE_IMAGE_2, DIE_IMAGE_3, DIE_IMAGE_4, DIE_IMAGE_5, DIE_IMAGE_6};
 
     //Constrcutors
     /**
@@ -66,6 +81,18 @@ public class Dice {
      */
     public void setDiceRollVal(int index, String value) {
         diceRollVal[index] = value;
+    }
+
+    /**
+     * Get a specific image of a die or dice. Accepts 7 indices: 0, 1, 2, 3, 4,
+     * 5, 6. Index 0 if the grayed out dice. 1-6 are images of a single die
+     * rolled to the number of the index.
+     *
+     * @param index
+     * @return
+     */
+    public static Image getDiceImage(int index) {
+        return DICE_IMAGES[index];
     }
 
     public void draw(Graphics2D g2d, int rightDrawMargin, boolean inSetup, GamePanel gamePanel) {

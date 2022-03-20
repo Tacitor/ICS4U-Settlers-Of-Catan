@@ -5624,7 +5624,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             g2d.drawRect(rightDrawMargin - scaleInt(5),
                     scaleInt(435) - scaleInt(5),
                     getImgWidth(MATERIAL_KEY) + scaleInt(5),
-                    (scaleInt(450) + getImgHeight(DICE_GRAY)) - scaleInt(435) + scaleInt(10));
+                    (scaleInt(450) + getImgHeight(Dice.getDiceImage(0))) - scaleInt(435) + scaleInt(10));
             //the score board box
             g2d.drawRect(rightDrawMargin - scaleInt(60) + playerNumOffset - scaleInt(5),
                     scaleInt(580) - scaleInt(5),

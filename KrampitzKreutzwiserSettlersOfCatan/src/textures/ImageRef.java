@@ -13,23 +13,22 @@ import javax.swing.ImageIcon;
  * @author Tacitor
  */
 public class ImageRef {
-    
+
     //store most of the images to reduce varable clutter in the main class (gamePanel)
-    
     //error image
     public final static Image ERROR_IMAGE = new ImageIcon(ImageRef.class.getResource("util/error.png")).getImage();
     public final static Image[] ERROR_IMAGES = new Image[]{ERROR_IMAGE};
-    
+
     //icon image for game
     public final static Image ICON = new ImageIcon(ImageRef.class.getResource("util/icon.png")).getImage();
-    
+
     //images for the resource cards
     public final static Image CARD_CLAY = new ImageIcon(ImageRef.class.getResource("cards/cardClay.png")).getImage();
     public final static Image CARD_WHEAT = new ImageIcon(ImageRef.class.getResource("cards/cardWheat.png")).getImage();
     public final static Image CARD_ORE = new ImageIcon(ImageRef.class.getResource("cards/cardOre.png")).getImage();
     public final static Image CARD_SHEEP = new ImageIcon(ImageRef.class.getResource("cards/cardSheep.png")).getImage();
     public final static Image CARD_WOOD = new ImageIcon(ImageRef.class.getResource("cards/cardWood.png")).getImage();
-    
+
     //images for the development cards
     //place holders
     public final static Image DEV_CARD_KNIGHT = new ImageIcon(ImageRef.class.getResource("cards/devCardKnight.png")).getImage();
@@ -53,14 +52,14 @@ public class ImageRef {
     public final static Image BLUE_ROAD_L = new ImageIcon(ImageRef.class.getResource("playerPieces/blueRoadL.png")).getImage();
     public final static Image BLANK_ROAD_H = new ImageIcon(ImageRef.class.getResource("playerPieces/blankRoadH.png")).getImage(); // Blank images for horizontal
     public final static Image BLANK_ROAD_V = new ImageIcon(ImageRef.class.getResource("playerPieces/blankRoadV.png")).getImage(); // and non horizontal roads
-    
+
     public final static Image WHITE_ROAD_H = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteRoadH.png")).getImage(); //white images 
     public final static Image WHITE_ROAD_R = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteRoadR.png")).getImage();
     public final static Image WHITE_ROAD_L = new ImageIcon(ImageRef.class.getResource("playerPieces/whiteRoadL.png")).getImage();
-    
+
     public final static Image ORANGE_ROAD_H = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeRoadH.png")).getImage(); //orange images for horizontal
-    public final static Image ORANGE_ROAD_R = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeRoadR.png")).getImage(); 
-    public final static Image ORANGE_ROAD_L = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeRoadL.png")).getImage(); 
+    public final static Image ORANGE_ROAD_R = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeRoadR.png")).getImage();
+    public final static Image ORANGE_ROAD_L = new ImageIcon(ImageRef.class.getResource("playerPieces/orangeRoadL.png")).getImage();
 
     //image for the thief
     public final static Image THIEF = new ImageIcon(ImageRef.class.getResource("util/thief.png")).getImage();
@@ -69,40 +68,27 @@ public class ImageRef {
     public final static Image WATER_RING = new ImageIcon(ImageRef.class.getResource("water/waterRing.png")).getImage();
     public final static Image WATER_RING_BOARDER = new ImageIcon(ImageRef.class.getResource("water/waterRingBoarder.png")).getImage();
     public final static Image WATER_RING_OVERLAY = new ImageIcon(ImageRef.class.getResource("water/waterRingOverlay.png")).getImage();
-    
+
     //image for the background
     public final static Image WOOD_BACKGROUND = new ImageIcon(ImageRef.class.getResource("util/background.png")).getImage();
 
     //the image for the building materials
     public final static Image MATERIAL_KEY = new ImageIcon(ImageRef.class.getResource("bigCard/buildKeySmoke.png")).getImage();
-    
+
     //current player indecator
     public final static Image PLAYER_RED = new ImageIcon(ImageRef.class.getResource("playerIcons/playerRed.png")).getImage();
     public final static Image PLAYER_BLUE = new ImageIcon(ImageRef.class.getResource("playerIcons/playerBlue.png")).getImage();
     public final static Image PLAYER_NONE = new ImageIcon(ImageRef.class.getResource("playerIcons/playerNone.png")).getImage();
     public final static Image PLAYER_ORANGE = new ImageIcon(ImageRef.class.getResource("playerIcons/playerOrange.png")).getImage();
     public final static Image PLAYER_WHITE = new ImageIcon(ImageRef.class.getResource("playerIcons/playerWhite.png")).getImage();
-    
+
     //smaller player indecator
     public final static Image SMALL_PLAYER_RED = new ImageIcon(ImageRef.class.getResource("playerIcons/smallPlayerRed.png")).getImage();
     public final static Image SMALL_PLAYER_BLUE = new ImageIcon(ImageRef.class.getResource("playerIcons/smallPlayerBlue.png")).getImage();
     public final static Image SMALL_PLAYER_NONE = new ImageIcon(ImageRef.class.getResource("playerIcons/smallPlayerNone.png")).getImage();
     public final static Image SMALL_PLAYER_ORANGE = new ImageIcon(ImageRef.class.getResource("playerIcons/smallPlayerOrange.png")).getImage();
     public final static Image SMALL_PLAYER_WHITE = new ImageIcon(ImageRef.class.getResource("playerIcons/smallPlayerWhite.png")).getImage();
-    
-    //dice images
-    public final static Image DIE_IMAGE_1 = new ImageIcon(ImageRef.class.getResource("dice/die1.png")).getImage();
-    public final static Image DIE_IMAGE_2 = new ImageIcon(ImageRef.class.getResource("dice/die2.png")).getImage();
-    public final static Image DIE_IMAGE_3 = new ImageIcon(ImageRef.class.getResource("dice/die3.png")).getImage();
-    public final static Image DIE_IMAGE_4 = new ImageIcon(ImageRef.class.getResource("dice/die4.png")).getImage();
-    public final static Image DIE_IMAGE_5 = new ImageIcon(ImageRef.class.getResource("dice/die5.png")).getImage();
-    public final static Image DIE_IMAGE_6 = new ImageIcon(ImageRef.class.getResource("dice/die6.png")).getImage();
-    public final static Image DICE_GRAY = new ImageIcon(ImageRef.class.getResource("dice/diceGray.png")).getImage();
-    
-    public final static Image[] DICE_IMAGES = new Image[]{
-        DICE_GRAY, DIE_IMAGE_1, DIE_IMAGE_2, DIE_IMAGE_3, DIE_IMAGE_4, DIE_IMAGE_5, DIE_IMAGE_6};
-    
-    
+
     //player coloured dots
     private final static Image DOT_RED = new ImageIcon(ImageRef.class.getResource("playerIcons/redDot.png")).getImage();
     private final static Image DOT_BLUE = new ImageIcon(ImageRef.class.getResource("playerIcons/blueDot.png")).getImage();
@@ -110,13 +96,13 @@ public class ImageRef {
     private final static Image DOT_WHITE = new ImageIcon(ImageRef.class.getResource("playerIcons/whiteDot.png")).getImage();
     //array for the dots to be called on to get the correct colour for each player
     public final static Image[] PLAYER_DOTS = new Image[]{ERROR_IMAGE, DOT_RED, DOT_BLUE, DOT_ORANGE, DOT_WHITE};
-    
+
     //longest road tile thing
     public final static Image LONGEST_ROAD = new ImageIcon(ImageRef.class.getResource("bigCard/longestRoad.png")).getImage();
-    
+
     //largest army tile thing
     public final static Image LARGEST_ARMY = new ImageIcon(ImageRef.class.getResource("bigCard/largestArmy.png")).getImage();
-    
+
     //image files for the resource stacks
     private final static Image CLAY_STACK = new ImageIcon(ImageRef.class.getResource("util/clayStack.png")).getImage();
     private final static Image WOOD_STACK = new ImageIcon(ImageRef.class.getResource("util/woodStack.png")).getImage();
@@ -125,11 +111,11 @@ public class ImageRef {
     private final static Image ORE_STACK = new ImageIcon(ImageRef.class.getResource("util/oreStack.png")).getImage();
     //the public array to acces those images
     public final static Image[] RES_STACKS = new Image[]{ERROR_IMAGE, CLAY_STACK, WOOD_STACK, WHEAT_STACK, SHEEP_STACK, ORE_STACK};
-    
+
     //the image for dev card too tips
     public final static Image TOOLTIP_DEV_CARD_BGD = new ImageIcon(ImageRef.class.getResource("util/tooltipBackground.png")).getImage();
 
     public ImageRef() {
     }
-    
+
 }
