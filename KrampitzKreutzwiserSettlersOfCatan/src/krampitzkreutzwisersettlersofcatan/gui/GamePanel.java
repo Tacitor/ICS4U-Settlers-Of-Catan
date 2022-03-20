@@ -17,6 +17,7 @@ import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.Tile;
 import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
 import Audio.AudioRef;
+import animation.Dice;
 import dataFiles.OldCode;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -151,8 +152,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private static int panelWidth; //the dimentions of the JFrame holding the gamePanel
     private static int panelHeight;
 
-    //new dice roll lable
-    private String[] diceRollVal;
+    //New Object for storing dice related data
+    private Dice dice;
 
     //Object containing the data about the longest road
     private GlobalDataRecord longestRoadData;
@@ -477,7 +478,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         SettlerRadioBtn.setUpGroup(settlerRadioBtns);
 
         //initialize the dice roll value
-        diceRollVal = new String[]{"0", "0", ""}; //the first two indexies are the rollecd values and the third is the sum
+        dice = new Dice();
 
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
@@ -842,7 +843,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             thiefJustFinished = false;
         } else if (playerSetupRoadsLeft == 0 && playerSetupSettlementLeft == 0) { // If the end turn button was clicked
             //set the roll sum to 0. This is for the dice images. When the sum is "" then the blank dice are shown
-            diceRollVal[2] = "";
+            dice.setDiceRollVal(2, "");
 
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
@@ -2649,11 +2650,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //save the dice roll
             saveFile.println("diceRollVals:");
             saveFile.println("roll-1:");
-            saveFile.println(diceRollVal[0]);
+            saveFile.println(dice.getDiceRollVal(0));
             saveFile.println("roll-2:");
-            saveFile.println(diceRollVal[1]);
+            saveFile.println(dice.getDiceRollVal(1));
             saveFile.println("total:");
-            saveFile.println(diceRollVal[2]);
+            saveFile.println(dice.getDiceRollVal(2));
 
             //add the newlyBoughtDevCards with linebreak
             saveFile.println("\n" + CardUtil.newlyBoughtDevCardsToString());
@@ -3502,7 +3503,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 if (scanner.nextLine().equals("roll-1:")) {
 
-                    diceRollVal[0] = scanner.nextLine();
+                    dice.setDiceRollVal(0, scanner.nextLine());
 
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
@@ -3510,7 +3511,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 if (scanner.nextLine().equals("roll-2:")) {
 
-                    diceRollVal[1] = scanner.nextLine();
+                    dice.setDiceRollVal(1, scanner.nextLine());
 
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
@@ -3518,7 +3519,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 if (scanner.nextLine().equals("total:")) {
 
-                    diceRollVal[2] = scanner.nextLine();
+                    dice.setDiceRollVal(2, scanner.nextLine());
 
                 } else {
                     thrownLoadError = throwLoadError(thrownLoadError);
@@ -4364,25 +4365,26 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         roll = (int) (Math.random() * 6) + 1;
 
         // Display the number rolled to the user
-        //updates the var that displays the roll. updates every time the draw() method is run
+        //updates the var that displays the roll. 
         //save the first roll
-        diceRollVal[0] = (Integer.toString(roll));
+        dice.setDiceRollVal(0, (Integer.toString(roll)));
 
         // Roll the second dice and add to the total
         roll += (int) (Math.random() * 6) + 1;
 
         // Display the number rolled to the user
-        //updates the var that displays the roll. updates every time the draw() method is run
+        //updates the var that displays the roll.
         //save the second roll. Subtract the first roll from the sum to get the specific value of the second roll
-        diceRollVal[1] = (Integer.toString(roll - Integer.parseInt(diceRollVal[0])));
+        dice.setDiceRollVal(1, (Integer.toString(roll - Integer.parseInt(dice.getDiceRollVal(0)))));
 
         //combine into a sum
-        diceRollVal[2] = (Integer.toString(roll));
+        dice.setDiceRollVal(2, (Integer.toString(roll)));
 
         //This code might not ever run. There may be no senario where this test is true
         //check what the value is
-        if (Integer.parseInt(diceRollVal[2]) == 0) { //if the sum is 0 replace it with an empty String
-            diceRollVal[2] = "zero";
+        if (Integer.parseInt(dice.getDiceRollVal(2)) == 0) { //if the sum is 0 replace it with an empty String
+            dice.setDiceRollVal(2, "zero");
+            dice.setDiceRollVal(0, saveAddress);
 
         }
 
@@ -4890,14 +4892,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
         g2d.setColor(new java.awt.Color(255, 255, 225));
         //show what number the user rolled
-        g2d.drawString("You rolled a: " + diceRollVal[2],
+        g2d.drawString("You rolled a: " + dice.getDiceRollVal(2),
                 rightDrawMargin,
                 (int) (440 / scaleFactor));
         //draw the dice
         //but only if not in setup
         if (!inSetup) {
             //draw the non rolled dice if there is no roll
-            if (diceRollVal[2].equals("")) {
+            if (dice.getDiceRollVal(2).equals("")) {
 
                 g2d.drawImage(DICE_IMAGES[0],
                         rightDrawMargin,
@@ -4906,14 +4908,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         (int) (getImgHeight(DICE_IMAGES[0]) * 1.5),
                         null);
             } else { //else draw the dice that go with the roll
-                g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[0])],
+                g2d.drawImage(DICE_IMAGES[Integer.parseInt(dice.getDiceRollVal(0))],
                         rightDrawMargin,
                         (int) (435 / scaleFactor),
                         (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
                         (int) (getImgHeight(DICE_IMAGES[1]) * 1.5),
                         null);
 
-                g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
+                g2d.drawImage(DICE_IMAGES[Integer.parseInt(dice.getDiceRollVal(1))],
                         rightDrawMargin + (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
                         (int) (435 / scaleFactor),
                         (int) (getImgWidth(DICE_IMAGES[1]) * 1.5),
