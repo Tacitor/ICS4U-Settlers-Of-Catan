@@ -21,6 +21,9 @@ public class Dice {
 
     //Attributes
     private String[] diceRollVal;
+    private int rollFrame; //The index of the frame of animation currently displaying
+    private int frameTime; //the time in miliseconds each frame should be displayed for.
+    private boolean justRolled; //whether or not the dice have just been rolled and need to be animated.
 
     //=-=-=-=-=-=-=-=-=-= image vars =-=-=-=-=-=-=-=-=-=
     //dice images
@@ -41,11 +44,10 @@ public class Dice {
     private final static Image DICE_ROLL_2 = new ImageIcon(ImageRef.class.getResource("dice/diceRoll2.png")).getImage();
     private final static Image DICE_ROLL_3 = new ImageIcon(ImageRef.class.getResource("dice/diceRoll3.png")).getImage();
     private final static Image DICE_ROLL_4 = new ImageIcon(ImageRef.class.getResource("dice/diceRoll4.png")).getImage();
-    
+
     private final static Image[] DICE_ROLL_IMAGES = new Image[]{
         DICE_ROLL_0, DICE_ROLL_1, DICE_ROLL_2, DICE_ROLL_3, DICE_ROLL_4};
-    
-    
+
     //=-=-=-=-=-=-=-=-=-= end of image vars =-=-=-=-=-=-=-=-=-=
     //Constrcutors
     /**
@@ -107,6 +109,24 @@ public class Dice {
         return DICE_IMAGES[index];
     }
 
+    /**
+     * Get whether or not the dice have just been rolled and need to be animated
+     *
+     * @return
+     */
+    public boolean getJustRolled() {
+        return justRolled;
+    }
+
+    /**
+     * Set whether or not the dice have just been rolled and need to be animated
+     *
+     * @param justRolled
+     */
+    public void setJustRolled(boolean justRolled) {
+        this.justRolled = justRolled;
+    }
+
     public void draw(Graphics2D g2d, int rightDrawMargin, boolean inSetup, GamePanel gamePanel) {
         //set the font for the dice roll indecator
         g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
@@ -118,30 +138,56 @@ public class Dice {
         //draw the dice
         //but only if not in setup
         if (!inSetup) {
-            //draw the non rolled dice if there is no roll
-            if (diceRollVal[2].equals("")) {
 
-                g2d.drawImage(DICE_IMAGES[0],
-                        rightDrawMargin,
-                        (int) (435 / scaleFactor),
-                        (int) (gamePanel.getImgWidth(DICE_IMAGES[0]) * 1.5),
-                        (int) (gamePanel.getImgHeight(DICE_IMAGES[0]) * 1.5),
-                        null);
-            } else { //else draw the dice that go with the roll
-                g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[0])],
-                        rightDrawMargin,
-                        (int) (435 / scaleFactor),
-                        (int) (gamePanel.getImgWidth(DICE_IMAGES[1]) * 1.5),
-                        (int) (gamePanel.getImgHeight(DICE_IMAGES[1]) * 1.5),
-                        null);
+            //Now check to see if the dice have just been rolled.
+            //If yes run through the animation
+            if (justRolled) {
+                
+                g2d.drawImage(DICE_ROLL_IMAGES[rollFrame],
+                            rightDrawMargin,
+                            (int) (435 / scaleFactor),
+                            (int) (gamePanel.getImgWidth(DICE_IMAGES[0]) * 1.5),
+                            (int) (gamePanel.getImgHeight(DICE_IMAGES[0]) * 1.5),
+                            null);
+                
+                //increment roll frame
+                rollFrame++;
+                
+                //check for overflow
+                if (rollFrame == DICE_ROLL_IMAGES.length) {
+                    rollFrame = 0;
+                    
+                    //if we are rolling over also stop the animation
+                    justRolled = false;
+                }
 
-                g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
-                        rightDrawMargin + (int) (gamePanel.getImgWidth(DICE_IMAGES[1]) * 1.5),
-                        (int) (435 / scaleFactor),
-                        (int) (gamePanel.getImgWidth(DICE_IMAGES[1]) * 1.5),
-                        (int) (gamePanel.getImgHeight(DICE_IMAGES[1]) * 1.5),
-                        null);
+            } else {
 
+                //draw the non rolled dice if there is no roll
+                if (diceRollVal[2].equals("")) {
+
+                    g2d.drawImage(DICE_IMAGES[0],
+                            rightDrawMargin,
+                            (int) (435 / scaleFactor),
+                            (int) (gamePanel.getImgWidth(DICE_IMAGES[0]) * 1.5),
+                            (int) (gamePanel.getImgHeight(DICE_IMAGES[0]) * 1.5),
+                            null);
+                } else { //else draw the dice that go with the roll
+                    g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[0])],
+                            rightDrawMargin,
+                            (int) (435 / scaleFactor),
+                            (int) (gamePanel.getImgWidth(DICE_IMAGES[1]) * 1.5),
+                            (int) (gamePanel.getImgHeight(DICE_IMAGES[1]) * 1.5),
+                            null);
+
+                    g2d.drawImage(DICE_IMAGES[Integer.parseInt(diceRollVal[1])],
+                            rightDrawMargin + (int) (gamePanel.getImgWidth(DICE_IMAGES[1]) * 1.5),
+                            (int) (435 / scaleFactor),
+                            (int) (gamePanel.getImgWidth(DICE_IMAGES[1]) * 1.5),
+                            (int) (gamePanel.getImgHeight(DICE_IMAGES[1]) * 1.5),
+                            null);
+
+                }
             }
         }
     }

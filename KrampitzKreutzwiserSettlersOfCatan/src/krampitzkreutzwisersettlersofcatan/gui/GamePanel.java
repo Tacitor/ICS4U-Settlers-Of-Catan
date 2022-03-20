@@ -4354,7 +4354,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     /**
-     * Roll both of the 6 sided dice and act according to the roll. 7 Will
+     * Roll both of the 6 sided die and act according to the roll. 7 Will
      * trigger thief movement, and other values give resources. The roll is done
      * as 2 1d6 rolls to create the same number rarity as 2 dice give
      */
@@ -4384,9 +4384,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //check what the value is
         if (Integer.parseInt(dice.getDiceRollVal(2)) == 0) { //if the sum is 0 replace it with an empty String
             dice.setDiceRollVal(2, "zero");
-            dice.setDiceRollVal(0, saveAddress);
 
         }
+        
+        //Now that the dice have been rolled set the flag for the animation.
+        dice.setJustRolled(true);
 
         // Act on the dice roll
         if (roll == 7) { // Move the thief on a 7
