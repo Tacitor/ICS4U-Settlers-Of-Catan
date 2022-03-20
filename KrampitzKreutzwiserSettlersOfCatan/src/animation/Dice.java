@@ -22,7 +22,7 @@ public class Dice {
     //Attributes
     private String[] diceRollVal;
 
-    //image vars
+    //=-=-=-=-=-=-=-=-=-= image vars =-=-=-=-=-=-=-=-=-=
     //dice images
     private final static Image DIE_IMAGE_1 = new ImageIcon(ImageRef.class.getResource("dice/die1.png")).getImage();
     private final static Image DIE_IMAGE_2 = new ImageIcon(ImageRef.class.getResource("dice/die2.png")).getImage();
@@ -35,6 +35,18 @@ public class Dice {
     private final static Image[] DICE_IMAGES = new Image[]{
         DICE_GRAY, DIE_IMAGE_1, DIE_IMAGE_2, DIE_IMAGE_3, DIE_IMAGE_4, DIE_IMAGE_5, DIE_IMAGE_6};
 
+    //animation frames
+    private final static Image DICE_ROLL_0 = new ImageIcon(ImageRef.class.getResource("dice/diceRoll0.png")).getImage();
+    private final static Image DICE_ROLL_1 = new ImageIcon(ImageRef.class.getResource("dice/diceRoll1.png")).getImage();
+    private final static Image DICE_ROLL_2 = new ImageIcon(ImageRef.class.getResource("dice/diceRoll2.png")).getImage();
+    private final static Image DICE_ROLL_3 = new ImageIcon(ImageRef.class.getResource("dice/diceRoll3.png")).getImage();
+    private final static Image DICE_ROLL_4 = new ImageIcon(ImageRef.class.getResource("dice/diceRoll4.png")).getImage();
+    
+    private final static Image[] DICE_ROLL_IMAGES = new Image[]{
+        DICE_ROLL_0, DICE_ROLL_1, DICE_ROLL_2, DICE_ROLL_3, DICE_ROLL_4};
+    
+    
+    //=-=-=-=-=-=-=-=-=-= end of image vars =-=-=-=-=-=-=-=-=-=
     //Constrcutors
     /**
      * Main blank constructor
