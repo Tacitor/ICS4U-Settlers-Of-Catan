@@ -23,6 +23,7 @@ public class Dice {
     private String[] diceRollVal;
     private int rollFrame; //The index of the frame of animation currently displaying
     private int frameTime; //the time in miliseconds each frame should be displayed for.
+    private long lastRollTime; //the time in miliseconds of what the system time was when the frame was last updated
     private boolean justRolled; //whether or not the dice have just been rolled and need to be animated.
 
     //=-=-=-=-=-=-=-=-=-= image vars =-=-=-=-=-=-=-=-=-=
@@ -55,6 +56,12 @@ public class Dice {
      */
     public Dice() {
         diceRollVal = new String[]{"0", "0", ""}; //the first two indexies are the rollecd values and the third is the sum
+
+        //init the animation values
+        rollFrame = 0; //start on frame 0
+        frameTime = 500; //the time each frame will be displayed for
+        lastRollTime = 0; //Never been rolled before
+        justRolled = false;
     }
 
     //Accessors and Mutators
@@ -142,23 +149,41 @@ public class Dice {
             //Now check to see if the dice have just been rolled.
             //If yes run through the animation
             if (justRolled) {
-                
+
+                long sysTime = System.currentTimeMillis(); //The current system time
+
                 g2d.drawImage(DICE_ROLL_IMAGES[rollFrame],
-                            rightDrawMargin,
-                            (int) (435 / scaleFactor),
-                            (int) (gamePanel.getImgWidth(DICE_IMAGES[0]) * 1.5),
-                            (int) (gamePanel.getImgHeight(DICE_IMAGES[0]) * 1.5),
-                            null);
-                
-                //increment roll frame
-                rollFrame++;
-                
-                //check for overflow
-                if (rollFrame == DICE_ROLL_IMAGES.length) {
-                    rollFrame = 0;
-                    
-                    //if we are rolling over also stop the animation
-                    justRolled = false;
+                        rightDrawMargin,
+                        (int) (435 / scaleFactor),
+                        (int) (gamePanel.getImgWidth(DICE_IMAGES[0]) * 1.5),
+                        (int) (gamePanel.getImgHeight(DICE_IMAGES[0]) * 1.5),
+                        null);
+
+                //check to see if the frame needs to be updated
+                if (sysTime - lastRollTime > frameTime) {
+
+                    if (rollFrame == 0 && lastRollTime == 0) {
+                        lastRollTime = sysTime;
+                    } else {
+
+                        //increment roll frame
+                        rollFrame++;
+
+                        //save the time when the frame was updated
+                        lastRollTime = sysTime;
+
+                        //check for overflow
+                        if (rollFrame == DICE_ROLL_IMAGES.length) {
+                            rollFrame = 0;
+
+                            //if we are rolling over also stop the animation
+                            justRolled = false;
+
+                            //and reset the clock
+                            lastRollTime = 0;
+                        }
+
+                    }
                 }
 
             } else {
