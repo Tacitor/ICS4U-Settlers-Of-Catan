@@ -59,7 +59,7 @@ public class Dice {
 
         //init the animation values
         rollFrame = 0; //start on frame 0
-        frameTime = 500; //the time each frame will be displayed for
+        frameTime = 40; //the time each frame will be displayed for
         lastRollTime = 0; //Never been rolled before
         justRolled = false;
     }
