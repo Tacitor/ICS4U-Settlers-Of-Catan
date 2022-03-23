@@ -5,7 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan.sockets;
 
-import animation.SettlementAnimationData;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,6 +59,8 @@ public class CatanClient extends JFrame {
     private boolean cscStopRequested = false; //has the client been asked to stop
 
     private ClientSideConnection csc; //the socket type var to hold the connection for this CatanClient
+
+    private boolean justRolledDice; //did one of the players just roll the dice and should they be animated
 
     /**
      * Constructor
@@ -242,6 +243,26 @@ public class CatanClient extends JFrame {
         this.ip = ip;
     }
 
+    /**
+     * Get the boolean value for whether or not the dice have just been rolled.
+     * And if they should be animated.
+     *
+     * @param justRolledDice
+     */
+    public void setJustRolledDice(boolean justRolledDice) {
+        this.justRolledDice = justRolledDice;
+    }
+
+    /**
+     * Set the boolean value for whether or not the dice have just been rolled.
+     * And if they should be animated.
+     *
+     * @return
+     */
+    public boolean getJustRolledDice() {
+        return justRolledDice;
+    }
+
     public void setUpButton() {
         //create action listener for when the button is clicked to send a message
         ActionListener al = (ActionEvent e) -> {
@@ -389,7 +410,7 @@ public class CatanClient extends JFrame {
 
             //debug the stream
             //System.out.println(Arrays.toString(fileBytes));
-            csc.sendFileStream(fileBytes, fileName); //send the file
+            csc.sendFileStream(fileBytes, fileName, justRolledDice); //send the file
 
             //clear the chat field
             messageToSend.setText("");
@@ -427,6 +448,8 @@ public class CatanClient extends JFrame {
 
                 //now only actually save the file if THIS client didn't send it
                 if (!justPressedSend) {
+                    //get the sate of the dice roll animation
+                    justRolledDice = fileTypeRecieve.getJustRolledDice();
 
                     //get just the name of the file
                     String fileName = fileTypeRecieve.getFileName();
@@ -473,7 +496,7 @@ public class CatanClient extends JFrame {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
                     } catch (IOException exception) {
                         JOptionPane.showMessageDialog(null, "There was an IOException loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
-                    }   //System.out.println("Chat is : \n" + fileTypeRecieve.getChat());
+                    }   //System.out.println("Chat is : \n" + fileTypeRecieve.getChat());                    
                     buttonEnabled = true;
 
                 }
@@ -499,16 +522,18 @@ public class CatanClient extends JFrame {
         private byte[] file;
         private String chat;
         private String fileName;
+        private boolean justRolledDice;
 
         public FileTypeRecieve() {
             this.file = new byte[1];
             this.chat = "";
         }
 
-        public FileTypeRecieve(byte[] file, String chat, String fileName) {
+        public FileTypeRecieve(byte[] file, String chat, String fileName, boolean justRolledDice) {
             this.file = file;
             this.chat = chat;
             this.fileName = fileName;
+            this.justRolledDice = justRolledDice;
         }
 
         public String getChat() {
@@ -521,6 +546,16 @@ public class CatanClient extends JFrame {
 
         public String getFileName() {
             return fileName;
+        }
+
+        /**
+         * Return the value of the boolean controlling dice roll animation. This
+         * boolean was received through a Socket boolean receive.
+         *
+         * @return
+         */
+        public boolean getJustRolledDice() {
+            return justRolledDice;
         }
 
     }
@@ -569,12 +604,13 @@ public class CatanClient extends JFrame {
             }
         }
 
-        public void sendFileStream(byte[] fileStream, String fileName) {
+        public void sendFileStream(byte[] fileStream, String fileName, boolean justRolledDice) {
             try {
                 dataOut.writeInt(2); //tell the server that is it recieving a file
                 dataOut.writeInt(fileStream.length); //send the length of the file
                 dataOut.writeUTF(fileName); //send the name of the file including the extension
                 dataOut.write(fileStream, 0, fileStream.length);
+                dataOut.writeBoolean(justRolledDice);
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC sendFileStream()");
@@ -609,6 +645,7 @@ public class CatanClient extends JFrame {
             String msg = "";
             byte[] file = new byte[1];
             String fileName = "";
+            boolean justRolledDice = false;
 
             try {
                 msg = dataIn.readUTF();
@@ -628,11 +665,14 @@ public class CatanClient extends JFrame {
                     count += bytesRead;
                 }
 
+                //read in the dice roll animation
+                justRolledDice = dataIn.readBoolean();
+
             } catch (IOException ex) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveNewString()");
             }
 
-            return new FileTypeRecieve(file, msg, fileName);
+            return new FileTypeRecieve(file, msg, fileName, justRolledDice);
         }
 
         public String reciveNewString() {

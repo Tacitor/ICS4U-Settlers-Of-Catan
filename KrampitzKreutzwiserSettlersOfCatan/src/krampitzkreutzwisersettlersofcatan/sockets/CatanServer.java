@@ -190,15 +190,18 @@ public class CatanServer {
                                 count += bytesRead;
                             }   //debug the file that was sent
                             //System.out.println("[Server] " + Arrays.toString(fileAsStream));
+                            
+                            //recive the dice roll boolean
+                            boolean justRolledDice = dataIn.readBoolean();
 
                             //check if a stop is requested
                             if (!stopRequested) {
-                                //send the new chat out to all the clients
+                                //send the new chat and file out to all the clients
                                 for (ServerSideConnection client : clients) {
                                     //debug how many times it was sent
                                     //System.out.println("[CatanServer] " +"Sent it");
                                     //System.out.println("[CatanServer] " +"\nCurrent chat is :\n" + chat);
-                                    client.sendFile(chat, fileAsStream, fileName);
+                                    client.sendFile(chat, fileAsStream, fileName, justRolledDice);
 
                                 }
                             }
@@ -287,17 +290,20 @@ public class CatanServer {
         /**
          * Send a file to the client. Also update their chat so they know to
          * check for a new file
-         *
+         * 
          * @param msg
          * @param fileData
+         * @param fileName
+         * @param justRolledDice 
          */
-        public void sendFile(String msg, byte[] fileData, String fileName) {
+        public void sendFile(String msg, byte[] fileData, String fileName, boolean justRolledDice) {
             try {
                 dataOut.writeInt(2); //tell the client they are reciving a file and chat message
                 dataOut.writeUTF(msg);
                 dataOut.writeInt(fileData.length); //send the length of the file
                 dataOut.writeUTF(fileName); //send the file name
                 dataOut.write(fileData, 0, fileData.length); //send the file
+                dataOut.writeBoolean(justRolledDice); //send whether or not the dice animation needs to be set
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Server] " + "IOException from SSC sendNewString()");

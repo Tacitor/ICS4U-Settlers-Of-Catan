@@ -3671,6 +3671,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //if in online mode also make the game visable
         if (onlineMode != -1) {
             superFrame.setVisible(true);
+            
+            //also update the dice roll
+            dice.setJustRolled(onlineClient.getJustRolledDice());
         }
 
         //enable the turn button (might be disabled again by updateBuildBtn method if online and not the correct player)
@@ -6716,6 +6719,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         //check if the game is for online play
         if (onlineMode != -1) {
+            //save the sate of the dice roll animation
+            onlineClient.setJustRolledDice(dice.getJustRolled());
             //if it is send the save file to the server
             onlineClient.sendGameToServer();
         }
