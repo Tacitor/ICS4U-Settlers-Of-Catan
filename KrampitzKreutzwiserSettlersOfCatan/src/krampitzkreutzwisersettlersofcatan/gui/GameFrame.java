@@ -37,7 +37,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * Set up the JFrame
      */
     private void initFrame() {
-        domesticTradePanel = new DomesticTradePanel();
+        domesticTradePanel = new DomesticTradePanel(this);
 
         setTitle("Settlers of Catan");
         setSize(1920, 1080); //set the size to 1080p as a back up 
@@ -105,6 +105,26 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         //update the gamepanel in the main method
         Catan.updateGamePanel();
+    }
+
+    /**
+     * Remove theGamePanel, and put it into domestic trade mode
+     *
+     * @param showTrade
+     */
+    public void switchToTrade(boolean showTrade) {
+        if (showTrade) { //show the domestic trade menu
+            remove(theGamePanel); //take out game panel
+            add(domesticTradePanel); //switch over to domestic trade mode
+            this.setVisible(true);
+        } else { //show the main game panel
+            remove(domesticTradePanel); //take out game panel
+            add(theGamePanel); //switch over to domestic trade mode
+            this.setVisible(true);
+        }
+        
+        this.setVisible(true);
+
     }
 
     /**

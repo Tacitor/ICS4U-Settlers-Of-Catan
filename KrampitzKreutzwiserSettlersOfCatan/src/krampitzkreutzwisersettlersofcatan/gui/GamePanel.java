@@ -1120,6 +1120,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     /**
+     * Actions preformed when a player want to trade domestically with other
+     * player(s)
+     */
+    private void tradeDomesticClicked() {
+        superFrame.switchToTrade(true);
+    }
+
+    /**
      * What to do when the user clicks a key on their keyboard This will be
      * called by the GameFrame
      *
@@ -1310,8 +1318,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         trade4to1BtnClicked();
                     } else if (btn.equals(trade3to1Btn)) { //if the user clicked to trade with a 3:1 ratio
                         trade3to1BtnClicked();
-                    } else if (btn.equals(trade2to1Btn)) { //if the user clicked to trade with a 3:1 ratio
+                    } else if (btn.equals(trade2to1Btn)) { //if the user clicked to trade with a 2:1 ratio
                         trade2to1BtnClicked();
+                    } else if (btn.equals(tradeDomestic)) { //if the user clicked to trade with a player domestcally
+                        tradeDomesticClicked();
                     } else if (btn.equals(buildBtn)) { //if the user clicked to trade with a 3:1 ratio
                         buildBtnClicked();
                     }
@@ -3671,7 +3681,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //if in online mode also make the game visable
         if (onlineMode != -1) {
             superFrame.setVisible(true);
-            
+
             //also update the dice roll
             dice.setJustRolled(onlineClient.getJustRolledDice());
         }
@@ -3721,6 +3731,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         boolean canTrade4to;
         boolean canTrade3to;
         boolean canTrade2to;
+        boolean canTradeDomestic;
         SettlerRadioBtn oldSelection; // The button selected before this update began
 
         //first check if the game is inbetween turns
@@ -3733,6 +3744,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(false);
@@ -3747,6 +3759,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(true);
@@ -3761,6 +3774,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(false);
@@ -3774,6 +3788,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(false);
@@ -3803,24 +3818,28 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     canTrade4to = true;
                     canTrade3to = false;
                     canTrade2to = false;
+                    canTradeDomestic = false;
                     break;
                 case 2:
                     //if 3:1
                     canTrade4to = false;
                     canTrade3to = true;
                     canTrade2to = false;
+                    canTradeDomestic = false;
                     break;
                 case 3:
                     //if 2:1
                     canTrade4to = false;
                     canTrade3to = false;
                     canTrade2to = true;
+                    canTradeDomestic = false;
                     break;
                 default:
                     //if anything else
                     canTrade4to = false;
                     canTrade3to = false;
                     canTrade2to = false;
+                    canTradeDomestic = false;
                     break;
             }
 
@@ -3832,6 +3851,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             //update the toggle card button to show the dev cards options for using
             toggleCardBtn.setEnabled(false);
@@ -3851,6 +3871,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = hasTradeCards(4, currentPlayer);
             canTrade3to = hasTradeCards(3, currentPlayer) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
             canTrade2to = hasSpecializedPort(currentPlayer);
+            canTradeDomestic = true;
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
@@ -4007,6 +4028,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         trade4to1Btn.setEnabled(canTrade4to);                //trade 4:1
         trade3to1Btn.setEnabled(canTrade3to);                //trade 3:1
         trade2to1Btn.setEnabled(canTrade2to);                //trade 2:1
+        tradeDomestic.setEnabled(canTradeDomestic);          //trade domestic
 
         // If the button selected before this update is still enabled, select it
         // instead of the selection made in the if/else block above
@@ -4389,7 +4411,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             dice.setDiceRollVal(2, "zero");
 
         }
-        
+
         //Now that the dice have been rolled set the flag for the animation.
         dice.setJustRolled(true);
 
