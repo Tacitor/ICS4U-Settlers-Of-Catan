@@ -21,6 +21,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     private final MainMenu mainMenuFrame; //ref to the main menu
     private Dimension screenSize; //keeps track of the display the game is being played on
     private GamePanel theGamePanel; //referance to *a* GamePanel
+    private DomesticTradePanel domesticTradePanel; //referance to the domestic trade window
 
     public GameFrame(MainMenu m) {
 
@@ -36,6 +37,10 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * Set up the JFrame
      */
     private void initFrame() {
+        domesticTradePanel = new DomesticTradePanel();
+        
+        
+        
         setTitle("Settlers of Catan");
         setSize(1920, 1080); //set the size to 1080p as a back up 
         setSize(screenSize); //set the JFrame size to match the display
@@ -47,7 +52,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         //setSize(3840, 2160);        
         setDefaultCloseOperation(EXIT_ON_CLOSE); //make sure it closes the thread when the frame closes
         theGamePanel = new GamePanel(this); //creates a new blank game
-        add(theGamePanel); //adds it to the JFrame
+        add(domesticTradePanel); //adds it to the JFrame
         setLocationRelativeTo(null); //center the frame on screen
         setResizable(true); //do not allow the user to resize the window
         //setExtendedState(JFrame.MAXIMIZED_BOTH); //this would normaly set the size to the display size but I don't want to deal with scaling elemnts nor do I have the time
@@ -96,9 +101,9 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * Removes the old game and replaces it with a new one
      */
     public void resetGamePanel() {
-        remove(theGamePanel);
-        theGamePanel = new GamePanel(this);
-        add(theGamePanel);
+        remove(domesticTradePanel);
+        domesticTradePanel = new DomesticTradePanel();
+        add(domesticTradePanel);
 
         //update the gamepanel in the main method
         Catan.updateGamePanel();
