@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
 
 /**
@@ -20,6 +21,12 @@ public class DomesticTradePanel extends JPanel {
 
     private JButton testBtn;
     private GameFrame gameFrame;
+    private GamePanel theGamePanel;
+
+    //Settler Components
+    private SettlerBtn cancelTradeBtn;
+    //The array for the buttons
+    private SettlerBtn[] settlerBtns;
 
     /**
      * Domestic trade Constructor
@@ -29,6 +36,10 @@ public class DomesticTradePanel extends JPanel {
     public DomesticTradePanel(GameFrame frame) {
 
         gameFrame = frame;
+        theGamePanel = gameFrame.getGamePanel();
+
+        cancelTradeBtn = new SettlerBtn(true, 1, 9);
+        settlerBtns = new SettlerBtn[]{cancelTradeBtn};
 
     }
 
@@ -47,15 +58,48 @@ public class DomesticTradePanel extends JPanel {
      * @param g
      */
     private void draw(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
+        //update the gamePnael ref
+        theGamePanel = gameFrame.getGamePanel();
         
-        g2d.drawImage(ImageRef.WOOD_BACKGROUND, 
-                0, 
-                0, 
-                gameFrame.getWidth(), 
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.drawImage(ImageRef.WOOD_BACKGROUND,
+                0,
+                0,
+                gameFrame.getWidth(),
                 gameFrame.getHeight(), this);
 
         g2d.drawString("Java 2D", 50, 50);
+
+        //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
+        settlerVarPos(); //update the positions
+
+        for (SettlerBtn btn : settlerBtns) {
+            btn.updateButtonImages();
+            btn.updateText();
+            
+            //draw the base        
+            theGamePanel.drawSettlerBtn(g2d, btn.getBaseImage(), btn, 0);
+            /*
+            //draw the text
+            theGamePanel.drawSettlerBtn(g2d, btn.getTextImage(), btn, 0);
+
+            //draw the disabled overlay if required
+            if (!btn.isEnabled()) {
+                theGamePanel.drawSettlerBtn(g2d, btn.getDisabledImage(), btn, 0);
+            }
+            //draw the mouseHover overlay if required
+            if (btn.isMouseHover()) {
+                theGamePanel.drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1);
+            }*/
+        }
+
+        //=-=-=-=-=-=-=-=-=-= End the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
+    }
+
+    private void settlerVarPos() {
+        cancelTradeBtn.setXPos(200);
+        cancelTradeBtn.setYPos(200);
     }
 
     private void initComponent() {

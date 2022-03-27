@@ -6457,8 +6457,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param g2d
      * @param btnImage
      * @param btn
+     * @param drawMode
      */
-    private void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn, int drawMode) {
+    public void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn, int drawMode) {
         //get the width and height of the image
         int width;
         int height;
