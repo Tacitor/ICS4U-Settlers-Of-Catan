@@ -116,14 +116,18 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         if (showTrade) { //show the domestic trade menu
             remove(theGamePanel); //take out game panel
             add(domesticTradePanel); //switch over to domestic trade mode
-            this.setVisible(true);
+
+            domesticTradePanel.repaint(); //ensure there is something to diaplay
+
         } else { //show the main game panel
             remove(domesticTradePanel); //take out game panel
             add(theGamePanel); //switch over to domestic trade mode
-            this.setVisible(true);
+
+            theGamePanel.repaint(); //ensure there is something to diaplay
+
         }
-        
-        this.setVisible(true);
+
+        this.setVisible(true); //ensure the frame is active and visible
 
     }
 
