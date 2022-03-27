@@ -128,6 +128,9 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         }
 
         this.setVisible(true); //ensure the frame is active and visible
+        this.setFocusable(true); //ensure the Frame has the keyListener focus.
+        
+        
 
     }
 
