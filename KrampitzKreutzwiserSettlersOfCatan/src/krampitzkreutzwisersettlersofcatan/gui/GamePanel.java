@@ -211,7 +211,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private SettlerComponent[] settlerComponents;
 
     //fonts
-    private final Font timesNewRoman;
+    public static final Font TIMES_NEW_ROMAN = new Font("Times New Roman", Font.PLAIN, 18);
 
     //mouse motion listener vars
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
@@ -435,9 +435,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 mouseClick(evt);
             }
         });
-
-        //get the fonts
-        timesNewRoman = new Font("Times New Roman", Font.PLAIN, 18);
 
         //setup the SettlerBtns
         toggleCardBtn = new SettlerBtn(false, 0, 0); //cannot give a position yet because they need to be below the Swing buttons
@@ -848,7 +845,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
             //reset the font
-            instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+            instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
@@ -3723,7 +3720,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //reset the colour
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         //reset the font
-        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+        instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
 
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
@@ -3933,19 +3930,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
                 instructionLbl.setForeground(new Color(255, 175, 175));
-                instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+                instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
 
                 //update the lables for the player if the thief is stealing their cards specifically. Do not show this if a 7 was JUST rolled
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
                     instructionLbl.setForeground(new Color(255, 175, 175));
-                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+                    instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
                 } else if (showTileHitbox) { //if a 7 was JUST rolled and the current player needs to move the thief show a specific messgae.
                     instructionLbl.setForeground(new Color(255, 175, 175));
-                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+                    instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
                     instructionLbl.setText("A Thief! They will steal cards. Select a hex to move the thief.");
                     subInstructionLbl.setText("Afterwards, you can then end your turn so the thief can decide the next person to steal from");
                 }
@@ -4416,7 +4413,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         dice.setJustRolled(true);
 
         // Act on the dice roll
-        if (roll == 7) { // Move the thief on a 7
+        if (/*roll == 7*/false) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
@@ -6056,15 +6053,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         threeDTileOffset = (int) (-20 / scaleFactor);
 
         //Settler Label Font Size
-        buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-        tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-        devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        buildMenuLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) (TIMES_NEW_ROMAN.getSize() / scaleFactor)));
+        tradeMenuLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) (TIMES_NEW_ROMAN.getSize() / scaleFactor)));
+        devCardMenuLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) (TIMES_NEW_ROMAN.getSize() / scaleFactor)));
 
-        instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
-        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
-        subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
+        instructionPromptLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
+        instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
+        subInstructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 1) / scaleFactor)));
 
-        titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
+        titleLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
 
         //set the magin spacing for the settler labels
         instructionLbl.setSpaceForText((this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (instructionLbl.getXPos()));

@@ -5,6 +5,8 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -14,6 +16,7 @@ import javax.swing.JPanel;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
 import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.scaleInt;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 
 /**
  *
@@ -23,7 +26,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
     private GameFrame gameFrame;
     private GamePanel theGamePanel;
-    
+
     private int mouseMotionPosX;
     private int mouseMotionPosY;
 
@@ -31,6 +34,10 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private SettlerBtn cancelTradeBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
+    //Settler Lable
+    private SettlerLbl titleLbl;
+    //array for the labels
+    private SettlerLbl[] settlerLbls;
 
     /**
      * Domestic trade Constructor
@@ -41,7 +48,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         gameFrame = frame;
         theGamePanel = gameFrame.getGamePanel();
-        
+
+        initSettlerLbl();
+
         //add in the motion listener for hovering
         addMouseMotionListener(this);
 
@@ -60,9 +69,25 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
             }
         });
 
+        //setup the buttons
         cancelTradeBtn = new SettlerBtn(true, 1, 9);
+        //add then to the array
         settlerBtns = new SettlerBtn[]{cancelTradeBtn};
 
+        //setup the labels
+        settlerLbls = new SettlerLbl[]{titleLbl};
+
+    }
+
+    /**
+     * Setup the custom Labels
+     */
+    private void initSettlerLbl() {
+        //setup the label and text
+        titleLbl = new SettlerLbl("Domestic Trade");
+
+        //setup the colour
+        titleLbl.setForeground(new Color(255, 255, 225)); //beige
     }
 
     @Override
@@ -82,6 +107,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //update the gamePanel ref
         theGamePanel = gameFrame.getGamePanel();
 
+        panelSizeDependantCalculations();
+
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.drawImage(ImageRef.WOOD_BACKGROUND,
@@ -89,8 +116,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 0,
                 gameFrame.getWidth(),
                 gameFrame.getHeight(), this);
-
-        g2d.drawString("Java 2D", 50, 50);
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
         settlerVarPos(); //update the positions
@@ -116,10 +141,19 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         }
 
         //=-=-=-=-=-=-=-=-=-= End the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
+        //go through and draw all the labels
+        for (SettlerLbl settlerLbl : settlerLbls) {
+            settlerLbl.draw(g2d);
+        }
     }
 
     private void settlerVarPos() {
-        cancelTradeBtn.setXPos(scaleInt(10));
+        //Align the components
+        //top to bottom
+        titleLbl.setXPos(scaleInt(10));
+        titleLbl.setYPos(scaleInt(35));
+
+        cancelTradeBtn.setXPos(titleLbl.getXPos());
         cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
     }
 
@@ -140,7 +174,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                     && evt.getX() < (btn.getXPos() + theGamePanel.getImgWidth(btn.getBaseImage()))
                     && evt.getY() < (btn.getYPos() + theGamePanel.getImgHeight(btn.getBaseImage()))
                     && btn.isEnabled()) { //and that it is enabled
-                
+
                 //Check what button was pressed
                 if (btn.equals(cancelTradeBtn)) {
                     //if it's the cancel button
@@ -153,7 +187,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        
+
     }
 
     @Override
@@ -185,5 +219,14 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         }
 
         repaint();
+    }
+
+    /**
+     * Make calculations and update variables that have to do with scaling and
+     * depend on knowing the width or height of the gamePanel
+     */
+    private void panelSizeDependantCalculations() {
+        //Settler Label Font Size
+        titleLbl.setFont(new Font(GamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
     }
 }
