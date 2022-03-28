@@ -21,7 +21,6 @@ import textures.ImageRef;
  */
 public class DomesticTradePanel extends JPanel {
 
-    private JButton testBtn;
     private GameFrame gameFrame;
     private GamePanel theGamePanel;
 
@@ -64,7 +63,6 @@ public class DomesticTradePanel extends JPanel {
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
-        initComponent();
         draw(g);
 
     }
@@ -119,49 +117,31 @@ public class DomesticTradePanel extends JPanel {
         cancelTradeBtn.setYPos(200);
     }
 
-    private void initComponent() {
-        testBtn = new javax.swing.JButton();
-
-        testBtn.setText("< Back");
-        testBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                testBtnPressed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(testBtn)
-                                                .addGap(0, 0, Short.MAX_VALUE)))
-                                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(testBtn)
-                                .addContainerGap())
-        );
-
-    }
-
-    private void testBtnPressed(ActionEvent ent) {
+    private void cancelTradeBtnPressed() {
         gameFrame.switchToTrade(false);
     }
 
     /**
      * Actions to take when the user clicks on the trade panel
-     * @param evt 
+     *
+     * @param evt
      */
     public void tradeMouseClicked(MouseEvent evt) {
-        System.out.println("clickf");
+        //Loop through all the Buttons
+        for (SettlerBtn btn : settlerBtns) {
+            if (evt.getX() > btn.getXPos()
+                    && evt.getY() > btn.getYPos()
+                    && evt.getX() < (btn.getXPos() + theGamePanel.getImgWidth(btn.getBaseImage()))
+                    && evt.getY() < (btn.getYPos() + theGamePanel.getImgHeight(btn.getBaseImage()))
+                    && btn.isEnabled()) { //and that it is enabled
+                
+                //Check what button was pressed
+                if (btn.equals(cancelTradeBtn)) {
+                    //if it's the cancel button
+                    //close the trade menu
+                    cancelTradeBtnPressed();
+                }
+            }
+        }
     }
 }
