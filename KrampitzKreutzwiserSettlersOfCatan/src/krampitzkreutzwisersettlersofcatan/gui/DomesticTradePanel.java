@@ -8,6 +8,8 @@ package krampitzkreutzwisersettlersofcatan.gui;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
@@ -38,6 +40,21 @@ public class DomesticTradePanel extends JPanel {
         gameFrame = frame;
         theGamePanel = gameFrame.getGamePanel();
 
+        //add a mouse listener that call the mouse click even handler
+        addMouseListener(new MouseAdapter() {
+            /**
+             * Triggered when the user clicks on the trade panel. Calls the
+             * trade panel's click event method.
+             *
+             * @param event
+             */
+            @Override
+            public final void mouseReleased(MouseEvent event) {
+                //send the mouse event to the trade panel click handler
+                tradeMouseClicked(event);
+            }
+        });
+
         cancelTradeBtn = new SettlerBtn(true, 1, 9);
         settlerBtns = new SettlerBtn[]{cancelTradeBtn};
 
@@ -58,9 +75,9 @@ public class DomesticTradePanel extends JPanel {
      * @param g
      */
     private void draw(Graphics g) {
-        //update the gamePnael ref
+        //update the gamePanel ref
         theGamePanel = gameFrame.getGamePanel();
-        
+
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.drawImage(ImageRef.WOOD_BACKGROUND,
@@ -77,10 +94,10 @@ public class DomesticTradePanel extends JPanel {
         for (SettlerBtn btn : settlerBtns) {
             btn.updateButtonImages();
             btn.updateText();
-            
+
             //draw the base        
             theGamePanel.drawSettlerBtn(g2d, btn.getBaseImage(), btn, 0);
-            /*
+
             //draw the text
             theGamePanel.drawSettlerBtn(g2d, btn.getTextImage(), btn, 0);
 
@@ -91,7 +108,7 @@ public class DomesticTradePanel extends JPanel {
             //draw the mouseHover overlay if required
             if (btn.isMouseHover()) {
                 theGamePanel.drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1);
-            }*/
+            }
         }
 
         //=-=-=-=-=-=-=-=-=-= End the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
@@ -140,4 +157,11 @@ public class DomesticTradePanel extends JPanel {
         gameFrame.switchToTrade(false);
     }
 
+    /**
+     * Actions to take when the user clicks on the trade panel
+     * @param evt 
+     */
+    public void tradeMouseClicked(MouseEvent evt) {
+        System.out.println("clickf");
+    }
 }
