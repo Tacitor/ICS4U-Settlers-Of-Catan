@@ -7,22 +7,25 @@ package krampitzkreutzwisersettlersofcatan.gui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JButton;
+import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
+import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.scaleInt;
 
 /**
  *
  * @author Tacitor
  */
-public class DomesticTradePanel extends JPanel {
+public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
     private GameFrame gameFrame;
     private GamePanel theGamePanel;
+    
+    private int mouseMotionPosX;
+    private int mouseMotionPosY;
 
     //Settler Components
     private SettlerBtn cancelTradeBtn;
@@ -38,6 +41,9 @@ public class DomesticTradePanel extends JPanel {
 
         gameFrame = frame;
         theGamePanel = gameFrame.getGamePanel();
+        
+        //add in the motion listener for hovering
+        addMouseMotionListener(this);
 
         //add a mouse listener that call the mouse click even handler
         addMouseListener(new MouseAdapter() {
@@ -113,8 +119,8 @@ public class DomesticTradePanel extends JPanel {
     }
 
     private void settlerVarPos() {
-        cancelTradeBtn.setXPos(200);
-        cancelTradeBtn.setYPos(200);
+        cancelTradeBtn.setXPos(scaleInt(10));
+        cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
     }
 
     private void cancelTradeBtnPressed() {
@@ -143,5 +149,41 @@ public class DomesticTradePanel extends JPanel {
                 }
             }
         }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        mouseMotionPosX = e.getX();
+        mouseMotionPosY = e.getY();
+        mouseMoveAction();
+    }
+
+    private void mouseMoveAction() {
+        //check if the player moved the mouse over one of the SettlerBtns
+        //loop through all the custom buttons
+        for (SettlerBtn btn : settlerBtns) {
+            if (mouseMotionPosX > btn.getXPos()
+                    && mouseMotionPosY > btn.getYPos()
+                    && mouseMotionPosX < (btn.getXPos() + theGamePanel.getImgWidth(btn.getBaseImage()))
+                    && mouseMotionPosY < (btn.getYPos() + theGamePanel.getImgHeight(btn.getBaseImage()))
+                    && btn.isEnabled()) { //and that it is enabled
+
+                //set the hover
+                btn.setmouseHover(true);
+
+            } else {
+
+                //make suer there is no hover over that button
+                btn.setmouseHover(false);
+            }
+
+        }
+
+        repaint();
     }
 }
