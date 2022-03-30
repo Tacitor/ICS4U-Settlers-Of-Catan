@@ -164,7 +164,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         g2d.setFont(playerSelectLbl.getFont()); //make sure it has the right font size
         int stringWidth = g2d.getFontMetrics().stringWidth(playerSelectLbl.getText()); //calc how much room it will take up
         playerSelectLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
-        playerSelectLbl.setYPos(700);
+        playerSelectLbl.setYPos(50);
 
         cancelTradeBtn.setXPos(titleLbl.getXPos());
         cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
