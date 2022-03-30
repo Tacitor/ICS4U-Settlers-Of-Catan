@@ -35,7 +35,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Lable
-    private SettlerLbl titleLbl;
+    private SettlerLbl titleLbl, playerSelectLbl;
     //array for the labels
     private SettlerLbl[] settlerLbls;
 
@@ -75,7 +75,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         settlerBtns = new SettlerBtn[]{cancelTradeBtn};
 
         //setup the labels
-        settlerLbls = new SettlerLbl[]{titleLbl};
+        settlerLbls = new SettlerLbl[]{titleLbl, playerSelectLbl};
 
     }
 
@@ -85,9 +85,12 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private void initSettlerLbl() {
         //setup the label and text
         titleLbl = new SettlerLbl("Domestic Trade");
+        playerSelectLbl = new SettlerLbl("Select a player to trade with:");
 
         //setup the colour
-        titleLbl.setForeground(new Color(255, 255, 225)); //beige
+        Color beigeColor = new Color(255, 255, 225);
+        titleLbl.setForeground(beigeColor); //beige
+        playerSelectLbl.setForeground(beigeColor);
     }
 
     @Override
@@ -118,7 +121,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 gameFrame.getHeight(), this);
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
-        settlerVarPos(); //update the positions
+        settlerVarPos(g2d); //update the positions
 
         for (SettlerBtn btn : settlerBtns) {
             btn.updateButtonImages();
@@ -145,13 +148,23 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
         }
+        
+        // Add alignment lines
+        g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
+        g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
     }
 
-    private void settlerVarPos() {
+    private void settlerVarPos(Graphics2D g2d) {
         //Align the components
         //top to bottom
         titleLbl.setXPos(scaleInt(10));
         titleLbl.setYPos(scaleInt(35));
+
+        //calce the positon for the labels
+        g2d.setFont(playerSelectLbl.getFont()); //make sure it has the right font size
+        int stringWidth = g2d.getFontMetrics().stringWidth(playerSelectLbl.getText()); //calc how much room it will take up
+        playerSelectLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
+        playerSelectLbl.setYPos(700);
 
         cancelTradeBtn.setXPos(titleLbl.getXPos());
         cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
@@ -228,5 +241,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private void panelSizeDependantCalculations() {
         //Settler Label Font Size
         titleLbl.setFont(new Font(GamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
+        playerSelectLbl.setFont(new Font(GamePanel.TIMES_NEW_ROMAN.getName(), GamePanel.TIMES_NEW_ROMAN.getStyle(), scaleInt(25)));
     }
 }
