@@ -5721,7 +5721,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param smallImage should the image be the small version
      * @return
      */
-    private Image getPlayerImage(int playerID, boolean smallImage) {
+    public Image getPlayerImage(int playerID, boolean smallImage) {
         Image playerImage;
 
         if (smallImage) {
@@ -6802,6 +6802,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public static int getPlayerCount() {
         return playerCount;
+    }
+
+    /**
+     * Get the ID of the current player
+     *
+     * @return
+     */
+    public int getCurrentPlayer() {
+        return currentPlayer;
     }
 
     /**

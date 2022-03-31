@@ -116,6 +116,9 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         if (showTrade) { //show the domestic trade menu
             remove(theGamePanel); //take out game panel
             add(domesticTradePanel); //switch over to domestic trade mode
+            
+            //save the player that started the domestic trade
+            domesticTradePanel.setPlayerStartedDomestic(theGamePanel.getCurrentPlayer());
 
             domesticTradePanel.repaint(); //ensure there is something to diaplay
 
