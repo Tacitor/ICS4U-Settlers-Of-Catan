@@ -179,6 +179,19 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
         }
+        
+        //=-=-=-=draw on the player dots for the labels=-=-=-=
+        //the the image
+        Image playerDot = ImageRef.PLAYER_DOTS[playerStartedDomestic];
+        //set the font
+        g2d.setFont(initiatePlayerReceivesLbl.getFont());
+        //draw the receive player dot
+        g2d.drawImage(playerDot, 
+                initiatePlayerReceivesLbl.getXPos() + (  g2d.getFontMetrics().stringWidth(initiatePlayerReceivesLbl.getText().substring(0, 10))  ) + scaleInt(4), 
+                initiatePlayerReceivesLbl.getYPos() - theGamePanel.getImgHeight(playerDot) + scaleInt(8), 
+                theGamePanel.getImgWidth(playerDot), 
+                theGamePanel.getImgHeight(playerDot), this);
+        
 
         // Add alignment lines
         g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
@@ -198,7 +211,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         playerSelectLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
         playerSelectLbl.setYPos(50);
         //player initate receive
-        initiatePlayerReceivesLbl.setText("Player " + playerStartedDomestic + " (     ) receives:"); //make sure text is up to date
+        initiatePlayerReceivesLbl.setText("Player " + playerStartedDomestic + " (      ) receives:"); //make sure text is up to date
         stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayerReceivesLbl.getText()); //calc how much room it will take up
         initiatePlayerReceivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
         initiatePlayerReceivesLbl.setYPos(playerSelectLbl.getYPos() + theGamePanel.getImgHeight(ImageRef.SMALL_PLAYER_RED) + scaleInt(100));
