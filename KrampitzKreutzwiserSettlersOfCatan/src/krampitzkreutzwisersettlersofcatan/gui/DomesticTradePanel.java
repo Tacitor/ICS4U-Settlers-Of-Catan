@@ -36,7 +36,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Lable
-    private SettlerLbl titleLbl, playerSelectLbl;
+    private SettlerLbl titleLbl, playerSelectLbl, initiatePlayerReceivesLbl; //receives
     //array for the labels
     private SettlerLbl[] settlerLbls;
 
@@ -80,7 +80,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         settlerBtns = new SettlerBtn[]{cancelTradeBtn};
 
         //setup the labels
-        settlerLbls = new SettlerLbl[]{titleLbl, playerSelectLbl};
+        settlerLbls = new SettlerLbl[]{titleLbl, playerSelectLbl, initiatePlayerReceivesLbl};
 
     }
 
@@ -91,11 +91,13 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //setup the label and text
         titleLbl = new SettlerLbl("Domestic Trade");
         playerSelectLbl = new SettlerLbl("Select a player to trade with:");
+        initiatePlayerReceivesLbl = new SettlerLbl("ERROR: this is temporary text");
 
         //setup the colour
         Color beigeColor = new Color(255, 255, 225);
         titleLbl.setForeground(beigeColor); //beige
         playerSelectLbl.setForeground(beigeColor);
+        initiatePlayerReceivesLbl.setForeground(beigeColor);
     }
 
     @Override
@@ -191,9 +193,15 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //calce the positon for the labels
         g2d.setFont(playerSelectLbl.getFont()); //make sure it has the right font size
+        //player select
         int stringWidth = g2d.getFontMetrics().stringWidth(playerSelectLbl.getText()); //calc how much room it will take up
         playerSelectLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
         playerSelectLbl.setYPos(50);
+        //player initate receive
+        initiatePlayerReceivesLbl.setText("Player " + playerStartedDomestic + " (     ) receives:"); //make sure text is up to date
+        stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayerReceivesLbl.getText()); //calc how much room it will take up
+        initiatePlayerReceivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
+        initiatePlayerReceivesLbl.setYPos(playerSelectLbl.getYPos() + theGamePanel.getImgHeight(ImageRef.SMALL_PLAYER_RED) + scaleInt(100));
 
         cancelTradeBtn.setXPos(titleLbl.getXPos());
         cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
@@ -268,9 +276,12 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * depend on knowing the width or height of the gamePanel
      */
     private void panelSizeDependantCalculations() {
+        Font headerFont = new Font(GamePanel.TIMES_NEW_ROMAN.getName(), GamePanel.TIMES_NEW_ROMAN.getStyle(), scaleInt(25));
+        
         //Settler Label Font Size
         titleLbl.setFont(new Font(GamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
-        playerSelectLbl.setFont(new Font(GamePanel.TIMES_NEW_ROMAN.getName(), GamePanel.TIMES_NEW_ROMAN.getStyle(), scaleInt(25)));
+        playerSelectLbl.setFont(headerFont);
+        initiatePlayerReceivesLbl.setFont(headerFont);
     }
 
     /**
