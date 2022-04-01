@@ -43,6 +43,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     //data for the trading
     private int playerStartedDomestic; //the player ID of the user the clicked the domestic trade button
     private int playerCount; //the number of players in the game
+    private int[] nonInitiatePlayers; //the list of the remaining player(s) that did not start the trade
 
     /**
      * Domestic trade Constructor
@@ -134,23 +135,28 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 gameFrame.getHeight(), this);
 
         //=-=-=-=draw the player icons=-=-=-=
+        //calc which ones to draw
+        calcPlayerIconsToDraw();
+
         Image playerIconImage = theGamePanel.getPlayerImage(1, true); //the image that will be drawn for the player
 
         //calc the start postion
         int startPos;
         //place the start so that the icons are in the middle if the screen horizontally
-        startPos = (gameFrame.getWidth() / 2) - ((theGamePanel.getImgWidth(playerIconImage) * playerCount) / 2);
+        startPos = (gameFrame.getWidth() / 2) - ((theGamePanel.getImgWidth(playerIconImage) * (playerCount - 1)) / 2);
 
         //do the drawing
-        for (int i = 1; i < playerCount + 1; i++) { //loo though all the players
-            playerIconImage = theGamePanel.getPlayerImage(i, true);
+        for (int i = 0; i < nonInitiatePlayers.length; i++) { //loo though the players
+
+            playerIconImage = theGamePanel.getPlayerImage(nonInitiatePlayers[i], true);
 
             g2d.drawImage(playerIconImage,
-                    startPos + ((theGamePanel.getImgWidth(playerIconImage)) * (i - 1)), //put it in the corner with some padding space
+                    startPos + ((theGamePanel.getImgWidth(playerIconImage)) * (i)), //put it in the corner with some padding space
                     playerSelectLbl.getYPos() + scaleInt(30), //put it in the corner with some padding space
                     theGamePanel.getImgWidth(playerIconImage), //scale the image
                     theGamePanel.getImgHeight(playerIconImage),
                     null);
+
         }
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
@@ -179,19 +185,18 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
         }
-        
+
         //=-=-=-=draw on the player dots for the labels=-=-=-=
         //the the image
         Image playerDot = ImageRef.PLAYER_DOTS[playerStartedDomestic];
         //set the font
         g2d.setFont(initiatePlayerReceivesLbl.getFont());
         //draw the receive player dot
-        g2d.drawImage(playerDot, 
-                initiatePlayerReceivesLbl.getXPos() + (  g2d.getFontMetrics().stringWidth(initiatePlayerReceivesLbl.getText().substring(0, 10))  ) + scaleInt(4), 
-                initiatePlayerReceivesLbl.getYPos() - theGamePanel.getImgHeight(playerDot) + scaleInt(8), 
-                theGamePanel.getImgWidth(playerDot), 
+        g2d.drawImage(playerDot,
+                initiatePlayerReceivesLbl.getXPos() + (g2d.getFontMetrics().stringWidth(initiatePlayerReceivesLbl.getText().substring(0, 10))) + scaleInt(4),
+                initiatePlayerReceivesLbl.getYPos() - theGamePanel.getImgHeight(playerDot) + scaleInt(8),
+                theGamePanel.getImgWidth(playerDot),
                 theGamePanel.getImgHeight(playerDot), this);
-        
 
         // Add alignment lines
         g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
@@ -290,7 +295,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      */
     private void panelSizeDependantCalculations() {
         Font headerFont = new Font(GamePanel.TIMES_NEW_ROMAN.getName(), GamePanel.TIMES_NEW_ROMAN.getStyle(), scaleInt(25));
-        
+
         //Settler Label Font Size
         titleLbl.setFont(new Font(GamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
         playerSelectLbl.setFont(headerFont);
@@ -316,5 +321,30 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      */
     public void setPlayerStartedDomestic(int playerStartedDomestic) {
         this.playerStartedDomestic = playerStartedDomestic;
+    }
+
+    /**
+     * Go through and decide which icons to draw. Will draw all except the
+     * player that started the trade.
+     *
+     */
+    private void calcPlayerIconsToDraw() {
+
+        //init array 
+        nonInitiatePlayers = new int[playerCount - 1];
+
+        //loop through the players
+        for (int i = 0; i < playerCount; i++) {
+            //if it's  not one of the starting players draw it
+            if (i + 1 != playerStartedDomestic) {
+                if (i + 1 < playerStartedDomestic) {
+
+                    nonInitiatePlayers[i] = i + 1;
+                } else {
+                    nonInitiatePlayers[i - 1] = i + 1;
+                }
+            }
+        }
+
     }
 }
