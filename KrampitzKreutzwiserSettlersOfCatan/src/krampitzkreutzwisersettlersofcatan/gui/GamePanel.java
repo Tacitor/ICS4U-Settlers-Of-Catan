@@ -113,7 +113,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private static boolean showMenuBoarder = false; //will a boarder be drawn aorund the menus
     private static CatanClient onlineClient = null; //if this game is in online mode this is the client that talks to the server. Else it's null
     private static int onlineMode = -1; //if the user is just playing a local game this is -1. If they are in an online game this is the player ID of the player they control
-    private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
+    private ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final ArrayList<Integer>[] devCards; //an Array of ArrayLists. Each player gets their own ArrayList for the dev cards they have.
     // ^^^ valid number are: 1 (knight), 2 (progress card road building), 3 (progress card monolpoy), 4 (progress card year of pleanty), 5, 6, 7, 8, 9 (5-9 are vp cards)
     private final ArrayList<Integer> availableDevCards; //a list of dev cards that are still in a pile and have not been drawn. 
@@ -6811,6 +6811,26 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public int getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    /**
+     * Get the array of Integer object ArrayLists. This array contains all the
+     * hands of resource cards for all the players.
+     *
+     * @return
+     */
+    public ArrayList<Integer>[] getResourceCards() {
+        return cards;
+    }
+
+    /**
+     * Set the array of Integer object ArrayLists. This array contains all the
+     * hands of resource cards for all the players.
+     *
+     * @param cards
+     */
+    public void setResourceCards(ArrayList<Integer>[] cards) {
+        this.cards = cards;
     }
 
     /**
