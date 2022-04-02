@@ -39,7 +39,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Lable
-    private SettlerLbl titleLbl, playerSelectLbl, initiatePlayerReceivesLbl; //receives
+    private SettlerLbl titleLbl, playerSelectLbl, initiatePlayerReceivesLbl, initiatePlayerGivesLbl;
     //array for the labels
     private SettlerLbl[] settlerLbls;
 
@@ -57,6 +57,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private int playerCount; //the number of players in the game
     private int[] nonInitiatePlayers; //the list of the remaining player(s) that did not start the trade
     private ArrayList<Integer> tradeReceivePlayerStartedDomestic; //The cards that the player who started the trade will receive 
+    private int playerSelectedForTrade; //the player ID of the player that the playerStartedDomestic selected to trade with
 
     /**
      * Domestic trade Constructor
@@ -97,7 +98,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         settlerBtns = new SettlerBtn[]{cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn};
 
         //setup the labels
-        settlerLbls = new SettlerLbl[]{titleLbl, playerSelectLbl, initiatePlayerReceivesLbl};
+        settlerLbls = new SettlerLbl[]{titleLbl, playerSelectLbl, initiatePlayerReceivesLbl, initiatePlayerGivesLbl};
 
         tradeReceivePlayerStartedDomestic = new ArrayList<>();
         tradeReceivePlayerStartedDomestic.add(1);
@@ -106,25 +107,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         tradeReceivePlayerStartedDomestic.add(2);
         tradeReceivePlayerStartedDomestic.add(2);
         tradeReceivePlayerStartedDomestic.add(2);
-        tradeReceivePlayerStartedDomestic.add(3);
-        tradeReceivePlayerStartedDomestic.add(3);
-        tradeReceivePlayerStartedDomestic.add(3);
-        tradeReceivePlayerStartedDomestic.add(3);
-        tradeReceivePlayerStartedDomestic.add(3);
-        tradeReceivePlayerStartedDomestic.add(4);
-        tradeReceivePlayerStartedDomestic.add(4);
-        tradeReceivePlayerStartedDomestic.add(4);
-        tradeReceivePlayerStartedDomestic.add(5);
-        tradeReceivePlayerStartedDomestic.add(5);
-        tradeReceivePlayerStartedDomestic.add(5);
-        tradeReceivePlayerStartedDomestic.add(5);
-        tradeReceivePlayerStartedDomestic.add(5);
-        tradeReceivePlayerStartedDomestic.add(5);
-        tradeReceivePlayerStartedDomestic.add(5);
-        tradeReceivePlayerStartedDomestic.add(5);
-        tradeReceivePlayerStartedDomestic.add(5);
 
-        tradeReceivePlayerStartedDomestic.add(5);
+        playerSelectedForTrade = 0; //default it to 0 (player none)
 
     }
 
@@ -136,12 +120,14 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         titleLbl = new SettlerLbl("Domestic Trade");
         playerSelectLbl = new SettlerLbl("Select a player to trade with:");
         initiatePlayerReceivesLbl = new SettlerLbl("ERROR: this is temporary text");
+        initiatePlayerGivesLbl = new SettlerLbl("ERROR");
 
         //setup the colour
         Color beigeColor = new Color(255, 255, 225);
         titleLbl.setForeground(beigeColor); //beige
         playerSelectLbl.setForeground(beigeColor);
         initiatePlayerReceivesLbl.setForeground(beigeColor);
+        initiatePlayerGivesLbl.setForeground(beigeColor);
     }
 
     @Override
@@ -171,6 +157,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //update the Settler Label positions
         settlerVarPos(g2d); //update the positions
 
+        //draw the background image
         g2d.drawImage(ImageRef.WOOD_BACKGROUND,
                 0,
                 0,
@@ -271,12 +258,20 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         initiatePlayerReceivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
         initiatePlayerReceivesLbl.setYPos(playerSelectLbl.getYPos() + theGamePanel.getImgHeight(ImageRef.SMALL_PLAYER_RED) + scaleInt(100));
 
-        cancelTradeBtn.setXPos(titleLbl.getXPos());
-        cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
-
         lockInitiatePlayerReceiveTradeBtn.setXPos(CardUtil.getCardStackXPositions(theGamePanel)[4] //align the button with the last stack of resource cards
                 - (theGamePanel.getImgWidth(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) / 4)); //move it over by a quarter so it doesnot stic out so much
         lockInitiatePlayerReceiveTradeBtn.setYPos(getCardPosY(1, CARD_CLAY) + theGamePanel.getImgHeight(CARD_CLAY) + scaleInt(20)); //set it to mode 1 because this is the button for init receive
+
+        //player initate give
+        initiatePlayerGivesLbl.setText("Player " + playerSelectedForTrade + " (      ) receives:"); //make sure text is up to date
+        stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayerGivesLbl.getText()); //calc how much room it will take up
+        initiatePlayerGivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
+        initiatePlayerGivesLbl.setYPos(lockInitiatePlayerReceiveTradeBtn.getYPos()
+                + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) + scaleInt(100));
+
+        cancelTradeBtn.setXPos(titleLbl.getXPos());
+        cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
+
     }
 
     /**
@@ -561,6 +556,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         titleLbl.setFont(new Font(GamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
         playerSelectLbl.setFont(headerFont);
         initiatePlayerReceivesLbl.setFont(headerFont);
+        initiatePlayerGivesLbl.setFont(headerFont);
     }
 
     /**
