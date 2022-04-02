@@ -35,7 +35,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private int mouseMotionPosY;
 
     //Settler Components
-    private SettlerBtn cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn;
+    private SettlerBtn cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn, lockInitiatePlayerGiveTradeBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Lable
@@ -56,8 +56,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private int playerStartedDomestic; //the player ID of the user the clicked the domestic trade button
     private int playerCount; //the number of players in the game
     private int[] nonInitiatePlayers; //the list of the remaining player(s) that did not start the trade
-    private ArrayList<Integer> tradeReceivePlayerStartedDomestic; //The cards that the player who started the trade will receive 
+    private ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic; //The cards that the player who started the trade will receive 
     private int playerSelectedForTrade; //the player ID of the player that the playerStartedDomestic selected to trade with
+    private ArrayList<Integer> tradeCardsGivePlayerStartedDomestic; //The cards that the player who started the trade will give away to the other player 
 
     /**
      * Domestic trade Constructor
@@ -94,19 +95,23 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //setup the buttons
         cancelTradeBtn = new SettlerBtn(true, 1, 9);
         lockInitiatePlayerReceiveTradeBtn = new SettlerBtn(true, 1, 10);
+        lockInitiatePlayerGiveTradeBtn = new SettlerBtn(true, 1, 10);
         //add then to the array
-        settlerBtns = new SettlerBtn[]{cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn};
+        settlerBtns = new SettlerBtn[]{cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn, lockInitiatePlayerGiveTradeBtn};
 
         //setup the labels
         settlerLbls = new SettlerLbl[]{titleLbl, playerSelectLbl, initiatePlayerReceivesLbl, initiatePlayerGivesLbl};
 
-        tradeReceivePlayerStartedDomestic = new ArrayList<>();
-        tradeReceivePlayerStartedDomestic.add(1);
-        tradeReceivePlayerStartedDomestic.add(1);
-        tradeReceivePlayerStartedDomestic.add(1);
-        tradeReceivePlayerStartedDomestic.add(2);
-        tradeReceivePlayerStartedDomestic.add(2);
-        tradeReceivePlayerStartedDomestic.add(2);
+        tradeCardsReceivePlayerStartedDomestic = new ArrayList<>();
+        tradeCardsReceivePlayerStartedDomestic.add(1);
+        tradeCardsReceivePlayerStartedDomestic.add(1);
+        tradeCardsReceivePlayerStartedDomestic.add(1);
+        tradeCardsReceivePlayerStartedDomestic.add(2);
+        tradeCardsReceivePlayerStartedDomestic.add(2);
+        tradeCardsReceivePlayerStartedDomestic.add(2);
+
+        tradeCardsGivePlayerStartedDomestic = new ArrayList<>();
+        tradeCardsGivePlayerStartedDomestic.add(5);
 
         playerSelectedForTrade = 0; //default it to 0 (player none)
 
@@ -227,29 +232,30 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 initiatePlayerReceivesLbl.getYPos() - theGamePanel.getImgHeight(playerDot) + scaleInt(8),
                 theGamePanel.getImgWidth(playerDot),
                 theGamePanel.getImgHeight(playerDot), this);
-        
+
         //draw the dot image for the initiatePlayerGivesLbl
         //set the image
         playerDot = ImageRef.PLAYER_DOTS[playerSelectedForTrade];
-        
+
         //calc the sub string of the text
         int openBracketPos; //the position of the '(' char in the string
         openBracketPos = initiatePlayerGivesLbl.getText().indexOf('(');
-        System.out.println(initiatePlayerGivesLbl.getText().charAt(openBracketPos));
         //draw the give player dot
         g2d.drawImage(playerDot,
                 initiatePlayerGivesLbl.getXPos() + (g2d.getFontMetrics().stringWidth(initiatePlayerGivesLbl.getText().substring(0, openBracketPos + 1))) + scaleInt(4),
                 initiatePlayerGivesLbl.getYPos() - theGamePanel.getImgHeight(playerDot) + scaleInt(8),
                 theGamePanel.getImgWidth(playerDot),
                 theGamePanel.getImgHeight(playerDot), this);
-        
 
         //=-=-=-=END OF draw on the player dots for the labels=-=-=-=
         //draw the cards the initation player HAS
-        drawCards(g2d, 0, theGamePanel.getResourceCards()[playerStartedDomestic], playerStartedDomestic);
+        drawCards(g2d, 0, theGamePanel.getResourceCards()[playerStartedDomestic]);
 
         //draw the cards the intiation player will receive
-        drawCards(g2d, 1, tradeReceivePlayerStartedDomestic, playerStartedDomestic);
+        drawCards(g2d, 1, tradeCardsReceivePlayerStartedDomestic);
+
+        //draw the cards the init player will trade away
+        drawCards(g2d, 2, tradeCardsGivePlayerStartedDomestic);
 
         // Add alignment lines
         g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
@@ -281,18 +287,22 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //player initate give
         String otherPlayerName; //the name in the label for the other player. Will be their number unless 0 in which case name will be "none"
-        
+
         if (playerSelectedForTrade == 0) {
             otherPlayerName = "None";
         } else {
             otherPlayerName = Integer.toString(playerSelectedForTrade);
         }
-        
+
         initiatePlayerGivesLbl.setText("Player " + otherPlayerName + " (      ) receives:"); //make sure text is up to date
         stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayerGivesLbl.getText()); //calc how much room it will take up
         initiatePlayerGivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
         initiatePlayerGivesLbl.setYPos(lockInitiatePlayerReceiveTradeBtn.getYPos()
                 + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) + scaleInt(100));
+        
+        lockInitiatePlayerGiveTradeBtn.setXPos(lockInitiatePlayerReceiveTradeBtn.getXPos()); //move it over by a quarter so it doesnot stic out so much
+        lockInitiatePlayerGiveTradeBtn.setYPos(getCardPosY(2, CARD_CLAY) + theGamePanel.getImgHeight(CARD_CLAY) + scaleInt(20)); //set it to mode 1 because this is the button for init receive
+
 
         cancelTradeBtn.setXPos(titleLbl.getXPos());
         cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
@@ -310,7 +320,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * @param playerID
      *
      */
-    private void drawCards(Graphics2D g2d, int cardMode, ArrayList<Integer> playerCards, int IDofPlayer) {
+    private void drawCards(Graphics2D g2d, int cardMode, ArrayList<Integer> playerCards) {
         int[] cardTypeCount;
         int cardStartPosition;
         Image image;
@@ -495,12 +505,22 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
     private int getCardPosY(int cardMode, Image image) {
         int cardPosY = 0; //default to the top
-
         //get the y pos based off of the card mode
-        if (cardMode == 0) { //if this is the cards that the player has right now
-            cardPosY = (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125));
-        } else if (cardMode == 1) { //if these are the cards that the initiation player receives
-            cardPosY = initiatePlayerReceivesLbl.getYPos() + scaleInt(20);
+        switch (cardMode) {
+            case 0:
+                //if this is the cards that the player has right now
+                cardPosY = (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125));
+                break;
+            case 1:
+                //if these are the cards that the initiation player receives
+                cardPosY = initiatePlayerReceivesLbl.getYPos() + scaleInt(20);
+                break;
+            case 2:
+                //if these are the cards the the init player gives away
+                cardPosY = initiatePlayerGivesLbl.getYPos() + scaleInt(20);
+                break;
+            default:
+                break;
         }
 
         return cardPosY;
