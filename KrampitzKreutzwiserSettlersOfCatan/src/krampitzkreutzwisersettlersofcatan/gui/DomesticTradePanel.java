@@ -56,6 +56,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private int playerStartedDomestic; //the player ID of the user the clicked the domestic trade button
     private int playerCount; //the number of players in the game
     private int[] nonInitiatePlayers; //the list of the remaining player(s) that did not start the trade
+    private ArrayList<Integer> tradeReceivePlayerStartedDomestic; //The cards that the player who started the trade will receive 
 
     /**
      * Domestic trade Constructor
@@ -96,6 +97,14 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //setup the labels
         settlerLbls = new SettlerLbl[]{titleLbl, playerSelectLbl, initiatePlayerReceivesLbl};
+
+        tradeReceivePlayerStartedDomestic = new ArrayList<>();
+        tradeReceivePlayerStartedDomestic.add(1);
+        tradeReceivePlayerStartedDomestic.add(1);
+        tradeReceivePlayerStartedDomestic.add(2);
+        tradeReceivePlayerStartedDomestic.add(3);
+        tradeReceivePlayerStartedDomestic.add(4);
+        tradeReceivePlayerStartedDomestic.add(5);
 
     }
 
@@ -215,6 +224,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //draw the cards the initation player HAS
         drawCards(g2d, 0, theGamePanel.getResourceCards()[playerStartedDomestic], playerStartedDomestic);
 
+        //draw the cards the intiation player will receive
+        drawCards(g2d, 1, tradeReceivePlayerStartedDomestic, playerStartedDomestic);
+
         // Add alignment lines
         g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
         g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
@@ -254,7 +266,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * @param playerID
      *
      */
-    private void drawCards(Graphics2D g2d, int cardMode, ArrayList<Integer> playerCards, int playerID) {
+    private void drawCards(Graphics2D g2d, int cardMode, ArrayList<Integer> playerCards, int IDofPlayer) {
         int[] cardTypeCount;
         int cardStartPosition;
         Image image;
@@ -265,7 +277,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         int listSize = playerCards.size();
 
         //get the number of each card type the player has
-        cardTypeCount = theGamePanel.countCardTypes(listSize, playerID);
+        cardTypeCount = theGamePanel.countCardTypes(listSize, IDofPlayer, false);
 
         // Calculate where the first card must go to center the list
         cardStartPosition = CardUtil.getCardStartPosition(0, listSize, theGamePanel);
@@ -310,7 +322,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 //draw the card image
                 g2d.drawImage(image,
                         cardStackXPositions[i], //align the card to the left edge of the water ring 
-                        (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
+                        getCardPosY(cardMode, image),
                         theGamePanel.getImgWidth(image),
                         theGamePanel.getImgHeight(image),
                         null);
@@ -394,7 +406,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 // Draw the card
                 g2d.drawImage(image,
                         (cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
-                        (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
+                        getCardPosY(cardMode, image),
                         theGamePanel.getImgWidth(image),
                         theGamePanel.getImgHeight(image),
                         null);
@@ -435,6 +447,19 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 }*/
             }
         }
+    }
+
+    private int getCardPosY(int cardMode, Image image) {
+        int cardPosY = 0; //default to the top
+
+        //get the y pos based off of the card mode
+        if (cardMode == 0) { //if this is the cards that the player has right now
+            cardPosY = (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125));
+        } else if (cardMode == 1) { //if these are the cards that the initiation player receives
+            cardPosY = 500;
+        }
+
+        return cardPosY;
     }
 
     private void cancelTradeBtnPressed() {

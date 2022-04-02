@@ -3603,7 +3603,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
         //get the number of each card type the player has
-        countCardTypes(cards[currentPlayer].size(), currentPlayer);
+        countCardTypes(cards[currentPlayer].size(), currentPlayer, true);
         countNumCardTypes(currentPlayer);
 
         //update the text of the Swing buttons
@@ -5163,7 +5163,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 int listSize = cards[playerID].size();
 
                 //get the number of each card type the player has
-                countCardTypes(listSize, playerID);
+                countCardTypes(listSize, playerID, true);
 
                 // Calculate where the first card must go to center the list
                 cardStartPosition = CardUtil.getCardStartPosition(0, listSize, this);
@@ -5994,9 +5994,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private void panelSizeDependantCalculations() {
         panelWidth = this.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
         panelHeight = this.getHeight();
-        
+
         cardStackXPositions = CardUtil.getCardStackXPositions(this);
-        
+
         devCardStackXPositions = CardUtil.getDevCardStackXPositions(this);
 
         //and simularly the resouce stacks
@@ -6515,16 +6515,25 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * Initialize cardTypeCount and assign it values.
      *
      * @param listSize
+     * @param playerNum
+     * @param updateGlobal whether or not to update the global var for
+     * cardTypeCount
+     * @return
      */
-    public int[] countCardTypes(int listSize, int playerNum) {
+    public int[] countCardTypes(int listSize, int playerNum, boolean updateGlobal) {
         //setup an array to hold the results
-        cardTypeCount = new int[5];
+        int[] cardTypeCount = new int[5];
 
         //loop thorugh and populate the array
         for (int i = 0; i < listSize; i++) {
             cardTypeCount[cards[playerNum].get(i) - 1]++;
         }
         
+        //check to see if the global var should be updated
+        if (updateGlobal) {
+            this.cardTypeCount = cardTypeCount;
+        }
+
         return cardTypeCount;
     }
 
