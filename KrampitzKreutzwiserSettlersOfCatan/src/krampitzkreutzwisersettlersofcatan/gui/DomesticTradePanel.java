@@ -456,7 +456,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         if (cardMode == 0) { //if this is the cards that the player has right now
             cardPosY = (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125));
         } else if (cardMode == 1) { //if these are the cards that the initiation player receives
-            cardPosY = 500;
+            cardPosY = initiatePlayerReceivesLbl.getYPos() + scaleInt(20);
         }
 
         return cardPosY;
