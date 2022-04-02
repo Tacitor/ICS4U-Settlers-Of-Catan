@@ -43,6 +43,15 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     //array for the labels
     private SettlerLbl[] settlerLbls;
 
+    //data for card drawing
+    /**
+     * Will be length 3, one for each of the cards hands it will draw. Index 0
+     * is the cards playerStartedDomestic has right now. Index 1 is the cards
+     * they will receive from the trade. Index 2 are the cards
+     * playerStartedDomestic will be trading away.
+     */
+    boolean[] drawCardStacks;
+
     //data for the trading
     private int playerStartedDomestic; //the player ID of the user the clicked the domestic trade button
     private int playerCount; //the number of players in the game
@@ -59,6 +68,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         theGamePanel = gameFrame.getGamePanel();
 
         initSettlerLbl();
+
+        drawCardStacks = new boolean[3];
 
         //add in the motion listener for hovering
         addMouseMotionListener(this);
@@ -201,23 +212,57 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 theGamePanel.getImgWidth(playerDot),
                 theGamePanel.getImgHeight(playerDot), this);
 
+        //draw the cards the initation player HAS
+        drawCards(g2d, 0, theGamePanel.getResourceCards()[playerStartedDomestic], playerStartedDomestic);
+
         // Add alignment lines
         g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
         g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
 
-        /**
-         * =-=-=-=-=-=-=-=-=-=-= Draw the resource cards =-=-=-=-=-=-=-=-=-=-=
-         */
-        int playerID = playerStartedDomestic;
-        ArrayList<Integer>[] cards = theGamePanel.getResourceCards();
+    }
+
+    private void settlerVarPos(Graphics2D g2d) {
+        //Align the components
+        //top to bottom
+        titleLbl.setXPos(scaleInt(10));
+        titleLbl.setYPos(scaleInt(35));
+
+        //calce the positon for the labels
+        g2d.setFont(playerSelectLbl.getFont()); //make sure it has the right font size
+        //player select
+        int stringWidth = g2d.getFontMetrics().stringWidth(playerSelectLbl.getText()); //calc how much room it will take up
+        playerSelectLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
+        playerSelectLbl.setYPos(50);
+        //player initate receive
+        initiatePlayerReceivesLbl.setText("Player " + playerStartedDomestic + " (      ) receives:"); //make sure text is up to date
+        stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayerReceivesLbl.getText()); //calc how much room it will take up
+        initiatePlayerReceivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
+        initiatePlayerReceivesLbl.setYPos(playerSelectLbl.getYPos() + theGamePanel.getImgHeight(ImageRef.SMALL_PLAYER_RED) + scaleInt(100));
+
+        cancelTradeBtn.setXPos(titleLbl.getXPos());
+        cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
+    }
+
+    /**
+     * Draws resource cards on the screen at the desired Y position
+     *
+     * @param g2d
+     * @param cardMode The mode the card drawing will operate in. Corresponds to
+     * the indices of drawCardStacks. Value of 0 is the cards the player has, 1
+     * is the initiator's receive. 2, is the other receive.
+     * @param cards
+     * @param playerID
+     *
+     */
+    private void drawCards(Graphics2D g2d, int cardMode, ArrayList<Integer> playerCards, int playerID) {
         int[] cardTypeCount;
         int cardStartPosition;
         Image image;
-        boolean[] drawCardStacks = new boolean[cards.length];
+
         int[] cardStackXPositions = CardUtil.getCardStackXPositions(theGamePanel);
 
         // Get the number of cards the player has
-        int listSize = cards[playerID].size();
+        int listSize = playerCards.size();
 
         //get the number of each card type the player has
         cardTypeCount = theGamePanel.countCardTypes(listSize, playerID);
@@ -228,7 +273,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //check if the cards would go off the screen
         //by checking if the start pos of the cards would be past the ending of the exit button
         if (cardStartPosition < (cancelTradeBtn.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage()))) {
-            drawCardStacks[playerID] = true;
+            drawCardStacks[cardMode] = true;
 
             //draw the number of cards the payer has of each type
             //change the font
@@ -310,21 +355,20 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                         g2d.setColor(new java.awt.Color(255, 255, 225));
                     }
                 }  */
-
             }
 
             //restore the old font
             g2d.setFont(tempFont);
 
         } else { //if the cards would NOT go off the screen
-            drawCardStacks[playerID] = false;
+            drawCardStacks[cardMode] = false;
 
             // Draw the player's cards
             // Reuse the image variable
             int type;
             for (int i = 0; i < listSize; i++) {
                 // Get the card type
-                type = cards[playerID].get(i);
+                type = playerCards.get(i);
                 // Get the image for that card
                 switch (type) {
                     case 1: // Clay card
@@ -389,36 +433,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                         g2d.setStroke(tempStroke);
                     }
                 }*/
-
             }
         }
-
-        /**
-         * =-=-=-=-=-=-=-=-=-=-= End of Draw the resource cards
-         * =-=-=-=-=-=-=-=-=-=-=
-         */
-    }
-
-    private void settlerVarPos(Graphics2D g2d) {
-        //Align the components
-        //top to bottom
-        titleLbl.setXPos(scaleInt(10));
-        titleLbl.setYPos(scaleInt(35));
-
-        //calce the positon for the labels
-        g2d.setFont(playerSelectLbl.getFont()); //make sure it has the right font size
-        //player select
-        int stringWidth = g2d.getFontMetrics().stringWidth(playerSelectLbl.getText()); //calc how much room it will take up
-        playerSelectLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
-        playerSelectLbl.setYPos(50);
-        //player initate receive
-        initiatePlayerReceivesLbl.setText("Player " + playerStartedDomestic + " (      ) receives:"); //make sure text is up to date
-        stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayerReceivesLbl.getText()); //calc how much room it will take up
-        initiatePlayerReceivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
-        initiatePlayerReceivesLbl.setYPos(playerSelectLbl.getYPos() + theGamePanel.getImgHeight(ImageRef.SMALL_PLAYER_RED) + scaleInt(100));
-
-        cancelTradeBtn.setXPos(titleLbl.getXPos());
-        cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
     }
 
     private void cancelTradeBtnPressed() {
