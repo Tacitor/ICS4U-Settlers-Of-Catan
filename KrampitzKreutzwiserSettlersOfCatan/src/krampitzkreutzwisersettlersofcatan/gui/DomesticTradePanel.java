@@ -13,11 +13,14 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
 import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.scaleInt;
+import krampitzkreutzwisersettlersofcatan.util.CardUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
+import static textures.ImageRef.*;
 
 /**
  *
@@ -201,6 +204,199 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         // Add alignment lines
         g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
         g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
+
+        /**
+         * =-=-=-=-=-=-=-=-=-=-= Draw the resource cards =-=-=-=-=-=-=-=-=-=-=
+         */
+        int playerID = playerStartedDomestic;
+        ArrayList<Integer>[] cards = theGamePanel.getResourceCards();
+        int[] cardTypeCount;
+        int cardStartPosition;
+        Image image;
+        boolean[] drawCardStacks = new boolean[cards.length];
+        int[] cardStackXPositions = CardUtil.getCardStackXPositions(theGamePanel);
+
+        // Get the number of cards the player has
+        int listSize = cards[playerID].size();
+
+        //get the number of each card type the player has
+        cardTypeCount = theGamePanel.countCardTypes(listSize, playerID);
+
+        // Calculate where the first card must go to center the list
+        cardStartPosition = CardUtil.getCardStartPosition(0, listSize, theGamePanel);
+
+        //check if the cards would go off the screen
+        //by checking if the start pos of the cards would be past the ending of the exit button
+        if (cardStartPosition < (cancelTradeBtn.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage()))) {
+            drawCardStacks[playerID] = true;
+
+            //draw the number of cards the payer has of each type
+            //change the font
+            Font tempFont = g2d.getFont(); //save the current stroke
+            g2d.setFont(new Font("Times New Roman", Font.BOLD, scaleInt(40))); //overwrite it      
+            g2d.setColor(new java.awt.Color(255, 255, 225));
+
+            //loop through and draw the stacked cards
+            for (int i = 0; i < 5; i++) {
+
+                //get the image for that card
+                switch (i) {
+                    case 0: // Clay card
+                        image = CARD_CLAY;
+                        break;
+                    case 1: // Word card
+                        image = CARD_WOOD;
+                        break;
+                    case 2: // Wheat card
+                        image = CARD_WHEAT;
+                        break;
+                    case 3: // Sheep card
+                        image = CARD_SHEEP;
+                        break;
+                    case 4: // 5: Ore card
+                        image = CARD_ORE;
+                        break;
+                    default: //error "card"
+                        image = WATER_RING; //this is a joke. The ring of water is infact NOT a card
+                        break;
+                }
+
+                //draw one each of the 5 card types
+                //draw the card image
+                g2d.drawImage(image,
+                        cardStackXPositions[i], //align the card to the left edge of the water ring 
+                        (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
+                        theGamePanel.getImgWidth(image),
+                        theGamePanel.getImgHeight(image),
+                        null);
+
+                //draw the number of cards of that type
+                g2d.drawString("x" + cardTypeCount[i],
+                        cardStackXPositions[i] + theGamePanel.getImgWidth(image), //align the number to the right edge of the card
+                        (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125) + theGamePanel.getImgHeight(image) / 2));
+
+                /*
+                //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
+                if (showCardHitbox && cardTypeCount[i] > 0) {
+                    //decide if to draw this on in the loop
+                    if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
+                        drawSpecificHitbox = false;
+                    } else if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
+                        drawSpecificHitbox = true;
+                    } else if (tradingMode == 3) { //special handeling for 2:1
+                        //check if the card is of the type the player muct trade for 2:1 trading
+                        drawSpecificHitbox = (i + 1) != tradeResource && (playerHasPort[playerID][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded;
+                    } else { //if it is for other 4:1 or 3:1 trading purpous do some more checks
+                        //has to have more than the minimum or more cards and cannot be the same type of card the play wants to end up with.
+                        drawSpecificHitbox = cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource;
+                    }
+
+                    if (drawSpecificHitbox) {
+                        //draw the high light
+                        g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                        g2d.fillRect(cardStackXPositions[i],
+                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
+                                theGamePanel.getImgWidth(image),
+                                theGamePanel.getImgHeight(image));
+                        //draw the boarder
+                        g2d.setColor(new java.awt.Color(102, 62, 38));
+                        Stroke tempStroke = g2d.getStroke();
+                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                        g2d.drawRect(cardStackXPositions[i],
+                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
+                                theGamePanel.getImgWidth(image),
+                                theGamePanel.getImgHeight(image));
+                        g2d.setStroke(tempStroke);
+                        g2d.setColor(new java.awt.Color(255, 255, 225));
+                    }
+                }  */
+
+            }
+
+            //restore the old font
+            g2d.setFont(tempFont);
+
+        } else { //if the cards would NOT go off the screen
+            drawCardStacks[playerID] = false;
+
+            // Draw the player's cards
+            // Reuse the image variable
+            int type;
+            for (int i = 0; i < listSize; i++) {
+                // Get the card type
+                type = cards[playerID].get(i);
+                // Get the image for that card
+                switch (type) {
+                    case 1: // Clay card
+                        image = CARD_CLAY;
+                        break;
+                    case 2: // Word card
+                        image = CARD_WOOD;
+                        break;
+                    case 3: // Wheat card
+                        image = CARD_WHEAT;
+                        break;
+                    case 4: // Sheep card
+                        image = CARD_SHEEP;
+                        break;
+                    case 5: // 5: Ore card
+                        image = CARD_ORE;
+                        break;
+                    default: //error "card"
+                        image = WATER_RING; //this is a joke. The ring of water is infact NOT a card
+                        break;
+                }
+
+                // Draw the card
+                g2d.drawImage(image,
+                        (cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                        (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
+                        theGamePanel.getImgWidth(image),
+                        theGamePanel.getImgHeight(image),
+                        null);
+
+                /*
+                //draw the hitbox
+                if (showCardHitbox) {
+                    //decide if to draw this on in the loop
+                    if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
+                        drawSpecificHitbox = false;
+                    } else if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
+                        drawSpecificHitbox = true;
+                    } else if (tradingMode == 3) { //special handeling for 2:1
+                        //check if the card is of the type the player muct trade for 2:1 trading
+                        drawSpecificHitbox = cards[playerID].get(i) != tradeResource && (playerHasPort[playerID][cards[playerID].get(i)]) && numCardType[type] >= minTradeCardsNeeded;
+                    } else { //if it is for trading purpous do some more checks
+                        //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
+                        drawSpecificHitbox = numCardType[type] >= minTradeCardsNeeded && cards[playerID].get(i) != tradeResource;
+                    }
+
+                    if (drawSpecificHitbox) {
+                        //draw the high light
+                        g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                        g2d.fillRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
+                                theGamePanel.getImgWidth(image),
+                                theGamePanel.getImgHeight(image));
+                        //draw the boarder
+                        g2d.setColor(new java.awt.Color(102, 62, 38));
+                        Stroke tempStroke = g2d.getStroke();
+                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
+                        g2d.drawRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
+                                theGamePanel.getImgWidth(image),
+                                theGamePanel.getImgHeight(image));
+                        g2d.setStroke(tempStroke);
+                    }
+                }*/
+
+            }
+        }
+
+        /**
+         * =-=-=-=-=-=-=-=-=-=-= End of Draw the resource cards
+         * =-=-=-=-=-=-=-=-=-=-=
+         */
     }
 
     private void settlerVarPos(Graphics2D g2d) {

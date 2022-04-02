@@ -15,8 +15,7 @@ import java.util.Collections;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import textures.ImageRef;
-import static textures.ImageRef.CARD_CLAY;
-import static textures.ImageRef.DEV_CARD_KNIGHT;
+import static textures.ImageRef.*;
 
 /**
  *
@@ -453,6 +452,29 @@ public class CardUtil {
      */
     public static int getToolTipDevCardIndex() {
         return toolTipDevCardIndex;
+    }
+
+    public static int[] getCardStackXPositions(GamePanel thegGamePanel) {
+        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
+        int[] cardStackXPositions = new int[]{thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(WATER_RING) / 2 - thegGamePanel.getImgWidth(CARD_CLAY) / 2,
+            thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(WATER_RING) / 4 - thegGamePanel.getImgWidth(CARD_CLAY) / 2,
+            thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(CARD_CLAY) / 2,
+            thegGamePanel.getWidth() / 2 + thegGamePanel.getImgWidth(WATER_RING) / 4 - thegGamePanel.getImgWidth(CARD_CLAY) / 2,
+            thegGamePanel.getWidth() / 2 + thegGamePanel.getImgWidth(WATER_RING) / 2 - thegGamePanel.getImgWidth(CARD_CLAY) / 2};
+        
+        return cardStackXPositions;
+
+    }
+
+    public static int[] getDevCardStackXPositions(GamePanel thegGamePanel) {
+        //and now the dev cards
+        int[] devCardStackXPositions = new int[]{thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(WATER_RING) / 2 - thegGamePanel.getImgWidth(DEV_CARD_KNIGHT) / 2,
+            thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(WATER_RING) / 4 - thegGamePanel.getImgWidth(DEV_CARD_KNIGHT) / 2,
+            thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(DEV_CARD_KNIGHT) / 2,
+            thegGamePanel.getWidth() / 2 + thegGamePanel.getImgWidth(WATER_RING) / 4 - thegGamePanel.getImgWidth(DEV_CARD_KNIGHT) / 2,
+            thegGamePanel.getWidth() / 2 + thegGamePanel.getImgWidth(WATER_RING) / 2 - thegGamePanel.getImgWidth(DEV_CARD_KNIGHT) / 2};
+        
+        return devCardStackXPositions;
     }
 
 }

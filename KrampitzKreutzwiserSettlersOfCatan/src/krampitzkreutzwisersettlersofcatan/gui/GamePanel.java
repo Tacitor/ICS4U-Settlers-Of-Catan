@@ -5994,19 +5994,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private void panelSizeDependantCalculations() {
         panelWidth = this.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
         panelHeight = this.getHeight();
+        
+        cardStackXPositions = CardUtil.getCardStackXPositions(this);
+        
+        devCardStackXPositions = CardUtil.getDevCardStackXPositions(this);
 
-        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
-        cardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
-        //and now the dev cards
-        devCardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
         //and simularly the resouce stacks
         resourceStackXPositions = new int[]{0, //have the first index be a position of 0
             this.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
@@ -6524,7 +6516,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      *
      * @param listSize
      */
-    private void countCardTypes(int listSize, int playerNum) {
+    public int[] countCardTypes(int listSize, int playerNum) {
         //setup an array to hold the results
         cardTypeCount = new int[5];
 
@@ -6532,6 +6524,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         for (int i = 0; i < listSize; i++) {
             cardTypeCount[cards[playerNum].get(i) - 1]++;
         }
+        
+        return cardTypeCount;
     }
 
     /**
