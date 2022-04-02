@@ -35,7 +35,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private int mouseMotionPosY;
 
     //Settler Components
-    private SettlerBtn cancelTradeBtn;
+    private SettlerBtn cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Lable
@@ -92,8 +92,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //setup the buttons
         cancelTradeBtn = new SettlerBtn(true, 1, 9);
+        lockInitiatePlayerReceiveTradeBtn = new SettlerBtn(true, 1, 10);
         //add then to the array
-        settlerBtns = new SettlerBtn[]{cancelTradeBtn};
+        settlerBtns = new SettlerBtn[]{cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn};
 
         //setup the labels
         settlerLbls = new SettlerLbl[]{titleLbl, playerSelectLbl, initiatePlayerReceivesLbl};
@@ -101,9 +102,28 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         tradeReceivePlayerStartedDomestic = new ArrayList<>();
         tradeReceivePlayerStartedDomestic.add(1);
         tradeReceivePlayerStartedDomestic.add(1);
+        tradeReceivePlayerStartedDomestic.add(1);
+        tradeReceivePlayerStartedDomestic.add(2);
+        tradeReceivePlayerStartedDomestic.add(2);
         tradeReceivePlayerStartedDomestic.add(2);
         tradeReceivePlayerStartedDomestic.add(3);
+        tradeReceivePlayerStartedDomestic.add(3);
+        tradeReceivePlayerStartedDomestic.add(3);
+        tradeReceivePlayerStartedDomestic.add(3);
+        tradeReceivePlayerStartedDomestic.add(3);
         tradeReceivePlayerStartedDomestic.add(4);
+        tradeReceivePlayerStartedDomestic.add(4);
+        tradeReceivePlayerStartedDomestic.add(4);
+        tradeReceivePlayerStartedDomestic.add(5);
+        tradeReceivePlayerStartedDomestic.add(5);
+        tradeReceivePlayerStartedDomestic.add(5);
+        tradeReceivePlayerStartedDomestic.add(5);
+        tradeReceivePlayerStartedDomestic.add(5);
+        tradeReceivePlayerStartedDomestic.add(5);
+        tradeReceivePlayerStartedDomestic.add(5);
+        tradeReceivePlayerStartedDomestic.add(5);
+        tradeReceivePlayerStartedDomestic.add(5);
+
         tradeReceivePlayerStartedDomestic.add(5);
 
     }
@@ -253,6 +273,10 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         cancelTradeBtn.setXPos(titleLbl.getXPos());
         cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
+
+        lockInitiatePlayerReceiveTradeBtn.setXPos(CardUtil.getCardStackXPositions(theGamePanel)[4] //align the button with the last stack of resource cards
+                - (theGamePanel.getImgWidth(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) / 4)); //move it over by a quarter so it doesnot stic out so much
+        lockInitiatePlayerReceiveTradeBtn.setYPos(getCardPosY(1, CARD_CLAY) + theGamePanel.getImgHeight(CARD_CLAY) + scaleInt(20)); //set it to mode 1 because this is the button for init receive
     }
 
     /**
@@ -277,7 +301,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         int listSize = playerCards.size();
 
         //get the number of each card type the player has
-        cardTypeCount = theGamePanel.countCardTypes(listSize, IDofPlayer, false);
+        cardTypeCount = theGamePanel.countCardTypes(listSize, false, playerCards);
 
         // Calculate where the first card must go to center the list
         cardStartPosition = CardUtil.getCardStartPosition(0, listSize, theGamePanel);
@@ -330,7 +354,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 //draw the number of cards of that type
                 g2d.drawString("x" + cardTypeCount[i],
                         cardStackXPositions[i] + theGamePanel.getImgWidth(image), //align the number to the right edge of the card
-                        (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125) + theGamePanel.getImgHeight(image) / 2));
+                        getCardPosY(cardMode, image) + theGamePanel.getImgHeight(image) / 2);
 
                 /*
                 //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.

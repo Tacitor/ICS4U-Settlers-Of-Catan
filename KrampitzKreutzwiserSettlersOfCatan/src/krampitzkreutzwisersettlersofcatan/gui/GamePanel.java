@@ -3603,7 +3603,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
         //get the number of each card type the player has
-        countCardTypes(cards[currentPlayer].size(), currentPlayer, true);
+        countCardTypes(cards[currentPlayer].size(), true, cards[currentPlayer]);
         countNumCardTypes(currentPlayer);
 
         //update the text of the Swing buttons
@@ -5163,7 +5163,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 int listSize = cards[playerID].size();
 
                 //get the number of each card type the player has
-                countCardTypes(listSize, playerID, true);
+                countCardTypes(listSize, true, cards[playerID]);
 
                 // Calculate where the first card must go to center the list
                 cardStartPosition = CardUtil.getCardStartPosition(0, listSize, this);
@@ -6515,20 +6515,20 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * Initialize cardTypeCount and assign it values.
      *
      * @param listSize
-     * @param playerNum
      * @param updateGlobal whether or not to update the global var for
      * cardTypeCount
+     * @param playerCards
      * @return
      */
-    public int[] countCardTypes(int listSize, int playerNum, boolean updateGlobal) {
+    public int[] countCardTypes(int listSize, boolean updateGlobal, ArrayList<Integer> playerCards) {
         //setup an array to hold the results
         int[] cardTypeCount = new int[5];
 
         //loop thorugh and populate the array
         for (int i = 0; i < listSize; i++) {
-            cardTypeCount[cards[playerNum].get(i) - 1]++;
+            cardTypeCount[playerCards.get(i) - 1]++;
         }
-        
+
         //check to see if the global var should be updated
         if (updateGlobal) {
             this.cardTypeCount = cardTypeCount;
