@@ -35,7 +35,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private int mouseMotionPosY;
 
     //Settler Components
-    private SettlerBtn cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn, lockInitiatePlayerGiveTradeBtn;
+    private SettlerBtn cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn, lockInitiatePlayerGiveTradeBtn, completeTradeBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Lable
@@ -96,8 +96,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         cancelTradeBtn = new SettlerBtn(true, 1, 9);
         lockInitiatePlayerReceiveTradeBtn = new SettlerBtn(true, 1, 10);
         lockInitiatePlayerGiveTradeBtn = new SettlerBtn(true, 1, 10);
+        completeTradeBtn = new SettlerBtn(true, 1, 8);
         //add then to the array
-        settlerBtns = new SettlerBtn[]{cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn, lockInitiatePlayerGiveTradeBtn};
+        settlerBtns = new SettlerBtn[]{cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn, lockInitiatePlayerGiveTradeBtn, completeTradeBtn};
 
         //setup the labels
         settlerLbls = new SettlerLbl[]{titleLbl, playerSelectLbl, initiatePlayerReceivesLbl, initiatePlayerGivesLbl};
@@ -258,8 +259,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         drawCards(g2d, 2, tradeCardsGivePlayerStartedDomestic);
 
         // Add alignment lines
-        g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
-        g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
+        //g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
+        //g2d.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
 
     }
 
@@ -302,6 +303,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         
         lockInitiatePlayerGiveTradeBtn.setXPos(lockInitiatePlayerReceiveTradeBtn.getXPos()); //move it over by a quarter so it doesnot stic out so much
         lockInitiatePlayerGiveTradeBtn.setYPos(getCardPosY(2, CARD_CLAY) + theGamePanel.getImgHeight(CARD_CLAY) + scaleInt(20)); //set it to mode 1 because this is the button for init receive
+        
+        completeTradeBtn.setXPos(lockInitiatePlayerGiveTradeBtn.getXPos());
+        completeTradeBtn.setYPos(lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) + scaleInt(20));
 
 
         cancelTradeBtn.setXPos(titleLbl.getXPos());
