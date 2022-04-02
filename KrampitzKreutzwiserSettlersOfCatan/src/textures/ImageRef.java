@@ -94,8 +94,9 @@ public class ImageRef {
     private final static Image DOT_BLUE = new ImageIcon(ImageRef.class.getResource("playerIcons/blueDot.png")).getImage();
     private final static Image DOT_ORANGE = new ImageIcon(ImageRef.class.getResource("playerIcons/orangeDot.png")).getImage();
     private final static Image DOT_WHITE = new ImageIcon(ImageRef.class.getResource("playerIcons/whiteDot.png")).getImage();
+    private final static Image DOT_NONE = new ImageIcon(ImageRef.class.getResource("playerIcons/noneDot.png")).getImage();
     //array for the dots to be called on to get the correct colour for each player
-    public final static Image[] PLAYER_DOTS = new Image[]{ERROR_IMAGE, DOT_RED, DOT_BLUE, DOT_ORANGE, DOT_WHITE};
+    public final static Image[] PLAYER_DOTS = new Image[]{DOT_NONE, DOT_RED, DOT_BLUE, DOT_ORANGE, DOT_WHITE};
 
     //longest road tile thing
     public final static Image LONGEST_ROAD = new ImageIcon(ImageRef.class.getResource("bigCard/longestRoad.png")).getImage();
