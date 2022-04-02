@@ -227,7 +227,24 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 initiatePlayerReceivesLbl.getYPos() - theGamePanel.getImgHeight(playerDot) + scaleInt(8),
                 theGamePanel.getImgWidth(playerDot),
                 theGamePanel.getImgHeight(playerDot), this);
+        
+        //draw the dot image for the initiatePlayerGivesLbl
+        //set the image
+        playerDot = ImageRef.PLAYER_DOTS[playerSelectedForTrade];
+        
+        //calc the sub string of the text
+        int openBracketPos; //the position of the '(' char in the string
+        openBracketPos = initiatePlayerGivesLbl.getText().indexOf('(');
+        System.out.println(initiatePlayerGivesLbl.getText().charAt(openBracketPos));
+        //draw the give player dot
+        g2d.drawImage(playerDot,
+                initiatePlayerGivesLbl.getXPos() + (g2d.getFontMetrics().stringWidth(initiatePlayerGivesLbl.getText().substring(0, openBracketPos + 1))) + scaleInt(4),
+                initiatePlayerGivesLbl.getYPos() - theGamePanel.getImgHeight(playerDot) + scaleInt(8),
+                theGamePanel.getImgWidth(playerDot),
+                theGamePanel.getImgHeight(playerDot), this);
+        
 
+        //=-=-=-=END OF draw on the player dots for the labels=-=-=-=
         //draw the cards the initation player HAS
         drawCards(g2d, 0, theGamePanel.getResourceCards()[playerStartedDomestic], playerStartedDomestic);
 
@@ -263,7 +280,15 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         lockInitiatePlayerReceiveTradeBtn.setYPos(getCardPosY(1, CARD_CLAY) + theGamePanel.getImgHeight(CARD_CLAY) + scaleInt(20)); //set it to mode 1 because this is the button for init receive
 
         //player initate give
-        initiatePlayerGivesLbl.setText("Player " + playerSelectedForTrade + " (      ) receives:"); //make sure text is up to date
+        String otherPlayerName; //the name in the label for the other player. Will be their number unless 0 in which case name will be "none"
+        
+        if (playerSelectedForTrade == 0) {
+            otherPlayerName = "None";
+        } else {
+            otherPlayerName = Integer.toString(playerSelectedForTrade);
+        }
+        
+        initiatePlayerGivesLbl.setText("Player " + otherPlayerName + " (      ) receives:"); //make sure text is up to date
         stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayerGivesLbl.getText()); //calc how much room it will take up
         initiatePlayerGivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
         initiatePlayerGivesLbl.setYPos(lockInitiatePlayerReceiveTradeBtn.getYPos()
