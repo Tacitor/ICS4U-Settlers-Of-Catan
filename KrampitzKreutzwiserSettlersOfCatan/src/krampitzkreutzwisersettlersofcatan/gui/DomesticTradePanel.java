@@ -111,6 +111,18 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         tradeCardsReceivePlayerStartedDomestic.add(2);
         tradeCardsReceivePlayerStartedDomestic.add(2);
         tradeCardsReceivePlayerStartedDomestic.add(2);
+        
+        tradeCardsReceivePlayerStartedDomestic.add(3);
+        tradeCardsReceivePlayerStartedDomestic.add(3);
+        tradeCardsReceivePlayerStartedDomestic.add(3);
+        
+        tradeCardsReceivePlayerStartedDomestic.add(4);
+        tradeCardsReceivePlayerStartedDomestic.add(4);
+        tradeCardsReceivePlayerStartedDomestic.add(4);
+        
+        tradeCardsReceivePlayerStartedDomestic.add(5);
+        tradeCardsReceivePlayerStartedDomestic.add(5);
+        tradeCardsReceivePlayerStartedDomestic.add(5);
 
         tradeCardsGivePlayerStartedDomestic = new ArrayList<>();
         tradeCardsGivePlayerStartedDomestic.add(5);
@@ -297,6 +309,19 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 playerSelectLbl.getYPos() - scaleInt(30),
                 theGamePanel.getImgWidth(playerIconImage) * nonInitiatePlayers.length,
                 theGamePanel.getImgHeight(playerIconImage) + scaleInt(60) + scaleInt(10));
+        //draw the init player reveive box
+        int xPos = cancelTradeBtn.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage());
+        int yPos = initiatePlayerReceivesLbl.getYPos() - scaleInt(30);
+        g2d.drawRect(xPos,
+                yPos,
+                this.getWidth() - (xPos * 2),
+                lockInitiatePlayerReceiveTradeBtn.getYPos()+ theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
+        //draw the init player give box
+        yPos = initiatePlayerGivesLbl.getYPos() - scaleInt(30);
+        g2d.drawRect(xPos,
+                yPos,
+                this.getWidth() - (xPos * 2),
+                lockInitiatePlayerGiveTradeBtn.getYPos()+ theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
 
         //=-=-=-=-=-=-=-=-= END OF draw the menu segment boarders =-=-=-=-=-=-=-=-=
         // Add alignment lines
