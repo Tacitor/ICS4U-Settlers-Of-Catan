@@ -111,15 +111,15 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         tradeCardsReceivePlayerStartedDomestic.add(2);
         tradeCardsReceivePlayerStartedDomestic.add(2);
         tradeCardsReceivePlayerStartedDomestic.add(2);
-        
+
         tradeCardsReceivePlayerStartedDomestic.add(3);
         tradeCardsReceivePlayerStartedDomestic.add(3);
         tradeCardsReceivePlayerStartedDomestic.add(3);
-        
+
         tradeCardsReceivePlayerStartedDomestic.add(4);
         tradeCardsReceivePlayerStartedDomestic.add(4);
         tradeCardsReceivePlayerStartedDomestic.add(4);
-        
+
         tradeCardsReceivePlayerStartedDomestic.add(5);
         tradeCardsReceivePlayerStartedDomestic.add(5);
         tradeCardsReceivePlayerStartedDomestic.add(5);
@@ -315,13 +315,13 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         g2d.drawRect(xPos,
                 yPos,
                 this.getWidth() - (xPos * 2),
-                lockInitiatePlayerReceiveTradeBtn.getYPos()+ theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
+                lockInitiatePlayerReceiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
         //draw the init player give box
         yPos = initiatePlayerGivesLbl.getYPos() - scaleInt(30);
         g2d.drawRect(xPos,
                 yPos,
                 this.getWidth() - (xPos * 2),
-                lockInitiatePlayerGiveTradeBtn.getYPos()+ theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
+                lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
 
         //=-=-=-=-=-=-=-=-= END OF draw the menu segment boarders =-=-=-=-=-=-=-=-=
         // Add alignment lines
@@ -347,8 +347,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         initiatePlayerReceivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
         initiatePlayerReceivesLbl.setYPos(playerSelectLbl.getYPos() + theGamePanel.getImgHeight(ImageRef.SMALL_PLAYER_RED) + scaleInt(100));
 
-        lockInitiatePlayerReceiveTradeBtn.setXPos(CardUtil.getCardStackXPositions(theGamePanel)[4] //align the button with the last stack of resource cards
-                - (theGamePanel.getImgWidth(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) / 4)); //move it over by a quarter so it doesnot stic out so much
+        lockInitiatePlayerReceiveTradeBtn.setXPos(this.getWidth() - (titleLbl.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage())) - theGamePanel.getImgWidth(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - scaleInt(10)); //move it over by a quarter so it doesnot stic out so much
         lockInitiatePlayerReceiveTradeBtn.setYPos(getCardPosY(1, CARD_CLAY) + theGamePanel.getImgHeight(CARD_CLAY) + scaleInt(20)); //set it to mode 1 because this is the button for init receive
 
         //player initate give
@@ -369,7 +368,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         lockInitiatePlayerGiveTradeBtn.setXPos(lockInitiatePlayerReceiveTradeBtn.getXPos()); //move it over by a quarter so it doesnot stic out so much
         lockInitiatePlayerGiveTradeBtn.setYPos(getCardPosY(2, CARD_CLAY) + theGamePanel.getImgHeight(CARD_CLAY) + scaleInt(20)); //set it to mode 1 because this is the button for init receive
 
-        completeTradeBtn.setXPos(lockInitiatePlayerGiveTradeBtn.getXPos());
+        completeTradeBtn.setXPos(lockInitiatePlayerGiveTradeBtn.getXPos() + theGamePanel.getImgWidth(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - theGamePanel.getImgWidth(completeTradeBtn.getBaseImage()));
         completeTradeBtn.setYPos(lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) + scaleInt(20));
 
         cancelTradeBtn.setXPos(titleLbl.getXPos());
