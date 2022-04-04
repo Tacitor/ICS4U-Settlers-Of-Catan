@@ -41,13 +41,13 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image TURN_SWITCH_TBN_TEXT1 = new ImageIcon(ImageRef.class.getResource("settlerBtn/turnSwitch/turnBtnText1.png")).getImage();
 
     //trade buttons
-    private final static Image TRADE_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeBtn.png")).getImage();
-    private final static Image TRADE_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeBtnDisabled.png")).getImage();
-    private final static Image TRADE_CANCEL = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeBtnCancel.png")).getImage();
-    private final static Image TRADE_4 = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/trade4to1Text.png")).getImage();
-    private final static Image TRADE_3 = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/trade3to1Text.png")).getImage();
-    private final static Image TRADE_2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/trade2to1Text.png")).getImage();
-    private final static Image TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/trade/tradeDomesticText.png")).getImage();
+    private final static Image TRADE_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/maritimeTrade/tradeBtn.png")).getImage();
+    private final static Image TRADE_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/maritimeTrade/tradeBtnDisabled.png")).getImage();
+    private final static Image TRADE_CANCEL = new ImageIcon(ImageRef.class.getResource("settlerBtn/maritimeTrade/tradeBtnCancel.png")).getImage();
+    private final static Image TRADE_4 = new ImageIcon(ImageRef.class.getResource("settlerBtn/maritimeTrade/trade4to1Text.png")).getImage();
+    private final static Image TRADE_3 = new ImageIcon(ImageRef.class.getResource("settlerBtn/maritimeTrade/trade3to1Text.png")).getImage();
+    private final static Image TRADE_2 = new ImageIcon(ImageRef.class.getResource("settlerBtn/maritimeTrade/trade2to1Text.png")).getImage();
+    private final static Image TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/tradeDomesticText.png")).getImage();
 
     //util buttons
     //build
