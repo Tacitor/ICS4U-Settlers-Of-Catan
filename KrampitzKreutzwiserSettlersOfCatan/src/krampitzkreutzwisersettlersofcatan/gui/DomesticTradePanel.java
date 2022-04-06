@@ -97,7 +97,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         cancelTradeBtn = new SettlerBtn(true, 1, 9);
         lockInitiatePlayerReceiveTradeBtn = new SettlerBtn(true, 0, 11);
         lockInitiatePlayerGiveTradeBtn = new SettlerBtn(true, 0, 11);
-        completeTradeBtn = new SettlerBtn(true, 1, 8);
+        completeTradeBtn = new SettlerBtn(true, 1, 10);
         //add then to the array
         settlerBtns = new SettlerBtn[]{cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn, lockInitiatePlayerGiveTradeBtn, completeTradeBtn};
 
