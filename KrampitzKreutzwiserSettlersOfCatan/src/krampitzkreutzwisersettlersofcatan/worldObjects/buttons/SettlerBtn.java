@@ -52,7 +52,8 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image LOCK_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/lockTradeDomesticText.png")).getImage();
     private final static Image UNLOCK_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/unlockTradeDomesticText.png")).getImage();
     //domestic trade accept button
-    private final static Image ACCEPT_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/acceptTradeDomesticText.png")).getImage();    
+    private final static Image ACCEPT_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/acceptTradeDomesticText.png")).getImage();
+    private final static Image CANCEL_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/cancelTradeDomesticText.png")).getImage();    
 
     //util buttons
     //build
@@ -189,6 +190,8 @@ public class SettlerBtn extends SettlerComponent {
             //if it's a domestic trade lock button
             case 12:
                 //if it's a domestic trade accept button
+            case 13:
+                //if it'a a cancel domestic trade button
                 baseImage = CARD_BTN; //still has the right length
                 disabledImage = CARD_DISABLED_BTN;
                 break;
@@ -269,6 +272,10 @@ public class SettlerBtn extends SettlerComponent {
             case 12:
                 //if the type is a domestic trade accept button
                 textImage = ACCEPT_TRADE_DOMESTIC;
+                break;
+            case 13:
+                //if its a cancel domestic trade button
+                textImage = CANCEL_TRADE_DOMESTIC;
                 break;
             default:
                 //deflault to error image
