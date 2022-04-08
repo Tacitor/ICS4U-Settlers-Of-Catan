@@ -4413,7 +4413,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         dice.setJustRolled(true);
 
         // Act on the dice roll
-        if (/*roll == 7*/false) { // Move the thief on a 7
+        if (roll == 7) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
