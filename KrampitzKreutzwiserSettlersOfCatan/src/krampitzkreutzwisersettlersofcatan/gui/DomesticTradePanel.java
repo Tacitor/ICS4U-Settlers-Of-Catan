@@ -327,9 +327,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //=-=-=-=-=-=-=-=-= draw the menu segment boarders =-=-=-=-=-=-=-=-=
         g2d.setStroke(new BasicStroke(scaleInt(5))); //make the stroke a little thicker
         //draw the player select box
-        g2d.drawRect(playerIconStartPos,
+        g2d.drawRect((gameFrame.getWidth() / 2) - ((theGamePanel.getImgWidth(playerIconImage) * (3)) / 2),
                 playerSelectLbl.getYPos() - scaleInt(30),
-                theGamePanel.getImgWidth(playerIconImage) * nonInitiatePlayers.length,
+                theGamePanel.getImgWidth(playerIconImage) * 3,
                 theGamePanel.getImgHeight(playerIconImage) + scaleInt(60) + scaleInt(10));
         //draw the init player reveive box
         int xPos = cancelTradeBtn.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage());
