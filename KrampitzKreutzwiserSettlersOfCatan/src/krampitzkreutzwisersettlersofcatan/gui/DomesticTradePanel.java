@@ -239,28 +239,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 this.getHeight() - scaleInt(20) - theGamePanel.getImgHeight(SMALL_PLAYER_RED));
 
         //=-=-=-=END OF draw the player icons=-=-=-=
-        //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
-        for (SettlerBtn btn : settlerBtns) {
-            btn.updateButtonImages();
-            btn.updateText();
-
-            //draw the base        
-            theGamePanel.drawSettlerBtn(g2d, btn.getBaseImage(), btn, 0);
-
-            //draw the text
-            theGamePanel.drawSettlerBtn(g2d, btn.getTextImage(), btn, 0);
-
-            //draw the disabled overlay if required
-            if (!btn.isEnabled()) {
-                theGamePanel.drawSettlerBtn(g2d, btn.getDisabledImage(), btn, 0);
-            }
-            //draw the mouseHover overlay if required
-            if (btn.isMouseHover()) {
-                theGamePanel.drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1);
-            }
-        }
-
-        //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d);
@@ -293,6 +271,56 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 theGamePanel.getImgHeight(playerDot), this);
 
         //=-=-=-= END OF draw on the player dots for the labels=-=-=-=
+        //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
+        for (SettlerBtn btn : settlerBtns) {
+            btn.updateButtonImages();
+            btn.updateText();
+
+            //draw the base        
+            theGamePanel.drawSettlerBtn(g2d, btn.getBaseImage(), btn, 0);
+
+            //draw the text
+            theGamePanel.drawSettlerBtn(g2d, btn.getTextImage(), btn, 0);
+
+            //draw the player's colour dot if it's a lock trade button
+            if (btn.getType() == 11) {
+                int playerDotNum;
+
+                if (btn.equals(lockInitiatePlayerReceiveTradeBtn)) {
+                    playerDotNum = playerSelectedForTrade;
+                } else {
+                    playerDotNum = playerStartedDomestic;
+                }
+
+                int dotModeOffset = 0; //the number of pixels the dot should move to fit the space when in end text mode
+
+                //take away the +4 offset if it's in "End turn" mode
+                if (playerDotNum > 4) {
+                    playerDotNum -= 4;
+                    dotModeOffset = scaleInt(7);
+                }
+
+                //draw the dot 
+                g2d.drawImage(PLAYER_DOTS[playerDotNum],
+                        btn.getXPos() + scaleInt(91) - dotModeOffset,
+                        btn.getYPos() + theGamePanel.getImgHeight(btn.getTextImage()) / 2 - theGamePanel.getImgHeight(PLAYER_DOTS[playerDotNum]) / 4,
+                        theGamePanel.getImgWidth(PLAYER_DOTS[playerDotNum]) / 2,
+                        theGamePanel.getImgHeight(PLAYER_DOTS[playerDotNum]) / 2,
+                        null);
+            }
+
+            //draw the disabled overlay if required
+            if (!btn.isEnabled()) {
+                theGamePanel.drawSettlerBtn(g2d, btn.getDisabledImage(), btn, 0);
+            }
+            //draw the mouseHover overlay if required
+            if (btn.isMouseHover()) {
+                theGamePanel.drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1);
+            }
+
+        }
+
+        //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
         //draw the cards the initation player HAS
         drawCards(g2d, 0, theGamePanel.getResourceCards()[playerStartedDomestic]);
 
