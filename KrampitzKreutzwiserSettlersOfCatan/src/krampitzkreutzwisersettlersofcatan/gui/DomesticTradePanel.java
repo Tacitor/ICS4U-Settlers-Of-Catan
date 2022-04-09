@@ -128,6 +128,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         tradeCardsGivePlayerStartedDomestic.add(5);
 
         playerSelectedForTrade = 0; //default it to 0 (player none)
+        
+        repaint();
 
     }
 
@@ -292,17 +294,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                     playerDotNum = playerStartedDomestic;
                 }
 
-                int dotModeOffset = 0; //the number of pixels the dot should move to fit the space when in end text mode
-
-                //take away the +4 offset if it's in "End turn" mode
-                if (playerDotNum > 4) {
-                    playerDotNum -= 4;
-                    dotModeOffset = scaleInt(7);
-                }
-
                 //draw the dot 
                 g2d.drawImage(PLAYER_DOTS[playerDotNum],
-                        btn.getXPos() + scaleInt(91) - dotModeOffset,
+                        btn.getXPos() + scaleInt(92),
                         btn.getYPos() + theGamePanel.getImgHeight(btn.getTextImage()) / 2 - theGamePanel.getImgHeight(PLAYER_DOTS[playerDotNum]) / 4,
                         theGamePanel.getImgWidth(PLAYER_DOTS[playerDotNum]) / 2,
                         theGamePanel.getImgHeight(PLAYER_DOTS[playerDotNum]) / 2,
@@ -625,6 +619,15 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         gameFrame.switchToTrade(false);
     }
 
+    private void lockInitiatePlayerTradeBtnPressed(SettlerBtn lockBtn) {
+        //toggle the mode
+        if (lockBtn.getMode() == 0) {
+            lockBtn.setMode(1);
+        } else {
+            lockBtn.setMode(0);
+        }
+    }
+
     /**
      * Actions to take when the user clicks on the trade panel
      *
@@ -644,9 +647,15 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                     //if it's the cancel button
                     //close the trade menu
                     cancelTradeBtnPressed();
+                } else if (btn.equals(lockInitiatePlayerGiveTradeBtn)) {
+                    lockInitiatePlayerTradeBtnPressed(btn);
+                } else if (btn.equals(lockInitiatePlayerReceiveTradeBtn)) {
+                    lockInitiatePlayerTradeBtnPressed(btn);
                 }
             }
         }
+        
+        repaint();
     }
 
     @Override
@@ -697,6 +706,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         playerSelectLbl.setFont(headerFont);
         initiatePlayerReceivesLbl.setFont(headerFont);
         initiatePlayerGivesLbl.setFont(headerFont);
+        
+        repaint();
     }
 
     /**
