@@ -708,16 +708,48 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                         && evt.getY() < (tradePlayerPosY + (theGamePanel.getImgHeight(SMALL_PLAYER_RED)))) {
 
                     //debug
-                    System.out.println("Yuh we got a click on player: " + nonInitiatePlayers[i]);
-
-                    //updateBuildButtons();
+                    //System.out.println("Yuh we got a click on player: " + nonInitiatePlayers[i]);
+                    //enter the next mode of trade
+                    domesticTradeMode++;
 
                 }
 
             }
         }
 
+        updateComponentState();
         repaint();
+    }
+
+    /**
+     * Plays a simular role as updateBuildButtons() does in the GamePanel.
+     * Mutates many attributes in the buttons, labels, etc.
+     */
+    private void updateComponentState() {
+
+        //update all the buttons based off the mode
+        if (domesticTradeMode == 0) {
+            //if in player select mode all buttons should be off
+            lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
+            lockInitiatePlayerGiveTradeBtn.setEnabled(false);
+            completeTradeBtn.setEnabled(false);
+        } else if (domesticTradeMode == 1) {
+            //if in start player cards give away mode
+            lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
+            lockInitiatePlayerGiveTradeBtn.setEnabled(true);
+            completeTradeBtn.setEnabled(false);
+        } else if (domesticTradeMode == 2) {
+            //if in trade partner player cards give away mode
+            lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
+            lockInitiatePlayerGiveTradeBtn.setEnabled(false);
+            completeTradeBtn.setEnabled(false);
+        } else if (domesticTradeMode == 3) {
+            //if in ready to complete trade mode
+            lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
+            lockInitiatePlayerGiveTradeBtn.setEnabled(false);
+            completeTradeBtn.setEnabled(true);
+        }
+
     }
 
     @Override
@@ -753,6 +785,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         }
 
+        updateComponentState();
         repaint();
     }
 
