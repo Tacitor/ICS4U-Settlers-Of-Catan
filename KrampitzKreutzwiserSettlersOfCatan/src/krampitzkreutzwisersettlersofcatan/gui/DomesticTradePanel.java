@@ -379,6 +379,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 yPos,
                 this.getWidth() - (xPos * 2),
                 lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
+        
+        //draw the trade mode
+        g2d.drawString("Trade Mode: " + domesticTradeMode, 0, 500);
 
         //=-=-=-=-=-=-=-=-= END OF draw the menu segment boarders =-=-=-=-=-=-=-=-=
         // Add alignment lines
@@ -750,12 +753,12 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
             case 2:
                 //if in trade partner player cards give away mode
                 lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
-                lockInitiatePlayerGiveTradeBtn.setEnabled(false);
+                lockInitiatePlayerGiveTradeBtn.setEnabled(true);
                 completeTradeBtn.setEnabled(false);
                 break;
             case 3:
                 //if in ready to complete trade mode
-                lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
+                lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
                 lockInitiatePlayerGiveTradeBtn.setEnabled(false);
                 completeTradeBtn.setEnabled(true);
                 break;
