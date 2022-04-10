@@ -379,7 +379,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 yPos,
                 this.getWidth() - (xPos * 2),
                 lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
-        
+
         //draw the trade mode
         g2d.drawString("Trade Mode: " + domesticTradeMode, 0, 500);
 
@@ -653,20 +653,29 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         return cardPosY;
     }
 
+    /**
+     * If the player would like to cancel the trade show the game panel again.
+     */
     private void cancelTradeBtnPressed() {
         gameFrame.switchToTrade(false);
     }
 
+    /**
+     * If one of the buttons to lock in the cards a player will receive in a
+     * trade was pressed.
+     *
+     * @param lockBtn
+     */
     private void lockInitiatePlayerTradeBtnPressed(SettlerBtn lockBtn) {
         //toggle the mode
         if (lockBtn.getMode() == 0) {
             lockBtn.setMode(1);
-            
+
             //progress the trade mode to the next stage now that this button is locked
             domesticTradeMode++;
         } else {
             lockBtn.setMode(0);
-            
+
             //regress the trade mode to the next stage now that this button is unlocked again
             domesticTradeMode--;
         }
@@ -718,6 +727,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
                     //debug
                     //System.out.println("Yuh we got a click on player: " + nonInitiatePlayers[i]);
+                    //save the player that was selected for trade
+                    playerSelectedForTrade = nonInitiatePlayers[i];
+
                     //enter the next mode of trade
                     domesticTradeMode++;
 
