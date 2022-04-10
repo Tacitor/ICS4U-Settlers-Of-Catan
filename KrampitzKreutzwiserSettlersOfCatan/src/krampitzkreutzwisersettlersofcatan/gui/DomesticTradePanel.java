@@ -658,8 +658,14 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //toggle the mode
         if (lockBtn.getMode() == 0) {
             lockBtn.setMode(1);
+            
+            //progress the trade mode to the next stage now that this button is locked
+            domesticTradeMode++;
         } else {
             lockBtn.setMode(0);
+            
+            //regress the trade mode to the next stage now that this button is unlocked again
+            domesticTradeMode--;
         }
     }
 
@@ -728,26 +734,33 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private void updateComponentState() {
 
         //update all the buttons based off the mode
-        if (domesticTradeMode == 0) {
-            //if in player select mode all buttons should be off
-            lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
-            lockInitiatePlayerGiveTradeBtn.setEnabled(false);
-            completeTradeBtn.setEnabled(false);
-        } else if (domesticTradeMode == 1) {
-            //if in start player cards give away mode
-            lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
-            lockInitiatePlayerGiveTradeBtn.setEnabled(true);
-            completeTradeBtn.setEnabled(false);
-        } else if (domesticTradeMode == 2) {
-            //if in trade partner player cards give away mode
-            lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
-            lockInitiatePlayerGiveTradeBtn.setEnabled(false);
-            completeTradeBtn.setEnabled(false);
-        } else if (domesticTradeMode == 3) {
-            //if in ready to complete trade mode
-            lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
-            lockInitiatePlayerGiveTradeBtn.setEnabled(false);
-            completeTradeBtn.setEnabled(true);
+        switch (domesticTradeMode) {
+            case 0:
+                //if in player select mode all buttons should be off
+                lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
+                lockInitiatePlayerGiveTradeBtn.setEnabled(false);
+                completeTradeBtn.setEnabled(false);
+                break;
+            case 1:
+                //if in start player cards give away mode
+                lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
+                lockInitiatePlayerGiveTradeBtn.setEnabled(true);
+                completeTradeBtn.setEnabled(false);
+                break;
+            case 2:
+                //if in trade partner player cards give away mode
+                lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerGiveTradeBtn.setEnabled(false);
+                completeTradeBtn.setEnabled(false);
+                break;
+            case 3:
+                //if in ready to complete trade mode
+                lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
+                lockInitiatePlayerGiveTradeBtn.setEnabled(false);
+                completeTradeBtn.setEnabled(true);
+                break;
+            default:
+                break;
         }
 
     }
