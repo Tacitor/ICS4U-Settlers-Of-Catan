@@ -61,6 +61,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private int playerSelectedForTrade; //the player ID of the player that the playerStartedDomestic selected to trade with
     private ArrayList<Integer> tradeCardsGivePlayerStartedDomestic; //The cards that the player who started the trade will give away to the other player 
 
+    private int playerIconStartPos;
+
     private int domesticTradeMode; //the mode of trade the game is in. Starts at 0. Each stage is incremented by 1.
 
     /**
@@ -210,12 +212,11 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         Image playerIconImage = theGamePanel.getPlayerImage(1, true); //the image that will be drawn for the player
 
         //calc the start postion
-        int playerIconStartPos;
         //place the start so that the icons are in the middle if the screen horizontally
         playerIconStartPos = (gameFrame.getWidth() / 2) - ((theGamePanel.getImgWidth(playerIconImage) * (playerCount - 1)) / 2);
 
         //do the drawing
-        for (int i = 0; i < nonInitiatePlayers.length; i++) { //loo though the players
+        for (int i = 0; i < nonInitiatePlayers.length; i++) { //loop though the players
 
             playerIconImage = theGamePanel.getPlayerImage(nonInitiatePlayers[i], true);
 
@@ -668,7 +669,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * @param evt
      */
     public void tradeMouseClicked(MouseEvent evt) {
-        //Loop through all the Buttons
+        //Loop through all the Buttons and see if they were clicked
         for (SettlerBtn btn : settlerBtns) {
             if (evt.getX() > btn.getXPos()
                     && evt.getY() > btn.getYPos()
@@ -686,6 +687,33 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 } else if (btn.equals(lockInitiatePlayerReceiveTradeBtn)) {
                     lockInitiatePlayerTradeBtnPressed(btn);
                 }
+            }
+        }
+
+        //if no button was click check what mode the trade is in and see if there is an appropriate action
+        if (domesticTradeMode == 0) { //if we are in the starter mode where a player to trade with must be selected
+
+            int tradePlayerPosY = playerSelectLbl.getYPos() + scaleInt(30);
+            int tradePlayerPosX;
+
+            //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
+            for (int i = 0; i < nonInitiatePlayers.length; i++) {
+
+                tradePlayerPosX = playerIconStartPos + ((theGamePanel.getImgWidth(SMALL_PLAYER_RED)) * (i));
+
+                //check if there was a click on one of the sub players
+                if (evt.getX() > tradePlayerPosX
+                        && evt.getY() > tradePlayerPosY
+                        && evt.getX() < (tradePlayerPosX + (theGamePanel.getImgWidth(SMALL_PLAYER_RED)))
+                        && evt.getY() < (tradePlayerPosY + (theGamePanel.getImgHeight(SMALL_PLAYER_RED)))) {
+
+                    //debug
+                    System.out.println("Yuh we got a click on player: " + nonInitiatePlayers[i]);
+
+                    //updateBuildButtons();
+
+                }
+
             }
         }
 

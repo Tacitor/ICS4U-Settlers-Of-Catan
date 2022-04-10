@@ -1358,7 +1358,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         if (authorizedUser) {
 
             //check if the player is building
-            if (buildingObject != 0) {
+            if (buildingObject != 0) { // <editor-fold defaultstate="collapsed" desc="{ ... }"> 
                 //check what they are building
                 switch (buildingObject) {
                     case 1:
@@ -1642,6 +1642,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
                         break;
                 }
+                // </editor-fold desc="buildingObject != 0"> 
+                // </editor-fold>
+
             } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0 && !thiefJustStarted) { //check if the user clicked to select a card and the thief didn't just start
 
                 //get the y position for the cards
