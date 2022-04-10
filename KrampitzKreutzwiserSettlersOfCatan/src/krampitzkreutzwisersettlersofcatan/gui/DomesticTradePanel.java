@@ -61,6 +61,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private int playerSelectedForTrade; //the player ID of the player that the playerStartedDomestic selected to trade with
     private ArrayList<Integer> tradeCardsGivePlayerStartedDomestic; //The cards that the player who started the trade will give away to the other player 
 
+    private int domesticTradeMode; //the mode of trade the game is in. Starts at 0. Each stage is incremented by 1.
+
     /**
      * Domestic trade Constructor
      *
@@ -127,10 +129,26 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         tradeCardsGivePlayerStartedDomestic = new ArrayList<>();
         tradeCardsGivePlayerStartedDomestic.add(5);
 
-        playerSelectedForTrade = 0; //default it to 0 (player none)
-        
+        resetToStartingMode();
+
         repaint();
 
+    }
+
+    /**
+     * Reset the variables to a default stating mode
+     */
+    public void resetToStartingMode() {
+        lockInitiatePlayerGiveTradeBtn.setEnabled(false);
+        lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
+        completeTradeBtn.setEnabled(false);
+
+        playerSelectedForTrade = 0; //default it to 0 (player none)
+
+        tradeCardsGivePlayerStartedDomestic.clear();
+        tradeCardsReceivePlayerStartedDomestic.clear();
+
+        domesticTradeMode = 0;
     }
 
     /**
@@ -207,6 +225,22 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                     theGamePanel.getImgWidth(playerIconImage), //scale the image
                     theGamePanel.getImgHeight(playerIconImage),
                     null);
+
+            //draw the hitbox around the icons only if in mode 0
+            if (domesticTradeMode == 0) {
+                //draw the high light
+                g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                g2d.fillRect(playerIconStartPos + ((theGamePanel.getImgWidth(playerIconImage)) * (i)), //put it in the corner with some padding space
+                        playerSelectLbl.getYPos() + scaleInt(30), //put it in the corner with some padding space
+                        theGamePanel.getImgWidth(SMALL_PLAYER_RED),
+                        theGamePanel.getImgHeight(SMALL_PLAYER_RED));
+                //draw the boarder
+                g2d.setColor(new java.awt.Color(255, 255, 225));
+                g2d.drawRect(playerIconStartPos + ((theGamePanel.getImgWidth(playerIconImage)) * (i)), //put it in the corner with some padding space
+                        playerSelectLbl.getYPos() + scaleInt(30), //put it in the corner with some padding space
+                        theGamePanel.getImgWidth(SMALL_PLAYER_RED),
+                        theGamePanel.getImgHeight(SMALL_PLAYER_RED));
+            }
 
         }
 
@@ -654,7 +688,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 }
             }
         }
-        
+
         repaint();
     }
 
@@ -706,7 +740,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         playerSelectLbl.setFont(headerFont);
         initiatePlayerReceivesLbl.setFont(headerFont);
         initiatePlayerGivesLbl.setFont(headerFont);
-        
+
         repaint();
     }
 
