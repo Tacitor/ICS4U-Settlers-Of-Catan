@@ -408,9 +408,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         Image image;
         //draw the 4 segments
         for (int i = 0; i < 4; i++) {
-            
+
             image = i < domesticTradeMode ? PROGRESS_BAR_COMPLETE : PROGRESS_BAR_UNCOMPLETE;
-            
+
             g2d.drawImage(image,
                     progessBarStartPosX + (theGamePanel.getImgWidth(PROGRESS_BAR_COMPLETE) * i),
                     scaleInt(5),
@@ -726,6 +726,36 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     }
 
     /**
+     * Complete the Trade. The players have reached a decision and want to
+     * switch cards.
+     */
+    private void completeTradeBtnPressed() {
+
+        /**
+         * Since the cards that are being traded away are already removed from
+         * the tradeCardsAlreadyHadPlayerStartedDomestic ArrayLists, just add
+         * the cards they will receive to the other ArrayList
+         */
+        tradeCardsAlreadyHadPlayerStartedDomestic.addAll(tradeCardsReceivePlayerStartedDomestic);
+        
+        //and the same for the other player
+        tradeCardsAlreadyHadPlayerSelected.addAll(tradeCardsGivePlayerStartedDomestic);
+        
+        //get the cards from theGamePanel
+        ArrayList<Integer>[] gameCards = theGamePanel.getResourceCards();
+        
+        //save said ArrayLists into the Cards array
+        gameCards[playerStartedDomestic] = tradeCardsAlreadyHadPlayerStartedDomestic;
+        gameCards[playerSelectedForTrade] = tradeCardsAlreadyHadPlayerSelected;        
+        
+        //save said ArrayLists into the gamePanel
+        theGamePanel.setResourceCards(gameCards);
+        
+        //hide the trade panel
+        gameFrame.switchToTrade(false);
+    }
+
+    /**
      * Actions to take when the user clicks on the trade panel
      *
      * @param evt
@@ -748,6 +778,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                     lockInitiatePlayerTradeBtnPressed(btn);
                 } else if (btn.equals(lockInitiatePlayerReceiveTradeBtn)) {
                     lockInitiatePlayerTradeBtnPressed(btn);
+                } else if (btn.equals(completeTradeBtn)) { //if the accept trade button has been clicked
+                    completeTradeBtnPressed();
                 }
             }
         }
