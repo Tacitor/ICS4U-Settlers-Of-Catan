@@ -60,7 +60,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic; //The cards that the player who started the trade will receive 
     private int playerSelectedForTrade; //the player ID of the player that the playerStartedDomestic selected to trade with
     private ArrayList<Integer> tradeCardsGivePlayerStartedDomestic; //The cards that the player who started the trade will give away to the other player 
-    private ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic; //A copy of the cards that the player who started the trade has going in
+    private ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic; //A copy of the cards that the player who started the trade has going in 
+    private ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected; //A copy of the cards that the player who was selected for the trade has going in
 
     private int playerIconStartPos;
 
@@ -300,18 +301,20 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 initiatePlayerReceivesLbl.getYPos() - theGamePanel.getImgHeight(playerDot) + scaleInt(8),
                 theGamePanel.getImgWidth(playerDot),
                 theGamePanel.getImgHeight(playerDot), this);
-        
+
         //draw the dot image for the initiatePlayersStaticCardsLbl
         int openBracketPos; //the position of the '(' char in the string
         //calc the sub string of the text
         openBracketPos = initiatePlayersStaticCardsLbl.getText().indexOf('(');
+
+        //set the image based off of what mode the game is in. If mode 1 then the ini player must select cards. If mode 2 then the other player must slect cards
+        playerDot = domesticTradeMode == 2 ? ImageRef.PLAYER_DOTS[playerSelectedForTrade] : ImageRef.PLAYER_DOTS[playerStartedDomestic];
         //draw the give player dot
         g2d.drawImage(playerDot,
                 initiatePlayersStaticCardsLbl.getXPos() + (g2d.getFontMetrics().stringWidth(initiatePlayersStaticCardsLbl.getText().substring(0, openBracketPos + 1))) + scaleInt(4),
                 initiatePlayersStaticCardsLbl.getYPos() - theGamePanel.getImgHeight(playerDot) + scaleInt(8),
                 theGamePanel.getImgWidth(playerDot),
                 theGamePanel.getImgHeight(playerDot), this);
-        
 
         //draw the dot image for the initiatePlayerGivesLbl
         //set the image
@@ -755,6 +758,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                     //save the player that was selected for trade
                     playerSelectedForTrade = nonInitiatePlayers[i];
 
+                    //save the cards this player has at the current moment
+                    tradeCardsAlreadyHadPlayerSelected = (ArrayList<Integer>) (theGamePanel.getResourceCards()[playerSelectedForTrade].clone());
+
                     //enter the next mode of trade
                     domesticTradeMode++;
 
@@ -852,8 +858,13 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      */
     private ArrayList<Integer> getCardHand(int cardHandNum) {
         switch (cardHandNum) {
-            case 0:
-                return tradeCardsAlreadyHadPlayerStartedDomestic;
+            case 0: //the hand at the bottom of the screen
+                //decide if to show the init player's hand or the selected player
+                if (domesticTradeMode == 2) {
+                    return tradeCardsAlreadyHadPlayerSelected;
+                } else {
+                    return tradeCardsAlreadyHadPlayerStartedDomestic;
+                }
             case 1:
                 return tradeCardsReceivePlayerStartedDomestic;
             case 2:
