@@ -2256,10 +2256,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     }
 
                 }
-
-                //update the screen
-                repaint();
             }
+
+            //update the screen
+            repaint();
 
             //update the server if online mode and the click came from an authroiazed user
             onlineUpdateServer();

@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import textures.ImageRef;
 
@@ -120,6 +121,8 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
             
             //save the player that started the domestic trade
             domesticTradePanel.setPlayerStartedDomestic(theGamePanel.getCurrentPlayer());
+            //save the cards they had at the time of clicking the trade button            
+            domesticTradePanel.setTradeCardsAlreadyHadPlayerStartedDomestic((ArrayList<Integer>) theGamePanel.getResourceCards()[theGamePanel.getCurrentPlayer()].clone());
 
             domesticTradePanel.repaint(); //ensure there is something to diaplay
 

@@ -60,6 +60,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic; //The cards that the player who started the trade will receive 
     private int playerSelectedForTrade; //the player ID of the player that the playerStartedDomestic selected to trade with
     private ArrayList<Integer> tradeCardsGivePlayerStartedDomestic; //The cards that the player who started the trade will give away to the other player 
+    private ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic; //A copy of the cards that the player who started the trade has going in
 
     private int playerIconStartPos;
 
@@ -98,10 +99,10 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         });
 
         //setup the buttons
-        cancelTradeBtn = new SettlerBtn(true, 1, 13);
+        cancelTradeBtn = new SettlerBtn(true, 0, 13);
         lockInitiatePlayerReceiveTradeBtn = new SettlerBtn(true, 0, 11);
         lockInitiatePlayerGiveTradeBtn = new SettlerBtn(true, 0, 11);
-        completeTradeBtn = new SettlerBtn(true, 1, 12);
+        completeTradeBtn = new SettlerBtn(true, 0, 12);
         //add then to the array
         settlerBtns = new SettlerBtn[]{cancelTradeBtn, lockInitiatePlayerReceiveTradeBtn, lockInitiatePlayerGiveTradeBtn, completeTradeBtn};
 
@@ -144,6 +145,11 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         lockInitiatePlayerGiveTradeBtn.setEnabled(false);
         lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
         completeTradeBtn.setEnabled(false);
+
+        //loop through all the buttons an reset them to mode 0
+        for (SettlerBtn btn : settlerBtns) {
+            btn.setMode(0);
+        }
 
         playerSelectedForTrade = 0; //default it to 0 (player none)
 
@@ -351,7 +357,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
         //draw the cards the initation player HAS
-        drawCards(g2d, 0, theGamePanel.getResourceCards()[playerStartedDomestic]);
+        drawCards(g2d, 0, getCardHand(0));
 
         //draw the cards the intiation player will receive
         drawCards(g2d, 1, tradeCardsReceivePlayerStartedDomestic);
@@ -736,10 +742,100 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 }
 
             }
+        } else if (domesticTradeMode == 1 || domesticTradeMode == 2) { //if in mode 1, or 2
+            //check if a player clicked on some cards
+
+            int cardYPos;
+
+            //loop through the 3 card hand locations
+            for (int cardHandNum = 0; cardHandNum < drawCardStacks.length; cardHandNum++) {
+
+                //get the y position for the cards
+                cardYPos = getCardPosY(cardHandNum, CARD_CLAY);
+
+                //check what mode the card drawing is in
+                if (drawCardStacks[cardHandNum]) { //check for a click on a cards in the stacked mode
+
+                    //loop though the 5 stacks
+                    for (int i = 0; i < 5; i++) {
+
+                        //check for a click
+                        if (evt.getX() > CardUtil.getCardStackXPositions(theGamePanel)[i]
+                                && evt.getX() < (CardUtil.getCardStackXPositions(theGamePanel)[i] + theGamePanel.getImgWidth(CARD_CLAY))
+                                && evt.getY() > cardYPos
+                                && evt.getY() < (cardYPos + theGamePanel.getImgHeight(CARD_CLAY))) {
+
+                            //debug click detection
+                            //System.out.println("Card stack Clicked!");
+                            Integer typeToRemove = i + 1;
+                        }
+                    }
+
+                } else { //check for a click on a card in the full layout mode     
+
+                    //check if the user clicked on any card
+                    for (int i = 0; i < getCardHand(cardHandNum).size(); i++) {
+
+                        //get the x position for that card
+                        int cardXPos = (CardUtil.getCardStartPosition(0, getCardHand(cardHandNum).size(), theGamePanel) + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i);
+
+                        //check if there was a click on a card
+                        if (evt.getX() > cardXPos
+                                && evt.getY() > cardYPos
+                                && evt.getX() < (cardXPos + theGamePanel.getImgWidth(CARD_CLAY))
+                                && evt.getY() < (cardYPos + theGamePanel.getImgHeight(CARD_CLAY))) {
+
+                            //add the card to the other players receive hand
+                            mutateTradeCardLists(getCardHand(cardHandNum).get(i), cardHandNum);
+                        }
+                    }
+                }
+            }
         }
 
         updateComponentState();
         repaint();
+    }
+
+    /**
+     * Changes the ArrayLists of cards that are displayed for the trade
+     *
+     * @param cardNum
+     */
+    private void mutateTradeCardLists(int cardNum, int cardHandNum) {
+
+        //decicde what list to add/ remove to
+        //if in mode 1
+        if (domesticTradeMode == 1) {
+            //if the players existing cards at the bottom were clicked
+            if (cardHandNum == 0) {
+                tradeCardsGivePlayerStartedDomestic.add(cardNum);
+                getCardHand(cardHandNum).remove(new Integer(cardNum));
+            }
+        }
+
+    }
+
+    /**
+     * From one of three card hand numbers return a set of cards
+     *
+     * @param cardHandNum Value of 0 is the cards the player has, 1 is the
+     * initiator's receive. 2, is the other receive.
+     * @return
+     */
+    private ArrayList<Integer> getCardHand(int cardHandNum) {
+        switch (cardHandNum) {
+            case 0:
+                return tradeCardsAlreadyHadPlayerStartedDomestic;
+            case 1:
+                return tradeCardsReceivePlayerStartedDomestic;
+            case 2:
+                return tradeCardsGivePlayerStartedDomestic;
+            default:
+                ArrayList<Integer> badList = new ArrayList<>();
+                badList.add(-1);
+                return badList;
+        }
     }
 
     /**
@@ -852,6 +948,26 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      */
     public void setPlayerStartedDomestic(int playerStartedDomestic) {
         this.playerStartedDomestic = playerStartedDomestic;
+    }
+
+    /**
+     * Get the cards the player who started the trade already had when they
+     * initiated said trade.
+     *
+     * @return
+     */
+    public ArrayList<Integer> getTradeCardsAlreadyHadPlayerStartedDomestic() {
+        return tradeCardsAlreadyHadPlayerStartedDomestic;
+    }
+
+    /**
+     * Set the cards the player who started the trade already had when they
+     * initiated said trade.
+     *
+     * @param newTradeCardsAlreadyHadPlayerStartedDomestic
+     */
+    public void setTradeCardsAlreadyHadPlayerStartedDomestic(ArrayList<Integer> newTradeCardsAlreadyHadPlayerStartedDomestic) {
+        this.tradeCardsAlreadyHadPlayerStartedDomestic = newTradeCardsAlreadyHadPlayerStartedDomestic;
     }
 
     /**
