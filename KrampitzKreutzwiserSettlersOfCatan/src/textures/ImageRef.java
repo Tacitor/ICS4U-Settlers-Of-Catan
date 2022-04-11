@@ -116,6 +116,10 @@ public class ImageRef {
     //the image for dev card too tips
     public final static Image TOOLTIP_DEV_CARD_BGD = new ImageIcon(ImageRef.class.getResource("util/tooltipBackground.png")).getImage();
 
+    //the image for the progress bar
+    public final static Image PROGRESS_BAR_UNCOMPLETE = new ImageIcon(ImageRef.class.getResource("util/progressBarUnCompleted.png")).getImage();
+    public final static Image PROGRESS_BAR_COMPLETE = new ImageIcon(ImageRef.class.getResource("util/progressBarCompleted.png")).getImage();
+
     public ImageRef() {
     }
 

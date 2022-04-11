@@ -402,6 +402,22 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 this.getWidth() - (xPos * 2),
                 lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
 
+        //draw the progress bar of the trade process
+        //calc where the bar should start being drawn
+        int progessBarStartPosX = this.getWidth() - (theGamePanel.getImgWidth(PROGRESS_BAR_COMPLETE) * 4 + scaleInt(5)); //times 4 because of the 4 segments in the bar 
+        Image image;
+        //draw the 4 segments
+        for (int i = 0; i < 4; i++) {
+            
+            image = i < domesticTradeMode ? PROGRESS_BAR_COMPLETE : PROGRESS_BAR_UNCOMPLETE;
+            
+            g2d.drawImage(image,
+                    progessBarStartPosX + (theGamePanel.getImgWidth(PROGRESS_BAR_COMPLETE) * i),
+                    scaleInt(5),
+                    theGamePanel.getImgWidth(PROGRESS_BAR_COMPLETE),
+                    theGamePanel.getImgHeight(PROGRESS_BAR_COMPLETE), this);
+        }
+
         //draw the trade mode
         g2d.drawString("Trade Mode: " + domesticTradeMode, 0, 500);
 
@@ -792,7 +808,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
                             //debug click detection
                             //System.out.println("Card stack Clicked!");
-                            Integer typeToRemove = i + 1;
                         }
                     }
 
