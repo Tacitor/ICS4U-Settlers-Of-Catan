@@ -737,20 +737,25 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
          * the cards they will receive to the other ArrayList
          */
         tradeCardsAlreadyHadPlayerStartedDomestic.addAll(tradeCardsReceivePlayerStartedDomestic);
-        
+
         //and the same for the other player
         tradeCardsAlreadyHadPlayerSelected.addAll(tradeCardsGivePlayerStartedDomestic);
-        
+
+        //sort the cards
+        theGamePanel.quickSortCards(tradeCardsAlreadyHadPlayerStartedDomestic, 0, tradeCardsAlreadyHadPlayerStartedDomestic.size() - 1);
+        //sort the cards 
+        theGamePanel.quickSortCards(tradeCardsAlreadyHadPlayerSelected, 0, tradeCardsAlreadyHadPlayerSelected.size() - 1);
+
         //get the cards from theGamePanel
         ArrayList<Integer>[] gameCards = theGamePanel.getResourceCards();
-        
+
         //save said ArrayLists into the Cards array
         gameCards[playerStartedDomestic] = tradeCardsAlreadyHadPlayerStartedDomestic;
-        gameCards[playerSelectedForTrade] = tradeCardsAlreadyHadPlayerSelected;        
-        
+        gameCards[playerSelectedForTrade] = tradeCardsAlreadyHadPlayerSelected;
+
         //save said ArrayLists into the gamePanel
         theGamePanel.setResourceCards(gameCards);
-        
+
         //hide the trade panel
         gameFrame.switchToTrade(false);
     }
@@ -888,7 +893,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 tradeCardsGivePlayerStartedDomestic.remove(new Integer(cardNum));
                 tradeCardsAlreadyHadPlayerStartedDomestic.add(cardNum);
 
-                //sort the cards first
+                //sort the cards 
                 theGamePanel.quickSortCards(tradeCardsAlreadyHadPlayerStartedDomestic, 0, tradeCardsAlreadyHadPlayerStartedDomestic.size() - 1);
             }
 
@@ -902,7 +907,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 tradeCardsReceivePlayerStartedDomestic.remove(new Integer(cardNum));
                 tradeCardsAlreadyHadPlayerSelected.add(cardNum);
 
-                //sort the cards first
+                //sort the cards 
                 theGamePanel.quickSortCards(tradeCardsAlreadyHadPlayerSelected, 0, tradeCardsAlreadyHadPlayerSelected.size() - 1);
             }
 
