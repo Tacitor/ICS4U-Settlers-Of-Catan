@@ -845,6 +845,20 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 theGamePanel.quickSortCards(tradeCardsAlreadyHadPlayerStartedDomestic, 0, tradeCardsAlreadyHadPlayerStartedDomestic.size() - 1);
             }
 
+        } else if (domesticTradeMode == 2) { //if it is now the time for the selected player to put up their cards for trade
+            //if the players existing cards at the bottom were clicked
+            if (cardHandNum == 0) {
+                tradeCardsReceivePlayerStartedDomestic.add(cardNum);
+                tradeCardsAlreadyHadPlayerSelected.remove(new Integer(cardNum));
+            }//if the players cards they will be trading away were clicked
+            else if (cardHandNum == 1) {
+                tradeCardsReceivePlayerStartedDomestic.remove(new Integer(cardNum));
+                tradeCardsAlreadyHadPlayerSelected.add(cardNum);
+
+                //sort the cards first
+                theGamePanel.quickSortCards(tradeCardsAlreadyHadPlayerSelected, 0, tradeCardsAlreadyHadPlayerSelected.size() - 1);
+            }
+
         }
 
     }
