@@ -6738,7 +6738,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     /**
      * If the game is in online mode update the server with the current game.
      */
-    private void onlineUpdateServer() {
+    public void onlineUpdateServer() {
         //debug statemtn for updateing the game server
         //System.out.println("Updateing online");
 

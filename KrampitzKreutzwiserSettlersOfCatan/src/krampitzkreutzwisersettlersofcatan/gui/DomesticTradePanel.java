@@ -872,6 +872,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         updateComponentState();
         repaint();
+
+        //if in online mode update the server and there by the other players
+        theGamePanel.onlineUpdateServer();
     }
 
     /**
