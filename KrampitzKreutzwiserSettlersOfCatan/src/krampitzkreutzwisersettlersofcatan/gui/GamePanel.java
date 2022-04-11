@@ -4181,14 +4181,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     /**
      * Sort a player's list of cards using a recursive quick sort algorithm
      *
-     * @param player The player who's cards will be sorted
+     * @param array
      * @param left The left bounds of the segment to sort (used to recursion,
      * set to 0)
      * @param right The right bounds of the segment to sort (used to recursion,
      * set to length of array - 1)
-     * @return
      */
-    private void quickSortCards(ArrayList<Integer> array, int left, int right) {
+    public void quickSortCards(ArrayList<Integer> array, int left, int right) {
 
         Integer temp; // For swapping values
         // Get the player's ArrayList of cards
