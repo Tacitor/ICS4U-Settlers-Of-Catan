@@ -190,7 +190,7 @@ public class CatanServer {
                                 count += bytesRead;
                             }   //debug the file that was sent
                             //System.out.println("[Server] " + Arrays.toString(fileAsStream));
-                            
+
                             //recive the dice roll boolean
                             boolean justRolledDice = dataIn.readBoolean();
 
@@ -263,6 +263,21 @@ public class CatanServer {
 
                             //TODO: What is causeing the GameFrame to be visable after stopping
                             break;
+                        //if the server is getting the domestic trading data
+                        case 5:
+
+                            //read in the online player ID of the sender
+                            int onlineModeOfSender = dataIn.readInt();
+
+                            //send the data back out to all the clients
+                            //except the sender
+                            for (int i = 0; i < clients.length; i++) {
+                                if (i + 1 != onlineModeOfSender) {
+                                    clients[i].sendDomesticTradeData(onlineModeOfSender);
+                                }
+                            }
+
+                            break;
                         default:
                             break;
                     }
@@ -290,11 +305,11 @@ public class CatanServer {
         /**
          * Send a file to the client. Also update their chat so they know to
          * check for a new file
-         * 
+         *
          * @param msg
          * @param fileData
          * @param fileName
-         * @param justRolledDice 
+         * @param justRolledDice
          */
         public void sendFile(String msg, byte[] fileData, String fileName, boolean justRolledDice) {
             try {
@@ -307,6 +322,16 @@ public class CatanServer {
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Server] " + "IOException from SSC sendNewString()");
+            }
+        }
+
+        public void sendDomesticTradeData(int onlineModeOfSender) {
+            try {
+                dataOut.writeInt(5); //tell the client they are reciving domestic trade data
+                dataOut.writeInt(onlineModeOfSender); //tell the recipeient who send the trade data
+                dataOut.flush();
+            } catch (IOException e) {
+                System.out.println("[Server] " + "IOException from SSC sendDomesticTradeData()");
             }
         }
 

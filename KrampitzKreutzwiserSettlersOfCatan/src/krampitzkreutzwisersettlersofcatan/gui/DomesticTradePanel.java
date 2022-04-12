@@ -877,6 +877,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //if in online mode update the server and there by the other players
         theGamePanel.onlineUpdateServer();
+        //and send the trade data over to the server
+        onlineUpdateTradeDataServer();
+        
     }
 
     /**
@@ -1020,6 +1023,22 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         updateComponentState();
         repaint();
+    }
+
+    /**
+     * If the game is in online mode update the server with the current domestic
+     * trade data.
+     */
+    public void onlineUpdateTradeDataServer() {
+        //debug statemtn for updateing the game server
+        //System.out.println("Updateing online");
+
+        //check if the game is for online play
+        if (GamePanel.getOnlineMode() != -1) {
+            //if it is send the trade data to the server
+            //also send the online player number
+            GamePanel.getCatanClient().sendDomesticTradeToServer(GamePanel.getOnlineMode());
+        }
     }
 
     /**

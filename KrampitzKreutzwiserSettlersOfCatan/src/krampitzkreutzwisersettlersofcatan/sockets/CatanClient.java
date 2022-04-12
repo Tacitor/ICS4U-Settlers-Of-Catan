@@ -391,6 +391,17 @@ public class CatanClient extends JFrame {
         }
     }
 
+    /**
+     * Send the data of the domestic trade that is underway to the server.
+     *
+     * @param onlineMode
+     */
+    public void sendDomesticTradeToServer(int onlineMode) {
+
+        csc.sendDomesticTradeData(onlineMode);
+
+    }
+
     private void sendFile(String fileLocation) {
         //test if it is a vailid save file
         try {
@@ -503,6 +514,15 @@ public class CatanClient extends JFrame {
                 break;
             case 3:
                 incomingColourResponse();
+                break;
+
+            case 5:
+                int onlineModeOfSender = csc.receiveDomesticTradeData();
+
+                System.out.println("Got domestic trade mode: " + onlineModeOfSender);
+
+                theGameFrame.switchToTrade(true);
+
                 break;
             default:
                 buttonEnabled = false;
@@ -641,6 +661,22 @@ public class CatanClient extends JFrame {
             }
         }
 
+        public void sendDomesticTradeData(int onlineMode) {
+            //debugg the data sending
+            System.out.println("Sending data!");
+
+            try {
+                dataOut.writeInt(5); //tell the server that it is reveiving the data of a domestic trade
+                dataOut.writeInt(onlineMode); //tell the server what player is sending this so it doens't send it back
+
+                //send out the data
+                dataOut.flush();
+
+            } catch (IOException e) {
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendDomesticTradeData()");
+            }
+        }
+
         public FileTypeRecieve recieveFile() {
             String msg = "";
             byte[] file = new byte[1];
@@ -669,10 +705,24 @@ public class CatanClient extends JFrame {
                 justRolledDice = dataIn.readBoolean();
 
             } catch (IOException ex) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveNewString()");
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC recieveFile()");
             }
 
             return new FileTypeRecieve(file, msg, fileName, justRolledDice);
+        }
+
+        public int receiveDomesticTradeData() {
+            int onlineModeOfSender = -1;
+
+            try {
+
+                onlineModeOfSender = dataIn.readInt();
+
+            } catch (IOException ex) {
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC receiveDomesticTradeData()");
+            }
+
+            return onlineModeOfSender;
         }
 
         public String reciveNewString() {
