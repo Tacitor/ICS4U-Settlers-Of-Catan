@@ -54,11 +54,13 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     boolean[] drawCardStacks;
 
     //data for the trading
-    private int playerStartedDomestic; //the player ID of the user the clicked the domestic trade button
-    private int playerCount; //the number of players in the game
+    //data that can be generated
+    private int playerCount; //the number of players in the game    
     private int[] nonInitiatePlayers; //the list of the remaining player(s) that did not start the trade
-    private ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic; //The cards that the player who started the trade will receive 
+    //player generated and needs to be transfered in online play
+    private int playerStartedDomestic; //the player ID of the user the clicked the domestic trade button
     private int playerSelectedForTrade; //the player ID of the player that the playerStartedDomestic selected to trade with
+    private ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic; //The cards that the player who started the trade will receive 
     private ArrayList<Integer> tradeCardsGivePlayerStartedDomestic; //The cards that the player who started the trade will give away to the other player 
     private ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic; //A copy of the cards that the player who started the trade has going in 
     private ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected; //A copy of the cards that the player who was selected for the trade has going in
@@ -1059,6 +1061,24 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     }
 
     /**
+     * Get the ID of the player that was selected for the domestic trade
+     *
+     * @return
+     */
+    public int getPlayerSelectedForTrade() {
+        return playerSelectedForTrade;
+    }
+
+    /**
+     * Set the ID of the player that was selected for the domestic trade
+     *
+     * @param playerSelectedForTrade
+     */
+    public void setPlayerSelectedForTrade(int playerSelectedForTrade) {
+        this.playerSelectedForTrade = playerSelectedForTrade;
+    }
+
+    /**
      * Get the cards the player who started the trade already had when they
      * initiated said trade.
      *
@@ -1076,6 +1096,62 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      */
     public void setTradeCardsAlreadyHadPlayerStartedDomestic(ArrayList<Integer> newTradeCardsAlreadyHadPlayerStartedDomestic) {
         this.tradeCardsAlreadyHadPlayerStartedDomestic = newTradeCardsAlreadyHadPlayerStartedDomestic;
+    }
+
+    /**
+     * Get the cards the player who was selected for the trade already had when
+     * they we selected for said trade.
+     *
+     * @return
+     */
+    public ArrayList<Integer> getTradeCardsAlreadyHadPlayerSelected() {
+        return tradeCardsAlreadyHadPlayerSelected;
+    }
+
+    /**
+     * Set the cards the player who was selected for the trade already had when
+     * they we selected for said trade.
+     *
+     * @param tradeCardsAlreadyHadPlayerSelected
+     */
+    public void setTradeCardsAlreadyHadPlayerSelected(ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected) {
+        this.tradeCardsAlreadyHadPlayerSelected = tradeCardsAlreadyHadPlayerSelected;
+    }
+
+    /**
+     * Get the cards the player who started the trade will be giving away.
+     *
+     * @return
+     */
+    public ArrayList<Integer> getTradeCardsGivePlayerStartedDomestic() {
+        return tradeCardsGivePlayerStartedDomestic;
+    }
+
+    /**
+     * Set the cards the player who started the trade will be giving away.
+     *
+     * @param tradeCardsGivePlayerStartedDomestic
+     */
+    public void setTradeCardsGivePlayerStartedDomestic(ArrayList<Integer> tradeCardsGivePlayerStartedDomestic) {
+        this.tradeCardsGivePlayerStartedDomestic = tradeCardsGivePlayerStartedDomestic;
+    }
+
+    /**
+     * Get the cards the player who started the trade will be receiving.
+     *
+     * @return
+     */
+    public ArrayList<Integer> getTradeCardsReceivePlayerStartedDomestic() {
+        return tradeCardsGivePlayerStartedDomestic;
+    }
+
+    /**
+     * Set the cards the player who started the trade will be receiving.
+     *
+     * @param tradeCardsReceivePlayerStartedDomestic
+     */
+    public void setTradeCardsReceivePlayerStartedDomestic(ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic) {
+        this.tradeCardsReceivePlayerStartedDomestic = tradeCardsReceivePlayerStartedDomestic;
     }
 
     /**
