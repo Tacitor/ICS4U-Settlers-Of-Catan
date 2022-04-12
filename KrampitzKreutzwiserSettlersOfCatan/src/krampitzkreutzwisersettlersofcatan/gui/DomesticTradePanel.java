@@ -768,6 +768,17 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * @param evt
      */
     public void tradeMouseClicked(MouseEvent evt) {
+        boolean authorizedUser; //is this user allowed to click things?
+
+        //decide if the user is authorized
+        if (GamePanel.getOnlineMode() == -1) { //if in offline mode fully authed
+            authorizedUser = true;
+        } else if (domesticTradeMode != 2) { //else if the mode is in anything other than where the selected player is choosing cards
+            authorizedUser = GamePanel.getOnlineMode() == playerStartedDomestic;
+        } else { //else if it is mode 2 then the auth user is the one selected for trade
+            authorizedUser = GamePanel.getOnlineMode() == playerSelectedForTrade;
+        }
+
         //Loop through all the Buttons and see if they were clicked
         for (SettlerBtn btn : settlerBtns) {
             if (evt.getX() > btn.getXPos()
@@ -781,105 +792,115 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                     //if it's the cancel button
                     //close the trade menu
                     cancelTradeBtnPressed();
-                } else if (btn.equals(lockInitiatePlayerGiveTradeBtn)) {
-                    lockInitiatePlayerTradeBtnPressed(btn);
-                } else if (btn.equals(lockInitiatePlayerReceiveTradeBtn)) {
-                    lockInitiatePlayerTradeBtnPressed(btn);
-                } else if (btn.equals(completeTradeBtn)) { //if the accept trade button has been clicked
-                    completeTradeBtnPressed();
-                }
-            }
-        }
-
-        //if no button was click check what mode the trade is in and see if there is an appropriate action
-        if (domesticTradeMode == 0) { //if we are in the starter mode where a player to trade with must be selected
-
-            int tradePlayerPosY = playerSelectLbl.getYPos() + scaleInt(30);
-            int tradePlayerPosX;
-
-            //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
-            for (int i = 0; i < nonInitiatePlayers.length; i++) {
-
-                tradePlayerPosX = playerIconStartPos + ((theGamePanel.getImgWidth(SMALL_PLAYER_RED)) * (i));
-
-                //check if there was a click on one of the sub players
-                if (evt.getX() > tradePlayerPosX
-                        && evt.getY() > tradePlayerPosY
-                        && evt.getX() < (tradePlayerPosX + (theGamePanel.getImgWidth(SMALL_PLAYER_RED)))
-                        && evt.getY() < (tradePlayerPosY + (theGamePanel.getImgHeight(SMALL_PLAYER_RED)))) {
-
-                    //debug
-                    //System.out.println("Yuh we got a click on player: " + nonInitiatePlayers[i]);
-                    //save the player that was selected for trade
-                    playerSelectedForTrade = nonInitiatePlayers[i];
-
-                    //save the cards this player has at the current moment
-                    tradeCardsAlreadyHadPlayerSelected = (ArrayList<Integer>) (theGamePanel.getResourceCards()[playerSelectedForTrade].clone());
-
-                    //enter the next mode of trade
-                    domesticTradeMode++;
-
                 }
 
-            }
-        } else if (domesticTradeMode == 1 || domesticTradeMode == 2) { //if in mode 1, or 2
-            //check if a player clicked on some cards
+                //only check the rest of the buttons if there is an authorized user
+                if (authorizedUser) {
 
-            int cardYPos;
-
-            //loop through the 3 card hand locations
-            for (int cardHandNum = 0; cardHandNum < drawCardStacks.length; cardHandNum++) {
-
-                //get the y position for the cards
-                cardYPos = getCardPosY(cardHandNum, CARD_CLAY);
-
-                //check what mode the card drawing is in
-                if (drawCardStacks[cardHandNum]) { //check for a click on a cards in the stacked mode
-
-                    //loop though the 5 stacks
-                    for (int i = 0; i < 5; i++) {
-
-                        //check for a click
-                        if (evt.getX() > CardUtil.getCardStackXPositions(theGamePanel)[i]
-                                && evt.getX() < (CardUtil.getCardStackXPositions(theGamePanel)[i] + theGamePanel.getImgWidth(CARD_CLAY))
-                                && evt.getY() > cardYPos
-                                && evt.getY() < (cardYPos + theGamePanel.getImgHeight(CARD_CLAY))) {
-
-                            //debug click detection
-                            //System.out.println("Card stack Clicked!");
-                        }
-                    }
-
-                } else { //check for a click on a card in the full layout mode     
-
-                    //check if the user clicked on any card
-                    for (int i = 0; i < getCardHand(cardHandNum).size(); i++) {
-
-                        //get the x position for that card
-                        int cardXPos = (CardUtil.getCardStartPosition(0, getCardHand(cardHandNum).size(), theGamePanel) + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i);
-
-                        //check if there was a click on a card
-                        if (evt.getX() > cardXPos
-                                && evt.getY() > cardYPos
-                                && evt.getX() < (cardXPos + theGamePanel.getImgWidth(CARD_CLAY))
-                                && evt.getY() < (cardYPos + theGamePanel.getImgHeight(CARD_CLAY))) {
-
-                            //add the card to the other players receive hand
-                            mutateTradeCardLists(getCardHand(cardHandNum).get(i), cardHandNum);
-                        }
+                    if (btn.equals(lockInitiatePlayerGiveTradeBtn)) {
+                        lockInitiatePlayerTradeBtnPressed(btn);
+                    } else if (btn.equals(lockInitiatePlayerReceiveTradeBtn)) {
+                        lockInitiatePlayerTradeBtnPressed(btn);
+                    } else if (btn.equals(completeTradeBtn)) { //if the accept trade button has been clicked
+                        completeTradeBtnPressed();
                     }
                 }
             }
         }
 
-        updateComponentState();
-        repaint();
+        //only check for clicks if the user is authorized
+        if (authorizedUser) {
 
-        //if in online mode update the server and there by the other players
-        theGamePanel.onlineUpdateServer();
-        //and send the trade data over to the server
-        onlineUpdateTradeDataServer();
-        
+            //if no button was click check what mode the trade is in and see if there is an appropriate action
+            if (domesticTradeMode == 0) { //if we are in the starter mode where a player to trade with must be selected
+
+                int tradePlayerPosY = playerSelectLbl.getYPos() + scaleInt(30);
+                int tradePlayerPosX;
+
+                //loop through the subsequest players and see if there was a click on one of them. Skip the first player in the ArrayList because it is the current players
+                for (int i = 0; i < nonInitiatePlayers.length; i++) {
+
+                    tradePlayerPosX = playerIconStartPos + ((theGamePanel.getImgWidth(SMALL_PLAYER_RED)) * (i));
+
+                    //check if there was a click on one of the sub players
+                    if (evt.getX() > tradePlayerPosX
+                            && evt.getY() > tradePlayerPosY
+                            && evt.getX() < (tradePlayerPosX + (theGamePanel.getImgWidth(SMALL_PLAYER_RED)))
+                            && evt.getY() < (tradePlayerPosY + (theGamePanel.getImgHeight(SMALL_PLAYER_RED)))) {
+
+                        //debug
+                        //System.out.println("Yuh we got a click on player: " + nonInitiatePlayers[i]);
+                        //save the player that was selected for trade
+                        playerSelectedForTrade = nonInitiatePlayers[i];
+
+                        //save the cards this player has at the current moment
+                        tradeCardsAlreadyHadPlayerSelected = (ArrayList<Integer>) (theGamePanel.getResourceCards()[playerSelectedForTrade].clone());
+
+                        //enter the next mode of trade
+                        domesticTradeMode++;
+
+                    }
+
+                }
+            } else if (domesticTradeMode == 1 || domesticTradeMode == 2) { //if in mode 1, or 2
+                //check if a player clicked on some cards
+
+                int cardYPos;
+
+                //loop through the 3 card hand locations
+                for (int cardHandNum = 0; cardHandNum < drawCardStacks.length; cardHandNum++) {
+
+                    //get the y position for the cards
+                    cardYPos = getCardPosY(cardHandNum, CARD_CLAY);
+
+                    //check what mode the card drawing is in
+                    if (drawCardStacks[cardHandNum]) { //check for a click on a cards in the stacked mode
+
+                        //loop though the 5 stacks
+                        for (int i = 0; i < 5; i++) {
+
+                            //check for a click
+                            if (evt.getX() > CardUtil.getCardStackXPositions(theGamePanel)[i]
+                                    && evt.getX() < (CardUtil.getCardStackXPositions(theGamePanel)[i] + theGamePanel.getImgWidth(CARD_CLAY))
+                                    && evt.getY() > cardYPos
+                                    && evt.getY() < (cardYPos + theGamePanel.getImgHeight(CARD_CLAY))) {
+
+                                //debug click detection
+                                //System.out.println("Card stack Clicked!");
+                            }
+                        }
+
+                    } else { //check for a click on a card in the full layout mode     
+
+                        //check if the user clicked on any card
+                        for (int i = 0; i < getCardHand(cardHandNum).size(); i++) {
+
+                            //get the x position for that card
+                            int cardXPos = (CardUtil.getCardStartPosition(0, getCardHand(cardHandNum).size(), theGamePanel) + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i);
+
+                            //check if there was a click on a card
+                            if (evt.getX() > cardXPos
+                                    && evt.getY() > cardYPos
+                                    && evt.getX() < (cardXPos + theGamePanel.getImgWidth(CARD_CLAY))
+                                    && evt.getY() < (cardYPos + theGamePanel.getImgHeight(CARD_CLAY))) {
+
+                                //add the card to the other players receive hand
+                                mutateTradeCardLists(getCardHand(cardHandNum).get(i), cardHandNum);
+                            }
+                        }
+                    }
+                }
+            }
+
+            updateComponentState();
+            repaint();
+
+            //if in online mode update the server and there by the other players
+            theGamePanel.onlineUpdateServer();
+            //and send the trade data over to the server
+            onlineUpdateTradeDataServer();
+
+        }
     }
 
     /**
