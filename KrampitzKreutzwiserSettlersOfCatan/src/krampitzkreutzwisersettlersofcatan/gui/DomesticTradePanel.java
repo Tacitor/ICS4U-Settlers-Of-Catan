@@ -478,7 +478,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         completeTradeBtn.setYPos(lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) + scaleInt(20));
 
         cancelTradeBtn.setXPos(titleLbl.getXPos());
-        cancelTradeBtn.setYPos(gameFrame.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
+        cancelTradeBtn.setYPos(this.getHeight() - theGamePanel.getImgHeight(cancelTradeBtn.getBaseImage()) - scaleInt(6));
 
     }
 
