@@ -269,11 +269,58 @@ public class CatanServer {
                             //read in the online player ID of the sender
                             int onlineModeOfSender = dataIn.readInt();
 
+                            //read in the playerStartedDomestic
+                            int playerStartedDomestic = dataIn.readInt();
+                            //read in the playerSelectedForTrade
+                            int playerSelectedForTrade = dataIn.readInt();
+
+                            //read in the domesticTradeMode
+                            int domesticTradeMode = dataIn.readInt();
+
+                            //read int the length of the tradeCardsGivePlayerStartedDomestic
+                            int tradeCardsGivePlayerStartedDomesticLength = dataIn.readInt();
+                            //create an array for that
+                            int[] tradeCardsGivePlayerStartedDomestic = new int[tradeCardsGivePlayerStartedDomesticLength];
+                            //read in the rest of the tradeCardsGivePlayerStartedDomestic ArrayList
+                            for (int i = 0; i < tradeCardsGivePlayerStartedDomesticLength; i++) {
+                                tradeCardsGivePlayerStartedDomestic[i] = dataIn.readInt();
+                            }
+
+                            //read int the length of the tradeCardsGivePlayerStartedDomestic
+                            int tradeCardsReceivePlayerStartedDomesticLength = dataIn.readInt();
+                            //create an array for that
+                            int[] tradeCardsReceivePlayerStartedDomestic = new int[tradeCardsReceivePlayerStartedDomesticLength];
+                            //read in the rest of the tradeCardsGivePlayerStartedDomestic ArrayList
+                            for (int i = 0; i < tradeCardsReceivePlayerStartedDomesticLength; i++) {
+                                tradeCardsReceivePlayerStartedDomestic[i] = dataIn.readInt();
+                            }
+
+                            //read the already had arrays
+                            //read int the length of the tradeCardsGivePlayerStartedDomestic
+                            int tradeCardsAlreadyHadPlayerStartedDomesticLength = dataIn.readInt();
+                            //create an array for that
+                            int[] tradeCardsAlreadyHadPlayerStartedDomestic = new int[tradeCardsAlreadyHadPlayerStartedDomesticLength];
+                            //read in the rest of the tradeCardsGivePlayerStartedDomestic ArrayList
+                            for (int i = 0; i < tradeCardsAlreadyHadPlayerStartedDomesticLength; i++) {
+                                tradeCardsAlreadyHadPlayerStartedDomestic[i] = dataIn.readInt();
+                            }
+
+                            //read int the length of the tradeCardsGivePlayerStartedDomestic
+                            int tradeCardsAlreadyHadPlayerSelectedLength = dataIn.readInt();
+                            //create an array for that
+                            int[] tradeCardsAlreadyHadPlayerSelected = new int[tradeCardsAlreadyHadPlayerSelectedLength];
+                            //read in the rest of the tradeCardsGivePlayerStartedDomestic ArrayList
+                            for (int i = 0; i < tradeCardsAlreadyHadPlayerSelectedLength; i++) {
+                                tradeCardsAlreadyHadPlayerSelected[i] = dataIn.readInt();
+                            }
+
                             //send the data back out to all the clients
                             //except the sender
                             for (int i = 0; i < clients.length; i++) {
                                 if (i + 1 != onlineModeOfSender) {
-                                    clients[i].sendDomesticTradeData(onlineModeOfSender);
+                                    clients[i].sendDomesticTradeData(onlineModeOfSender, playerStartedDomestic, playerSelectedForTrade, domesticTradeMode,
+                                            tradeCardsGivePlayerStartedDomestic, tradeCardsReceivePlayerStartedDomestic,
+                                            tradeCardsAlreadyHadPlayerStartedDomestic, tradeCardsAlreadyHadPlayerSelected);
                                 }
                             }
 
@@ -325,10 +372,49 @@ public class CatanServer {
             }
         }
 
-        public void sendDomesticTradeData(int onlineModeOfSender) {
+        public void sendDomesticTradeData(int onlineModeOfSender, int playerStartedDomestic, int playerSelectedForTrade, int domesticTradeMode,
+                int[] tradeCardsGivePlayerStartedDomestic, int[] tradeCardsReceivePlayerStartedDomestic,
+                int[] tradeCardsAlreadyHadPlayerStartedDomestic, int[] tradeCardsAlreadyHadPlayerSelected) {
+
             try {
                 dataOut.writeInt(5); //tell the client they are reciving domestic trade data
                 dataOut.writeInt(onlineModeOfSender); //tell the recipeient who send the trade data
+
+                //send the player data
+                dataOut.writeInt(playerStartedDomestic);
+                dataOut.writeInt(playerSelectedForTrade);
+
+                //send the domesticTradeMode
+                dataOut.writeInt(domesticTradeMode);
+
+                //send the size of the tradeCardsGivePlayerStartedDomestic
+                dataOut.writeInt(tradeCardsGivePlayerStartedDomestic.length);
+                //send the tradeCardsGivePlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsGivePlayerStartedDomestic.length; i++) {
+                    dataOut.writeInt(tradeCardsGivePlayerStartedDomestic[i]);
+                }
+
+                //send the size of the tradeCardsReceivePlayerStartedDomestic
+                dataOut.writeInt(tradeCardsReceivePlayerStartedDomestic.length);
+                //send the tradeCardsReceivePlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsReceivePlayerStartedDomestic.length; i++) {
+                    dataOut.writeInt(tradeCardsReceivePlayerStartedDomestic[i]);
+                }
+
+                //send the size of the tradeCardsAlreadyHadPlayerStartedDomestic
+                dataOut.writeInt(tradeCardsAlreadyHadPlayerStartedDomestic.length);
+                //send the tradeCardsAlreadyHadPlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsAlreadyHadPlayerStartedDomestic.length; i++) {
+                    dataOut.writeInt(tradeCardsAlreadyHadPlayerStartedDomestic[i]);
+                }
+
+                //send the size of the tradeCardsAlreadyHadPlayerSelected
+                dataOut.writeInt(tradeCardsAlreadyHadPlayerSelected.length);
+                //send the tradeCardsAlreadyHadPlayerSelected ArrayList
+                for (int i = 0; i < tradeCardsAlreadyHadPlayerSelected.length; i++) {
+                    dataOut.writeInt(tradeCardsAlreadyHadPlayerSelected[i]);
+                }
+
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Server] " + "IOException from SSC sendDomesticTradeData()");

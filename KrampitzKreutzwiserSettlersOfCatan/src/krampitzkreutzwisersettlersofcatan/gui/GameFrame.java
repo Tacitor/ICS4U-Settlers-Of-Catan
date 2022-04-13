@@ -23,6 +23,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     private Dimension screenSize; //keeps track of the display the game is being played on
     private GamePanel theGamePanel; //referance to *a* GamePanel
     private DomesticTradePanel domesticTradePanel; //referance to the domestic trade window
+    private boolean showTrade; //true if showing the trade panel
 
     public GameFrame(MainMenu m) {
 
@@ -97,6 +98,15 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     }
 
     /**
+     * Return the game panel
+     *
+     * @return
+     */
+    public DomesticTradePanel getDomesticTradePanel() {
+        return domesticTradePanel;
+    }
+
+    /**
      * Removes the old game and replaces it with a new one
      */
     public void resetGamePanel() {
@@ -114,11 +124,13 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * @param showTrade
      */
     public void switchToTrade(boolean showTrade) {
+        this.showTrade = showTrade;
+
         if (showTrade) { //show the domestic trade menu
             remove(theGamePanel); //take out game panel
             domesticTradePanel.resetToStartingMode();
             add(domesticTradePanel); //switch over to domestic trade mode
-            
+
             //save the player that started the domestic trade
             domesticTradePanel.setPlayerStartedDomestic(theGamePanel.getCurrentPlayer());
             //save the cards they had at the time of clicking the trade button            
@@ -136,9 +148,16 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         this.setVisible(true); //ensure the frame is active and visible
         this.setFocusable(true); //ensure the Frame has the keyListener focus.
-        
-        
 
+    }
+
+    /**
+     * Is the GameFrame currently showing the domestic trade panel or not?
+     *
+     * @return
+     */
+    public boolean getShowTrade() {
+        return showTrade;
     }
 
     /**

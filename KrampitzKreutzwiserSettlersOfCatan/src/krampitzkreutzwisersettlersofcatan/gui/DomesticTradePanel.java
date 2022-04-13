@@ -135,6 +135,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         tradeCardsGivePlayerStartedDomestic = new ArrayList<>();
         tradeCardsGivePlayerStartedDomestic.add(5);
 
+        tradeCardsAlreadyHadPlayerStartedDomestic = new ArrayList<>();
+        tradeCardsAlreadyHadPlayerSelected = new ArrayList<>();
+
         resetToStartingMode();
 
         repaint();
@@ -158,6 +161,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         tradeCardsGivePlayerStartedDomestic.clear();
         tradeCardsReceivePlayerStartedDomestic.clear();
+
+        tradeCardsAlreadyHadPlayerStartedDomestic.clear();
+        tradeCardsAlreadyHadPlayerSelected.clear();
 
         domesticTradeMode = 0;
     }
@@ -758,8 +764,12 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //save said ArrayLists into the gamePanel
         theGamePanel.setResourceCards(gameCards);
 
+        //if in online mode update the server and there by the other players
+        theGamePanel.onlineUpdateServer();
+
         //hide the trade panel
         gameFrame.switchToTrade(false);
+
     }
 
     /**
@@ -895,8 +905,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
             updateComponentState();
             repaint();
 
-            //if in online mode update the server and there by the other players
-            theGamePanel.onlineUpdateServer();
             //and send the trade data over to the server
             onlineUpdateTradeDataServer();
 
@@ -1058,7 +1066,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         if (GamePanel.getOnlineMode() != -1) {
             //if it is send the trade data to the server
             //also send the online player number
-            GamePanel.getCatanClient().sendDomesticTradeToServer(GamePanel.getOnlineMode());
+            GamePanel.getCatanClient().sendDomesticTradeToServer(GamePanel.getOnlineMode(), playerStartedDomestic, playerSelectedForTrade, domesticTradeMode,
+                    tradeCardsGivePlayerStartedDomestic, tradeCardsReceivePlayerStartedDomestic, tradeCardsAlreadyHadPlayerStartedDomestic, tradeCardsAlreadyHadPlayerSelected);
         }
     }
 
@@ -1119,6 +1128,24 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     }
 
     /**
+     * Get the current mode of trade the panel is in.
+     *
+     * @return
+     */
+    public int getDomesticTradeMode() {
+        return domesticTradeMode;
+    }
+
+    /**
+     * Set the current mode of trade the panel is in.
+     *
+     * @param domesticTradeMode
+     */
+    public void setDomesticTradeMode(int domesticTradeMode) {
+        this.domesticTradeMode = domesticTradeMode;
+    }
+
+    /**
      * Get the cards the player who started the trade already had when they
      * initiated said trade.
      *
@@ -1152,10 +1179,10 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * Set the cards the player who was selected for the trade already had when
      * they we selected for said trade.
      *
-     * @param tradeCardsAlreadyHadPlayerSelected
+     * @param newTradeCardsAlreadyHadPlayerSelected
      */
-    public void setTradeCardsAlreadyHadPlayerSelected(ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected) {
-        this.tradeCardsAlreadyHadPlayerSelected = tradeCardsAlreadyHadPlayerSelected;
+    public void setTradeCardsAlreadyHadPlayerSelected(ArrayList<Integer> newTradeCardsAlreadyHadPlayerSelected) {
+        this.tradeCardsAlreadyHadPlayerSelected = newTradeCardsAlreadyHadPlayerSelected;
     }
 
     /**
@@ -1170,10 +1197,10 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     /**
      * Set the cards the player who started the trade will be giving away.
      *
-     * @param tradeCardsGivePlayerStartedDomestic
+     * @param newTradeCardsGivePlayerStartedDomestic
      */
-    public void setTradeCardsGivePlayerStartedDomestic(ArrayList<Integer> tradeCardsGivePlayerStartedDomestic) {
-        this.tradeCardsGivePlayerStartedDomestic = tradeCardsGivePlayerStartedDomestic;
+    public void setTradeCardsGivePlayerStartedDomestic(ArrayList<Integer> newTradeCardsGivePlayerStartedDomestic) {
+        this.tradeCardsGivePlayerStartedDomestic = newTradeCardsGivePlayerStartedDomestic;
     }
 
     /**
@@ -1188,10 +1215,10 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     /**
      * Set the cards the player who started the trade will be receiving.
      *
-     * @param tradeCardsReceivePlayerStartedDomestic
+     * @param newTradeCardsReceivePlayerStartedDomestic
      */
-    public void setTradeCardsReceivePlayerStartedDomestic(ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic) {
-        this.tradeCardsReceivePlayerStartedDomestic = tradeCardsReceivePlayerStartedDomestic;
+    public void setTradeCardsReceivePlayerStartedDomestic(ArrayList<Integer> newTradeCardsReceivePlayerStartedDomestic) {
+        this.tradeCardsReceivePlayerStartedDomestic = newTradeCardsReceivePlayerStartedDomestic;
     }
 
     /**
