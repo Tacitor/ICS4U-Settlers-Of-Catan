@@ -979,6 +979,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
             case 2:
                 return tradeCardsGivePlayerStartedDomestic;
             default:
+                JOptionPane.showMessageDialog(null, "Bad Array", "ERROR", JOptionPane.ERROR_MESSAGE);
+                System.out.println("ERROR BAD ARRAY");
                 ArrayList<Integer> badList = new ArrayList<>();
                 badList.add(-1);
                 return badList;
@@ -989,9 +991,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * Plays a simular role as updateBuildButtons() does in the GamePanel.
      * Mutates many attributes in the buttons, labels, etc.
      */
-    private void updateComponentState() {
+    public void updateComponentState() {
 
-        //update all the buttons based off the mode
+        //update all the buttons based off the trade mode
         switch (domesticTradeMode) {
             case 0:
                 //if in player select mode all buttons should be off
@@ -1002,19 +1004,25 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
             case 1:
                 //if in start player cards give away mode
                 lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
+                lockInitiatePlayerReceiveTradeBtn.setMode(0);
                 lockInitiatePlayerGiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerGiveTradeBtn.setMode(0);
                 completeTradeBtn.setEnabled(false);
                 break;
             case 2:
                 //if in trade partner player cards give away mode
                 lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerReceiveTradeBtn.setMode(0);
                 lockInitiatePlayerGiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerGiveTradeBtn.setMode(1);
                 completeTradeBtn.setEnabled(false);
                 break;
             case 3:
                 //if in ready to complete trade mode
                 lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerReceiveTradeBtn.setMode(1);
                 lockInitiatePlayerGiveTradeBtn.setEnabled(false);
+                lockInitiatePlayerGiveTradeBtn.setMode(1);
                 completeTradeBtn.setEnabled(true);
                 break;
             default:

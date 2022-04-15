@@ -555,6 +555,7 @@ public class CatanClient extends JFrame {
                 if (domesticTradeTypeReceive.getDomesticTradeMode() == -1) {
                     theGameFrame.switchToTrade(false);
                 } else { //if not cancelled
+                    theGameFrame.getDomesticTradePanel().updateComponentState();
                     theGameFrame.getDomesticTradePanel().repaint();
                 }
 
