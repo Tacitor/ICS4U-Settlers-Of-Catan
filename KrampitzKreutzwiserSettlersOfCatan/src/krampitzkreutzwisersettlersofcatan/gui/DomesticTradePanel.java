@@ -968,11 +968,22 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private ArrayList<Integer> getCardHand(int cardHandNum) {
         switch (cardHandNum) {
             case 0: //the hand at the bottom of the screen
-                //decide if to show the init player's hand or the selected player
-                if (domesticTradeMode == 2) {
-                    return tradeCardsAlreadyHadPlayerSelected;
-                } else {
-                    return tradeCardsAlreadyHadPlayerStartedDomestic;
+                //decide if to use regular rules or online mode ones
+                if (GamePanel.getOnlineMode() == -1) { //use ofline mode
+                    //decide if to show the init player's hand or the selected player
+                    if (domesticTradeMode == 2) {
+                        return tradeCardsAlreadyHadPlayerSelected;
+                    } else {
+                        return tradeCardsAlreadyHadPlayerStartedDomestic;
+                    }
+                } else { //else in online mode
+                    if (GamePanel.getOnlineMode() == playerStartedDomestic) {
+                        return tradeCardsAlreadyHadPlayerStartedDomestic;
+                    } else if (GamePanel.getOnlineMode() == playerSelectedForTrade) {
+                        return tradeCardsAlreadyHadPlayerSelected;
+                    } else {
+                        return new ArrayList<>();
+                    }
                 }
             case 1:
                 return tradeCardsReceivePlayerStartedDomestic;
