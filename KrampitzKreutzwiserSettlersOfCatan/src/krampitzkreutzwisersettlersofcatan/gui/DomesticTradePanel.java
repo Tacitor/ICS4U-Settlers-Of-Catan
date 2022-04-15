@@ -472,7 +472,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         initiatePlayerGivesLbl.setYPos(lockInitiatePlayerReceiveTradeBtn.getYPos()
                 + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) + scaleInt(100));
 
-        int playerNum = 0; //the player ID of the cards that should be displayed
+        int playerNum; //the player ID of the cards that should be displayed
 
         //decide if to use online play rules
         if (GamePanel.getOnlineMode() == -1) { //if not online

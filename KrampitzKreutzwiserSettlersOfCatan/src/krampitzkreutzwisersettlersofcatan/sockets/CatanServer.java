@@ -316,11 +316,9 @@ public class CatanServer {
 
                             //send the data back out to all the clients
                             //except the sender
-                            for (int i = 0; i < clients.length; i++) {
-                                if (i + 1 != onlineModeOfSender) {
-                                    clients[i].sendDomesticTradeData(onlineModeOfSender, playerStartedDomestic, playerSelectedForTrade, domesticTradeMode,
-                                            tradeCardsGivePlayerStartedDomestic, tradeCardsReceivePlayerStartedDomestic,
-                                            tradeCardsAlreadyHadPlayerStartedDomestic, tradeCardsAlreadyHadPlayerSelected);
+                            for (ServerSideConnection client : clients) {
+                                if (client.clientID != onlineModeOfSender) {
+                                    client.sendDomesticTradeData(onlineModeOfSender, playerStartedDomestic, playerSelectedForTrade, domesticTradeMode, tradeCardsGivePlayerStartedDomestic, tradeCardsReceivePlayerStartedDomestic, tradeCardsAlreadyHadPlayerStartedDomestic, tradeCardsAlreadyHadPlayerSelected);
                                 }
                             }
 

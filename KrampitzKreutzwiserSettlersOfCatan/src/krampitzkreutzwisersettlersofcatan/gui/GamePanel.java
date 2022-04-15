@@ -1122,6 +1122,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     private void tradeDomesticClicked() {
         superFrame.switchToTrade(true);
+        //if in online mode update the other players
+        superFrame.getDomesticTradePanel().onlineUpdateTradeDataServer();
     }
 
     /**
