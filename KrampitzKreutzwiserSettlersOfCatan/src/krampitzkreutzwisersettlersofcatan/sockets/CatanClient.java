@@ -549,7 +549,14 @@ public class CatanClient extends JFrame {
                 theGameFrame.getDomesticTradePanel().setTradeCardsAlreadyHadPlayerStartedDomestic(domesticTradeTypeReceive.getTradeCardsAlreadyHadPlayerStartedDomestic());
                 theGameFrame.getDomesticTradePanel().setTradeCardsAlreadyHadPlayerSelected(domesticTradeTypeReceive.getTradeCardsAlreadyHadPlayerSelected());
 
-                theGameFrame.getDomesticTradePanel().repaint();
+                
+                
+                //check to see if the trade is done/cancled
+                if (domesticTradeTypeReceive.getDomesticTradeMode() == -1) {
+                    theGameFrame.switchToTrade(false);
+                } else { //if not cancelled
+                    theGameFrame.getDomesticTradePanel().repaint();
+                }
 
                 break;
             default:

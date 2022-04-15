@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import static krampitzkreutzwisersettlersofcatan.gui.GamePanel.scaleInt;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
@@ -709,6 +710,15 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * If the player would like to cancel the trade show the game panel again.
      */
     private void cancelTradeBtnPressed() {
+        //set the mode to online cancelation mode
+        domesticTradeMode = -1;
+
+        //if not the auth user send it to the server
+        if (!getAuthUser()) { //only sned of not auth user because the auth user will send it automatically.
+            //and send the trade data over to the server
+            onlineUpdateTradeDataServer();
+        }
+
         gameFrame.switchToTrade(false);
     }
 
@@ -767,6 +777,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //if in online mode update the server and there by the other players
         theGamePanel.onlineUpdateServer();
 
+        //set the mode to online cancelation mode
+        domesticTradeMode = -1;
+
         //hide the trade panel
         gameFrame.switchToTrade(false);
 
@@ -780,14 +793,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     public void tradeMouseClicked(MouseEvent evt) {
         boolean authorizedUser; //is this user allowed to click things?
 
-        //decide if the user is authorized
-        if (GamePanel.getOnlineMode() == -1) { //if in offline mode fully authed
-            authorizedUser = true;
-        } else if (domesticTradeMode != 2) { //else if the mode is in anything other than where the selected player is choosing cards
-            authorizedUser = GamePanel.getOnlineMode() == playerStartedDomestic;
-        } else { //else if it is mode 2 then the auth user is the one selected for trade
-            authorizedUser = GamePanel.getOnlineMode() == playerSelectedForTrade;
-        }
+        authorizedUser = getAuthUser();
 
         //Loop through all the Buttons and see if they were clicked
         for (SettlerBtn btn : settlerBtns) {
@@ -1244,5 +1250,25 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
             }
         }
 
+    }
+
+    /**
+     * Returns whether or not a user is authorized to click on elements.
+     *
+     * @return
+     */
+    private boolean getAuthUser() {
+        boolean authorizedUser;
+
+        //decide if the user is authorized
+        if (GamePanel.getOnlineMode() == -1) { //if in offline mode fully authed
+            authorizedUser = true;
+        } else if (domesticTradeMode != 2) { //else if the mode is in anything other than where the selected player is choosing cards
+            authorizedUser = GamePanel.getOnlineMode() == playerStartedDomestic;
+        } else { //else if it is mode 2 then the auth user is the one selected for trade
+            authorizedUser = GamePanel.getOnlineMode() == playerSelectedForTrade;
+        }
+
+        return authorizedUser;
     }
 }
