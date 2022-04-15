@@ -317,7 +317,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         openBracketPos = initiatePlayersStaticCardsLbl.getText().indexOf('(');
 
         //set the image based off of what mode the game is in. If mode 1 then the ini player must select cards. If mode 2 then the other player must slect cards
-        playerDot = domesticTradeMode == 2 ? ImageRef.PLAYER_DOTS[playerSelectedForTrade] : ImageRef.PLAYER_DOTS[playerStartedDomestic];
+        playerDot = ImageRef.PLAYER_DOTS[Integer.parseInt(initiatePlayersStaticCardsLbl.getText().substring(openBracketPos - 4, openBracketPos - 3))];
         //draw the give player dot
         g2d.drawImage(playerDot,
                 initiatePlayersStaticCardsLbl.getXPos() + (g2d.getFontMetrics().stringWidth(initiatePlayersStaticCardsLbl.getText().substring(0, openBracketPos + 1))) + scaleInt(4),
@@ -472,8 +472,17 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         initiatePlayerGivesLbl.setYPos(lockInitiatePlayerReceiveTradeBtn.getYPos()
                 + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) + scaleInt(100));
 
+        int playerNum = 0; //the player ID of the cards that should be displayed
+
+        //decide if to use online play rules
+        if (GamePanel.getOnlineMode() == -1) { //if not online
+            playerNum = domesticTradeMode == 2 ? playerSelectedForTrade : playerStartedDomestic;
+        } else { //if online
+            playerNum = GamePanel.getOnlineMode();
+        }
+
         //setup the label the labels the cards the init player will keep static (not involved in the trade)
-        initiatePlayersStaticCardsLbl.setText("Player " + playerStartedDomestic + "'s (      ) non traded cards:"); //make sure text is up to date
+        initiatePlayersStaticCardsLbl.setText("Player " + playerNum + "'s (      ) non traded cards:"); //make sure text is up to date
         stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayersStaticCardsLbl.getText()); //calc how much room it will take up
         initiatePlayersStaticCardsLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
         initiatePlayersStaticCardsLbl.setYPos(getCardPosY(0, CARD_CLAY) - scaleInt(30));
