@@ -135,6 +135,9 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
             domesticTradePanel.setPlayerStartedDomestic(theGamePanel.getCurrentPlayer());
             //save the cards they had at the time of clicking the trade button            
             domesticTradePanel.setTradeCardsAlreadyHadPlayerStartedDomestic((ArrayList<Integer>) theGamePanel.getResourceCards()[theGamePanel.getCurrentPlayer()].clone());
+            
+            //if in online mode update the other players
+            domesticTradePanel.onlineUpdateTradeDataServer();
 
             domesticTradePanel.repaint(); //ensure there is something to diaplay
 
