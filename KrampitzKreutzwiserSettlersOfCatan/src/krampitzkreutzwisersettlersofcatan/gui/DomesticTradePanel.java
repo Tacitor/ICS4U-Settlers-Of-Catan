@@ -163,8 +163,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         tradeCardsGivePlayerStartedDomestic.clear();
         tradeCardsReceivePlayerStartedDomestic.clear();
 
-        tradeCardsAlreadyHadPlayerStartedDomestic = new ArrayList<>();
-        tradeCardsAlreadyHadPlayerSelected = new ArrayList<>();
+        tradeCardsAlreadyHadPlayerStartedDomestic.clear();
+        tradeCardsAlreadyHadPlayerSelected.clear();
 
         domesticTradeMode = 0;
     }
@@ -777,8 +777,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         ArrayList<Integer>[] gameCards = theGamePanel.getResourceCards();
 
         //save said ArrayLists into the Cards array
-        gameCards[playerStartedDomestic] = tradeCardsAlreadyHadPlayerStartedDomestic;
-        gameCards[playerSelectedForTrade] = tradeCardsAlreadyHadPlayerSelected;
+        gameCards[playerStartedDomestic] = (ArrayList<Integer>) tradeCardsAlreadyHadPlayerStartedDomestic.clone();
+        gameCards[playerSelectedForTrade] = (ArrayList<Integer>) tradeCardsAlreadyHadPlayerSelected.clone();
 
         //save said ArrayLists into the gamePanel
         theGamePanel.setResourceCards(gameCards);
