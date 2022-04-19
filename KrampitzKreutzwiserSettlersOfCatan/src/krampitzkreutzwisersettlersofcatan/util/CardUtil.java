@@ -454,18 +454,34 @@ public class CardUtil {
         return toolTipDevCardIndex;
     }
 
+    /**
+     *
+     * Calculate the positions to draw the Resource cards based off of the water
+     * ring. One on each end, one in the middle and one at each quarter way
+     * point
+     *
+     * @param thegGamePanel
+     * @return
+     */
     public static int[] getCardStackXPositions(GamePanel thegGamePanel) {
-        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
         int[] cardStackXPositions = new int[]{thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(WATER_RING) / 2 - thegGamePanel.getImgWidth(CARD_CLAY) / 2,
             thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(WATER_RING) / 4 - thegGamePanel.getImgWidth(CARD_CLAY) / 2,
             thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(CARD_CLAY) / 2,
             thegGamePanel.getWidth() / 2 + thegGamePanel.getImgWidth(WATER_RING) / 4 - thegGamePanel.getImgWidth(CARD_CLAY) / 2,
             thegGamePanel.getWidth() / 2 + thegGamePanel.getImgWidth(WATER_RING) / 2 - thegGamePanel.getImgWidth(CARD_CLAY) / 2};
-        
+
         return cardStackXPositions;
 
     }
 
+    /**
+     * Calculate the positions to draw the Development cards based off of the
+     * water ring. One on each end, one in the middle and one at each quarter
+     * way point
+     *
+     * @param thegGamePanel
+     * @return
+     */
     public static int[] getDevCardStackXPositions(GamePanel thegGamePanel) {
         //and now the dev cards
         int[] devCardStackXPositions = new int[]{thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(WATER_RING) / 2 - thegGamePanel.getImgWidth(DEV_CARD_KNIGHT) / 2,
@@ -473,7 +489,7 @@ public class CardUtil {
             thegGamePanel.getWidth() / 2 - thegGamePanel.getImgWidth(DEV_CARD_KNIGHT) / 2,
             thegGamePanel.getWidth() / 2 + thegGamePanel.getImgWidth(WATER_RING) / 4 - thegGamePanel.getImgWidth(DEV_CARD_KNIGHT) / 2,
             thegGamePanel.getWidth() / 2 + thegGamePanel.getImgWidth(WATER_RING) / 2 - thegGamePanel.getImgWidth(DEV_CARD_KNIGHT) / 2};
-        
+
         return devCardStackXPositions;
     }
 

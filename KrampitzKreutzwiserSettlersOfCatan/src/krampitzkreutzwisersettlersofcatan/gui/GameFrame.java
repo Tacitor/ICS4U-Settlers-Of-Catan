@@ -98,7 +98,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     }
 
     /**
-     * Return the game panel
+     * Return the domestic trade panel.
      *
      * @return
      */
@@ -119,9 +119,11 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     }
 
     /**
-     * Remove theGamePanel, and put it into domestic trade mode
+     * Switch modes of displaying the game. Switches between the regular game
+     * panel and the domestic trade panel.
      *
-     * @param showTrade
+     * @param showTrade. If true Remove theGamePanel, and put it into domestic
+     * trade mode. If false do the reverse and show the game panel.
      */
     public void switchToTrade(boolean showTrade) {
         this.showTrade = showTrade;
@@ -147,7 +149,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         } else { //show the main game panel
             remove(domesticTradePanel); //take out game panel
             add(theGamePanel); //switch over to domestic trade mode
-            
+
             //update the build buttons
             theGamePanel.updateBuildButtons();
 

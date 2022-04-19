@@ -530,8 +530,8 @@ public class CatanClient extends JFrame {
             case 5:
                 DomesticTradeTypeReceive domesticTradeTypeReceive = csc.receiveDomesticTradeData();
 
-                System.out.println("Got domestic trade mode: " + domesticTradeTypeReceive.getOnlineModeOfSender());
-
+                //debug the sending of data for domestic trading
+                //System.out.println("Got domestic trade mode: " + domesticTradeTypeReceive.getOnlineModeOfSender());
                 //reset and show the tradepanel
                 if (!theGameFrame.getShowTrade()) { //but only if it has not already
                     theGameFrame.switchToTrade(true);
@@ -549,8 +549,6 @@ public class CatanClient extends JFrame {
                 theGameFrame.getDomesticTradePanel().setTradeCardsAlreadyHadPlayerStartedDomestic(domesticTradeTypeReceive.getTradeCardsAlreadyHadPlayerStartedDomestic());
                 theGameFrame.getDomesticTradePanel().setTradeCardsAlreadyHadPlayerSelected(domesticTradeTypeReceive.getTradeCardsAlreadyHadPlayerSelected());
 
-                
-                
                 //check to see if the trade is done/cancled
                 if (domesticTradeTypeReceive.getDomesticTradeMode() == -1) {
                     theGameFrame.switchToTrade(false);
@@ -573,8 +571,13 @@ public class CatanClient extends JFrame {
         updateButtons();
     }
 
+    /**
+     * An object just to hold multiple data types that get returned when a CSC
+     * receives a domestic trading update from a server.
+     */
     private class DomesticTradeTypeReceive {
 
+        //Attributes
         int onlineModeOfSender;
         int playerStartedDomestic;
         int playerSelectedForTrade;
@@ -584,6 +587,18 @@ public class CatanClient extends JFrame {
         ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic;
         ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected;
 
+        /**
+         * Constructor
+         *
+         * @param onlineMode
+         * @param playerStartedDomestic
+         * @param playerSelectedForTrade
+         * @param domesticTradeMode
+         * @param tradeCardsGivePlayerStartedDomestic
+         * @param tradeCardsReceivePlayerStartedDomestic
+         * @param tradeCardsAlreadyHadPlayerStartedDomestic
+         * @param tradeCardsAlreadyHadPlayerSelected
+         */
         public DomesticTradeTypeReceive(int onlineMode, int playerStartedDomestic, int playerSelectedForTrade, int domesticTradeMode,
                 ArrayList<Integer> tradeCardsGivePlayerStartedDomestic, ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic,
                 ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic, ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected) {
@@ -655,10 +670,21 @@ public class CatanClient extends JFrame {
             return playerStartedDomestic;
         }
 
+        /**
+         * Get the mode of online play the sender of the data is in. (So this
+         * will be the player ID/colour of the player that sent the trade data)
+         *
+         * @return
+         */
         public int getOnlineModeOfSender() {
             return onlineModeOfSender;
         }
 
+        /**
+         * The mode of trade the panel is in.
+         *
+         * @return
+         */
         public int getDomesticTradeMode() {
             return domesticTradeMode;
         }
@@ -789,6 +815,18 @@ public class CatanClient extends JFrame {
             }
         }
 
+        /**
+         * Send all the data related to domestic trading to the server
+         *
+         * @param onlineMode
+         * @param playerStartedDomestic
+         * @param playerSelectedForTrade
+         * @param domesticTradeMode
+         * @param tradeCardsGivePlayerStartedDomestic
+         * @param tradeCardsReceivePlayerStartedDomestic
+         * @param tradeCardsAlreadyHadPlayerStartedDomestic
+         * @param tradeCardsAlreadyHadPlayerSelected
+         */
         public void sendDomesticTradeData(int onlineMode, int playerStartedDomestic, int playerSelectedForTrade, int domesticTradeMode,
                 ArrayList<Integer> tradeCardsGivePlayerStartedDomestic, ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic,
                 ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic, ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected) {
@@ -878,6 +916,11 @@ public class CatanClient extends JFrame {
             return new FileTypeRecieve(file, msg, fileName, justRolledDice);
         }
 
+        /**
+         * Receive all the data related to domestic trading to the server
+         *
+         * @return
+         */
         public DomesticTradeTypeReceive receiveDomesticTradeData() {
             int onlineModeOfSender = -1;
             int playerStartedDomestic = -1;
