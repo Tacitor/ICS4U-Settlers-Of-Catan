@@ -19,7 +19,7 @@ public class Catan {
     public static final String SAVE_FILE_VER = "V14"; //the save file version needed
     public static final String GAME_VER = "pre-v5.2.0 - Domestic Trade"; //the version of the game/program
     
-    public static final boolean DEBUG_ONLINE_MODE = true; //if this is true then the game will lauch in decorated windowed 720p
+    public static final boolean DEBUG_ONLINE_MODE = false; //if this is true then the game will lauch in decorated windowed 720p
 
     //fast pulse vars
     private static long prevTime;
