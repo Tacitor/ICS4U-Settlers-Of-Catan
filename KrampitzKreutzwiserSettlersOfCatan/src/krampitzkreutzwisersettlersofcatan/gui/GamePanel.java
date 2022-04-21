@@ -113,7 +113,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private static boolean showMenuBoarder = false; //will a boarder be drawn aorund the menus
     private static CatanClient onlineClient = null; //if this game is in online mode this is the client that talks to the server. Else it's null
     private static int onlineMode = -1; //if the user is just playing a local game this is -1. If they are in an online game this is the player ID of the player they control
-    private final ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
+    private ArrayList<Integer> cards[]; // Holds each player's list of cards in an ArrayList
     private final ArrayList<Integer>[] devCards; //an Array of ArrayLists. Each player gets their own ArrayList for the dev cards they have.
     // ^^^ valid number are: 1 (knight), 2 (progress card road building), 3 (progress card monolpoy), 4 (progress card year of pleanty), 5, 6, 7, 8, 9 (5-9 are vp cards)
     private final ArrayList<Integer> availableDevCards; //a list of dev cards that are still in a pile and have not been drawn. 
@@ -211,7 +211,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private SettlerComponent[] settlerComponents;
 
     //fonts
-    private final Font timesNewRoman;
+    public static final Font TIMES_NEW_ROMAN = new Font("Times New Roman", Font.PLAIN, 18);
 
     //mouse motion listener vars
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
@@ -435,9 +435,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 mouseClick(evt);
             }
         });
-
-        //get the fonts
-        timesNewRoman = new Font("Times New Roman", Font.PLAIN, 18);
 
         //setup the SettlerBtns
         toggleCardBtn = new SettlerBtn(false, 0, 0); //cannot give a position yet because they need to be below the Swing buttons
@@ -848,7 +845,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //reset the colour
             instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
             //reset the font
-            instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+            instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
 
             // And the user is done placing setup buildinga
             // Check if the player has enough points to win
@@ -1120,6 +1117,16 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     /**
+     * Actions preformed when a player want to trade domestically with other
+     * player(s)
+     */
+    private void tradeDomesticClicked() {
+        superFrame.switchToTrade(true);
+        //if in online mode update the other players
+        superFrame.getDomesticTradePanel().onlineUpdateTradeDataServer();
+    }
+
+    /**
      * What to do when the user clicks a key on their keyboard This will be
      * called by the GameFrame
      *
@@ -1310,8 +1317,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         trade4to1BtnClicked();
                     } else if (btn.equals(trade3to1Btn)) { //if the user clicked to trade with a 3:1 ratio
                         trade3to1BtnClicked();
-                    } else if (btn.equals(trade2to1Btn)) { //if the user clicked to trade with a 3:1 ratio
+                    } else if (btn.equals(trade2to1Btn)) { //if the user clicked to trade with a 2:1 ratio
                         trade2to1BtnClicked();
+                    } else if (btn.equals(tradeDomestic)) { //if the user clicked to trade with a player domestcally
+                        tradeDomesticClicked();
                     } else if (btn.equals(buildBtn)) { //if the user clicked to trade with a 3:1 ratio
                         buildBtnClicked();
                     }
@@ -1351,7 +1360,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         if (authorizedUser) {
 
             //check if the player is building
-            if (buildingObject != 0) {
+            if (buildingObject != 0) { // <editor-fold defaultstate="collapsed" desc="{ ... }"> 
                 //check what they are building
                 switch (buildingObject) {
                     case 1:
@@ -1635,6 +1644,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         System.out.println("Yeah we've got an error here chief. Building in the mouse click event printed me");
                         break;
                 }
+                // </editor-fold desc="buildingObject != 0"> 
+                // </editor-fold>
+
             } else if (thiefIsStealing && stealCardNum[currentPlayer] > 0 && !thiefJustStarted) { //check if the user clicked to select a card and the thief didn't just start
 
                 //get the y position for the cards
@@ -2246,10 +2258,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     }
 
                 }
-
-                //update the screen
-                repaint();
             }
+
+            //update the screen
+            repaint();
 
             //update the server if online mode and the click came from an authroiazed user
             onlineUpdateServer();
@@ -3596,7 +3608,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         quickSortCards(cards[currentPlayer], 0, cards[currentPlayer].size() - 1);
 
         //get the number of each card type the player has
-        countCardTypes(cards[currentPlayer].size(), currentPlayer);
+        countCardTypes(cards[currentPlayer].size(), true, cards[currentPlayer]);
         countNumCardTypes(currentPlayer);
 
         //update the text of the Swing buttons
@@ -3671,7 +3683,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //if in online mode also make the game visable
         if (onlineMode != -1) {
             superFrame.setVisible(true);
-            
+
             //also update the dice roll
             dice.setJustRolled(onlineClient.getJustRolledDice());
         }
@@ -3713,7 +3725,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //reset the colour
         instructionLbl.setForeground(new java.awt.Color(255, 255, 225));
         //reset the font
-        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+        instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
 
         boolean canBuildRoad; // If the user has enough cards to build these
         boolean canBuildSettlement;
@@ -3721,6 +3733,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         boolean canTrade4to;
         boolean canTrade3to;
         boolean canTrade2to;
+        boolean canTradeDomestic;
         SettlerRadioBtn oldSelection; // The button selected before this update began
 
         //first check if the game is inbetween turns
@@ -3733,6 +3746,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(false);
@@ -3747,6 +3761,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(true);
@@ -3761,6 +3776,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(false);
@@ -3774,6 +3790,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             //update the toggle card button to show the resource cards options for stealing
             toggleCardBtn.setEnabled(false);
@@ -3803,24 +3820,28 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     canTrade4to = true;
                     canTrade3to = false;
                     canTrade2to = false;
+                    canTradeDomestic = false;
                     break;
                 case 2:
                     //if 3:1
                     canTrade4to = false;
                     canTrade3to = true;
                     canTrade2to = false;
+                    canTradeDomestic = false;
                     break;
                 case 3:
                     //if 2:1
                     canTrade4to = false;
                     canTrade3to = false;
                     canTrade2to = true;
+                    canTradeDomestic = false;
                     break;
                 default:
                     //if anything else
                     canTrade4to = false;
                     canTrade3to = false;
                     canTrade2to = false;
+                    canTradeDomestic = false;
                     break;
             }
 
@@ -3832,6 +3853,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = false;
             canTrade3to = false;
             canTrade2to = false;
+            canTradeDomestic = false;
 
             //update the toggle card button to show the dev cards options for using
             toggleCardBtn.setEnabled(false);
@@ -3851,6 +3873,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             canTrade4to = hasTradeCards(4, currentPlayer);
             canTrade3to = hasTradeCards(3, currentPlayer) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
             canTrade2to = hasSpecializedPort(currentPlayer);
+            canTradeDomestic = true;
 
             toggleCardBtn.setEnabled(true);
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
@@ -3912,19 +3935,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             if (thiefIsStealing) { //tell the player the theif is stealing
                 // Set the instruction labels to tell the player that the thief will now be going around and stealing cards from eligble players
                 instructionLbl.setForeground(new Color(255, 175, 175));
-                instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+                instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
                 instructionLbl.setText("A Thief! Shortly they will go around steal cards. No other actions allowed");
                 subInstructionLbl.setText("End your turn so the thief can decide the next person to steal from");
 
                 //update the lables for the player if the thief is stealing their cards specifically. Do not show this if a 7 was JUST rolled
                 if (stealCardNum[currentPlayer] > 0 && !thiefJustStarted) {
                     instructionLbl.setForeground(new Color(255, 175, 175));
-                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+                    instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
                     instructionLbl.setText("The thief is stealing half your cards");
                     subInstructionLbl.setText("Select the " + stealCardNum[currentPlayer] + " you want to give them");
                 } else if (showTileHitbox) { //if a 7 was JUST rolled and the current player needs to move the thief show a specific messgae.
                     instructionLbl.setForeground(new Color(255, 175, 175));
-                    instructionLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
+                    instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
                     instructionLbl.setText("A Thief! They will steal cards. Select a hex to move the thief.");
                     subInstructionLbl.setText("Afterwards, you can then end your turn so the thief can decide the next person to steal from");
                 }
@@ -4007,6 +4030,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         trade4to1Btn.setEnabled(canTrade4to);                //trade 4:1
         trade3to1Btn.setEnabled(canTrade3to);                //trade 3:1
         trade2to1Btn.setEnabled(canTrade2to);                //trade 2:1
+        tradeDomestic.setEnabled(canTradeDomestic);          //trade domestic
 
         // If the button selected before this update is still enabled, select it
         // instead of the selection made in the if/else block above
@@ -4159,14 +4183,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     /**
      * Sort a player's list of cards using a recursive quick sort algorithm
      *
-     * @param player The player who's cards will be sorted
+     * @param array
      * @param left The left bounds of the segment to sort (used to recursion,
      * set to 0)
      * @param right The right bounds of the segment to sort (used to recursion,
      * set to length of array - 1)
-     * @return
      */
-    private void quickSortCards(ArrayList<Integer> array, int left, int right) {
+    public void quickSortCards(ArrayList<Integer> array, int left, int right) {
 
         Integer temp; // For swapping values
         // Get the player's ArrayList of cards
@@ -4389,7 +4412,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             dice.setDiceRollVal(2, "zero");
 
         }
-        
+
         //Now that the dice have been rolled set the flag for the animation.
         dice.setJustRolled(true);
 
@@ -5144,7 +5167,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 int listSize = cards[playerID].size();
 
                 //get the number of each card type the player has
-                countCardTypes(listSize, playerID);
+                countCardTypes(listSize, true, cards[playerID]);
 
                 // Calculate where the first card must go to center the list
                 cardStartPosition = CardUtil.getCardStartPosition(0, listSize, this);
@@ -5702,7 +5725,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param smallImage should the image be the small version
      * @return
      */
-    private Image getPlayerImage(int playerID, boolean smallImage) {
+    public Image getPlayerImage(int playerID, boolean smallImage) {
         Image playerImage;
 
         if (smallImage) {
@@ -5976,18 +5999,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         panelWidth = this.getWidth(); //save the dimentions to variabled eaisly accesed by other classes
         panelHeight = this.getHeight();
 
-        //calculate the positions to draw the cards bassed off of the water ring. One on each end, one in the middle and one at each quarter way point
-        cardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(CARD_CLAY) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(CARD_CLAY) / 2};
-        //and now the dev cards
-        devCardStackXPositions = new int[]{this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 - getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 4 - getImgWidth(DEV_CARD_KNIGHT) / 2,
-            this.getWidth() / 2 + getImgWidth(WATER_RING) / 2 - getImgWidth(DEV_CARD_KNIGHT) / 2};
+        cardStackXPositions = CardUtil.getCardStackXPositions(this);
+
+        devCardStackXPositions = CardUtil.getDevCardStackXPositions(this);
+
         //and simularly the resouce stacks
         resourceStackXPositions = new int[]{0, //have the first index be a position of 0
             this.getWidth() / 2 - getImgWidth(WATER_RING) / 2,
@@ -6034,15 +6049,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         threeDTileOffset = (int) (-20 / scaleFactor);
 
         //Settler Label Font Size
-        buildMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-        tradeMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
-        devCardMenuLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) (timesNewRoman.getSize() / scaleFactor)));
+        buildMenuLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) (TIMES_NEW_ROMAN.getSize() / scaleFactor)));
+        tradeMenuLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) (TIMES_NEW_ROMAN.getSize() / scaleFactor)));
+        devCardMenuLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) (TIMES_NEW_ROMAN.getSize() / scaleFactor)));
 
-        instructionPromptLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
-        instructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 5) / scaleFactor)));
-        subInstructionLbl.setFont(new Font(timesNewRoman.getName(), timesNewRoman.getStyle(), (int) ((timesNewRoman.getSize() + 1) / scaleFactor)));
+        instructionPromptLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
+        instructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 5) / scaleFactor)));
+        subInstructionLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), TIMES_NEW_ROMAN.getStyle(), (int) ((TIMES_NEW_ROMAN.getSize() + 1) / scaleFactor)));
 
-        titleLbl.setFont(new Font(timesNewRoman.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
+        titleLbl.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) ((40) / scaleFactor)));
 
         //set the magin spacing for the settler labels
         instructionLbl.setSpaceForText((this.getWidth() / 2 - getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (instructionLbl.getXPos()));
@@ -6435,8 +6450,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param g2d
      * @param btnImage
      * @param btn
+     * @param drawMode
      */
-    private void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn, int drawMode) {
+    public void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn, int drawMode) {
         //get the width and height of the image
         int width;
         int height;
@@ -6503,15 +6519,26 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * Initialize cardTypeCount and assign it values.
      *
      * @param listSize
+     * @param updateGlobal whether or not to update the global var for
+     * cardTypeCount
+     * @param playerCards
+     * @return
      */
-    private void countCardTypes(int listSize, int playerNum) {
+    public int[] countCardTypes(int listSize, boolean updateGlobal, ArrayList<Integer> playerCards) {
         //setup an array to hold the results
-        cardTypeCount = new int[5];
+        int[] cardTypeCount = new int[5];
 
         //loop thorugh and populate the array
         for (int i = 0; i < listSize; i++) {
-            cardTypeCount[cards[playerNum].get(i) - 1]++;
+            cardTypeCount[playerCards.get(i) - 1]++;
         }
+
+        //check to see if the global var should be updated
+        if (updateGlobal) {
+            this.cardTypeCount = cardTypeCount;
+        }
+
+        return cardTypeCount;
     }
 
     /**
@@ -6713,7 +6740,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     /**
      * If the game is in online mode update the server with the current game.
      */
-    private void onlineUpdateServer() {
+    public void onlineUpdateServer() {
         //debug statemtn for updateing the game server
         //System.out.println("Updateing online");
 
@@ -6782,6 +6809,35 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public static int getPlayerCount() {
         return playerCount;
+    }
+
+    /**
+     * Get the ID of the current player
+     *
+     * @return
+     */
+    public int getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    /**
+     * Get the array of Integer object ArrayLists. This array contains all the
+     * hands of resource cards for all the players.
+     *
+     * @return
+     */
+    public ArrayList<Integer>[] getResourceCards() {
+        return cards;
+    }
+
+    /**
+     * Set the array of Integer object ArrayLists. This array contains all the
+     * hands of resource cards for all the players.
+     *
+     * @param cards
+     */
+    public void setResourceCards(ArrayList<Integer>[] cards) {
+        this.cards = cards;
     }
 
     /**

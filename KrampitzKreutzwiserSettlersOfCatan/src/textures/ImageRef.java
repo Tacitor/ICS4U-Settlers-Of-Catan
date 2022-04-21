@@ -94,8 +94,9 @@ public class ImageRef {
     private final static Image DOT_BLUE = new ImageIcon(ImageRef.class.getResource("playerIcons/blueDot.png")).getImage();
     private final static Image DOT_ORANGE = new ImageIcon(ImageRef.class.getResource("playerIcons/orangeDot.png")).getImage();
     private final static Image DOT_WHITE = new ImageIcon(ImageRef.class.getResource("playerIcons/whiteDot.png")).getImage();
+    private final static Image DOT_NONE = new ImageIcon(ImageRef.class.getResource("playerIcons/noneDot.png")).getImage();
     //array for the dots to be called on to get the correct colour for each player
-    public final static Image[] PLAYER_DOTS = new Image[]{ERROR_IMAGE, DOT_RED, DOT_BLUE, DOT_ORANGE, DOT_WHITE};
+    public final static Image[] PLAYER_DOTS = new Image[]{DOT_NONE, DOT_RED, DOT_BLUE, DOT_ORANGE, DOT_WHITE};
 
     //longest road tile thing
     public final static Image LONGEST_ROAD = new ImageIcon(ImageRef.class.getResource("bigCard/longestRoad.png")).getImage();
@@ -114,6 +115,10 @@ public class ImageRef {
 
     //the image for dev card too tips
     public final static Image TOOLTIP_DEV_CARD_BGD = new ImageIcon(ImageRef.class.getResource("util/tooltipBackground.png")).getImage();
+
+    //the image for the progress bar
+    public final static Image PROGRESS_BAR_UNCOMPLETE = new ImageIcon(ImageRef.class.getResource("util/progressBarUnCompleted.png")).getImage();
+    public final static Image PROGRESS_BAR_COMPLETE = new ImageIcon(ImageRef.class.getResource("util/progressBarCompleted.png")).getImage();
 
     public ImageRef() {
     }

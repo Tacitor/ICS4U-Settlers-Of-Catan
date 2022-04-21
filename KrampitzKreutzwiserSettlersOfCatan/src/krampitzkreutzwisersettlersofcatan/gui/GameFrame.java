@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import textures.ImageRef;
 
@@ -21,6 +22,8 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     private final MainMenu mainMenuFrame; //ref to the main menu
     private Dimension screenSize; //keeps track of the display the game is being played on
     private GamePanel theGamePanel; //referance to *a* GamePanel
+    private DomesticTradePanel domesticTradePanel; //referance to the domestic trade window
+    private boolean showTrade; //true if showing the trade panel
 
     public GameFrame(MainMenu m) {
 
@@ -36,6 +39,8 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * Set up the JFrame
      */
     private void initFrame() {
+        domesticTradePanel = new DomesticTradePanel(this);
+
         setTitle("Settlers of Catan");
         setSize(1920, 1080); //set the size to 1080p as a back up 
         setSize(screenSize); //set the JFrame size to match the display
@@ -93,6 +98,15 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     }
 
     /**
+     * Return the domestic trade panel.
+     *
+     * @return
+     */
+    public DomesticTradePanel getDomesticTradePanel() {
+        return domesticTradePanel;
+    }
+
+    /**
      * Removes the old game and replaces it with a new one
      */
     public void resetGamePanel() {
@@ -102,6 +116,59 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         //update the gamepanel in the main method
         Catan.updateGamePanel();
+    }
+
+    /**
+     * Switch modes of displaying the game. Switches between the regular game
+     * panel and the domestic trade panel.
+     *
+     * @param showTrade. If true Remove theGamePanel, and put it into domestic
+     * trade mode. If false do the reverse and show the game panel.
+     */
+    public void switchToTrade(boolean showTrade) {
+        this.showTrade = showTrade;
+
+        if (showTrade) { //show the domestic trade menu
+            remove(theGamePanel); //take out game panel
+
+            //debugg the cards getting deleted
+            //System.out.println("Test 3: " + theGamePanel.getResourceCards()[theGamePanel.getCurrentPlayer()]);
+            domesticTradePanel.resetToStartingMode();
+
+            //debugg the cards getting deleted
+            //System.out.println("Test 4: " + theGamePanel.getResourceCards()[theGamePanel.getCurrentPlayer()]);
+            add(domesticTradePanel); //switch over to domestic trade mode
+
+            //save the player that started the domestic trade
+            domesticTradePanel.setPlayerStartedDomestic(theGamePanel.getCurrentPlayer());
+            //save the cards they had at the time of clicking the trade button            
+            domesticTradePanel.setTradeCardsAlreadyHadPlayerStartedDomestic((ArrayList<Integer>) theGamePanel.getResourceCards()[theGamePanel.getCurrentPlayer()].clone());
+
+            domesticTradePanel.repaint(); //ensure there is something to diaplay
+
+        } else { //show the main game panel
+            remove(domesticTradePanel); //take out game panel
+            add(theGamePanel); //switch over to domestic trade mode
+
+            //update the build buttons
+            theGamePanel.updateBuildButtons();
+
+            theGamePanel.repaint(); //ensure there is something to diaplay
+
+        }
+
+        this.setVisible(true); //ensure the frame is active and visible
+        this.setFocusable(true); //ensure the Frame has the keyListener focus.
+
+    }
+
+    /**
+     * Is the GameFrame currently showing the domestic trade panel or not?
+     *
+     * @return
+     */
+    public boolean getShowTrade() {
+        return showTrade;
     }
 
     /**

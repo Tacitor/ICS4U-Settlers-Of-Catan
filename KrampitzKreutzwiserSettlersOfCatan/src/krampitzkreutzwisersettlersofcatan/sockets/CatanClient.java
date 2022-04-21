@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import javax.swing.*;
 import krampitzkreutzwisersettlersofcatan.gui.GameFrame;
 import textures.ImageRef;
@@ -391,6 +392,27 @@ public class CatanClient extends JFrame {
         }
     }
 
+    /**
+     * Send the data of the domestic trade that is underway to the server.
+     *
+     * @param onlineMode
+     * @param playerStartedDomestic
+     * @param playerSelectedForTrade
+     * @param domesticTradeMode
+     * @param tradeCardsGivePlayerStartedDomestic
+     * @param tradeCardsReceivePlayerStartedDomestic
+     * @param tradeCardsAlreadyHadPlayerStartedDomestic
+     * @param tradeCardsAlreadyHadPlayerSelected
+     */
+    public void sendDomesticTradeToServer(int onlineMode, int playerStartedDomestic, int playerSelectedForTrade, int domesticTradeMode,
+            ArrayList<Integer> tradeCardsGivePlayerStartedDomestic, ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic,
+            ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic, ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected) {
+
+        csc.sendDomesticTradeData(onlineMode, playerStartedDomestic, playerSelectedForTrade, domesticTradeMode,
+                tradeCardsGivePlayerStartedDomestic, tradeCardsReceivePlayerStartedDomestic, tradeCardsAlreadyHadPlayerStartedDomestic, tradeCardsAlreadyHadPlayerSelected);
+
+    }
+
     private void sendFile(String fileLocation) {
         //test if it is a vailid save file
         try {
@@ -504,6 +526,38 @@ public class CatanClient extends JFrame {
             case 3:
                 incomingColourResponse();
                 break;
+
+            case 5:
+                DomesticTradeTypeReceive domesticTradeTypeReceive = csc.receiveDomesticTradeData();
+
+                //debug the sending of data for domestic trading
+                //System.out.println("Got domestic trade mode: " + domesticTradeTypeReceive.getOnlineModeOfSender());
+                //reset and show the tradepanel
+                if (!theGameFrame.getShowTrade()) { //but only if it has not already
+                    theGameFrame.switchToTrade(true);
+                }
+
+                //update the trade panel
+                theGameFrame.getDomesticTradePanel().setPlayerStartedDomestic(domesticTradeTypeReceive.getPlayerStartedDomestic());
+                theGameFrame.getDomesticTradePanel().setPlayerSelectedForTrade(domesticTradeTypeReceive.getPlayerSelectedForTrade());
+
+                theGameFrame.getDomesticTradePanel().setDomesticTradeMode(domesticTradeTypeReceive.getDomesticTradeMode());
+
+                theGameFrame.getDomesticTradePanel().setTradeCardsGivePlayerStartedDomestic(domesticTradeTypeReceive.getTradeCardsGivePlayerStartedDomestic());
+                theGameFrame.getDomesticTradePanel().setTradeCardsReceivePlayerStartedDomestic(domesticTradeTypeReceive.getTradeCardsReceivePlayerStartedDomestic());
+
+                theGameFrame.getDomesticTradePanel().setTradeCardsAlreadyHadPlayerStartedDomestic(domesticTradeTypeReceive.getTradeCardsAlreadyHadPlayerStartedDomestic());
+                theGameFrame.getDomesticTradePanel().setTradeCardsAlreadyHadPlayerSelected(domesticTradeTypeReceive.getTradeCardsAlreadyHadPlayerSelected());
+
+                //check to see if the trade is done/cancled
+                if (domesticTradeTypeReceive.getDomesticTradeMode() == -1) {
+                    theGameFrame.switchToTrade(false);
+                } else { //if not cancelled
+                    theGameFrame.getDomesticTradePanel().updateComponentState();
+                    theGameFrame.getDomesticTradePanel().repaint();
+                }
+
+                break;
             default:
                 buttonEnabled = false;
                 break;
@@ -515,6 +569,126 @@ public class CatanClient extends JFrame {
         }
 
         updateButtons();
+    }
+
+    /**
+     * An object just to hold multiple data types that get returned when a CSC
+     * receives a domestic trading update from a server.
+     */
+    private class DomesticTradeTypeReceive {
+
+        //Attributes
+        int onlineModeOfSender;
+        int playerStartedDomestic;
+        int playerSelectedForTrade;
+        int domesticTradeMode;
+        ArrayList<Integer> tradeCardsGivePlayerStartedDomestic;
+        ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic;
+        ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic;
+        ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected;
+
+        /**
+         * Constructor
+         *
+         * @param onlineMode
+         * @param playerStartedDomestic
+         * @param playerSelectedForTrade
+         * @param domesticTradeMode
+         * @param tradeCardsGivePlayerStartedDomestic
+         * @param tradeCardsReceivePlayerStartedDomestic
+         * @param tradeCardsAlreadyHadPlayerStartedDomestic
+         * @param tradeCardsAlreadyHadPlayerSelected
+         */
+        public DomesticTradeTypeReceive(int onlineMode, int playerStartedDomestic, int playerSelectedForTrade, int domesticTradeMode,
+                ArrayList<Integer> tradeCardsGivePlayerStartedDomestic, ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic,
+                ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic, ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected) {
+
+            onlineModeOfSender = onlineMode;
+            this.playerStartedDomestic = playerStartedDomestic;
+            this.playerSelectedForTrade = playerSelectedForTrade;
+            this.domesticTradeMode = domesticTradeMode;
+            this.tradeCardsGivePlayerStartedDomestic = tradeCardsGivePlayerStartedDomestic;
+            this.tradeCardsReceivePlayerStartedDomestic = tradeCardsReceivePlayerStartedDomestic;
+            this.tradeCardsAlreadyHadPlayerStartedDomestic = tradeCardsAlreadyHadPlayerStartedDomestic;
+            this.tradeCardsAlreadyHadPlayerSelected = tradeCardsAlreadyHadPlayerSelected;
+
+        }
+
+        /**
+         * Get the cards the player who started the trade will be receiving.
+         *
+         * @return
+         */
+        public ArrayList<Integer> getTradeCardsReceivePlayerStartedDomestic() {
+            return tradeCardsReceivePlayerStartedDomestic;
+        }
+
+        /**
+         * Get the cards the player who started the trade will be giving away.
+         *
+         * @return
+         */
+        public ArrayList<Integer> getTradeCardsGivePlayerStartedDomestic() {
+            return tradeCardsGivePlayerStartedDomestic;
+        }
+
+        /**
+         * Get the cards the player who started the trade already had when they
+         * initiated said trade.
+         *
+         * @return
+         */
+        public ArrayList<Integer> getTradeCardsAlreadyHadPlayerStartedDomestic() {
+            return tradeCardsAlreadyHadPlayerStartedDomestic;
+        }
+
+        /**
+         * Get the cards the player who was selected for the trade already had
+         * when they we selected for said trade.
+         *
+         * @return
+         */
+        public ArrayList<Integer> getTradeCardsAlreadyHadPlayerSelected() {
+            return tradeCardsAlreadyHadPlayerSelected;
+        }
+
+        /**
+         * Get the ID of the player that was selected for the domestic trade
+         *
+         * @return
+         */
+        public int getPlayerSelectedForTrade() {
+            return playerSelectedForTrade;
+        }
+
+        /**
+         * Get the ID of the player that initiated the domestic trade
+         *
+         * @return
+         */
+        public int getPlayerStartedDomestic() {
+            return playerStartedDomestic;
+        }
+
+        /**
+         * Get the mode of online play the sender of the data is in. (So this
+         * will be the player ID/colour of the player that sent the trade data)
+         *
+         * @return
+         */
+        public int getOnlineModeOfSender() {
+            return onlineModeOfSender;
+        }
+
+        /**
+         * The mode of trade the panel is in.
+         *
+         * @return
+         */
+        public int getDomesticTradeMode() {
+            return domesticTradeMode;
+        }
+
     }
 
     private class FileTypeRecieve {
@@ -641,6 +815,73 @@ public class CatanClient extends JFrame {
             }
         }
 
+        /**
+         * Send all the data related to domestic trading to the server
+         *
+         * @param onlineMode
+         * @param playerStartedDomestic
+         * @param playerSelectedForTrade
+         * @param domesticTradeMode
+         * @param tradeCardsGivePlayerStartedDomestic
+         * @param tradeCardsReceivePlayerStartedDomestic
+         * @param tradeCardsAlreadyHadPlayerStartedDomestic
+         * @param tradeCardsAlreadyHadPlayerSelected
+         */
+        public void sendDomesticTradeData(int onlineMode, int playerStartedDomestic, int playerSelectedForTrade, int domesticTradeMode,
+                ArrayList<Integer> tradeCardsGivePlayerStartedDomestic, ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic,
+                ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic, ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected) {
+
+            //debugg the data sending
+            System.out.println("Sending data!");
+
+            try {
+                dataOut.writeInt(5); //tell the server that it is reveiving the data of a domestic trade
+                dataOut.writeInt(onlineMode); //tell the server what player is sending this so it doens't send it back
+
+                //send the player data
+                dataOut.writeInt(playerStartedDomestic);
+                dataOut.writeInt(playerSelectedForTrade);
+
+                //send the mode
+                dataOut.writeInt(domesticTradeMode);
+
+                //send the size of the tradeCardsGivePlayerStartedDomestic
+                dataOut.writeInt(tradeCardsGivePlayerStartedDomestic.size());
+                //send the tradeCardsGivePlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsGivePlayerStartedDomestic.size(); i++) {
+                    dataOut.writeInt(tradeCardsGivePlayerStartedDomestic.get(i));
+                }
+
+                //send the size of the tradeCardsReceivePlayerStartedDomestic
+                dataOut.writeInt(tradeCardsReceivePlayerStartedDomestic.size());
+                //send the tradeCardsReceivePlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsReceivePlayerStartedDomestic.size(); i++) {
+                    dataOut.writeInt(tradeCardsReceivePlayerStartedDomestic.get(i));
+                }
+
+                //send the already had arrays
+                //send the size of the tradeCardsAlreadyHadPlayerStartedDomestic
+                dataOut.writeInt(tradeCardsAlreadyHadPlayerStartedDomestic.size());
+                //send the tradeCardsAlreadyHadPlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsAlreadyHadPlayerStartedDomestic.size(); i++) {
+                    dataOut.writeInt(tradeCardsAlreadyHadPlayerStartedDomestic.get(i));
+                }
+
+                //send the size of the tradeCardsAlreadyHadPlayerSelected
+                dataOut.writeInt(tradeCardsAlreadyHadPlayerSelected.size());
+                //send the tradeCardsAlreadyHadPlayerSelected ArrayList
+                for (int i = 0; i < tradeCardsAlreadyHadPlayerSelected.size(); i++) {
+                    dataOut.writeInt(tradeCardsAlreadyHadPlayerSelected.get(i));
+                }
+
+                //send out the data
+                dataOut.flush();
+
+            } catch (IOException e) {
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendDomesticTradeData()");
+            }
+        }
+
         public FileTypeRecieve recieveFile() {
             String msg = "";
             byte[] file = new byte[1];
@@ -669,10 +910,74 @@ public class CatanClient extends JFrame {
                 justRolledDice = dataIn.readBoolean();
 
             } catch (IOException ex) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveNewString()");
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC recieveFile()");
             }
 
             return new FileTypeRecieve(file, msg, fileName, justRolledDice);
+        }
+
+        /**
+         * Receive all the data related to domestic trading to the server
+         *
+         * @return
+         */
+        public DomesticTradeTypeReceive receiveDomesticTradeData() {
+            int onlineModeOfSender = -1;
+            int playerStartedDomestic = -1;
+            int playerSelectedForTrade = -1;
+            int domesticTradeMode = -1;
+            ArrayList<Integer> tradeCardsGivePlayerStartedDomestic = new ArrayList<>();
+            ArrayList<Integer> tradeCardsReceivePlayerStartedDomestic = new ArrayList<>();
+            ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic = new ArrayList<>();
+            ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected = new ArrayList<>();
+
+            try {
+
+                onlineModeOfSender = dataIn.readInt();
+
+                //read in the playerStartedDomestic
+                playerStartedDomestic = dataIn.readInt();
+                //read in the playerSelectedForTrade
+                playerSelectedForTrade = dataIn.readInt();
+
+                //read in the domesticTradeMode
+                domesticTradeMode = dataIn.readInt();
+
+                //read int the length of the tradeCardsGivePlayerStartedDomestic
+                int tradeCardsGivePlayerStartedDomesticLength = dataIn.readInt();
+                //read in the rest of the tradeCardsGivePlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsGivePlayerStartedDomesticLength; i++) {
+                    tradeCardsGivePlayerStartedDomestic.add(dataIn.readInt());
+                }
+
+                //read int the length of the tradeCardsGivePlayerStartedDomestic
+                int tradeCardsReceivePlayerStartedDomesticLength = dataIn.readInt();
+                //read in the rest of the tradeCardsGivePlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsReceivePlayerStartedDomesticLength; i++) {
+                    tradeCardsReceivePlayerStartedDomestic.add(dataIn.readInt());
+                }
+
+                //read in the already hads
+                //read int the length of the tradeCardsGivePlayerStartedDomestic
+                int tradeCardsAlreadyHadPlayerStartedDomesticLength = dataIn.readInt();
+                //read in the rest of the tradeCardsGivePlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsAlreadyHadPlayerStartedDomesticLength; i++) {
+                    tradeCardsAlreadyHadPlayerStartedDomestic.add(dataIn.readInt());
+                }
+
+                //read int the length of the tradeCardsGivePlayerStartedDomestic
+                int tradeCardsAlreadyHadPlayerSelectedLength = dataIn.readInt();
+                //read in the rest of the tradeCardsGivePlayerStartedDomestic ArrayList
+                for (int i = 0; i < tradeCardsAlreadyHadPlayerSelectedLength; i++) {
+                    tradeCardsAlreadyHadPlayerSelected.add(dataIn.readInt());
+                }
+
+            } catch (IOException ex) {
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC receiveDomesticTradeData()");
+            }
+
+            return new DomesticTradeTypeReceive(onlineModeOfSender, playerStartedDomestic, playerSelectedForTrade, domesticTradeMode,
+                    tradeCardsGivePlayerStartedDomestic, tradeCardsReceivePlayerStartedDomestic, tradeCardsAlreadyHadPlayerStartedDomestic, tradeCardsAlreadyHadPlayerSelected);
         }
 
         public String reciveNewString() {
