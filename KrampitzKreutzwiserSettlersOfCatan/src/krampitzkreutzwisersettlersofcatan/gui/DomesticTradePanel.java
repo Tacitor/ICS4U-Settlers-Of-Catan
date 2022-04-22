@@ -1011,25 +1011,25 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 //if in start player cards give away mode
                 lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
                 lockInitiatePlayerReceiveTradeBtn.setMode(0);
-                lockInitiatePlayerGiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerGiveTradeBtn.setEnabled(getAuthUser());
                 lockInitiatePlayerGiveTradeBtn.setMode(0);
                 completeTradeBtn.setEnabled(false);
                 break;
             case 2:
                 //if in trade partner player cards give away mode
-                lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerReceiveTradeBtn.setEnabled(getAuthUser());
                 lockInitiatePlayerReceiveTradeBtn.setMode(0);
-                lockInitiatePlayerGiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerGiveTradeBtn.setEnabled(getAuthUser());
                 lockInitiatePlayerGiveTradeBtn.setMode(1);
                 completeTradeBtn.setEnabled(false);
                 break;
             case 3:
                 //if in ready to complete trade mode
-                lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerReceiveTradeBtn.setEnabled(getAuthUser());
                 lockInitiatePlayerReceiveTradeBtn.setMode(1);
                 lockInitiatePlayerGiveTradeBtn.setEnabled(false);
                 lockInitiatePlayerGiveTradeBtn.setMode(1);
-                completeTradeBtn.setEnabled(true);
+                completeTradeBtn.setEnabled(getAuthUser());
                 break;
             default:
                 break;
