@@ -1282,6 +1282,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                         //sort the dev cards
                         quickSortCards(devCards[currentPlayer], 0, devCards[currentPlayer].size() - 1);
+                        
+                        //set the view to the dev cards
+                        showDevCards = true;
+                        toggleCardBtn.setMode(1);
 
                         updateBuildButtons();
                         repaint();
