@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -44,6 +45,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private SettlerLbl titleLbl, playerSelectLbl, initiatePlayerReceivesLbl, initiatePlayerGivesLbl, initiatePlayersStaticCardsLbl;
     //array for the labels
     private SettlerLbl[] settlerLbls;
+
+    private Color beigeColor = new Color(255, 255, 225);
 
     //data for card drawing
     /**
@@ -161,7 +164,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         initiatePlayersStaticCardsLbl = new SettlerLbl("ERROR: 2");
 
         //setup the colour
-        Color beigeColor = new Color(255, 255, 225);
         titleLbl.setForeground(beigeColor); //beige
         playerSelectLbl.setForeground(beigeColor);
         initiatePlayerReceivesLbl.setForeground(beigeColor);
@@ -195,6 +197,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //update the Settler Label positions
         settlerVarPos(g2d); //update the positions
+
+        g2d.setColor(beigeColor);
 
         //draw the background image
         g2d.drawImage(ImageRef.WOOD_BACKGROUND,
@@ -369,6 +373,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //draw the cards the init player will trade away
         drawCards(g2d, 2, tradeCardsGivePlayerStartedDomestic);
+
+        //reset the colour
+        g2d.setColor(beigeColor);
 
         //=-=-=-=-=-=-=-=-= draw the menu segment boarders =-=-=-=-=-=-=-=-=
         g2d.setStroke(new BasicStroke(scaleInt(5))); //make the stroke a little thicker
@@ -634,42 +641,53 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                         theGamePanel.getImgHeight(image),
                         null);
 
-                /*
                 //draw the hitbox
-                if (showCardHitbox) {
-                    //decide if to draw this on in the loop
-                    if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
-                        drawSpecificHitbox = false;
-                    } else if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
-                        drawSpecificHitbox = true;
-                    } else if (tradingMode == 3) { //special handeling for 2:1
-                        //check if the card is of the type the player muct trade for 2:1 trading
-                        drawSpecificHitbox = cards[playerID].get(i) != tradeResource && (playerHasPort[playerID][cards[playerID].get(i)]) && numCardType[type] >= minTradeCardsNeeded;
-                    } else { //if it is for trading purpous do some more checks
-                        //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
-                        drawSpecificHitbox = numCardType[type] >= minTradeCardsNeeded && cards[playerID].get(i) != tradeResource;
-                    }
+                if (getDrawCardHitBox(cardMode)) {
 
-                    if (drawSpecificHitbox) {
-                        //draw the high light
-                        g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                        g2d.fillRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
-                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
-                                theGamePanel.getImgWidth(image),
-                                theGamePanel.getImgHeight(image));
-                        //draw the boarder
-                        g2d.setColor(new java.awt.Color(102, 62, 38));
-                        Stroke tempStroke = g2d.getStroke();
-                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                        g2d.drawRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
-                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
-                                theGamePanel.getImgWidth(image),
-                                theGamePanel.getImgHeight(image));
-                        g2d.setStroke(tempStroke);
-                    }
-                }*/
+                    //draw the high light
+                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                    g2d.fillRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                            getCardPosY(cardMode, image),
+                            theGamePanel.getImgWidth(image),
+                            theGamePanel.getImgHeight(image));
+                    //draw the boarder
+                    g2d.setColor(new java.awt.Color(102, 62, 38));
+                    Stroke tempStroke = g2d.getStroke();
+                    g2d.setStroke(new BasicStroke(scaleInt(5)));
+                    g2d.drawRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                            getCardPosY(cardMode, image),
+                            theGamePanel.getImgWidth(image),
+                            theGamePanel.getImgHeight(image));
+                    g2d.setStroke(tempStroke);
+
+                }
             }
         }
+    }
+
+    /**
+     * Return whether or not to draw a hit-box for a set of cards
+     *
+     * @param cardMode
+     * @return
+     */
+    private boolean getDrawCardHitBox(int cardMode) {
+        boolean drawHitbox = false; //default the hotboxes to off
+
+        if (getAuthUser()) {
+
+            if (domesticTradeMode == 1) { //if the starter player needs to decide what cards to trade
+                if (cardMode == 0 || cardMode == 2) {
+                    drawHitbox = true;
+                }
+            } else if (domesticTradeMode == 2) { //else if the player selected for trade needs to decide what cards to trade
+                if (cardMode == 0 || cardMode == 1) {
+                    drawHitbox = true;
+                }
+            }
+        }
+
+        return drawHitbox;
     }
 
     private int getCardPosY(int cardMode, Image image) {
