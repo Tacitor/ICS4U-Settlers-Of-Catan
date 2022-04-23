@@ -225,8 +225,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                     theGamePanel.getImgHeight(playerIconImage),
                     null);
 
-            //draw the hitbox around the icons only if in mode 0
-            if (domesticTradeMode == 0) {
+            //draw the hitbox around the icons only if in mode 0 and an authorized player
+            if (domesticTradeMode == 0 && getAuthUser()) {
                 //draw the high light
                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
                 g2d.fillRect(playerIconStartPos + ((theGamePanel.getImgWidth(playerIconImage)) * (i)),
