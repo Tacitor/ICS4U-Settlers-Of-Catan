@@ -257,7 +257,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 null);
 
         //draw the header
-        g2d.setFont(new Font("Times New Roman", Font.BOLD, scaleInt(20)));
+        g2d.setFont(new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(20)));
         g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("Initiated Trade:",
                 this.getWidth() - theGamePanel.getImgWidth(PLAYER_RED) - scaleInt(10),
@@ -520,7 +520,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
             //draw the number of cards the payer has of each type
             //change the font
             Font tempFont = g2d.getFont(); //save the current stroke
-            g2d.setFont(new Font("Times New Roman", Font.BOLD, scaleInt(40))); //overwrite it      
+            g2d.setFont(new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40))); //overwrite it      
             g2d.setColor(new java.awt.Color(255, 255, 225));
 
             //loop through and draw the stacked cards
@@ -1114,10 +1114,10 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * depend on knowing the width or height of the gamePanel
      */
     private void panelSizeDependantCalculations() {
-        Font headerFont = new Font(GamePanel.TIMES_NEW_ROMAN.getName(), GamePanel.TIMES_NEW_ROMAN.getStyle(), scaleInt(25));
+        Font headerFont = new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), theGamePanel.TIMES_NEW_ROMAN.getStyle(), scaleInt(25));
 
         //Settler Label Font Size
-        titleLbl.setFont(new Font(GamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
+        titleLbl.setFont(new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
         playerSelectLbl.setFont(headerFont);
         initiatePlayerReceivesLbl.setFont(headerFont);
         initiatePlayerGivesLbl.setFont(headerFont);

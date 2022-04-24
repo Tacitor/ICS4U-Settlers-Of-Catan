@@ -19,11 +19,14 @@ import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
 import Audio.AudioRef;
 import animation.Dice;
 import dataFiles.OldCode;
+import font.FontRef;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Stroke;
 import java.awt.event.KeyEvent;
@@ -36,6 +39,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -211,7 +215,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private SettlerComponent[] settlerComponents;
 
     //fonts
-    public static final Font TIMES_NEW_ROMAN = new Font("Times New Roman", Font.PLAIN, 18);
+    public Font TIMES_NEW_ROMAN;
 
     //mouse motion listener vars
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
@@ -267,6 +271,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //the 6 is for the six types of ports ^
         totalCardsCollected = new int[5];
         setupTurnOrder = new int[playerCount * setupRoundsLeft]; //accounds for all the players for every setup round there will be
+
+        TIMES_NEW_ROMAN = setUpTimesNewRomanFont();
 
         // Initialize the window and board
         initSettlerLbl();
@@ -480,6 +486,21 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
 
+        /*
+         * Debugg the Font not working on all systems
+
+        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+
+        System.out.println(Arrays.toString(fonts));
+
+        for (int i = 0; i < fonts.length; i++) {
+            if (fonts[i].equals("Times New Roman")) {
+                System.out.println("Found: " + fonts[i] + " at : " + i + " of: " + fonts.length);
+            }
+        }
+
+        System.out.println();
+         */
     }
     // </editor-fold>
 
@@ -1282,7 +1303,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                         //sort the dev cards
                         quickSortCards(devCards[currentPlayer], 0, devCards[currentPlayer].size() - 1);
-                        
+
                         //set the view to the dev cards
                         showDevCards = true;
                         toggleCardBtn.setMode(1);
@@ -4627,7 +4648,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //must be casted from older Graphics class in order to have access to some newer methods
         Graphics2D g2d = (Graphics2D) g;
         //draw a string on the panel        
-        g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor)));
+        g2d.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) (40 / scaleFactor)));
         //old title. Replaced by JLabel
         //g2d.drawString("Settlers of Catan", (int) (10 / scaleFactor), (int) (50 / scaleFactor)); //(text, x, y)        }
 
@@ -4695,7 +4716,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 null);
 
         //draw the current player icon header
-        g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
+        g2d.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) (20 / scaleFactor)));
         g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("Current player:",
                 this.getWidth() - getImgWidth(PLAYER_RED) - (int) (10 / scaleFactor),
@@ -4840,7 +4861,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 }
 
                 //draw the harvest roll num
-                g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (20 / scaleFactor)));
+                g2d.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) (20 / scaleFactor)));
                 g2d.drawString(Integer.toString(tiles.get(tileID).getHarvestRollNum()),
                         tiles.get(tileID).getXPos() + newTileWidth / 2 - harvestRollNumOffset,
                         (int) (tiles.get(tileID).getYPos() + newTileHeight / 2 + (6 / scaleFactor) + threeDTileOffset));
@@ -4929,6 +4950,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         } else {
             playerNumOffset = scaleInt(60);
         }
+
+        g2d.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.PLAIN, scaleInt(20)));
 
         //draw the VP and resource card start table
         //draw the player header
@@ -5184,7 +5207,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //draw the number of cards the payer has of each type
                     //change the font
                     Font tempFont = g2d.getFont(); //save the current stroke
-                    g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor))); //overwrite it      
+                    g2d.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) (40 / scaleFactor))); //overwrite it      
                     g2d.setColor(new java.awt.Color(255, 255, 225));
 
                     //loop through and draw the stacked cards
@@ -5367,7 +5390,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     //draw the number of cards the payer has of each type
                     //change the font
                     Font tempFont = g2d.getFont(); //save the current stroke
-                    g2d.setFont(new Font("Times New Roman", Font.BOLD, (int) (40 / scaleFactor))); //overwrite it      
+                    g2d.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.BOLD, (int) (40 / scaleFactor))); //overwrite it      
                     g2d.setColor(new java.awt.Color(255, 255, 225));
 
                     //loop through and draw the stacked cards
@@ -5627,7 +5650,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         }
 
         //reset the font
-        g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
+        g2d.setFont(new Font(TIMES_NEW_ROMAN.getName(), Font.PLAIN, (int) (20 / scaleFactor)));
 
         /*
          * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= End SetterLbl Drawing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -7012,5 +7035,35 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         mouseMotionPosX = e.getX();
         mouseMotionPosY = e.getY();
         mouseMoveAction();
+    }
+
+    /**
+     * Return the Times New Roman font. Setup and load the TreuType font from
+     * the file system for use in game.
+     *
+     * @return
+     */
+    private Font setUpTimesNewRomanFont() {
+
+        Font tempFont = null;
+
+        try {
+            URL url = FontRef.class.getResource("Lobster.ttf");
+
+            //File file = new File(    );
+            //System.out.println(url.getPath());
+
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("font/Lobster.ttf")));
+
+            tempFont = new Font("Lobster", Font.PLAIN, 18);
+
+        } catch (FontFormatException ex) {
+            System.out.println("FontFormatException: " + ex);
+        } catch (IOException ex) {
+            System.out.println("IOException: " + ex);
+        }
+
+        return tempFont;
     }
 }
