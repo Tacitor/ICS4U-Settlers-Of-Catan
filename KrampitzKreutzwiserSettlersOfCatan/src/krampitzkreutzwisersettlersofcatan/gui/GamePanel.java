@@ -485,22 +485,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         // Set the state of the builds buttons for the first player
         updateBuildButtons();
-
-        /*
-         * Debugg the Font not working on all systems
-
-        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-
-        System.out.println(Arrays.toString(fonts));
-
-        for (int i = 0; i < fonts.length; i++) {
-            if (fonts[i].equals("Times New Roman")) {
-                System.out.println("Found: " + fonts[i] + " at : " + i + " of: " + fonts.length);
-            }
-        }
-
-        System.out.println();
-         */
     }
     // </editor-fold>
 
@@ -7048,11 +7032,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         Font tempFont = null;
 
         try {
-            URL url = FontRef.class.getResource("Lobster.ttf");
-
-            //File file = new File(    );
             //System.out.println(url.getPath());
-
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("font/Lobster.ttf")));
 
