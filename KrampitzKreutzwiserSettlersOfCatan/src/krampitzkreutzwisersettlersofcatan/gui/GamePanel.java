@@ -3876,7 +3876,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             // Check if the player has enough cards to use the build buttons
             canBuildRoad = hasCards(0); // Roads
             canBuildSettlement = hasCards(1) && canBuildASettlment(); // Settlements
-            canBuildCity = hasCards(2); // Cities
+            canBuildCity = hasCards(2) && canBuildACity(); // Cities
             canTrade4to = hasTradeCards(4, currentPlayer);
             canTrade3to = hasTradeCards(3, currentPlayer) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
             canTrade2to = hasSpecializedPort(currentPlayer);
@@ -4295,6 +4295,32 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         // If the user cannot build here
         return false;
+    }
+
+    /**
+     * Checks to see if the current player is able to build a City. Runs through
+     * all the SettlementNodes and checks if any are eligible to be upgraded to
+     * cities. Ignores cards and just checks to see if they are in the right
+     * state.
+     *
+     * @return
+     */
+    private boolean canBuildACity() {
+
+        boolean canBuildACity = false; //Whether or not the current player can build any city. Default to false
+
+        //loop throguh all the settlementNodes and check them
+        for (int i = 0; i < settlementNodes.size(); i++) {
+
+            //check to see if there is a smalle Node that is build and in their name
+            if (settlementNodes.get(i).getPlayer() == currentPlayer && !settlementNodes.get(i).isLarge()) {
+                canBuildACity = true;
+            }
+
+        }
+
+        return canBuildACity;
+
     }
 
     /**
