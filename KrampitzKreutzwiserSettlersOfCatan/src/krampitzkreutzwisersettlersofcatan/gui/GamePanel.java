@@ -7020,7 +7020,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     }
 
     /**
-     * Return the Times New Roman font. Setup and load the TreuType font from
+     * Return the Times New Roman font. Setup and load the TrueType font from
      * the file system for use in game.
      *
      * @return
@@ -7032,9 +7032,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         try {
             //System.out.println(url.getPath());
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("font/Lobster.ttf")));
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("font/times.ttf")));
 
-            tempFont = new Font("Lobster", Font.PLAIN, 18);
+            tempFont = new Font("Times New Roman", Font.PLAIN, 18);
 
         } catch (FontFormatException ex) {
             System.out.println("FontFormatException: " + ex);
