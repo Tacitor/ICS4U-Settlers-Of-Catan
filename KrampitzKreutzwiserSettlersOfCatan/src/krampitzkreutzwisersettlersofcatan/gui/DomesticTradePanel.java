@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -44,6 +45,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     private SettlerLbl titleLbl, playerSelectLbl, initiatePlayerReceivesLbl, initiatePlayerGivesLbl, initiatePlayersStaticCardsLbl;
     //array for the labels
     private SettlerLbl[] settlerLbls;
+
+    private Color beigeColor = new Color(255, 255, 225);
 
     //data for card drawing
     /**
@@ -161,7 +164,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         initiatePlayersStaticCardsLbl = new SettlerLbl("ERROR: 2");
 
         //setup the colour
-        Color beigeColor = new Color(255, 255, 225);
         titleLbl.setForeground(beigeColor); //beige
         playerSelectLbl.setForeground(beigeColor);
         initiatePlayerReceivesLbl.setForeground(beigeColor);
@@ -196,6 +198,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //update the Settler Label positions
         settlerVarPos(g2d); //update the positions
 
+        g2d.setColor(beigeColor);
+
         //draw the background image
         g2d.drawImage(ImageRef.WOOD_BACKGROUND,
                 0,
@@ -225,8 +229,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                     theGamePanel.getImgHeight(playerIconImage),
                     null);
 
-            //draw the hitbox around the icons only if in mode 0
-            if (domesticTradeMode == 0) {
+            //draw the hitbox around the icons only if in mode 0 and an authorized player
+            if (domesticTradeMode == 0 && getAuthUser()) {
                 //draw the high light
                 g2d.setColor(new java.awt.Color(255, 255, 225, 128));
                 g2d.fillRect(playerIconStartPos + ((theGamePanel.getImgWidth(playerIconImage)) * (i)),
@@ -253,7 +257,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 null);
 
         //draw the header
-        g2d.setFont(new Font("Times New Roman", Font.BOLD, scaleInt(20)));
+        g2d.setFont(new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(20)));
         g2d.setColor(new java.awt.Color(255, 255, 225));
         g2d.drawString("Initiated Trade:",
                 this.getWidth() - theGamePanel.getImgWidth(PLAYER_RED) - scaleInt(10),
@@ -369,6 +373,9 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //draw the cards the init player will trade away
         drawCards(g2d, 2, tradeCardsGivePlayerStartedDomestic);
+
+        //reset the colour
+        g2d.setColor(beigeColor);
 
         //=-=-=-=-=-=-=-=-= draw the menu segment boarders =-=-=-=-=-=-=-=-=
         g2d.setStroke(new BasicStroke(scaleInt(5))); //make the stroke a little thicker
@@ -513,7 +520,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
             //draw the number of cards the payer has of each type
             //change the font
             Font tempFont = g2d.getFont(); //save the current stroke
-            g2d.setFont(new Font("Times New Roman", Font.BOLD, scaleInt(40))); //overwrite it      
+            g2d.setFont(new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40))); //overwrite it      
             g2d.setColor(new java.awt.Color(255, 255, 225));
 
             //loop through and draw the stacked cards
@@ -634,42 +641,53 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                         theGamePanel.getImgHeight(image),
                         null);
 
-                /*
                 //draw the hitbox
-                if (showCardHitbox) {
-                    //decide if to draw this on in the loop
-                    if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
-                        drawSpecificHitbox = false;
-                    } else if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
-                        drawSpecificHitbox = true;
-                    } else if (tradingMode == 3) { //special handeling for 2:1
-                        //check if the card is of the type the player muct trade for 2:1 trading
-                        drawSpecificHitbox = cards[playerID].get(i) != tradeResource && (playerHasPort[playerID][cards[playerID].get(i)]) && numCardType[type] >= minTradeCardsNeeded;
-                    } else { //if it is for trading purpous do some more checks
-                        //has to have more than 4 or more cards and cannot be the same type of card the play wants to end up with.
-                        drawSpecificHitbox = numCardType[type] >= minTradeCardsNeeded && cards[playerID].get(i) != tradeResource;
-                    }
+                if (getDrawCardHitBox(cardMode)) {
 
-                    if (drawSpecificHitbox) {
-                        //draw the high light
-                        g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                        g2d.fillRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
-                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
-                                theGamePanel.getImgWidth(image),
-                                theGamePanel.getImgHeight(image));
-                        //draw the boarder
-                        g2d.setColor(new java.awt.Color(102, 62, 38));
-                        Stroke tempStroke = g2d.getStroke();
-                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                        g2d.drawRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
-                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
-                                theGamePanel.getImgWidth(image),
-                                theGamePanel.getImgHeight(image));
-                        g2d.setStroke(tempStroke);
-                    }
-                }*/
+                    //draw the high light
+                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                    g2d.fillRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                            getCardPosY(cardMode, image),
+                            theGamePanel.getImgWidth(image),
+                            theGamePanel.getImgHeight(image));
+                    //draw the boarder
+                    g2d.setColor(new java.awt.Color(102, 62, 38));
+                    Stroke tempStroke = g2d.getStroke();
+                    g2d.setStroke(new BasicStroke(scaleInt(5)));
+                    g2d.drawRect((cardStartPosition + (theGamePanel.getImgWidth(CARD_CLAY) + scaleInt(10)) * i),
+                            getCardPosY(cardMode, image),
+                            theGamePanel.getImgWidth(image),
+                            theGamePanel.getImgHeight(image));
+                    g2d.setStroke(tempStroke);
+
+                }
             }
         }
+    }
+
+    /**
+     * Return whether or not to draw a hit-box for a set of cards
+     *
+     * @param cardMode
+     * @return
+     */
+    private boolean getDrawCardHitBox(int cardMode) {
+        boolean drawHitbox = false; //default the hotboxes to off
+
+        if (getAuthUser()) {
+
+            if (domesticTradeMode == 1) { //if the starter player needs to decide what cards to trade
+                if (cardMode == 0 || cardMode == 2) {
+                    drawHitbox = true;
+                }
+            } else if (domesticTradeMode == 2) { //else if the player selected for trade needs to decide what cards to trade
+                if (cardMode == 0 || cardMode == 1) {
+                    drawHitbox = true;
+                }
+            }
+        }
+
+        return drawHitbox;
     }
 
     private int getCardPosY(int cardMode, Image image) {
@@ -1011,25 +1029,25 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 //if in start player cards give away mode
                 lockInitiatePlayerReceiveTradeBtn.setEnabled(false);
                 lockInitiatePlayerReceiveTradeBtn.setMode(0);
-                lockInitiatePlayerGiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerGiveTradeBtn.setEnabled(getAuthUser());
                 lockInitiatePlayerGiveTradeBtn.setMode(0);
                 completeTradeBtn.setEnabled(false);
                 break;
             case 2:
                 //if in trade partner player cards give away mode
-                lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerReceiveTradeBtn.setEnabled(getAuthUser());
                 lockInitiatePlayerReceiveTradeBtn.setMode(0);
-                lockInitiatePlayerGiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerGiveTradeBtn.setEnabled(getAuthUser());
                 lockInitiatePlayerGiveTradeBtn.setMode(1);
                 completeTradeBtn.setEnabled(false);
                 break;
             case 3:
                 //if in ready to complete trade mode
-                lockInitiatePlayerReceiveTradeBtn.setEnabled(true);
+                lockInitiatePlayerReceiveTradeBtn.setEnabled(getAuthUser());
                 lockInitiatePlayerReceiveTradeBtn.setMode(1);
                 lockInitiatePlayerGiveTradeBtn.setEnabled(false);
                 lockInitiatePlayerGiveTradeBtn.setMode(1);
-                completeTradeBtn.setEnabled(true);
+                completeTradeBtn.setEnabled(getAuthUser());
                 break;
             default:
                 break;
@@ -1096,10 +1114,10 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      * depend on knowing the width or height of the gamePanel
      */
     private void panelSizeDependantCalculations() {
-        Font headerFont = new Font(GamePanel.TIMES_NEW_ROMAN.getName(), GamePanel.TIMES_NEW_ROMAN.getStyle(), scaleInt(25));
+        Font headerFont = new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), theGamePanel.TIMES_NEW_ROMAN.getStyle(), scaleInt(25));
 
         //Settler Label Font Size
-        titleLbl.setFont(new Font(GamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
+        titleLbl.setFont(new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
         playerSelectLbl.setFont(headerFont);
         initiatePlayerReceivesLbl.setFont(headerFont);
         initiatePlayerGivesLbl.setFont(headerFont);

@@ -136,7 +136,7 @@ public class Dice {
 
     public void draw(Graphics2D g2d, int rightDrawMargin, boolean inSetup, GamePanel gamePanel) {
         //set the font for the dice roll indecator
-        g2d.setFont(new Font("Times New Roman", Font.PLAIN, (int) (20 / scaleFactor)));
+        g2d.setFont(new Font(gamePanel.TIMES_NEW_ROMAN.getName(), Font.PLAIN, (int) (20 / scaleFactor)));
         g2d.setColor(new java.awt.Color(255, 255, 225));
         //show what number the user rolled
         g2d.drawString("You rolled a: " + diceRollVal[2],
