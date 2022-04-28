@@ -415,7 +415,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         }
 
         //draw the trade mode
-        g2d.drawString("Trade Mode: " + domesticTradeMode, 0, 500);
+        //g2d.drawString("Trade Mode: " + domesticTradeMode, 0, 500);
 
         //=-=-=-=-=-=-=-=-= END OF draw the menu segment boarders =-=-=-=-=-=-=-=-=
         // Add alignment lines
