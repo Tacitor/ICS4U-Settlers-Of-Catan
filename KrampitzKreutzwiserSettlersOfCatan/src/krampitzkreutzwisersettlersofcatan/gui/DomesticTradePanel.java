@@ -416,7 +416,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //draw the trade mode
         //g2d.drawString("Trade Mode: " + domesticTradeMode, 0, 500);
-
         //=-=-=-=-=-=-=-=-= END OF draw the menu segment boarders =-=-=-=-=-=-=-=-=
         // Add alignment lines
         //g2d.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
@@ -548,6 +547,8 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                         break;
                 }
 
+                g2d.setColor(beigeColor);
+
                 //draw one each of the 5 card types
                 //draw the card image
                 g2d.drawImage(image,
@@ -562,41 +563,27 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                         cardStackXPositions[i] + theGamePanel.getImgWidth(image), //align the number to the right edge of the card
                         getCardPosY(cardMode, image) + theGamePanel.getImgHeight(image) / 2);
 
-                /*
-                //draw the hitbox but only if there are cards availible to be taken. No hitbox around a stack that has 0 cards.
-                if (showCardHitbox && cardTypeCount[i] > 0) {
-                    //decide if to draw this on in the loop
-                    if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
-                        drawSpecificHitbox = false;
-                    } else if (tradingMode == 0 && tradeResource == 0) { //if not trading draw it for theif discarding
-                        drawSpecificHitbox = true;
-                    } else if (tradingMode == 3) { //special handeling for 2:1
-                        //check if the card is of the type the player muct trade for 2:1 trading
-                        drawSpecificHitbox = (i + 1) != tradeResource && (playerHasPort[playerID][i + 1]) && cardTypeCount[i] >= minTradeCardsNeeded;
-                    } else { //if it is for other 4:1 or 3:1 trading purpous do some more checks
-                        //has to have more than the minimum or more cards and cannot be the same type of card the play wants to end up with.
-                        drawSpecificHitbox = cardTypeCount[i] >= minTradeCardsNeeded && (i + 1) != tradeResource;
-                    }
+                //draw the hitbox
+                //but only if there should be hit boxes for this card mode and if therea are even any in the stack
+                if (getDrawCardHitBox(cardMode) && cardTypeCount[i] > 0) {
 
-                    if (drawSpecificHitbox) {
-                        //draw the high light
-                        g2d.setColor(new java.awt.Color(255, 255, 225, 128));
-                        g2d.fillRect(cardStackXPositions[i],
-                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
-                                theGamePanel.getImgWidth(image),
-                                theGamePanel.getImgHeight(image));
-                        //draw the boarder
-                        g2d.setColor(new java.awt.Color(102, 62, 38));
-                        Stroke tempStroke = g2d.getStroke();
-                        g2d.setStroke(new BasicStroke((float) (5 / scaleFactor)));
-                        g2d.drawRect(cardStackXPositions[i],
-                                (int) (this.getHeight() - (theGamePanel.getImgHeight(image) * 1.125)),
-                                theGamePanel.getImgWidth(image),
-                                theGamePanel.getImgHeight(image));
-                        g2d.setStroke(tempStroke);
-                        g2d.setColor(new java.awt.Color(255, 255, 225));
-                    }
-                }  */
+                    //draw the high light
+                    g2d.setColor(new java.awt.Color(255, 255, 225, 128));
+                    g2d.fillRect(cardStackXPositions[i],
+                            getCardPosY(cardMode, image),
+                            theGamePanel.getImgWidth(image),
+                            theGamePanel.getImgHeight(image));
+                    //draw the boarder
+                    g2d.setColor(new java.awt.Color(102, 62, 38));
+                    Stroke tempStroke = g2d.getStroke();
+                    g2d.setStroke(new BasicStroke(scaleInt(5)));
+                    g2d.drawRect(cardStackXPositions[i],
+                            getCardPosY(cardMode, image),
+                            theGamePanel.getImgWidth(image),
+                            theGamePanel.getImgHeight(image));
+                    g2d.setStroke(tempStroke);
+
+                }
             }
 
             //restore the old font
