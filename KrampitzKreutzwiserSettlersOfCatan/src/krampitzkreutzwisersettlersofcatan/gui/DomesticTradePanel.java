@@ -207,6 +207,17 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 gameFrame.getWidth(),
                 gameFrame.getHeight(), this);
 
+        //draw the carpet background sections
+        int xPos = cancelTradeBtn.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage());
+        int yPos = initiatePlayerReceivesLbl.getYPos() - scaleInt(30);
+
+        //draw the carpet
+        g2d.drawImage(CARPET_LONG_IMAGE,
+                xPos - scaleInt(2), //shift by 2 to account for the fact that the dimestions were based on the boarder and had a stroke width of 2
+                yPos - scaleInt(2),
+                this.getWidth() - (xPos * 2) + scaleInt(5), //add 5 to each width and height again because of the boarder of stroke width 5 the dimentions were based off of
+                lockInitiatePlayerReceiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - yPos + scaleInt(10) + scaleInt(5), this);
+
         //=-=-=-=draw the player icons=-=-=-=
         //calc which ones to draw
         calcPlayerIconsToDraw();
@@ -384,13 +395,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 playerSelectLbl.getYPos() - scaleInt(30),
                 theGamePanel.getImgWidth(playerIconImage) * 3,
                 theGamePanel.getImgHeight(playerIconImage) + scaleInt(60) + scaleInt(10));
-        //draw the init player reveive box
-        int xPos = cancelTradeBtn.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage());
-        int yPos = initiatePlayerReceivesLbl.getYPos() - scaleInt(30);
-        g2d.drawRect(xPos,
-                yPos,
-                this.getWidth() - (xPos * 2),
-                lockInitiatePlayerReceiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
+
         //draw the init player give box
         yPos = initiatePlayerGivesLbl.getYPos() - scaleInt(30);
         g2d.drawRect(xPos,
