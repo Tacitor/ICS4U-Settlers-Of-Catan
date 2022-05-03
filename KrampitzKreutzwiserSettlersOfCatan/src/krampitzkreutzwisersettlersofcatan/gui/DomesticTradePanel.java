@@ -211,12 +211,22 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         int xPos = cancelTradeBtn.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage());
         int yPos = initiatePlayerReceivesLbl.getYPos() - scaleInt(30);
 
-        //draw the carpet
+        //draw the carpet for the init player receive box
         g2d.drawImage(CARPET_LONG_IMAGE,
                 xPos - scaleInt(2), //shift by 2 to account for the fact that the dimestions were based on the boarder and had a stroke width of 2
                 yPos - scaleInt(2),
                 this.getWidth() - (xPos * 2) + scaleInt(5), //add 5 to each width and height again because of the boarder of stroke width 5 the dimentions were based off of
-                lockInitiatePlayerReceiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - yPos + scaleInt(10) + scaleInt(5), this);
+                lockInitiatePlayerReceiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - yPos + scaleInt(10) + scaleInt(5),
+                this);
+
+        //draw the carpet for the init player give box
+        yPos = initiatePlayerGivesLbl.getYPos() - scaleInt(30);
+        g2d.drawImage(CARPET_LONG_IMAGE,
+                xPos - scaleInt(2), //shift by 2 to account for the fact that the dimestions were based on the boarder and had a stroke width of 2
+                yPos - scaleInt(2),
+                this.getWidth() - (xPos * 2) + scaleInt(5), //add 5 to each width and height again because of the boarder of stroke width 5 the dimentions were based off of
+                lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10) + scaleInt(5),
+                this);
 
         //=-=-=-=draw the player icons=-=-=-=
         //calc which ones to draw
@@ -395,13 +405,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 playerSelectLbl.getYPos() - scaleInt(30),
                 theGamePanel.getImgWidth(playerIconImage) * 3,
                 theGamePanel.getImgHeight(playerIconImage) + scaleInt(60) + scaleInt(10));
-
-        //draw the init player give box
-        yPos = initiatePlayerGivesLbl.getYPos() - scaleInt(30);
-        g2d.drawRect(xPos,
-                yPos,
-                this.getWidth() - (xPos * 2),
-                lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
 
         //draw the progress bar of the trade process
         //calc where the bar should start being drawn
