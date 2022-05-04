@@ -121,6 +121,7 @@ public class ImageRef {
     public final static Image PROGRESS_BAR_COMPLETE = new ImageIcon(ImageRef.class.getResource("util/progressBarCompleted.png")).getImage();
 
     public final static Image CARPET_LONG_IMAGE = new ImageIcon(ImageRef.class.getResource("util/carpLong.png")).getImage();
+    public final static Image CARPET_SHORT_IMAGE = new ImageIcon(ImageRef.class.getResource("util/carpShort.png")).getImage();
 
     public ImageRef() {
     }
