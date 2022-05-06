@@ -207,6 +207,37 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                 gameFrame.getWidth(),
                 gameFrame.getHeight(), this);
 
+        //=-=-=-=-=-=-= Draw the Carpets =-=-=-=-=-=-=
+        //draw the player select box carper
+        g2d.drawImage(CARPET_SHORT_IMAGE,
+                (this.getWidth() / 2) - (theGamePanel.getImgWidth(CARPET_SHORT_IMAGE) / 2),
+                playerSelectLbl.getYPos() - scaleInt(40),
+                theGamePanel.getImgWidth(CARPET_SHORT_IMAGE),
+                theGamePanel.getImgHeight(CARPET_SHORT_IMAGE),
+                this);
+
+        //draw the carpet background sections
+        int xPos = cancelTradeBtn.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage());
+        int yPos = initiatePlayerReceivesLbl.getYPos() - scaleInt(60);
+
+        //draw the carpet for the init player receive box
+        g2d.drawImage(CARPET_LONG_IMAGE,
+                xPos - scaleInt(2), //shift by 2 to account for the fact that the dimestions were based on the boarder and had a stroke width of 2
+                yPos - scaleInt(2),
+                this.getWidth() - (xPos * 2) + scaleInt(5), //add 5 to each width and height again because of the boarder of stroke width 5 the dimentions were based off of
+                lockInitiatePlayerReceiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - yPos + scaleInt(10) + scaleInt(5),
+                this);
+
+        //draw the carpet for the init player give box
+        yPos = initiatePlayerGivesLbl.getYPos() - scaleInt(60);
+        g2d.drawImage(CARPET_LONG_IMAGE,
+                xPos - scaleInt(2), //shift by 2 to account for the fact that the dimestions were based on the boarder and had a stroke width of 2
+                yPos - scaleInt(2),
+                this.getWidth() - (xPos * 2) + scaleInt(5), //add 5 to each width and height again because of the boarder of stroke width 5 the dimentions were based off of
+                lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10) + scaleInt(5),
+                this);
+
+        //=-=-=-=-=-=-= END OF Draw the Carpets =-=-=-=-=-=-=
         //=-=-=-=draw the player icons=-=-=-=
         //calc which ones to draw
         calcPlayerIconsToDraw();
@@ -297,6 +328,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
 
         //draw the dot image for the initiatePlayersStaticCardsLbl
         int openBracketPos; //the position of the '(' char in the string
+        g2d.setFont(initiatePlayersStaticCardsLbl.getFont());
         //calc the sub string of the text
         openBracketPos = initiatePlayersStaticCardsLbl.getText().indexOf('(');
 
@@ -312,7 +344,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //draw the dot image for the initiatePlayerGivesLbl
         //set the image
         playerDot = ImageRef.PLAYER_DOTS[playerSelectedForTrade];
-
+        g2d.setFont(initiatePlayerGivesLbl.getFont());
         //calc the sub string of the text
         openBracketPos = initiatePlayerGivesLbl.getText().indexOf('(');
         //draw the give player dot
@@ -377,27 +409,6 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //reset the colour
         g2d.setColor(beigeColor);
 
-        //=-=-=-=-=-=-=-=-= draw the menu segment boarders =-=-=-=-=-=-=-=-=
-        g2d.setStroke(new BasicStroke(scaleInt(5))); //make the stroke a little thicker
-        //draw the player select box
-        g2d.drawRect((gameFrame.getWidth() / 2) - ((theGamePanel.getImgWidth(playerIconImage) * (3)) / 2),
-                playerSelectLbl.getYPos() - scaleInt(30),
-                theGamePanel.getImgWidth(playerIconImage) * 3,
-                theGamePanel.getImgHeight(playerIconImage) + scaleInt(60) + scaleInt(10));
-        //draw the init player reveive box
-        int xPos = cancelTradeBtn.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage());
-        int yPos = initiatePlayerReceivesLbl.getYPos() - scaleInt(30);
-        g2d.drawRect(xPos,
-                yPos,
-                this.getWidth() - (xPos * 2),
-                lockInitiatePlayerReceiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
-        //draw the init player give box
-        yPos = initiatePlayerGivesLbl.getYPos() - scaleInt(30);
-        g2d.drawRect(xPos,
-                yPos,
-                this.getWidth() - (xPos * 2),
-                lockInitiatePlayerGiveTradeBtn.getYPos() + theGamePanel.getImgHeight(lockInitiatePlayerGiveTradeBtn.getBaseImage()) - yPos + scaleInt(10));
-
         //draw the progress bar of the trade process
         //calc where the bar should start being drawn
         int progessBarStartPosX = this.getWidth() - (theGamePanel.getImgWidth(PROGRESS_BAR_COMPLETE) * 4 + scaleInt(5)); //times 4 because of the 4 segments in the bar 
@@ -438,7 +449,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         initiatePlayerReceivesLbl.setText("Player " + playerStartedDomestic + " (      ) receives:"); //make sure text is up to date
         stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayerReceivesLbl.getText()); //calc how much room it will take up
         initiatePlayerReceivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
-        initiatePlayerReceivesLbl.setYPos(playerSelectLbl.getYPos() + theGamePanel.getImgHeight(ImageRef.SMALL_PLAYER_RED) + scaleInt(100));
+        initiatePlayerReceivesLbl.setYPos(playerSelectLbl.getYPos() + theGamePanel.getImgHeight(ImageRef.SMALL_PLAYER_RED) + scaleInt(160));
 
         lockInitiatePlayerReceiveTradeBtn.setXPos(this.getWidth() - (titleLbl.getXPos() + theGamePanel.getImgWidth(cancelTradeBtn.getBaseImage())) - theGamePanel.getImgWidth(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) - scaleInt(10));
         lockInitiatePlayerReceiveTradeBtn.setYPos(getCardPosY(1, CARD_CLAY) + theGamePanel.getImgHeight(CARD_CLAY) + scaleInt(20)); //set it to mode 1 because this is the button for init receive
@@ -456,7 +467,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         stringWidth = g2d.getFontMetrics().stringWidth(initiatePlayerGivesLbl.getText()); //calc how much room it will take up
         initiatePlayerGivesLbl.setXPos((gameFrame.getWidth() / 2) - (stringWidth / 2));
         initiatePlayerGivesLbl.setYPos(lockInitiatePlayerReceiveTradeBtn.getYPos()
-                + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) + scaleInt(100));
+                + theGamePanel.getImgHeight(lockInitiatePlayerReceiveTradeBtn.getBaseImage()) + scaleInt(90));
 
         int playerNum; //the player ID of the cards that should be displayed
 
@@ -1102,12 +1113,13 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
      */
     private void panelSizeDependantCalculations() {
         Font headerFont = new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), theGamePanel.TIMES_NEW_ROMAN.getStyle(), scaleInt(25));
+        Font headerFontBold = new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(25));
 
         //Settler Label Font Size
         titleLbl.setFont(new Font(theGamePanel.TIMES_NEW_ROMAN.getName(), Font.BOLD, scaleInt(40)));
-        playerSelectLbl.setFont(headerFont);
-        initiatePlayerReceivesLbl.setFont(headerFont);
-        initiatePlayerGivesLbl.setFont(headerFont);
+        playerSelectLbl.setFont(headerFontBold);
+        initiatePlayerReceivesLbl.setFont(headerFontBold);
+        initiatePlayerGivesLbl.setFont(headerFontBold);
         initiatePlayersStaticCardsLbl.setFont(headerFont);
 
         repaint();
