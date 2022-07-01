@@ -76,6 +76,9 @@ public class NewGameSettings extends javax.swing.JFrame {
         snakeRulesTxtAr = new javax.swing.JTextArea();
         snakeRulesTrueRbtn = new javax.swing.JRadioButton();
         snakeRulesFalseRbtn = new javax.swing.JRadioButton();
+        limitGamePiecesLbl = new javax.swing.JLabel();
+        limitGamePiecesCmbBx = new javax.swing.JComboBox<>();
+        startResourcesTxtAr2 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -172,6 +175,25 @@ public class NewGameSettings extends javax.swing.JFrame {
         snakeRulesGrp.add(snakeRulesFalseRbtn);
         snakeRulesFalseRbtn.setText("No");
 
+        limitGamePiecesLbl.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        limitGamePiecesLbl.setText("Limit Game Pieces:");
+
+        limitGamePiecesCmbBx.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "15 Roads, 5 Settlements, 4 Cities", "Infinite" }));
+        limitGamePiecesCmbBx.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limitGamePiecesCmbBxActionPerformed(evt);
+            }
+        });
+
+        startResourcesTxtAr2.setBackground(new java.awt.Color(240, 240, 240));
+        startResourcesTxtAr2.setColumns(20);
+        startResourcesTxtAr2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        startResourcesTxtAr2.setLineWrap(true);
+        startResourcesTxtAr2.setRows(5);
+        startResourcesTxtAr2.setText("The number of play pieces each player will have for their colour. Can be set to infite.\n\n\n");
+        startResourcesTxtAr2.setWrapStyleWord(true);
+        startResourcesTxtAr2.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -194,7 +216,7 @@ public class NewGameSettings extends javax.swing.JFrame {
                                 .addComponent(snakeRulesTrueRbtn)
                                 .addGap(10, 10, 10)
                                 .addComponent(snakeRulesFalseRbtn)
-                                .addContainerGap())
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(playerNumLbl)
@@ -212,17 +234,16 @@ public class NewGameSettings extends javax.swing.JFrame {
                                     .addComponent(snakeRulesLbl)
                                     .addComponent(snakeRulesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(startResourcesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(onlinLbl)
-                                            .addComponent(onlineFalseRbtn)
-                                            .addComponent(onlineTrueRbtn))
-                                        .addGap(102, 102, 102))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(startResourcesTxtAr1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(27, 27, 27))))))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(onlinLbl)
+                                    .addComponent(onlineFalseRbtn)
+                                    .addComponent(onlineTrueRbtn)
+                                    .addComponent(startResourcesTxtAr1, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                                    .addComponent(limitGamePiecesLbl)
+                                    .addComponent(limitGamePiecesCmbBx, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(startResourcesTxtAr2, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                                .addGap(47, 47, 47))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,27 +263,29 @@ public class NewGameSettings extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(onlineTrueRbtn)
                 .addGap(5, 5, 5)
-                .addComponent(startResourcesLbl)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(startResourcesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(7, 7, 7)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(startResTrueRbtn)
-                            .addComponent(startResFalseRbtn))
-                        .addGap(18, 18, 18)
-                        .addComponent(snakeRulesLbl))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(startResourcesTxtAr1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(startResourcesLbl)
+                    .addComponent(limitGamePiecesLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(snakeRulesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(startResourcesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(startResourcesTxtAr2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(startResTrueRbtn)
+                    .addComponent(startResFalseRbtn)
+                    .addComponent(limitGamePiecesCmbBx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addComponent(snakeRulesLbl)
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(snakeRulesTxtAr, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(startResourcesTxtAr1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(snakeRulesTrueRbtn)
                     .addComponent(snakeRulesFalseRbtn))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(startGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(backBtn)
@@ -330,8 +353,14 @@ public class NewGameSettings extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_startGameBtnActionPerformed
 
+    private void limitGamePiecesCmbBxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limitGamePiecesCmbBxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_limitGamePiecesCmbBxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
+    private javax.swing.JComboBox<String> limitGamePiecesCmbBx;
+    private javax.swing.JLabel limitGamePiecesLbl;
     private javax.swing.JLabel onlinLbl;
     private javax.swing.JRadioButton onlineFalseRbtn;
     private javax.swing.ButtonGroup onlineModeGrp;
@@ -353,6 +382,7 @@ public class NewGameSettings extends javax.swing.JFrame {
     private javax.swing.JLabel startResourcesLbl;
     private javax.swing.JTextArea startResourcesTxtAr;
     private javax.swing.JTextArea startResourcesTxtAr1;
+    private javax.swing.JTextArea startResourcesTxtAr2;
     private javax.swing.JLabel titleLbl;
     // End of variables declaration//GEN-END:variables
 }
