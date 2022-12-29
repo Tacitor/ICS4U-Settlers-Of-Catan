@@ -5,6 +5,8 @@
  */
 package krampitzkreutzwisersettlersofcatan.util;
 
+import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+
 /**
  *
  * @author Tacitor
@@ -37,7 +39,7 @@ public class GenUtil {
     /**
      * Get the number of pieces a given player has of a given type. Given
      * pieceType = 1, and playerNum = 2, then the method will return the number
-     * of remaining roads player 2 may build.
+     * of remaining roads player 2 may build. Dec 29th 2022
      *
      * @param pieceType
      * @param playerNum
@@ -65,8 +67,8 @@ public class GenUtil {
 
     /**
      * Set the number of pieces a given player has of a given type. Given
-     * pieceType = 1, and playerNum = 2, then the method will set the number
-     * of remaining roads player 2 may build.
+     * pieceType = 1, and playerNum = 2, then the method will set the number of
+     * remaining roads player 2 may build. Dec 29th 2022
      *
      * @param pieceType
      * @param playerNum
@@ -88,6 +90,10 @@ public class GenUtil {
             default:
                 System.out.println("ERROR: Invalid pieceType specified");
                 pieceArray = new int[]{-1};
+        }
+
+        if (pieceArray == null) { //check if the array has yet to be initialized
+            pieceArray = new int[GamePanel.getPlayerCount() + 1]; //make it the size of the number of player +1 for the 0 player
         }
 
         pieceArray[playerNum] = remainingPiecesNum;
