@@ -41,6 +41,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -737,6 +738,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         // If the game is waiting to start the next player's turn
         if (inbetweenTurns) {
+            //TODO: REMOVE THIS
+            //debug the game piece limiter
+            System.out.println("Roads:\t\t" + Arrays.toString(GenUtil.getPieceArray(1)));
+            System.out.println("Settlements:\t" + Arrays.toString(GenUtil.getPieceArray(2)));
+            System.out.println("Cities:\t\t" + Arrays.toString(GenUtil.getPieceArray(3)) + "\n");
 
             // Change the button back to the End Turn button
             setTurnBtbTextEnd();
@@ -1407,6 +1413,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                                     || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
 
                                                 roadNodes.get(i).setPlayer(currentPlayer);
+                                                //remove a road from the players pieces
+                                                GenUtil.decrementPlayerPiece(1, currentPlayer);
                                                 playerSetupRoadsLeft--;
                                                 // Update thwe build buttons to relfect the remaining setup buildings
                                                 updateBuildButtons();
@@ -1444,6 +1452,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                         // Set the road's player to the current player
                                         roadNodes.get(i).setPlayer(currentPlayer);
+                                        //remove a road from the players pieces
+                                        GenUtil.decrementPlayerPiece(1, currentPlayer);
                                         /*
                                      *
                                      *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion Start =-=-=-=-=-=-=-=-=-=-=-=-=\\
@@ -1547,6 +1557,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                         // Set the settlement's player to the current player
                                         settlementNodes.get(i).setPlayer(currentPlayer);
+                                        //remove a settlement from the players pieces
+                                        GenUtil.decrementPlayerPiece(2, currentPlayer);
 
                                         //check to see if that settlment is on a port
                                         //loop thorugh the ports and see if the settlement just built is on a port
@@ -1615,6 +1627,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                         // Make the settlement large
                                         settlementNodes.get(i).setLarge(true);
+
+                                        //remove a city from the players pieces
+                                        GenUtil.decrementPlayerPiece(3, currentPlayer);
+                                        //add a settlement back to the players pieces
+                                        GenUtil.incrementPlayerPiece(2, currentPlayer);
 
                                         // Increment the player's victory point counter
                                         victoryPoints[currentPlayer]++;
@@ -3855,6 +3872,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         } else if (usingDevCard > -1) { //if the game is in a mode for using dev cards
             // ^^^ -1 because that is the neutral/resting value. 0 is for when a card is being selected but its unkown which one
             canBuildRoad = (playerSetupRoadsLeft > 0); //if the player clicked the road building card allow them to build roads
+            //TODO: ADD A CLAUSE CHECKING IF THIS CARD CAN EVEN BE PLAYED
             canBuildSettlement = false;
             canBuildCity = false;
             canTrade4to = false;
@@ -3873,10 +3891,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             useDevCardBtn.setEnabled(!(usingDevCard == 2 || (usingDevCard == 1 && showSubPlayerHitbox)));
 
         } else { // If the game is NOT in setup
-            // Check if the player has enough cards to use the build buttons
-            canBuildRoad = hasCards(0); // Roads
-            canBuildSettlement = hasCards(1) && canBuildASettlment(); // Settlements
-            canBuildCity = hasCards(2) && canBuildACity(); // Cities
+            // Check if the player has enough cards to use the build buttons.
+            //and if the player has the remaining pieces
+            canBuildRoad = hasCards(0) && GenUtil.playerHasAPieceRemaining(currentPlayer, 1); // Roads
+            canBuildSettlement = hasCards(1) && canBuildASettlment() && GenUtil.playerHasAPieceRemaining(currentPlayer, 2); // Settlements
+            canBuildCity = hasCards(2) && canBuildACity() && GenUtil.playerHasAPieceRemaining(currentPlayer, 3); // Cities
             canTrade4to = hasTradeCards(4, currentPlayer);
             canTrade3to = hasTradeCards(3, currentPlayer) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
             canTrade2to = hasSpecializedPort(currentPlayer);
@@ -4450,7 +4469,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         dice.setJustRolled(true);
 
         // Act on the dice roll
-        if (roll == 7) { // Move the thief on a 7
+        if (roll == 7 && false) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
@@ -6835,6 +6854,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public static void setPlayerCount(int playerCount) {
         GamePanel.playerCount = playerCount;
+        //update the arrays for the number of remaining game pieces
+        GenUtil.initPieceArrays(playerCount);
     }
 
     /**

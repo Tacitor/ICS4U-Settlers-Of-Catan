@@ -5,8 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan.util;
 
-import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
-
 /**
  *
  * @author Tacitor
@@ -37,44 +35,26 @@ public class GenUtil {
     }
 
     /**
-     * Get the number of pieces a given player has of a given type. Given
-     * pieceType = 1, and playerNum = 2, then the method will return the number
-     * of remaining roads player 2 may build. Dec 29th 2022
+     * Initialize the arrays for the remaining number of game pieces to the
+     * number of players plus 1.
      *
-     * @param pieceType
-     * @param playerNum
-     * @return
+     * @param playerCount
      */
-    public static int getRemainingPlayerPieces(int pieceType, int playerNum) {
-        int[] pieceArray;
-        switch (pieceType) {
-            case 1: //if the number of roads is neeed
-                pieceArray = remainingRoadPieces;
-                break;
-            case 2: //if the number of settlements is neeed
-                pieceArray = remainingSettlementPieces;
-                break;
-            case 3: //if the number of cities is neeed
-                pieceArray = remainingCityPieces;
-                break;
-            default:
-                pieceArray = new int[]{-1};
-        }
-
-        return pieceArray[playerNum];
-
+    public static void initPieceArrays(int playerCount) {
+        remainingRoadPieces = new int[playerCount + 1];
+        remainingSettlementPieces = new int[playerCount + 1];
+        remainingCityPieces = new int[playerCount + 1];
     }
 
     /**
-     * Set the number of pieces a given player has of a given type. Given
-     * pieceType = 1, and playerNum = 2, then the method will set the number of
-     * remaining roads player 2 may build. Dec 29th 2022
+     * Given a build number (or a pieceType value) return the respective array
+     * for said building piece. Dec 30th 2022
      *
      * @param pieceType
-     * @param playerNum
-     * @param remainingPiecesNum
+     * @return
      */
-    public static void setRemainingPlayerPieces(int pieceType, int playerNum, int remainingPiecesNum) {
+    public static int[] getPieceArray(int pieceType) { //TODO: Make private
+
         int[] pieceArray;
 
         switch (pieceType) {
@@ -92,11 +72,59 @@ public class GenUtil {
                 pieceArray = new int[]{-1};
         }
 
-        if (pieceArray == null) { //check if the array has yet to be initialized
-            pieceArray = new int[GamePanel.getPlayerCount() + 1]; //make it the size of the number of player +1 for the 0 player
-        }
+        return pieceArray;
+    }
 
-        pieceArray[playerNum] = remainingPiecesNum;
+    /**
+     * Check if a given player has at least 1 of a given game piece remaining to
+     * build with. Or if infinite building mode is selected. Dec 30th 2022
+     *
+     * @param playerNum
+     * @param pieceType
+     * @return
+     */
+    public static boolean playerHasAPieceRemaining(int playerNum, int pieceType) {
+        return (getPieceArray(pieceType)[playerNum] == -1 || getPieceArray(pieceType)[playerNum] > 0);
+    }
+
+    /**
+     * Get the number of pieces a given player has of a given type. Given
+     * pieceType = 1, and playerNum = 2, then the method will return the number
+     * of remaining roads player 2 may build. Dec 29th 2022
+     *
+     * @param pieceType
+     * @param playerNum
+     * @return
+     */
+    public static int getRemainingPlayerPieces(int pieceType, int playerNum) {
+
+        return getPieceArray(pieceType)[playerNum];
+
+    }
+
+    /**
+     * Set the number of pieces a given player has of a given type. Given
+     * pieceType = 1, and playerNum = 2, then the method will set the number of
+     * remaining roads player 2 may build. Dec 29th 2022
+     *
+     * @param pieceType
+     * @param playerNum
+     * @param remainingPiecesNum
+     */
+    public static void setRemainingPlayerPieces(int pieceType, int playerNum, int remainingPiecesNum) {
+        getPieceArray(pieceType)[playerNum] = remainingPiecesNum;
+
+    }
+
+    public static void decrementPlayerPiece(int pieceType, int playerNum) {
+        //check to make sure there are any left
+        if (getRemainingPlayerPieces(pieceType, playerNum) > 0) {
+            getPieceArray(pieceType)[playerNum]--;
+        }
+    }
+
+    public static void incrementPlayerPiece(int pieceType, int playerNum) {
+        getPieceArray(pieceType)[playerNum]++;
 
     }
 
