@@ -2695,6 +2695,21 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             //add the newlyBoughtDevCards with linebreak
             saveFile.println("\n" + CardUtil.newlyBoughtDevCardsToString());
 
+            //add in the game piece limits
+            saveFile.println("remainingGamePieces:");
+            saveFile.println("roads:");
+            for (int i = 0; i <= playerCount; i++) {
+                saveFile.println(GenUtil.getRemainingPlayerPieces(1, i));
+            }
+            saveFile.println("settlements:");
+            for (int i = 0; i <= playerCount; i++) {
+                saveFile.println(GenUtil.getRemainingPlayerPieces(2, i));
+            }
+            saveFile.println("cities:");
+            for (int i = 0; i <= playerCount; i++) {
+                saveFile.println(GenUtil.getRemainingPlayerPieces(3, i));
+            }
+
             //add the close
             saveFile.close();
             return true;
@@ -3600,6 +3615,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
+            //skip line
+            //scanner.nextLine();
             //close the scanner
             scanner.close();
 
