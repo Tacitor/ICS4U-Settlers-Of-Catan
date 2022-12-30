@@ -3616,7 +3616,42 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             }
 
             //skip line
-            //scanner.nextLine();
+            scanner.nextLine();
+
+            //load in the game piece limits
+            if (scanner.nextLine().equals("remainingGamePieces:")) {
+
+                //read in the roads
+                if (scanner.nextLine().equals("roads:")) {
+                    for (int i = 0; i <= playerCount; i++) {
+                        GenUtil.setRemainingPlayerPieces(1, i, Integer.parseInt(scanner.nextLine()));
+                    }
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+                //read in the roads
+                if (scanner.nextLine().equals("settlements:")) {
+                    for (int i = 0; i <= playerCount; i++) {
+                        GenUtil.setRemainingPlayerPieces(2, i, Integer.parseInt(scanner.nextLine()));
+                    }
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+                //read in the roads
+                if (scanner.nextLine().equals("cities:")) {
+                    for (int i = 0; i <= playerCount; i++) {
+                        GenUtil.setRemainingPlayerPieces(3, i, Integer.parseInt(scanner.nextLine()));
+                    }
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
             //close the scanner
             scanner.close();
 
