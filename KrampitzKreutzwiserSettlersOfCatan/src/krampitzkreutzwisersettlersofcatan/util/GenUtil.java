@@ -116,6 +116,13 @@ public class GenUtil {
 
     }
 
+    /**
+     * Decrement a given players count of a given game piece type. Check to make
+     * sure the player has at least 1 of that type.
+     *
+     * @param pieceType
+     * @param playerNum
+     */
     public static void decrementPlayerPiece(int pieceType, int playerNum) {
         //check to make sure there are any left
         if (getRemainingPlayerPieces(pieceType, playerNum) > 0) {
@@ -123,6 +130,12 @@ public class GenUtil {
         }
     }
 
+    /**
+     * Increment a given players count of a given game piece type.
+     *
+     * @param pieceType
+     * @param playerNum
+     */
     public static void incrementPlayerPiece(int pieceType, int playerNum) {
         getPieceArray(pieceType)[playerNum]++;
 
