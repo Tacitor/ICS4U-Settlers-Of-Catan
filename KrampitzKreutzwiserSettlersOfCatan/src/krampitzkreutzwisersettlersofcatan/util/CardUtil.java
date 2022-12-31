@@ -38,11 +38,12 @@ public class CardUtil {
      * development cards is able to be played with regards other development
      * cards that may have been bought this round.
      *
+     * @param playerNum The ID or number of the currentPlayer
      * @param playersDevCards
      * @param devCardType
      * @return
      */
-    public static boolean canUseDevCard(ArrayList<Integer> playersDevCards, int devCardType) {
+    public static boolean canUseDevCard(int playerNum, ArrayList<Integer> playersDevCards, int devCardType) {
 
         boolean canUse;
         int boughtNum; //the number of that type that is newly bought
@@ -61,6 +62,14 @@ public class CardUtil {
         //if the user has more of a card type than they bought that round, let them use it
         canUse = (hasNum - boughtNum) > 0;
 
+        //add a new condition that stops the user from specifically using the road building card if they do not have any more road pieces left to build with.
+        if (devCardType == 2) {
+            //check if the player has atleast 2 roads left
+            if (GenUtil.getRemainingPlayerPieces(1, playerNum) < 2) {
+                canUse = false;
+            }
+        }
+
         return canUse;
     }
 
@@ -69,10 +78,11 @@ public class CardUtil {
      * the use development cards button. Also takes into account cards that were
      * bought this round
      *
+     * @param playerNum
      * @param playersDevCards
      * @return
      */
-    public static boolean hasDevCards(ArrayList<Integer> playersDevCards) {
+    public static boolean hasDevCards(int playerNum, ArrayList<Integer> playersDevCards) {
         boolean hasCards = false;
 
         //if there are any cards
@@ -81,7 +91,7 @@ public class CardUtil {
             //loop through the first few types and see if they are contained in the list
             //and also if the user has not bought this card this round
             for (int i = 1; i < 5; i++) { //go thorugh card types 1, 2, 3, 4
-                if (playersDevCards.contains(i) && canUseDevCard(playersDevCards, i)) {
+                if (playersDevCards.contains(i) && canUseDevCard(playerNum, playersDevCards, i)) {
                     hasCards = true;
                 }
             }

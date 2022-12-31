@@ -53,7 +53,7 @@ public class GenUtil {
      * @param pieceType
      * @return
      */
-    public static int[] getPieceArray(int pieceType) { //TODO: Make private
+    private static int[] getPieceArray(int pieceType) {
 
         int[] pieceArray;
 

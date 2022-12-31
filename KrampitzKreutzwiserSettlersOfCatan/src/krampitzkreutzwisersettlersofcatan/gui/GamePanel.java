@@ -41,7 +41,6 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -738,11 +737,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         // If the game is waiting to start the next player's turn
         if (inbetweenTurns) {
-            //TODO: REMOVE THIS
             //debug the game piece limiter
+            /*
             System.out.println("Roads:\t\t" + Arrays.toString(GenUtil.getPieceArray(1)));
             System.out.println("Settlements:\t" + Arrays.toString(GenUtil.getPieceArray(2)));
             System.out.println("Cities:\t\t" + Arrays.toString(GenUtil.getPieceArray(3)) + "\n");
+             */
 
             // Change the button back to the End Turn button
             setTurnBtbTextEnd();
@@ -1753,7 +1753,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 && event.getX() < (devCardStackXPositions[i] + getImgWidth(DEV_CARD_KNIGHT))
                                 && event.getY() > devCardYPos
                                 && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))
-                                && CardUtil.canUseDevCard(devCards[currentPlayer], i + 1)) {
+                                && CardUtil.canUseDevCard(currentPlayer, devCards[currentPlayer], i + 1)) {
                             //debug click detection
                             //System.out.println("Stack Dev Card Clicked!");
 
@@ -1815,7 +1815,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 && event.getY() > devCardYPos
                                 && event.getX() < (cardXPos + getImgWidth(DEV_CARD_KNIGHT))
                                 && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))
-                                && CardUtil.canUseDevCard(devCards[currentPlayer], devCardType)) {
+                                && CardUtil.canUseDevCard(currentPlayer, devCards[currentPlayer], devCardType)) {
                             //debug click detection
                             //System.out.println("Dev Card Clicked!");
 
@@ -3924,7 +3924,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         } else if (usingDevCard > -1) { //if the game is in a mode for using dev cards
             // ^^^ -1 because that is the neutral/resting value. 0 is for when a card is being selected but its unkown which one
             canBuildRoad = (playerSetupRoadsLeft > 0); //if the player clicked the road building card allow them to build roads
-            //TODO: ADD A CLAUSE CHECKING IF THIS CARD CAN EVEN BE PLAYED
             canBuildSettlement = false;
             canBuildCity = false;
             canTrade4to = false;
@@ -3957,7 +3956,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
             //only if the user has dev cards and hasn't already used oene this turn
             //and also if they did not buy that card this turn
-            useDevCardBtn.setEnabled(CardUtil.hasDevCards(devCards[currentPlayer]) && !userPlayedDevCard);
+            useDevCardBtn.setEnabled(CardUtil.hasDevCards(currentPlayer, devCards[currentPlayer]) && !userPlayedDevCard);
         }
 
         //if in online mode and not the current player they should not be able to chick the turn switch button
@@ -4521,7 +4520,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         dice.setJustRolled(true);
 
         // Act on the dice roll
-        if (roll == 7 && false) { // Move the thief on a 7
+        if (roll == 7) { // Move the thief on a 7
 
             /*
             Old Code. This is now handeled in MouseClick when the player clicks the Tile they would like to move the thief to.
@@ -5527,7 +5526,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
                                 drawSpecificHitbox = false;
                             } else { //make sure the card is an action type card and that is is not a newly bought card
-                                drawSpecificHitbox = i < 4 && CardUtil.canUseDevCard(devCards[playerID], i + 1);
+                                drawSpecificHitbox = i < 4 && CardUtil.canUseDevCard(playerID, devCards[playerID], i + 1);
                             }
 
                             if (drawSpecificHitbox) {
@@ -5612,7 +5611,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
                                 drawSpecificHitbox = false;
                             } else {
-                                drawSpecificHitbox = type < 5 && CardUtil.canUseDevCard(devCards[playerID], type); //make sure the card is an action type card && hasn't been bought this turn
+                                drawSpecificHitbox = type < 5 && CardUtil.canUseDevCard(playerID, devCards[playerID], type); //make sure the card is an action type card && hasn't been bought this turn
                             }
 
                             if (drawSpecificHitbox) {
