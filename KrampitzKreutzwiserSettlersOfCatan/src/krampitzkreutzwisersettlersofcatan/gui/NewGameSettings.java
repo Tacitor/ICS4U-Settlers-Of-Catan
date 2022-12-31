@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
+import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import textures.ImageRef;
 
 /**
@@ -329,6 +330,27 @@ public class NewGameSettings extends javax.swing.JFrame {
             GamePanel.setDoSnakeRules(true);
         } else if (snakeRulesFalseRbtn.isSelected()) {
             GamePanel.setDoSnakeRules(false);
+        }
+
+        //get and set the game piece limit
+        if (limitGamePiecesCmbBx.getSelectedIndex() == 1) { //if infinite is selected
+            //set all the counts to -1 to indecate infinit
+            for (int i = 1; i <= 3; i++) { //loop the piece types
+                for (int j = 1; j <= GamePanel.getPlayerCount(); j++) { //loop through the players
+
+                    GenUtil.setRemainingPlayerPieces(i, j, -1);
+                }
+            }
+
+        } else if (limitGamePiecesCmbBx.getSelectedIndex() == 0) { //if the standard numer of pieces is selected
+            //set all the counts to the repective regular standard values
+            for (int i = 1; i <= GamePanel.getPlayerCount(); i++) { //loop through the players
+
+                GenUtil.setRemainingPlayerPieces(1, i, 15); //number of roads
+                GenUtil.setRemainingPlayerPieces(2, i, 5); //number of settlements
+                GenUtil.setRemainingPlayerPieces(3, i, 4); //number of cities
+            }
+
         }
 
         //get the online play mode

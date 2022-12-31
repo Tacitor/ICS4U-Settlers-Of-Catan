@@ -737,6 +737,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
         // If the game is waiting to start the next player's turn
         if (inbetweenTurns) {
+            //debug the game piece limiter
+            /*
+            System.out.println("Roads:\t\t" + Arrays.toString(GenUtil.getPieceArray(1)));
+            System.out.println("Settlements:\t" + Arrays.toString(GenUtil.getPieceArray(2)));
+            System.out.println("Cities:\t\t" + Arrays.toString(GenUtil.getPieceArray(3)) + "\n");
+             */
 
             // Change the button back to the End Turn button
             setTurnBtbTextEnd();
@@ -1407,6 +1413,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                                     || newestSetupSettlment.getRoad(3) == roadNodes.get(i)) {
 
                                                 roadNodes.get(i).setPlayer(currentPlayer);
+                                                //remove a road from the players pieces
+                                                GenUtil.decrementPlayerPiece(1, currentPlayer);
                                                 playerSetupRoadsLeft--;
                                                 // Update thwe build buttons to relfect the remaining setup buildings
                                                 updateBuildButtons();
@@ -1444,6 +1452,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                         // Set the road's player to the current player
                                         roadNodes.get(i).setPlayer(currentPlayer);
+                                        //remove a road from the players pieces
+                                        GenUtil.decrementPlayerPiece(1, currentPlayer);
                                         /*
                                      *
                                      *=-=-=-=-=-=-=-=-=-=-=-=-= Longest Road Detedtion Start =-=-=-=-=-=-=-=-=-=-=-=-=\\
@@ -1547,6 +1557,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                         // Set the settlement's player to the current player
                                         settlementNodes.get(i).setPlayer(currentPlayer);
+                                        //remove a settlement from the players pieces
+                                        GenUtil.decrementPlayerPiece(2, currentPlayer);
 
                                         //check to see if that settlment is on a port
                                         //loop thorugh the ports and see if the settlement just built is on a port
@@ -1615,6 +1627,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                                         // Make the settlement large
                                         settlementNodes.get(i).setLarge(true);
+
+                                        //remove a city from the players pieces
+                                        GenUtil.decrementPlayerPiece(3, currentPlayer);
+                                        //add a settlement back to the players pieces
+                                        GenUtil.incrementPlayerPiece(2, currentPlayer);
 
                                         // Increment the player's victory point counter
                                         victoryPoints[currentPlayer]++;
@@ -1736,7 +1753,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 && event.getX() < (devCardStackXPositions[i] + getImgWidth(DEV_CARD_KNIGHT))
                                 && event.getY() > devCardYPos
                                 && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))
-                                && CardUtil.canUseDevCard(devCards[currentPlayer], i + 1)) {
+                                && CardUtil.canUseDevCard(currentPlayer, devCards[currentPlayer], i + 1)) {
                             //debug click detection
                             //System.out.println("Stack Dev Card Clicked!");
 
@@ -1798,7 +1815,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                                 && event.getY() > devCardYPos
                                 && event.getX() < (cardXPos + getImgWidth(DEV_CARD_KNIGHT))
                                 && event.getY() < (devCardYPos + getImgHeight(DEV_CARD_KNIGHT))
-                                && CardUtil.canUseDevCard(devCards[currentPlayer], devCardType)) {
+                                && CardUtil.canUseDevCard(currentPlayer, devCards[currentPlayer], devCardType)) {
                             //debug click detection
                             //System.out.println("Dev Card Clicked!");
 
@@ -2677,6 +2694,21 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             //add the newlyBoughtDevCards with linebreak
             saveFile.println("\n" + CardUtil.newlyBoughtDevCardsToString());
+
+            //add in the game piece limits
+            saveFile.println("remainingGamePieces:");
+            saveFile.println("roads:");
+            for (int i = 0; i <= playerCount; i++) {
+                saveFile.println(GenUtil.getRemainingPlayerPieces(1, i));
+            }
+            saveFile.println("settlements:");
+            for (int i = 0; i <= playerCount; i++) {
+                saveFile.println(GenUtil.getRemainingPlayerPieces(2, i));
+            }
+            saveFile.println("cities:");
+            for (int i = 0; i <= playerCount; i++) {
+                saveFile.println(GenUtil.getRemainingPlayerPieces(3, i));
+            }
 
             //add the close
             saveFile.close();
@@ -3583,6 +3615,43 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 thrownLoadError = throwLoadError(thrownLoadError);
             }
 
+            //skip line
+            scanner.nextLine();
+
+            //load in the game piece limits
+            if (scanner.nextLine().equals("remainingGamePieces:")) {
+
+                //read in the roads
+                if (scanner.nextLine().equals("roads:")) {
+                    for (int i = 0; i <= playerCount; i++) {
+                        GenUtil.setRemainingPlayerPieces(1, i, Integer.parseInt(scanner.nextLine()));
+                    }
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+                //read in the roads
+                if (scanner.nextLine().equals("settlements:")) {
+                    for (int i = 0; i <= playerCount; i++) {
+                        GenUtil.setRemainingPlayerPieces(2, i, Integer.parseInt(scanner.nextLine()));
+                    }
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+                //read in the roads
+                if (scanner.nextLine().equals("cities:")) {
+                    for (int i = 0; i <= playerCount; i++) {
+                        GenUtil.setRemainingPlayerPieces(3, i, Integer.parseInt(scanner.nextLine()));
+                    }
+                } else {
+                    thrownLoadError = throwLoadError(thrownLoadError);
+                }
+
+            } else {
+                thrownLoadError = throwLoadError(thrownLoadError);
+            }
+
             //close the scanner
             scanner.close();
 
@@ -3873,10 +3942,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             useDevCardBtn.setEnabled(!(usingDevCard == 2 || (usingDevCard == 1 && showSubPlayerHitbox)));
 
         } else { // If the game is NOT in setup
-            // Check if the player has enough cards to use the build buttons
-            canBuildRoad = hasCards(0); // Roads
-            canBuildSettlement = hasCards(1) && canBuildASettlment(); // Settlements
-            canBuildCity = hasCards(2) && canBuildACity(); // Cities
+            // Check if the player has enough cards to use the build buttons.
+            //and if the player has the remaining pieces
+            canBuildRoad = hasCards(0) && GenUtil.playerHasAPieceRemaining(currentPlayer, 1); // Roads
+            canBuildSettlement = hasCards(1) && canBuildASettlment() && GenUtil.playerHasAPieceRemaining(currentPlayer, 2); // Settlements
+            canBuildCity = hasCards(2) && canBuildACity() && GenUtil.playerHasAPieceRemaining(currentPlayer, 3); // Cities
             canTrade4to = hasTradeCards(4, currentPlayer);
             canTrade3to = hasTradeCards(3, currentPlayer) && playerHasPort[currentPlayer][0]; //the player must have the cards and also own a port of type 0 or general 3:1
             canTrade2to = hasSpecializedPort(currentPlayer);
@@ -3886,7 +3956,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             buyDevCardBtn.setEnabled(hasCards(3) && availableDevCards.size() > 0); //check if the player has the cards to make a dev card
             //only if the user has dev cards and hasn't already used oene this turn
             //and also if they did not buy that card this turn
-            useDevCardBtn.setEnabled(CardUtil.hasDevCards(devCards[currentPlayer]) && !userPlayedDevCard);
+            useDevCardBtn.setEnabled(CardUtil.hasDevCards(currentPlayer, devCards[currentPlayer]) && !userPlayedDevCard);
         }
 
         //if in online mode and not the current player they should not be able to chick the turn switch button
@@ -5456,7 +5526,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
                                 drawSpecificHitbox = false;
                             } else { //make sure the card is an action type card and that is is not a newly bought card
-                                drawSpecificHitbox = i < 4 && CardUtil.canUseDevCard(devCards[playerID], i + 1);
+                                drawSpecificHitbox = i < 4 && CardUtil.canUseDevCard(playerID, devCards[playerID], i + 1);
                             }
 
                             if (drawSpecificHitbox) {
@@ -5541,7 +5611,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                             if (playerID != currentPlayer) { //if the cards being drawn don't match the current player don't show hitboxes
                                 drawSpecificHitbox = false;
                             } else {
-                                drawSpecificHitbox = type < 5 && CardUtil.canUseDevCard(devCards[playerID], type); //make sure the card is an action type card && hasn't been bought this turn
+                                drawSpecificHitbox = type < 5 && CardUtil.canUseDevCard(playerID, devCards[playerID], type); //make sure the card is an action type card && hasn't been bought this turn
                             }
 
                             if (drawSpecificHitbox) {
@@ -6835,6 +6905,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public static void setPlayerCount(int playerCount) {
         GamePanel.playerCount = playerCount;
+        //update the arrays for the number of remaining game pieces
+        GenUtil.initPieceArrays(playerCount);
     }
 
     /**
