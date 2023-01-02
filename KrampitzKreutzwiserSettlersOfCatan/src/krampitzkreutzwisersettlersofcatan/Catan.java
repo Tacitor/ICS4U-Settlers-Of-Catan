@@ -17,7 +17,7 @@ public class Catan {
     public static GamePanel gamePanel;
     public static MainMenu menu;
     public static final String SAVE_FILE_VER = "V15"; //the save file version needed
-    public static final String GAME_VER = "v6.0.1 - Reduced Residence Revision"; //the version of the game/program
+    public static final String GAME_VER = "pre-v6.1.0 - Main Menu Modification"; //the version of the game/program
     
     public static final boolean DEBUG_ONLINE_MODE = false; //if this is true then the game will lauch in decorated windowed 720p
 
