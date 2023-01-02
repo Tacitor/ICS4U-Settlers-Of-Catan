@@ -9,6 +9,6 @@ package krampitzkreutzwisersettlersofcatan.gui;
  *
  * @author Tacitor
  */
-public class SDMainMenu extends javax.swing.JPanel {
+public class SDMainMenuPanel extends javax.swing.JPanel {
     
 }
