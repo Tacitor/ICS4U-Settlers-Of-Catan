@@ -137,7 +137,11 @@ public class GenUtil {
      * @param playerNum
      */
     public static void incrementPlayerPiece(int pieceType, int playerNum) {
-        getPieceArray(pieceType)[playerNum]++;
+        //check to make sure there are some to add too
+        //this check is to make sure a player is not taken out of infinite mode
+        if (getRemainingPlayerPieces(pieceType, playerNum) > -1) {
+            getPieceArray(pieceType)[playerNum]++;
+        }
 
     }
 
