@@ -65,7 +65,8 @@ public class CardUtil {
         //add a new condition that stops the user from specifically using the road building card if they do not have any more road pieces left to build with.
         if (devCardType == 2) {
             //check if the player has atleast 2 roads left
-            if (GenUtil.getRemainingPlayerPieces(1, playerNum) < 2) {
+            //or infinite roads
+            if (GenUtil.getRemainingPlayerPieces(1, playerNum) < 2 && GenUtil.getRemainingPlayerPieces(1, playerNum) != -1) {
                 canUse = false;
             }
         }
