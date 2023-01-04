@@ -6,9 +6,13 @@
 package krampitzkreutzwisersettlersofcatan.gui;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Toolkit;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import krampitzkreutzwisersettlersofcatan.Catan;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 
 /**
  *
@@ -68,6 +72,68 @@ public class SDMenuFrame extends javax.swing.JFrame {
         }
 
         return scaleFactor;
+    }
+
+    /**
+     * Calculates the new scaled width of an image with a locked aspect ratio.
+     * Based on the JCompoment give.
+     *
+     * @param image
+     * @param parent
+     * @return
+     */
+    public final int getImgWidthLocal(Image image, JComponent parent) {
+
+        if (parent.getWidth() > parent.getHeight()) {
+            return (int) (getImgHeightLocal(image, parent) * ((float) image.getWidth(null) / image.getHeight(null)));
+        } else {
+            return (int) (image.getWidth(null) / 1920.0 * parent.getWidth());
+        }
+
+    }
+
+    /**
+     * Calculates the new scaled height of an image with a locked aspect ratio.
+     * Based on the JCompoment give.
+     *
+     * @param image
+     * @param parent
+     * @return
+     */
+    public final int getImgHeightLocal(Image image, JComponent parent) {
+        if (parent.getWidth() > parent.getHeight()) {
+            return (int) (image.getHeight(null) / 1080.0 * parent.getHeight());
+        } else {
+            return (int) (getImgWidthLocal(image, parent) / ((float) image.getWidth(null) / image.getHeight(null)));
+        }
+    }
+
+    /**
+     * Draw a SettlerBtn with Graphics 2D
+     *
+     * @param g2d
+     * @param btnImage
+     * @param btn
+     * @param drawMode
+     * @param parent
+     */
+    public void drawSettlerBtn(Graphics2D g2d, Image btnImage, SettlerBtn btn, int drawMode, JComponent parent) {
+        //get the width and height of the image
+        int width;
+        int height;
+        if (drawMode == 0) { //draw mode is image dimensions
+            width = getImgWidthLocal(btnImage, parent);
+            height = getImgHeightLocal(btnImage, parent);
+        } else { //1 is button dimensions
+            width = getImgWidthLocal(btn.getBaseImage(), parent);
+            height = getImgHeightLocal(btn.getBaseImage(), parent);
+        }
+
+        g2d.drawImage(btnImage,
+                btn.getXPos(),
+                btn.getYPos(),
+                width,
+                height, null);
     }
 
 }
