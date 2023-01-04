@@ -10,6 +10,8 @@ import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
@@ -18,10 +20,12 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-public class SDMainMenuPanel extends javax.swing.JPanel {
+public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionListener {
 
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
+    private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
+    private int mouseMotionPosY;
 
     //Settler Compoments
     private SettlerBtn exitMainMenuBtn;
@@ -40,9 +44,12 @@ public class SDMainMenuPanel extends javax.swing.JPanel {
         sDMenuFrame = sDFrame;
 
         COMPASS_GOLD = setUpCompassGoldFont();
+        
+        //add the mouse motion listener
+        addMouseMotionListener(this);
 
         //setup the buttons
-        exitMainMenuBtn = new SettlerBtn(true, 0, 13);
+        exitMainMenuBtn = new SettlerBtn(true, 0, 12);
 
         //add them to the array
         settlerBtns = new SettlerBtn[]{exitMainMenuBtn};
@@ -109,6 +116,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel {
             //draw the mouseHover overlay if required
             if (btn.isMouseHover()) {
                 sDMenuFrame.drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1, this);
+                System.out.println("Hover");
             }
 
         }
@@ -147,6 +155,42 @@ public class SDMainMenuPanel extends javax.swing.JPanel {
         return tempFont;
     }
 
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        //System.out.println("Moved: " + e.getX() + ", an " + e.getY());
+        mouseMotionPosX = e.getX();
+        mouseMotionPosY = e.getY();
+        mouseMoveAction();
+    }
+
+    /**
+     * Handles mouse pointer movement.
+     */
+    private void mouseMoveAction() {
+
+        //check if the player moved the mouse over one of the SettlerBtns
+        //loop through all the custom buttons
+        for (SettlerBtn btn : settlerBtns) {
+            if (mouseMotionPosX > btn.getXPos()
+                    && mouseMotionPosY > btn.getYPos()
+                    && mouseMotionPosX < (btn.getXPos() + sDMenuFrame.getImgWidthLocal(btn.getBaseImage(), this))
+                    && mouseMotionPosY < (btn.getYPos() + sDMenuFrame.getImgHeightLocal(btn.getBaseImage(), this))
+                    && btn.isEnabled()) { //and that it is enabled
+
+                //set the hover
+                btn.setmouseHover(true);
+
+            } else {
+
+                //make suer there is no hover over that button
+                btn.setmouseHover(false);
+            }
+
+        }
+        
+        repaint();
+    }
+
     /**
      * Scale a number to match the resolution of the screen
      *
@@ -155,6 +199,11 @@ public class SDMainMenuPanel extends javax.swing.JPanel {
      */
     public static int localScaleInt(int num) {
         return (int) (num / localScaleFactor);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        //System.out.println("Mouse Dragged");
     }
 
 }

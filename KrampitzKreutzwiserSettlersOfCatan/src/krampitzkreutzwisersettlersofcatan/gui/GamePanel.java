@@ -4040,7 +4040,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     case 0:
                         //if there isn't actually a dev card yet and the player is just selecting
                         instructionLbl.setText("Please select a development card");
-                        subInstructionLbl.setText("Hover over the card to get a description (coming soon)");
+                        subInstructionLbl.setText("Hover over the card to get a description");
                         break;
                     case 1:
                         //knight card
