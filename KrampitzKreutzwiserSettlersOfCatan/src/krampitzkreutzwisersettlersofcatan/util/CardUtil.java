@@ -66,7 +66,7 @@ public class CardUtil {
         if (devCardType == 2) {
             //check if the player has atleast 2 roads left
             //or infinite roads
-            if (GenUtil.getRemainingPlayerPieces(1, playerNum) < 2 || GenUtil.getRemainingPlayerPieces(1, playerNum) == -1) {
+            if (GenUtil.getRemainingPlayerPieces(1, playerNum) < 2 && GenUtil.getRemainingPlayerPieces(1, playerNum) != -1) {
                 canUse = false;
             }
         }
