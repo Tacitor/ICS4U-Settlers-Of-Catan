@@ -44,12 +44,12 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         sDMenuFrame = sDFrame;
 
         COMPASS_GOLD = setUpCompassGoldFont();
-        
+
         //add the mouse motion listener
         addMouseMotionListener(this);
 
         //setup the buttons
-        exitMainMenuBtn = new SettlerBtn(true, 0, 12);
+        exitMainMenuBtn = new SettlerBtn(true, 0, 14);
 
         //add them to the array
         settlerBtns = new SettlerBtn[]{exitMainMenuBtn};
@@ -116,7 +116,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
             //draw the mouseHover overlay if required
             if (btn.isMouseHover()) {
                 sDMenuFrame.drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1, this);
-                System.out.println("Hover");
             }
 
         }
@@ -125,8 +124,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     }
 
     private void settlerVarPos() {
-        exitMainMenuBtn.setXPos(localScaleInt(10));
-        exitMainMenuBtn.setYPos(this.getHeight() - localScaleInt(10) - sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this));
+        exitMainMenuBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
+        exitMainMenuBtn.setYPos(this.getHeight() - localScaleInt(20) - sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this));
     }
 
     /**
@@ -187,7 +186,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
             }
 
         }
-        
+
         repaint();
     }
 
