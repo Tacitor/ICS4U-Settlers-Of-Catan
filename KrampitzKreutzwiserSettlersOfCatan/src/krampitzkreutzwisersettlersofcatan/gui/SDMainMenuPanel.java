@@ -10,6 +10,7 @@ import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
@@ -47,6 +48,21 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
 
         //add the mouse motion listener
         addMouseMotionListener(this);
+
+        //add a mouse listener that call the mouse click event handler
+        addMouseListener(new MouseAdapter() {
+            /**
+             * Triggered when the user clicks on the SDMainMenuPanel. Calls the
+             * main menu panel's click event method.
+             *
+             * @param event
+             */
+            @Override
+            public final void mouseReleased(MouseEvent event) {
+                //send the mouse event to the main menu panel click handler
+                mouseClick(event);
+            }
+        });
 
         //setup the buttons
         exitMainMenuBtn = new SettlerBtn(true, 0, 14);
@@ -129,6 +145,32 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     }
 
     /**
+     * Handles click releases from mouse input.
+     *
+     * @param evt
+     */
+    public void mouseClick(MouseEvent evt) {
+
+        //check if the player clicked on one of the SettlerBtns
+        //loop through all the custom buttons
+        for (SettlerBtn btn : settlerBtns) {
+            if (evt.getX() > btn.getXPos()
+                    && evt.getY() > btn.getYPos()
+                    && evt.getX() < (btn.getXPos() + sDMenuFrame.getImgWidthLocal(btn.getBaseImage(), this))
+                    && evt.getY() < (btn.getYPos() + sDMenuFrame.getImgHeightLocal(btn.getBaseImage(), this))
+                    && btn.isEnabled()) { //and that it is enabled
+
+                //check the button that was pressed
+                if (btn.equals(exitMainMenuBtn)) { //if it was the exit game button
+
+                    exitMainMenuBtnPressed();
+
+                }
+            }
+        }
+    }
+
+    /**
      * Return the Compass Gold font. Setup and load the TrueType font from the
      * file system for use in game.
      *
@@ -203,6 +245,13 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     @Override
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Mouse Dragged");
+    }
+
+    /**
+     * Closed the game
+     */
+    private void exitMainMenuBtnPressed() {
+        System.exit(0);
     }
 
 }
