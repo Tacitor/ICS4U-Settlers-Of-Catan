@@ -65,6 +65,14 @@ public class SettlerBtn extends SettlerComponent {
     //SD Main Menu buttons
     private final static Image BIG_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigBtn.png")).getImage();
     private final static Image BIG_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigBtnDisabled.png")).getImage();
+    //Big shorts
+    private final static Image BIG_SHORT_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigShortBtn.png")).getImage();
+    private final static Image BIG_SHORT_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigShortBtnDisabled.png")).getImage();
+    //Text Images
+    private final static Image NEW_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/newGameText.png")).getImage();
+    private final static Image LOAD_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadGameText.png")).getImage();
+    private final static Image LOAD_AUTOSAVE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadAutosaveText.png")).getImage();
+    private final static Image OPTIONS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/optionsText.png")).getImage();
     private final static Image GAME_EXIT_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/exitText.png")).getImage();
 
     //static button image arrays for text
@@ -201,9 +209,27 @@ public class SettlerBtn extends SettlerComponent {
                 disabledImage = CARD_DISABLED_BTN;
                 break;
             case 14:
+            //If it's a new game button
+            case 15:
+            //If it's a load game button
+            case 16:
+            //if it's a Join onlime game button
+            case 17:
+            //if it's a load game to online mode button
+            case 18:
                 //if it's a big exit button for the SD main menu
                 baseImage = BIG_BTN;
                 disabledImage = BIG_DISABLED_BTN;
+                break;
+            case 19:
+            //if it's a big short load autosave button for the SD main menu
+            case 20:
+            //if it's a big short options button for the SD main menu
+            case 21:
+            case 22:
+
+                baseImage = BIG_SHORT_BTN;
+                disabledImage = BIG_SHORT_DISABLED_BTN;
                 break;
             default:
                 //default to error images
@@ -288,8 +314,32 @@ public class SettlerBtn extends SettlerComponent {
                 textImage = CANCEL_TRADE_DOMESTIC;
                 break;
             case 14:
+                //if it's a big new game button for the SD main menu
+                textImage = NEW_GAME_BTN_TEXT;
+                break;
+            case 15:
+                //if it's a big load game button for the SD main menu
+                textImage = LOAD_GAME_BTN_TEXT;
+                break;
+            case 16:
+                //if it's a big join online gam button for the SD main menu
+                textImage = ERROR_IMAGE;
+                break;
+            case 17:
+                //if it's a big load to online mode button for the SD main menu
+                textImage = ERROR_IMAGE;
+                break;
+            case 18:
                 //if it's a big exit button for the SD main menu
                 textImage = GAME_EXIT_BTN_TEXT;
+                break;
+            case 19:
+                //if it's a load autosave button for the SD main menu
+                textImage = LOAD_AUTOSAVE_BTN_TEXT;
+                break;
+            case 20:
+                //if it's a options button for the SD main menu
+                textImage = OPTIONS_BTN_TEXT;
                 break;
             default:
                 //deflault to error image

@@ -29,7 +29,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn exitMainMenuBtn;
+    private SettlerBtn newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, exitMainMenuBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
 
@@ -65,10 +65,14 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         });
 
         //setup the buttons
-        exitMainMenuBtn = new SettlerBtn(true, 0, 14);
+        newGameBtn = new SettlerBtn(true, 0, 14);
+        loadGameBtn = new SettlerBtn(true, 0, 15);
+        loadAutosaveBtn = new SettlerBtn(true, 0, 19);
+        optionsBtn = new SettlerBtn(true, 0, 20);
+        exitMainMenuBtn = new SettlerBtn(true, 0, 18);
 
         //add them to the array
-        settlerBtns = new SettlerBtn[]{exitMainMenuBtn};
+        settlerBtns = new SettlerBtn[]{newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, exitMainMenuBtn};
 
     }
 
@@ -143,7 +147,19 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      * Update the positions of the SD Components
      */
     private void settlerVarPos() {
-        exitMainMenuBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
+        newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
+        newGameBtn.setYPos(localScaleInt(250));
+
+        loadGameBtn.setXPos(newGameBtn.getXPos());
+        loadGameBtn.setYPos(newGameBtn.getYPos() + localScaleInt(30) + sDMenuFrame.getImgHeightLocal(loadGameBtn.getBaseImage(), this));
+        
+        loadAutosaveBtn.setXPos(newGameBtn.getXPos());
+        loadAutosaveBtn.setYPos(loadGameBtn.getYPos() + localScaleInt(30) + sDMenuFrame.getImgHeightLocal(optionsBtn.getBaseImage(), this));
+
+        optionsBtn.setXPos(loadAutosaveBtn.getXPos() + localScaleInt(12) + sDMenuFrame.getImgWidthLocal(optionsBtn.getBaseImage(), this));
+        optionsBtn.setYPos(loadAutosaveBtn.getYPos());
+
+        exitMainMenuBtn.setXPos(newGameBtn.getXPos());
         exitMainMenuBtn.setYPos(this.getHeight() - localScaleInt(20) - sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this));
     }
 
