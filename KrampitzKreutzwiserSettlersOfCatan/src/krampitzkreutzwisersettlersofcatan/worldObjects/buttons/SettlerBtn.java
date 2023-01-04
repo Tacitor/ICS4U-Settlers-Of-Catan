@@ -53,7 +53,7 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image UNLOCK_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/unlockTradeDomesticText.png")).getImage();
     //domestic trade accept button
     private final static Image ACCEPT_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/acceptTradeDomesticText.png")).getImage();
-    private final static Image CANCEL_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/cancelTradeDomesticText.png")).getImage();    
+    private final static Image CANCEL_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/cancelTradeDomesticText.png")).getImage();
 
     //util buttons
     //build
@@ -61,6 +61,11 @@ public class SettlerBtn extends SettlerComponent {
     //exit buttons
     private final static Image EXIT_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitSaveText.png")).getImage();
     private final static Image EXIT_NO_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitNoSaveText.png")).getImage();
+
+    //SD Main Menu buttons
+    private final static Image BIG_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigBtn.png")).getImage();
+    private final static Image BIG_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigBtnDisabled.png")).getImage();
+    private final static Image GAME_EXIT_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/exitText.png")).getImage();
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -189,11 +194,16 @@ public class SettlerBtn extends SettlerComponent {
             case 11:
             //if it's a domestic trade lock button
             case 12:
-                //if it's a domestic trade accept button
+            //if it's a domestic trade accept button
             case 13:
                 //if it'a a cancel domestic trade button
                 baseImage = CARD_BTN; //still has the right length
                 disabledImage = CARD_DISABLED_BTN;
+                break;
+            case 14:
+                //if it's a big exit button for the SD main menu
+                baseImage = BIG_BTN;
+                disabledImage = BIG_DISABLED_BTN;
                 break;
             default:
                 //default to error images
@@ -276,6 +286,10 @@ public class SettlerBtn extends SettlerComponent {
             case 13:
                 //if its a cancel domestic trade button
                 textImage = CANCEL_TRADE_DOMESTIC;
+                break;
+            case 14:
+                //if it's a big exit button for the SD main menu
+                textImage = GAME_EXIT_BTN_TEXT;
                 break;
             default:
                 //deflault to error image

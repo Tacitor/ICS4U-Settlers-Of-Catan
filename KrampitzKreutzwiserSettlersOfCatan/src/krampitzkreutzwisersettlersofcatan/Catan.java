@@ -7,6 +7,7 @@ package krampitzkreutzwisersettlersofcatan;
 
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
+import krampitzkreutzwisersettlersofcatan.gui.SDMenuFrame;
 
 /**
  *
@@ -16,10 +17,11 @@ public class Catan {
 
     public static GamePanel gamePanel;
     public static MainMenu menu;
+    public static SDMenuFrame SDMenuFrame;
     public static final String SAVE_FILE_VER = "V15"; //the save file version needed
-    public static final String GAME_VER = "v6.0.2 - Reduced Residence Revision Redux"; //the version of the game/program
-    
-    public static final boolean DEBUG_ONLINE_MODE = false; //if this is true then the game will lauch in decorated windowed 720p
+    public static final String GAME_VER = "pre-v6.1.0 - Main Menu Modification"; //the version of the game/program
+
+    public static final boolean DEBUG_ONLINE_MODE = true; //if this is true then the game will lauch in decorated windowed 720p
 
     //fast pulse vars
     private static long prevTime;
@@ -54,6 +56,9 @@ public class Catan {
         //</editor-fold>
 
         menu = new MainMenu();
+
+        SDMenuFrame = new SDMenuFrame();
+        SDMenuFrame.setVisible(true);
         menu.setVisible(true);
         updateGamePanel();
 
