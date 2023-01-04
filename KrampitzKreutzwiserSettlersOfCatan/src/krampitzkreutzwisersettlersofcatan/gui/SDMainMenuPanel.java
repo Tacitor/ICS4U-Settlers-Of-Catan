@@ -139,6 +139,9 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
     }
 
+    /**
+     * Update the positions of the SD Components
+     */
     private void settlerVarPos() {
         exitMainMenuBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
         exitMainMenuBtn.setYPos(this.getHeight() - localScaleInt(20) - sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this));
@@ -196,6 +199,11 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         return tempFont;
     }
 
+    /**
+     * Update the positions of the Mouse Pointer
+     *
+     * @param e
+     */
     @Override
     public void mouseMoved(MouseEvent e) {
         //System.out.println("Moved: " + e.getX() + ", an " + e.getY());
