@@ -73,6 +73,10 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image LOAD_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadGameText.png")).getImage();
     private final static Image LOAD_AUTOSAVE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadAutosaveText.png")).getImage();
     private final static Image OPTIONS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/optionsText.png")).getImage();
+    private final static Image JOIN_ONLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/joinOnlineGameText.png")).getImage();
+    private final static Image LOAD_GAME_TO_ONLINE_MODE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadGameToOnlineModeText.png")).getImage();
+    private final static Image CREDITS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/creditsText.png")).getImage();
+    private final static Image USER_MANUAL_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/userManualText.png")).getImage();
     private final static Image GAME_EXIT_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/exitText.png")).getImage();
 
     //static button image arrays for text
@@ -226,8 +230,9 @@ public class SettlerBtn extends SettlerComponent {
             case 20:
             //if it's a big short options button for the SD main menu
             case 21:
+            //if it's a big short credits button for the SD main menu
             case 22:
-
+                //if it's a big short user manual button for the SD main menu
                 baseImage = BIG_SHORT_BTN;
                 disabledImage = BIG_SHORT_DISABLED_BTN;
                 break;
@@ -323,11 +328,11 @@ public class SettlerBtn extends SettlerComponent {
                 break;
             case 16:
                 //if it's a big join online gam button for the SD main menu
-                textImage = ERROR_IMAGE;
+                textImage = JOIN_ONLINE_GAME_BTN_TEXT;
                 break;
             case 17:
                 //if it's a big load to online mode button for the SD main menu
-                textImage = ERROR_IMAGE;
+                textImage = LOAD_GAME_TO_ONLINE_MODE_BTN_TEXT;
                 break;
             case 18:
                 //if it's a big exit button for the SD main menu
@@ -340,6 +345,14 @@ public class SettlerBtn extends SettlerComponent {
             case 20:
                 //if it's a options button for the SD main menu
                 textImage = OPTIONS_BTN_TEXT;
+                break;
+            case 21:
+                //if it's a credits button for the SD main menu
+                textImage = CREDITS_BTN_TEXT;
+                break;
+            case 22:
+                //if it's a user manual button for the SD main menu
+                textImage = USER_MANUAL_BTN_TEXT;
                 break;
             default:
                 //deflault to error image

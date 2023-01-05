@@ -29,7 +29,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, exitMainMenuBtn;
+    private SettlerBtn newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, joinOnlineGameBtn, loadGameToOnlineModeBtn, creditsBtn, userManualBtn, exitMainMenuBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
 
@@ -69,10 +69,14 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         loadGameBtn = new SettlerBtn(true, 0, 15);
         loadAutosaveBtn = new SettlerBtn(true, 0, 19);
         optionsBtn = new SettlerBtn(true, 0, 20);
+        joinOnlineGameBtn = new SettlerBtn(true, 0, 16);
+        loadGameToOnlineModeBtn = new SettlerBtn(true, 0, 17);
+        creditsBtn = new SettlerBtn(true, 0, 21);
+        userManualBtn = new SettlerBtn(true, 0, 22);
         exitMainMenuBtn = new SettlerBtn(true, 0, 18);
 
         //add them to the array
-        settlerBtns = new SettlerBtn[]{newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, exitMainMenuBtn};
+        settlerBtns = new SettlerBtn[]{newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, joinOnlineGameBtn, loadGameToOnlineModeBtn, creditsBtn, userManualBtn, exitMainMenuBtn};
 
     }
 
@@ -110,13 +114,13 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
                 this.getWidth(),
                 this.getHeight(), this);
 
-        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(180)));
+        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(200)));
         g2d.setColor(DomesticTradePanel.BEIGE_COLOUR);
 
         //Draw the Title
         g2d.drawString("Settlers of Catan",
                 (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Settlers of Catan") / 2),
-                localScaleInt(150));
+                localScaleInt(180));
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
         for (SettlerBtn btn : settlerBtns) {
@@ -147,20 +151,36 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      * Update the positions of the SD Components
      */
     private void settlerVarPos() {
+        int menuPackingHeight = 12;
+        
         newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
         newGameBtn.setYPos(localScaleInt(250));
 
         loadGameBtn.setXPos(newGameBtn.getXPos());
-        loadGameBtn.setYPos(newGameBtn.getYPos() + localScaleInt(30) + sDMenuFrame.getImgHeightLocal(loadGameBtn.getBaseImage(), this));
-        
+        loadGameBtn.setYPos(newGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(loadGameBtn.getBaseImage(), this));
+
         loadAutosaveBtn.setXPos(newGameBtn.getXPos());
-        loadAutosaveBtn.setYPos(loadGameBtn.getYPos() + localScaleInt(30) + sDMenuFrame.getImgHeightLocal(optionsBtn.getBaseImage(), this));
+        loadAutosaveBtn.setYPos(loadGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(optionsBtn.getBaseImage(), this));
 
         optionsBtn.setXPos(loadAutosaveBtn.getXPos() + localScaleInt(12) + sDMenuFrame.getImgWidthLocal(optionsBtn.getBaseImage(), this));
         optionsBtn.setYPos(loadAutosaveBtn.getYPos());
 
+        joinOnlineGameBtn.setXPos(newGameBtn.getXPos());
+        joinOnlineGameBtn.setYPos(optionsBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(joinOnlineGameBtn.getBaseImage(), this));
+
+        loadGameToOnlineModeBtn.setXPos(newGameBtn.getXPos());
+        loadGameToOnlineModeBtn.setYPos(joinOnlineGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(loadGameToOnlineModeBtn.getBaseImage(), this));
+
+        creditsBtn.setXPos(newGameBtn.getXPos());
+        creditsBtn.setYPos(loadGameToOnlineModeBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(creditsBtn.getBaseImage(), this));
+
+        userManualBtn.setXPos(creditsBtn.getXPos() + localScaleInt(12) + sDMenuFrame.getImgWidthLocal(userManualBtn.getBaseImage(), this));
+        userManualBtn.setYPos(creditsBtn.getYPos());
+
         exitMainMenuBtn.setXPos(newGameBtn.getXPos());
-        exitMainMenuBtn.setYPos(this.getHeight() - localScaleInt(20) - sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this));
+        //Old Height
+        //this.getHeight() - localScaleInt(20) - sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this)
+        exitMainMenuBtn.setYPos(userManualBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this));
     }
 
     /**
