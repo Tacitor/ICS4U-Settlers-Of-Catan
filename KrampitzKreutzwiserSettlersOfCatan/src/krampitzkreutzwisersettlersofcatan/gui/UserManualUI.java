@@ -17,14 +17,14 @@ import textures.ImageRef;
  */
 public class UserManualUI extends javax.swing.JFrame {
 
-    private final MainMenu mainMenuFrame;
+    private final SDMainMenuPanel mainMenuFrame;
 
     /**
      * Creates new frame UserManualUI
      *
      * @param m The main menu JFrame this returns to on exit
      */
-    public UserManualUI(MainMenu m) {
+    public UserManualUI(SDMainMenuPanel m) {
         setIcon();
 
         initComponents();

@@ -16,7 +16,7 @@ import textures.ImageRef;
  */
 public class NewOnlineGameMenu extends javax.swing.JFrame {
 
-    private final MainMenu mainMenuFrame;
+    private final SDMainMenuPanel mainMenuFrame;
     private CatanServer server;
     private CatanClient client;
 
@@ -27,7 +27,7 @@ public class NewOnlineGameMenu extends javax.swing.JFrame {
      *
      * @param m The main menu JFrame this returns to on exit
      */
-    public NewOnlineGameMenu(MainMenu m) {
+    public NewOnlineGameMenu(SDMainMenuPanel m) {
         setIcon();
 
         initComponents();

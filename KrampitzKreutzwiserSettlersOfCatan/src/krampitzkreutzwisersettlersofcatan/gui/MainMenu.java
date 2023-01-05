@@ -29,11 +29,13 @@ public class MainMenu extends javax.swing.JFrame {
     private NewOnlineGameMenu newOnlineGameMenu;
     private JoinOnlineGameMenu joinOnlineGameMenu;
     private LoadOnlineGameMenu loadOnlineGameMenu;
+    private SDMainMenuPanel sDMainMenuPanel;
 
     /**
      * Creates new form MainMenu
      */
-    public MainMenu() {
+    public MainMenu(SDMainMenuPanel sDMainMenuPanel) {
+        this.sDMainMenuPanel =  sDMainMenuPanel;
 
         initComponents();
         
@@ -41,13 +43,13 @@ public class MainMenu extends javax.swing.JFrame {
 
         setIcon();
 
-        userManualUIFrame = new UserManualUI(this);
-        creditsUIFrame = new CreditsUI(this);
-        gameJFrame = new GameFrame(this);
-        clientSettings = new ClientSettings(this);
-        newGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
-        loadOnlineGameMenu = new LoadOnlineGameMenu(this);
-        newOnlineGameMenu = new NewOnlineGameMenu(this);
+        userManualUIFrame = new UserManualUI(sDMainMenuPanel);
+        creditsUIFrame = new CreditsUI(sDMainMenuPanel);
+        gameJFrame = new GameFrame(sDMainMenuPanel);
+        clientSettings = new ClientSettings(sDMainMenuPanel);
+        newGameSettingsFrame = new NewGameSettings(sDMainMenuPanel, gameJFrame, newOnlineGameMenu);
+        loadOnlineGameMenu = new LoadOnlineGameMenu(sDMainMenuPanel);
+        newOnlineGameMenu = new NewOnlineGameMenu(sDMainMenuPanel);
         
         //set the game version
         gameVerLbl.setText(Catan.GAME_VER);
@@ -361,7 +363,7 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void loadToOnlineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadToOnlineBtnActionPerformed
         //make a new loading from a save file window
-        loadOnlineGameMenu = new LoadOnlineGameMenu(this);
+        loadOnlineGameMenu = new LoadOnlineGameMenu(sDMainMenuPanel);
         loadOnlineGameMenu.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_loadToOnlineBtnActionPerformed

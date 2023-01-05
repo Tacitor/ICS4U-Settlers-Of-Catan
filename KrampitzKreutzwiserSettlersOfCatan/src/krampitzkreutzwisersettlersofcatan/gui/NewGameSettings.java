@@ -15,7 +15,7 @@ import textures.ImageRef;
  */
 public class NewGameSettings extends javax.swing.JFrame {
 
-    private final MainMenu mainMenuFrame;
+    private final SDMainMenuPanel mainMenuFrame;
     private final GameFrame gameFrame;
     private NewOnlineGameMenu newOnlineGameMenu;
 
@@ -26,7 +26,7 @@ public class NewGameSettings extends javax.swing.JFrame {
      * @param g
      * @param n
      */
-    public NewGameSettings(MainMenu m, GameFrame g, NewOnlineGameMenu n) {
+    public NewGameSettings(SDMainMenuPanel m, GameFrame g, NewOnlineGameMenu n) {
         setIcon();
 
         initComponents();

@@ -23,7 +23,20 @@ import textures.ImageRef;
  */
 public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionListener {
 
+    //Ref to frame this is held in
     private SDMenuFrame sDMenuFrame;
+    
+    //ref to the other Menu elements
+    private final UserManualUI userManualUIFrame; //referance to the user manual
+    private final CreditsUI creditsUIFrame; //referance to the user credits JFrame
+    private final GameFrame gameJFrame; //ref to the game JFrame
+    private final NewGameSettings newGameSettingsFrame;
+    private final ClientSettings clientSettings;
+    private NewOnlineGameMenu newOnlineGameMenu;
+    private JoinOnlineGameMenu joinOnlineGameMenu;
+    private LoadOnlineGameMenu loadOnlineGameMenu;
+    
+    //Attributes
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
     private int mouseMotionPosY;
@@ -45,6 +58,14 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         sDMenuFrame = sDFrame;
 
         COMPASS_GOLD = setUpCompassGoldFont();
+        
+        userManualUIFrame = new UserManualUI(this);
+        creditsUIFrame = new CreditsUI(this);
+        gameJFrame = new GameFrame(this);
+        clientSettings = new ClientSettings(this);
+        newGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
+        loadOnlineGameMenu = new LoadOnlineGameMenu(this);
+        newOnlineGameMenu = new NewOnlineGameMenu(this);
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -296,6 +317,60 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      */
     private void exitMainMenuBtnPressed() {
         System.exit(0);
+    }
+    
+    /**
+     * Return the game frame
+     *
+     * @return
+     */
+    public GameFrame getGameFrame() {
+        return gameJFrame;
+    }
+
+    /**
+     * Return the newOnlineGameMenu
+     *
+     * @return
+     */
+    public NewOnlineGameMenu getNewOnlineGameMenu() {
+        return newOnlineGameMenu;
+    }
+
+    /**
+     * Mutator for the newOnlineGameMenu
+     *
+     * @param newOnlineGameMenu
+     */
+    public void setNewOnlineGameMenu(NewOnlineGameMenu newOnlineGameMenu) {
+        this.newOnlineGameMenu = newOnlineGameMenu;
+    }
+
+    /**
+     * Return the newOnlineGameMenu
+     *
+     * @return
+     */
+    public LoadOnlineGameMenu getLoadOnlineGameMenu() {
+        return loadOnlineGameMenu;
+    }
+
+    /**
+     * Return the newOnlineGameMenu
+     *
+     * @return
+     */
+    public JoinOnlineGameMenu getJoinOnlineGameMenu() {
+        return joinOnlineGameMenu;
+    }
+    
+    /**
+     * Mutator for the joinOnlineGameMenu
+     *
+     * @param joinOnlineGameMenu
+     */
+    public void setJoinOnlineGameMenu(JoinOnlineGameMenu joinOnlineGameMenu) {
+        this.joinOnlineGameMenu = joinOnlineGameMenu;
     }
 
 }

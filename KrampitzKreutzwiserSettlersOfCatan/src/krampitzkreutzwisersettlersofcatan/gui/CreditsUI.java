@@ -17,13 +17,13 @@ import textures.ImageRef;
  */
 public class CreditsUI extends javax.swing.JFrame {
     
-    private final MainMenu mainMenuFrame;
+    private final SDMainMenuPanel mainMenuFrame;
 
     /**
      * Creates new form CreditsUI
      * @param m The main menu JFrame this returns to on exit
      */
-    public CreditsUI(MainMenu m) {
+    public CreditsUI(SDMainMenuPanel m) {
         setIcon();
         
         initComponents();

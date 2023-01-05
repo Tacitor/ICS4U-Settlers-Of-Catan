@@ -16,14 +16,14 @@ import textures.ImageRef;
  */
 public class ClientSettings extends javax.swing.JFrame {
 
-    private final MainMenu mainMenuFrame;
+    private final SDMainMenuPanel mainMenuFrame;
 
     /**
      * Creates new form CreditsUI
      *
      * @param m The main menu JFrame this returns to on exit
      */
-    public ClientSettings(MainMenu m) {
+    public ClientSettings(SDMainMenuPanel m) {
         setIcon();
 
         initComponents();

@@ -13,6 +13,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
+import textures.ImageRef;
 
 /**
  *
@@ -40,6 +41,7 @@ public class SDMenuFrame extends javax.swing.JFrame {
 
         setTitle("Settlers of Catan - ICS4U Edition");
         setSize(screenSize);
+        setIcon();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         //add in the JPanel
         add(sDMainMenuPanel);
@@ -134,6 +136,22 @@ public class SDMenuFrame extends javax.swing.JFrame {
                 btn.getYPos(),
                 width,
                 height, null);
+    }
+
+    /**
+     * Set the icon for the JFRame
+     */
+    private void setIcon() {
+        this.setIconImage(ImageRef.ICON);
+    }
+
+    /**
+     * Accessor for the Main Menu Panel
+     *
+     * @return
+     */
+    public SDMainMenuPanel getSDMainMenuPanel() {
+        return sDMainMenuPanel;
     }
 
 }
