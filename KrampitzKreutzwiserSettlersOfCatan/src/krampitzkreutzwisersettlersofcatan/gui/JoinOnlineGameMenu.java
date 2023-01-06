@@ -16,7 +16,7 @@ import textures.ImageRef;
  */
 public class JoinOnlineGameMenu extends javax.swing.JFrame {
 
-    private final MainMenu mainMenuFrame;
+    private final SDMainMenuPanel mainMenuFrame;
     private CatanServer server;
     private CatanClient client;
     private int failCounter; //keeps track of how many failed connection attempts there have been
@@ -26,7 +26,7 @@ public class JoinOnlineGameMenu extends javax.swing.JFrame {
      *
      * @param m The main menu JFrame this returns to on exit
      */
-    public JoinOnlineGameMenu(MainMenu m) {
+    public JoinOnlineGameMenu(SDMainMenuPanel m) {
         setIcon();
 
         initComponents();

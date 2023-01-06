@@ -356,7 +356,7 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void joinOnlineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinOnlineBtnActionPerformed
         //create a new game joining window
-        joinOnlineGameMenu = new JoinOnlineGameMenu(this);
+        joinOnlineGameMenu = new JoinOnlineGameMenu(sDMainMenuPanel);
         joinOnlineGameMenu.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_joinOnlineBtnActionPerformed
