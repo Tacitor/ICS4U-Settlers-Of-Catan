@@ -19,7 +19,7 @@ import textures.ImageRef;
  */
 public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
-    private final SDMainMenuPanel mainMenuFrame; //ref to the main menu
+    private final SDMainMenuPanel mainMenuPanel; //ref to the main menu
     private Dimension screenSize; //keeps track of the display the game is being played on
     private GamePanel theGamePanel; //referance to *a* GamePanel
     private DomesticTradePanel domesticTradePanel; //referance to the domestic trade window
@@ -29,7 +29,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         setIcon();
 
-        mainMenuFrame = m;
+        mainMenuPanel = m;
         screenSize = Toolkit.getDefaultToolkit().getScreenSize(); //acctually gets the data for the display
 
         initFrame();
@@ -85,7 +85,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * @return
      */
     public SDMainMenuPanel getMainMenu() {
-        return mainMenuFrame;
+        return mainMenuPanel;
     }
 
     /**
