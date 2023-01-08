@@ -76,7 +76,7 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
         //Setup the labels
         creditsLbl = new SettlerLbl("Le Credits");
         creditsLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
-        creditsLbl.setLineWrap(true);
+        creditsLbl.setUseNewLineChar(true);
         //add them to the array
         settlerLbls = new SettlerLbl[]{creditsLbl};
 
@@ -150,9 +150,8 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
             }
 
         }
-        
-        //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
 
+        //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d, localScaleFactor);
@@ -165,12 +164,12 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
     private void settlerVarPos(Graphics2D g2d) {
         //Label Loop
         creditsLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
-        creditsLbl.setSpaceForText(2000);
-        creditsLbl.setLinewrapSpace(70);
+        creditsLbl.setSpaceForText(1500);
+        creditsLbl.setLinewrapSpace(localScaleInt(80));
         //calc the number of lines for the labels that will be multi line
         for (SettlerLbl lbl : settlerLbls) {
-            if (lbl.getLineWrap()) {
-                lbl.calcNumLines(g2d);
+            if (lbl.getUseNewLineChar()) {
+                lbl.calcNumLinesCarriageReturn();
             }
         }
 

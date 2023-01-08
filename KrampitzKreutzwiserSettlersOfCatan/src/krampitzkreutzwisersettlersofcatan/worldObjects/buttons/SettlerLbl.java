@@ -22,6 +22,7 @@ public class SettlerLbl extends WorldObject {
     private java.awt.Font font;
     private java.awt.Color foregroundColour;
     private boolean doLineWrap;
+    private boolean useNewLineChar; //does the new line character actually make a new line
     private int numLines;
     private double spaceForText;
     private int linewrapSpace;
@@ -122,6 +123,24 @@ public class SettlerLbl extends WorldObject {
     }
 
     /**
+     * Mutator for useNewLineChar
+     *
+     * @param useNewLineChar
+     */
+    public void setUseNewLineChar(boolean useNewLineChar) {
+        this.useNewLineChar = useNewLineChar;
+    }
+
+    /**
+     * Accessor for useNewLineChar
+     *
+     * @return
+     */
+    public boolean getUseNewLineChar() {
+        return useNewLineChar;
+    }
+
+    /**
      * Accessor for numLines
      *
      * @return
@@ -201,11 +220,47 @@ public class SettlerLbl extends WorldObject {
 
             //debug how much room there is to work with
             //g2d.drawRect(xPos, yPos, (int)spaceForText, 10);
+        } else if (useNewLineChar) {
+            String text = this.text; //make a copy of the text for cutting and making substrings
+            int endChar; //the index of the char to end the sub string at
+
+            for (int i = 0; i < numLines; i++) {
+                endChar = text.indexOf(10);
+
+                g2d.drawString(text.substring(0, endChar), xPos, yPos + (((int) (linewrapSpace / scaleFactor)) * i));
+
+                //remove the part of the string already displayed so the next line will pick up where the previous left off
+                //only if this is not the last operation
+                if (i != (numLines - 1)) {
+                    text = text.substring(endChar + 2); //remove the space
+                }
+
+            }
         } else {
 
             //just draw the text
             g2d.drawString(text, xPos, yPos);
         }
+
+    }
+
+    /**
+     * Calculate the number of Lines a string will take up. Counts the number of
+     * new line characters (line feed or carriage return characters).
+     */
+    public void calcNumLinesCarriageReturn() {
+        char textArr[] = text.toCharArray();
+        int lineCount = 0;
+
+        //loop through the array
+        for (int i = 0; i < textArr.length; i++) {
+            //keeps track of a previous char. Check for strange windows double linefeed
+            if (textArr[i] == 10 && textArr[i - 1] != 10) {
+                lineCount++;
+            }
+        }
+
+        numLines = lineCount;
 
     }
 
