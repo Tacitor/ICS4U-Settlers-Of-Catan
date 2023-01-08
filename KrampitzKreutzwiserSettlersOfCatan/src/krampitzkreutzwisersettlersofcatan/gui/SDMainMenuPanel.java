@@ -6,16 +6,13 @@
 package krampitzkreutzwisersettlersofcatan.gui;
 
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -64,7 +61,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     public SDMainMenuPanel(SDMenuFrame sDFrame) {
         sDMenuFrame = sDFrame;
 
-        COMPASS_GOLD = setUpCompassGoldFont();
+        COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
 
         userManualUIFrame = new UserManualUI(this);
         creditsUIFrame = new CreditsUI(this);
@@ -251,32 +248,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
                 }
             }
         }
-    }
-
-    /**
-     * Return the Compass Gold font. Setup and load the TrueType font from the
-     * file system for use in game.
-     *
-     * @return
-     */
-    private Font setUpCompassGoldFont() {
-
-        Font tempFont = null;
-
-        try {
-            //System.out.println(url.getPath());
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("font/CompassGold.ttf")));
-
-            tempFont = new Font("CompassGold", Font.PLAIN, 20);
-
-        } catch (FontFormatException ex) {
-            System.out.println("FontFormatException: " + ex);
-        } catch (IOException ex) {
-            System.out.println("IOException: " + ex);
-        }
-
-        return tempFont;
     }
 
     /**

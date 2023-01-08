@@ -1,19 +1,16 @@
 /*
  * Lukas Krampitz
  * Jan 1, 2023
- * The JPanel for the Main Menu now using Settler Dev Buttons.
+ * The JPanel for the SD Menu now using Settler Dev Buttons.
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.io.IOException;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
 
@@ -43,7 +40,7 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
     public SDMenuTemplate(SDMenuFrame sDFrame) {
         sDMenuFrame = sDFrame;
 
-        COMPASS_GOLD = setUpCompassGoldFont();
+        COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -51,14 +48,14 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDMainMenuPanel. Calls the
-             * main menu panel's click event method.
+             * Triggered when the user clicks on the SD Panel. Calls the
+             * menu panel's click event method.
              *
              * @param event
              */
             @Override
             public final void mouseReleased(MouseEvent event) {
-                //send the mouse event to the main menu panel click handler
+                //send the mouse event to the panel click handler
                 mouseClick(event);
             }
         });
@@ -82,7 +79,7 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
     }
 
     /**
-     * Draw the UI for the Main Menu
+     * Draw the UI for the Menu
      *
      * @param g
      */
@@ -162,37 +159,11 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
                 //check the button that was pressed
                 if (/*btn.equals(otherBtn)*/false) { //if it was the exit game button
 
-                    exitMainMenuBtnPressed();
+                    //TODO: Add action
 
                 }
             }
         }
-    }
-
-    /**
-     * Return the Compass Gold font. Setup and load the TrueType font from the
-     * file system for use in game.
-     *
-     * @return
-     */
-    private Font setUpCompassGoldFont() {
-
-        Font tempFont = null;
-
-        try {
-            //System.out.println(url.getPath());
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("font/CompassGold.ttf")));
-
-            tempFont = new Font("CompassGold", Font.PLAIN, 20);
-
-        } catch (FontFormatException ex) {
-            System.out.println("FontFormatException: " + ex);
-        } catch (IOException ex) {
-            System.out.println("IOException: " + ex);
-        }
-
-        return tempFont;
     }
 
     /**
@@ -250,12 +221,4 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Mouse Dragged");
     }
-
-    /**
-     * Closed the game
-     */
-    private void exitMainMenuBtnPressed() {
-        System.exit(0);
-    }
-
 }

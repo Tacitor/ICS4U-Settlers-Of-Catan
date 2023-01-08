@@ -6,9 +6,13 @@
 package krampitzkreutzwisersettlersofcatan.gui;
 
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import krampitzkreutzwisersettlersofcatan.Catan;
@@ -152,6 +156,32 @@ public class SDMenuFrame extends javax.swing.JFrame {
      */
     public SDMainMenuPanel getSDMainMenuPanel() {
         return sDMainMenuPanel;
+    }
+    
+    /**
+     * Return the Compass Gold font. Setup and load the TrueType font from the
+     * file system for use in game.
+     *
+     * @return
+     */
+    public Font setUpCompassGoldFont() {
+
+        Font tempFont = null;
+
+        try {
+            //System.out.println(url.getPath());
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("font/CompassGold.ttf")));
+
+            tempFont = new Font("CompassGold", Font.PLAIN, 20);
+
+        } catch (FontFormatException ex) {
+            System.out.println("FontFormatException: " + ex);
+        } catch (IOException ex) {
+            System.out.println("IOException: " + ex);
+        }
+
+        return tempFont;
     }
 
 }
