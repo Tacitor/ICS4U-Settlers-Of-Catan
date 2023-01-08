@@ -294,6 +294,7 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
     }
 
     private void exitBtnActionPerformed() {
+        exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }
 }

@@ -402,6 +402,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      */
     private void creditsBtnActionPerformed() {
         // Hide this window and show the credits
+        creditsBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDCreditsPanel);
     }
 
