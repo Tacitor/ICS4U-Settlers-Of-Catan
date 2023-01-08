@@ -32,7 +32,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
 
     //ref to the other Menu elements
     private final UserManualUI userManualUIFrame; //referance to the user manual
-    private final CreditsUI creditsUIFrame; //referance to the user credits JFrame
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final NewGameSettings newGameSettingsFrame;
@@ -65,7 +64,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
 
         userManualUIFrame = new UserManualUI(this);
-        creditsUIFrame = new CreditsUI(this);
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
         gameJFrame = new GameFrame(this);
         clientSettings = new ClientSettings(this);
@@ -178,7 +176,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      * Update the positions of the SD Components
      */
     private void settlerVarPos() {
-        int menuPackingHeight = 12;
+        int menuPackingHeight = SDMenuFrame.MENU_PACKING_HEIGHT;
 
         newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
         newGameBtn.setYPos(localScaleInt(250));
@@ -404,7 +402,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      */
     private void creditsBtnActionPerformed() {
         // Hide this window and show the credits
-        creditsUIFrame.setVisible(true);
         sDMenuFrame.switchPanel(this, sDCreditsPanel);
     }
 
@@ -539,6 +536,11 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      */
     public void setJoinOnlineGameMenu(JoinOnlineGameMenu joinOnlineGameMenu) {
         this.joinOnlineGameMenu = joinOnlineGameMenu;
+    }
+    
+    public int getExitMainMenuBtnYPos() {
+        settlerVarPos(); //update the positions real quick
+        return exitMainMenuBtn.getYPos();
     }
 
 }

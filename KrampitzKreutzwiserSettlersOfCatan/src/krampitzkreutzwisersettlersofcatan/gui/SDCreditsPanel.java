@@ -5,12 +5,15 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
+import dataFiles.OldCode;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.io.InputStream;
+import java.util.Scanner;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
 
@@ -102,13 +105,13 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
                 this.getWidth(),
                 this.getHeight(), this);
 
-        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(180)));
+        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(120)));
         g2d.setColor(DomesticTradePanel.BEIGE_COLOUR);
 
         //Draw the Title
         g2d.drawString("Credits",
                 (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Credits") / 2),
-                localScaleInt(75));
+                localScaleInt(180));
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
         for (SettlerBtn btn : settlerBtns) {
@@ -139,8 +142,9 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
      * Update the positions of the SD Components
      */
     private void settlerVarPos() {
-        exitBtn.setXPos(500);
-        exitBtn.setYPos(500);
+        exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
+        //Line this up with the exit button from the SDMainMenuPanel.java
+        exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
 
     }
 
@@ -207,6 +211,38 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
         }
 
         repaint();
+    }
+    
+    /**
+     * Read and display the credits in the data file
+     */
+    public final void loadMaterial() {
+        
+        // Declare variablesD
+        Scanner fileReader;
+        InputStream file = OldCode.class.getResourceAsStream("credits.txt");
+        String fileContents = "";
+
+        // Try to read the file
+        try {
+            // Create the scanner to read the file
+            fileReader = new Scanner(file);
+        
+            // Read the entire file into a string
+            while (fileReader.hasNextLine()) {
+                // Read the line of the file into a line of the string
+                fileContents += fileReader.nextLine() + "\n";
+            }
+        }
+        catch (Exception e) {
+            // Set the sring to be displayed to an error message
+            fileContents = "Error: credits file could not be read.";
+            // Output the jsvs error to the standard output
+            System.out.println("Error reading credits file: " + e);
+        }
+        
+        // Display the file's contents from the string
+        //creditslTxtAr.setText(fileContents);
     }
 
     /**

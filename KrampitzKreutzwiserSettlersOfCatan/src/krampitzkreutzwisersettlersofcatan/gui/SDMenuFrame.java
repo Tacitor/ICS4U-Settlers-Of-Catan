@@ -27,6 +27,9 @@ public class SDMenuFrame extends javax.swing.JFrame {
 
     private Dimension screenSize; //keeps track of the display the game is being played on
     private SDMainMenuPanel sDMainMenuPanel;
+    
+    //attributes
+    final static int MENU_PACKING_HEIGHT = 12;
 
     /**
      * Main Constructor
