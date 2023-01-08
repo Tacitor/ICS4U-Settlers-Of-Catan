@@ -78,6 +78,7 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image CREDITS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/creditsText.png")).getImage();
     private final static Image USER_MANUAL_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/userManualText.png")).getImage();
     private final static Image GAME_EXIT_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/exitText.png")).getImage();
+    private final static Image BACK_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/backText.png")).getImage();
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -236,6 +237,11 @@ public class SettlerBtn extends SettlerComponent {
                 baseImage = BIG_SHORT_BTN;
                 disabledImage = BIG_SHORT_DISABLED_BTN;
                 break;
+            case 23:
+                //if it's a big back button
+                baseImage = BIG_BTN;
+                disabledImage = BIG_DISABLED_BTN;
+                break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
@@ -353,6 +359,10 @@ public class SettlerBtn extends SettlerComponent {
             case 22:
                 //if it's a user manual button for the SD main menu
                 textImage = USER_MANUAL_BTN_TEXT;
+                break;
+            case 23:
+                //if it's a big back button
+                textImage = BACK_BTN_TEXT;
                 break;
             default:
                 //deflault to error image

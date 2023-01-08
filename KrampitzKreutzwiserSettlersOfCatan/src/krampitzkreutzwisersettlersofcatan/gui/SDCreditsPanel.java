@@ -70,7 +70,7 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
         });
 
         //setup the buttons
-        exitBtn = new SettlerBtn(true, 0, 18);
+        exitBtn = new SettlerBtn(true, 0, 23);
         //add them to the array
         settlerBtns = new SettlerBtn[]{exitBtn};
         //Setup the labels
