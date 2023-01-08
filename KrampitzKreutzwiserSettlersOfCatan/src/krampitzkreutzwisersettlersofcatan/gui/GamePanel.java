@@ -524,7 +524,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //calc the number of lines for the labels that will be multi line
         for (SettlerLbl lbl : settlerLbls) {
             if (lbl.getLineWrap()) {
-                lbl.calcNumLines(g2d, this);
+                lbl.calcNumLines(g2d);
             }
         }
 
@@ -5724,7 +5724,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         settlerVarPos(g2d); //update the positions of the custon labels
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
-            settlerLbl.draw(g2d);
+            settlerLbl.draw(g2d, scaleFactor);
         }
 
         //reset the font

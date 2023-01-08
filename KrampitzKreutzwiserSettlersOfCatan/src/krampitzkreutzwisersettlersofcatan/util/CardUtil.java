@@ -439,9 +439,9 @@ public class CardUtil {
             tooltipText.setSpaceForText((double) (theGamePanel.getImgWidth(ImageRef.TOOLTIP_DEV_CARD_BGD) - GamePanel.scaleInt(20)));
 
             tooltipText.setLinewrapSpace(16);
-            tooltipText.calcNumLines(g2d, theGamePanel);
+            tooltipText.calcNumLines(g2d);
 
-            tooltipText.draw(g2d);
+            tooltipText.draw(g2d, GamePanel.scaleFactor);
         }
 
     }

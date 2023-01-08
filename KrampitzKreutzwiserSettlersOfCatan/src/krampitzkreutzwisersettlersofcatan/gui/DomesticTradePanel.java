@@ -311,7 +311,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //=-=-=-=END OF draw the player icons=-=-=-=
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
-            settlerLbl.draw(g2d);
+            settlerLbl.draw(g2d, GamePanel.scaleFactor);
         }
 
         //=-=-=-=draw on the player dots for the labels=-=-=-=

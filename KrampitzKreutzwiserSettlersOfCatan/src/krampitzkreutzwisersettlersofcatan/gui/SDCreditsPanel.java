@@ -15,6 +15,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.InputStream;
 import java.util.Scanner;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import textures.ImageRef;
 
 /**
@@ -32,6 +33,10 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
     private SettlerBtn exitBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
+    //Settler Labels
+    private SettlerLbl creditsLbl;
+    //The array for the buttons
+    private SettlerLbl[] settlerLbls;
 
     //Fonts
     public Font COMPASS_GOLD;
@@ -68,6 +73,14 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
         exitBtn = new SettlerBtn(true, 0, 18);
         //add them to the array
         settlerBtns = new SettlerBtn[]{exitBtn};
+        //Setup the labels
+        creditsLbl = new SettlerLbl("Le Credits");
+        creditsLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        creditsLbl.setLineWrap(true);
+        //add them to the array
+        settlerLbls = new SettlerLbl[]{creditsLbl};
+
+        loadMaterial();
 
     }
 
@@ -96,7 +109,7 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
         localScaleFactor = sDMenuFrame.calcScaleFactor(this);
 
         //update the button positions
-        settlerVarPos();
+        settlerVarPos(g2d);
 
         //draw the background image
         g2d.drawImage(ImageRef.WOOD_BACKGROUND,
@@ -112,6 +125,9 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
         g2d.drawString("Credits",
                 (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Credits") / 2),
                 localScaleInt(180));
+
+        //draw the credits
+        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
         for (SettlerBtn btn : settlerBtns) {
@@ -134,14 +150,33 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
             }
 
         }
-
+        
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
+
+        //go through and draw all the labels
+        for (SettlerLbl settlerLbl : settlerLbls) {
+            settlerLbl.draw(g2d, localScaleFactor);
+        }
     }
 
     /**
      * Update the positions of the SD Components
      */
-    private void settlerVarPos() {
+    private void settlerVarPos(Graphics2D g2d) {
+        //Label Loop
+        creditsLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
+        creditsLbl.setSpaceForText(2000);
+        creditsLbl.setLinewrapSpace(70);
+        //calc the number of lines for the labels that will be multi line
+        for (SettlerLbl lbl : settlerLbls) {
+            if (lbl.getLineWrap()) {
+                lbl.calcNumLines(g2d);
+            }
+        }
+
+        creditsLbl.setXPos(250);
+        creditsLbl.setYPos(250);
+
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
@@ -212,12 +247,12 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
 
         repaint();
     }
-    
+
     /**
      * Read and display the credits in the data file
      */
     public final void loadMaterial() {
-        
+
         // Declare variablesD
         Scanner fileReader;
         InputStream file = OldCode.class.getResourceAsStream("credits.txt");
@@ -227,22 +262,21 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
         try {
             // Create the scanner to read the file
             fileReader = new Scanner(file);
-        
+
             // Read the entire file into a string
             while (fileReader.hasNextLine()) {
                 // Read the line of the file into a line of the string
                 fileContents += fileReader.nextLine() + "\n";
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Set the sring to be displayed to an error message
             fileContents = "Error: credits file could not be read.";
             // Output the jsvs error to the standard output
             System.out.println("Error reading credits file: " + e);
         }
-        
+
         // Display the file's contents from the string
-        //creditslTxtAr.setText(fileContents);
+        creditsLbl.setText(fileContents);
     }
 
     /**

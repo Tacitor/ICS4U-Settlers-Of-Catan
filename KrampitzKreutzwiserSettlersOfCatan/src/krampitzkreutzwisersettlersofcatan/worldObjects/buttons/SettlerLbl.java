@@ -9,7 +9,6 @@ package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
 
 /**
@@ -171,8 +170,9 @@ public class SettlerLbl extends WorldObject {
      * Draw the Label
      *
      * @param g2d
+     * @param scaleFactor
      */
-    public void draw(Graphics2D g2d) {
+    public void draw(Graphics2D g2d, double scaleFactor) {
 
         //g2d.setFont(font);
         g2d.setColor(foregroundColour);
@@ -190,7 +190,7 @@ public class SettlerLbl extends WorldObject {
                 endChar = getEndingChar(text, (int) spaceForText, g2d);
 
                 //System.out.println(endChar);
-                g2d.drawString(text.substring(0, endChar), xPos, yPos + (GamePanel.scaleInt(linewrapSpace) * i));
+                g2d.drawString(text.substring(0, endChar), xPos, yPos + (((int) (linewrapSpace / scaleFactor)) * i));
 
                 //remove the part of the string already displayed so the next line will pick up where the previous left off
                 //only if this is not the last operation
@@ -214,9 +214,8 @@ public class SettlerLbl extends WorldObject {
      * will need when displayed as an instruction
      *
      * @param g2d
-     * @param gamePanel
      */
-    public void calcNumLines(Graphics2D g2d, GamePanel gamePanel) {
+    public void calcNumLines(Graphics2D g2d) {
         //calculate the number of lines needed
         //spaceForText //the number of pixels there are to work with from edge of the prompt to the edge of the board starts
         //spaceForText = (gamePanel.getSuperFrame().getWidth() / 2 - gamePanel.getImgWidth(WATER_RING) / 2 /*dist from left wall to baord*/) - (xPos);
