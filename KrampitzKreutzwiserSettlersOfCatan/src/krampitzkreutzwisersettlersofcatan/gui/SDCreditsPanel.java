@@ -124,7 +124,7 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
         //Draw the Title
         g2d.drawString("Credits",
                 (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Credits") / 2),
-                localScaleInt(180));
+                localScaleInt(100));
 
         //draw the credits
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
