@@ -157,7 +157,7 @@ public class SDMenuFrame extends javax.swing.JFrame {
     public SDMainMenuPanel getSDMainMenuPanel() {
         return sDMainMenuPanel;
     }
-    
+
     /**
      * Return the Compass Gold font. Setup and load the TrueType font from the
      * file system for use in game.
@@ -182,6 +182,21 @@ public class SDMenuFrame extends javax.swing.JFrame {
         }
 
         return tempFont;
+    }
+
+    /**
+     * Switch the active menu element
+     *
+     * @param oldPanel
+     * @param newPanel
+     */
+    public void switchPanel(JPanel oldPanel, JPanel newPanel) {
+        oldPanel.setVisible(false);
+        remove(oldPanel);
+        add(newPanel);
+        newPanel.setVisible(true);
+
+        newPanel.repaint();
     }
 
 }

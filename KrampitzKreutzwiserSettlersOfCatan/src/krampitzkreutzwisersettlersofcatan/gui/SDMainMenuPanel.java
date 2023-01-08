@@ -33,6 +33,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     //ref to the other Menu elements
     private final UserManualUI userManualUIFrame; //referance to the user manual
     private final CreditsUI creditsUIFrame; //referance to the user credits JFrame
+    private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final NewGameSettings newGameSettingsFrame;
     private final ClientSettings clientSettings;
@@ -65,6 +66,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
 
         userManualUIFrame = new UserManualUI(this);
         creditsUIFrame = new CreditsUI(this);
+        sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
         gameJFrame = new GameFrame(this);
         clientSettings = new ClientSettings(this);
         newGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
@@ -402,8 +404,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      */
     private void creditsBtnActionPerformed() {
         // Hide this window and show the credits
-        this.setVisible(false);
         creditsUIFrame.setVisible(true);
+        sDMenuFrame.switchPanel(this, sDCreditsPanel);
     }
 
     /**

@@ -26,6 +26,7 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
     private int mouseMotionPosY;
 
     //Settler Compoments
+    private SettlerBtn exitBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
 
@@ -61,8 +62,9 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
         });
 
         //setup the buttons
+        exitBtn = new SettlerBtn(true, 0, 18);
         //add them to the array
-        settlerBtns = new SettlerBtn[]{};
+        settlerBtns = new SettlerBtn[]{exitBtn};
 
     }
 
@@ -137,6 +139,8 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
      * Update the positions of the SD Components
      */
     private void settlerVarPos() {
+        exitBtn.setXPos(500);
+        exitBtn.setYPos(500);
 
     }
 
@@ -157,8 +161,8 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
                     && btn.isEnabled()) { //and that it is enabled
 
                 //check the button that was pressed
-                if (/*btn.equals(otherBtn)*/false) { //if it was the exit game button
-
+                if (btn.equals(exitBtn)) { //if it was the exit game button
+                    exitBtnActionPerformed();
                 }
             }
         }
@@ -218,5 +222,9 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
     @Override
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Mouse Dragged");
+    }
+
+    private void exitBtnActionPerformed() {
+        sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }
 }
