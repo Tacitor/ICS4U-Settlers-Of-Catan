@@ -164,8 +164,8 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
     private void settlerVarPos(Graphics2D g2d) {
         //Label Loop
         creditsLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
-        creditsLbl.setSpaceForText(1500);
-        creditsLbl.setLinewrapSpace(localScaleInt(80));
+        creditsLbl.setSpaceForText(localScaleInt(1500));
+        creditsLbl.setLinewrapSpace((80));
         //calc the number of lines for the labels that will be multi line
         for (SettlerLbl lbl : settlerLbls) {
             if (lbl.getUseNewLineChar()) {
@@ -173,8 +173,8 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
             }
         }
 
-        creditsLbl.setXPos(250);
-        creditsLbl.setYPos(250);
+        creditsLbl.setXPos(localScaleInt(50));
+        creditsLbl.setYPos(localScaleInt(300));
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
