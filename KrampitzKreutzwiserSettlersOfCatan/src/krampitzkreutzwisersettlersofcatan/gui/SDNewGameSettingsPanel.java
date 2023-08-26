@@ -31,7 +31,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
-    private SettlerLbl newGameSettingsLbl;
+    private SettlerLbl playerNumLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
 
@@ -71,11 +71,10 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         //add them to the array
         settlerBtns = new SettlerBtn[]{exitBtn};
         //Setup the labels
-        newGameSettingsLbl = new SettlerLbl("Le New Game Settings");
-        newGameSettingsLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
-        newGameSettingsLbl.setUseNewLineChar(false);
+        playerNumLbl = new SettlerLbl("Number of players:");
+        playerNumLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         //add them to the array
-        settlerLbls = new SettlerLbl[]{newGameSettingsLbl};
+        settlerLbls = new SettlerLbl[]{playerNumLbl};
 
     }
 
@@ -117,8 +116,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         g2d.setColor(DomesticTradePanel.BEIGE_COLOUR);
 
         //Draw the Title
-        g2d.drawString("Header Text",
-                (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Header Text") / 2),
+        g2d.drawString("New Game Settings",
+                (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("New Game Settings") / 2),
                 localScaleInt(100));
 
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
@@ -157,16 +156,11 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
      */
     private void settlerVarPos(Graphics2D g2d) {
         //Label Loop
-        newGameSettingsLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
+        playerNumLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         //calc the number of lines for the labels that will be multi line
-        for (SettlerLbl lbl : settlerLbls) {
-            if (lbl.getUseNewLineChar()) {
-                lbl.calcNumLinesCarriageReturn();
-            }
-        }
 
-        newGameSettingsLbl.setXPos(localScaleInt(50));
-        newGameSettingsLbl.setYPos(localScaleInt(300));
+        playerNumLbl.setXPos(localScaleInt(300));
+        playerNumLbl.setYPos(localScaleInt(200));
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
