@@ -34,7 +34,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final UserManualUI userManualUIFrame; //referance to the user manual
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
-    private final NewGameSettings newGameSettingsFrame;
+    private final NewGameSettings TEMPnewGameSettingsFrame;
+    private final SDNewGameSettingsPanel sDNewGameSettingsPanel;
     private final ClientSettings clientSettings;
     private NewOnlineGameMenu newOnlineGameMenu;
     private JoinOnlineGameMenu joinOnlineGameMenu;
@@ -67,7 +68,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
         gameJFrame = new GameFrame(this);
         clientSettings = new ClientSettings(this);
-        newGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
+        TEMPnewGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
+        sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
         loadOnlineGameMenu = new LoadOnlineGameMenu(this);
         newOnlineGameMenu = new NewOnlineGameMenu(this);
 
@@ -316,12 +318,13 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     /**
      * Open the new game settings
      */
-    private void newGameBtnActionPerformed() {
-        // Hide this window and show the settings
-        this.setVisible(false);
-        newGameSettingsFrame.setVisible(true);
-        //gameJFrame.resetGamePanel();
-        //gameJFrame.setVisible(true);
+    private void newGameBtnActionPerformed() {        
+        // Hide this window and show the New Game Settings
+        newGameBtn.setmouseHover(false);
+        sDMenuFrame.switchPanel(this, sDNewGameSettingsPanel);
+        
+        //TEMP while dev for new menu is under way
+        TEMPnewGameSettingsFrame.setVisible(true);
     }
 
     /**
