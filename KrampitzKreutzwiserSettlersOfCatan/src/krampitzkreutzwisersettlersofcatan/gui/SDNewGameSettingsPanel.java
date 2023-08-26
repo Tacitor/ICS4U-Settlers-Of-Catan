@@ -19,7 +19,7 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-public class SDNewGameSettings extends javax.swing.JPanel implements MouseMotionListener {
+public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseMotionListener {
 
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -43,7 +43,7 @@ public class SDNewGameSettings extends javax.swing.JPanel implements MouseMotion
      *
      * @param sDFrame
      */
-    public SDNewGameSettings(SDMenuFrame sDFrame) {
+    public SDNewGameSettingsPanel(SDMenuFrame sDFrame) {
         sDMenuFrame = sDFrame;
 
         COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
