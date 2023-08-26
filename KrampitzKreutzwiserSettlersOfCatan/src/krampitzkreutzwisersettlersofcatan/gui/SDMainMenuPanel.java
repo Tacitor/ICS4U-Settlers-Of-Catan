@@ -97,7 +97,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         joinOnlineGameBtn = new SettlerBtn(true, 0, 16);
         loadGameToOnlineModeBtn = new SettlerBtn(true, 0, 17);
         creditsBtn = new SettlerBtn(true, 0, 21);
-        userManualBtn = new SettlerBtn(true, 0, 22);
+        userManualBtn = new SettlerBtn(false, 0, 22);
         exitMainMenuBtn = new SettlerBtn(true, 0, 18);
 
         //add them to the array
