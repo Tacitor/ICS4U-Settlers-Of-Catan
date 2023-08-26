@@ -1,6 +1,6 @@
 /*
  * Lukas Krampitz
- * Jan 1, 2023
+ * August 26, 2023
  * The JPanel for the SD Menu now using Settler Dev Buttons.
  */
 package krampitzkreutzwisersettlersofcatan.gui;
@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import textures.ImageRef;
 
 /**
@@ -26,8 +27,13 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
     private int mouseMotionPosY;
 
     //Settler Compoments
+    private SettlerBtn exitBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
+    //Settler Labels
+    private SettlerLbl textLbl;
+    //The array for the buttons
+    private SettlerLbl[] settlerLbls;
 
     //Fonts
     public Font COMPASS_GOLD;
@@ -48,21 +54,27 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SD Panel. Calls the
+             * Triggered when the user clicks on the SDCreditsPanel. Calls the
              * menu panel's click event method.
              *
              * @param event
              */
             @Override
             public final void mouseReleased(MouseEvent event) {
-                //send the mouse event to the panel click handler
+                //send the mouse event to the menu panel click handler
                 mouseClick(event);
             }
         });
 
         //setup the buttons
+        exitBtn = new SettlerBtn(true, 0, 23);
         //add them to the array
-        settlerBtns = new SettlerBtn[]{};
+        settlerBtns = new SettlerBtn[]{exitBtn};
+        //Setup the labels
+        textLbl = new SettlerLbl("Main text here");
+        textLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        //add them to the array
+        settlerLbls = new SettlerLbl[]{textLbl};
 
     }
 
@@ -79,7 +91,7 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
     }
 
     /**
-     * Draw the UI for the Menu
+     * Draw the UI for the SDPanel
      *
      * @param g
      */
@@ -91,7 +103,7 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
         localScaleFactor = sDMenuFrame.calcScaleFactor(this);
 
         //update the button positions
-        settlerVarPos();
+        settlerVarPos(g2d);
 
         //draw the background image
         g2d.drawImage(ImageRef.WOOD_BACKGROUND,
@@ -100,13 +112,15 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
                 this.getWidth(),
                 this.getHeight(), this);
 
-        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(180)));
+        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(120)));
         g2d.setColor(DomesticTradePanel.BEIGE_COLOUR);
 
         //Draw the Title
-        g2d.drawString("Settlers of Catan",
-                (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Settlers of Catan") / 2),
-                localScaleInt(150));
+        g2d.drawString("Header Text",
+                (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Header Text") / 2),
+                localScaleInt(100));
+
+        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
         for (SettlerBtn btn : settlerBtns) {
@@ -131,12 +145,25 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
         }
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
+        //go through and draw all the labels
+        for (SettlerLbl settlerLbl : settlerLbls) {
+            settlerLbl.draw(g2d, localScaleFactor);
+        }
     }
 
     /**
      * Update the positions of the SD Components
      */
-    private void settlerVarPos() {
+    private void settlerVarPos(Graphics2D g2d) {
+        //Label Loop
+        textLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
+
+        textLbl.setXPos(localScaleInt(50));
+        textLbl.setYPos(localScaleInt(300));
+
+        exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
+        //Line this up with the exit button from the SDMainMenuPanel.java
+        exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
 
     }
 
@@ -157,10 +184,8 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
                     && btn.isEnabled()) { //and that it is enabled
 
                 //check the button that was pressed
-                if (/*btn.equals(otherBtn)*/false) { //if it was the exit game button
-
-                    //TODO: Add action
-
+                if (btn.equals(exitBtn)) { //if it was the exit game button
+                    exitBtnActionPerformed();
                 }
             }
         }
@@ -220,5 +245,10 @@ public abstract class SDMenuTemplate extends javax.swing.JPanel implements Mouse
     @Override
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Mouse Dragged");
+    }
+
+    private void exitBtnActionPerformed() {
+        exitBtn.setmouseHover(false);
+        sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }
 }
