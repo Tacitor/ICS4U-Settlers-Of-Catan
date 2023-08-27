@@ -31,20 +31,20 @@ public class SettlerRadioBtn extends SettlerComponent {
     private final static Image RADIO_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/rBtnSelection.png")).getImage();
     private final static Image RADIO_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioHoverBtn.png")).getImage();
     //statics for the smaller radio buttons
-    private final static Image RADIO_SML_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioSmallBtn.png")).getImage();
-    private final static Image RADIO_SML_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioSmallBtnDisabled.png")).getImage();
-    private final static Image RADIO_SML_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/rSmallBtnSelection.png")).getImage();
-    private final static Image RADIO_SML_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioSmallHoverBtn.png")).getImage();
+    private final static Image RADIO_SML_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioSmallBtn.png")).getImage();
+    private final static Image RADIO_SML_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioSmallBtnDisabled.png")).getImage();
+    private final static Image RADIO_SML_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/rSmallBtnSelection.png")).getImage();
+    private final static Image RADIO_SML_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioSmallHoverBtn.png")).getImage();
     //the texts for the game panel
     private final static Image RADIO_BTN_ROAD_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/roadBtnText.png")).getImage();
     private final static Image RADIO_BTN_SETTLEMENT_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/settlementBtnText.png")).getImage();
     private final static Image RADIO_BTN_CITY_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/cityBtnText.png")).getImage();
     //the texts for the menu
-    private final static Image RADIO_BTN_YES_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/yesBtnText.png")).getImage();
-    private final static Image RADIO_BTN_NO_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/noBtnText.png")).getImage();
-    private final static Image RADIO_BTN_2_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/2BtnText.png")).getImage();
-    private final static Image RADIO_BTN_3_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/3BtnText.png")).getImage();
-    private final static Image RADIO_BTN_4_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/4BtnText.png")).getImage();
+    private final static Image RADIO_BTN_YES_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/yesBtnText.png")).getImage();
+    private final static Image RADIO_BTN_NO_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/noBtnText.png")).getImage();
+    private final static Image RADIO_BTN_2_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/2BtnText.png")).getImage();
+    private final static Image RADIO_BTN_3_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/3BtnText.png")).getImage();
+    private final static Image RADIO_BTN_4_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/4BtnText.png")).getImage();
 
     //constructors
     /**
@@ -117,29 +117,34 @@ public class SettlerRadioBtn extends SettlerComponent {
                 baseImage = RADIO_BTN_BASE;
                 disabledImage = RADIO_BTN_DISABLED;
                 selectionImage = RADIO_BTN_SELECTION;
+                hoverImage = RADIO_BTN_HOVER;
+                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
                 break;
             case 1:
                 //if type is settlement radio button
                 baseImage = RADIO_BTN_BASE;
                 disabledImage = RADIO_BTN_DISABLED;
                 selectionImage = RADIO_BTN_SELECTION;
+                hoverImage = RADIO_BTN_HOVER;
+                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
                 break;
             case 2:
                 //if type is city radio button
                 baseImage = RADIO_BTN_BASE;
                 disabledImage = RADIO_BTN_DISABLED;
                 selectionImage = RADIO_BTN_SELECTION;
+                hoverImage = RADIO_BTN_HOVER;
+                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
                 break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
                 disabledImage = ERROR_IMAGE;
                 selectionImage = ERROR_IMAGE;
+                hoverImage = RADIO_BTN_HOVER;
+                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
                 break;
         }
-
-        hoverImage = RADIO_BTN_HOVER;
-        tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
     }
 
     /**
