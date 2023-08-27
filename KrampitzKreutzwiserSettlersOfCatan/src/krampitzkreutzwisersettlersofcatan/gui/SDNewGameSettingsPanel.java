@@ -189,12 +189,12 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         playerNumLbl.setYPos(localScaleInt(200));
 
         playerNum2RBtn.setXPos(playerNumLbl.getXPos());
-        playerNum2RBtn.setYPos(playerNumLbl.getYPos() + localScaleInt(50));
+        playerNum2RBtn.setYPos(playerNumLbl.getYPos() + localScaleInt(15));
 
-        playerNum3RBtn.setXPos(playerNum2RBtn.getXPos() + localScaleInt(80));
+        playerNum3RBtn.setXPos(playerNum2RBtn.getXPos() + getLocalImgWidth(playerNum2RBtn.getBaseImage()) + localScaleInt(6));
         playerNum3RBtn.setYPos(playerNum2RBtn.getYPos());
 
-        playerNum4RBtn.setXPos(playerNum3RBtn.getXPos() + localScaleInt(80));
+        playerNum4RBtn.setXPos(playerNum3RBtn.getXPos() + getLocalImgWidth(playerNum3RBtn.getBaseImage()) + localScaleInt(6));
         playerNum4RBtn.setYPos(playerNum2RBtn.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
