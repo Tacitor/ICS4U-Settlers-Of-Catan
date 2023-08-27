@@ -88,8 +88,12 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         playerNum2RBtn = new SettlerRadioBtn(true, true, 3);
         playerNum3RBtn = new SettlerRadioBtn(true, false, 4);
         playerNum4RBtn = new SettlerRadioBtn(true, false, 5);
+
         //add them to the group array
         settlerRadioPlayerNumBtns = new SettlerRadioBtn[]{playerNum2RBtn, playerNum3RBtn, playerNum4RBtn};
+        //setup the custom radio buttons to go into the groups
+        SettlerRadioBtn.setUpGroup(settlerRadioPlayerNumBtns);
+
         //add the group to the main array
         settlerRadioBtnGroups = new SettlerRadioBtn[1][];
         settlerRadioBtnGroups[0] = settlerRadioPlayerNumBtns;
@@ -225,6 +229,24 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
                 }
             }
         }
+
+        //check if the player clicked on one of the SettlerRadionBtns
+        for (SettlerRadioBtn[] rbtnGroup : settlerRadioBtnGroups) {
+            for (SettlerRadioBtn radioBtn : rbtnGroup) {
+                if (evt.getX() > radioBtn.getXPos()
+                        && evt.getY() > radioBtn.getYPos()
+                        && evt.getX() < (radioBtn.getXPos() + getLocalImgWidth(radioBtn.getBaseImage()))
+                        && evt.getY() < (radioBtn.getYPos() + getLocalImgHeight(radioBtn.getBaseImage()))
+                        && radioBtn.isEnabled()) { //and that it is enabled
+
+                    radioBtn.setSelected(true);
+
+                }
+
+            }
+        }
+
+        //repaint();
     }
 
     /**
@@ -263,6 +285,27 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
                 btn.setmouseHover(false);
             }
 
+        }
+
+        //check if the player moved the mouse over one of the SettlerRadionBtns
+        for (SettlerRadioBtn[] rbtnGroup : settlerRadioBtnGroups) {
+            for (SettlerRadioBtn radioBtn : rbtnGroup) {
+                if (mouseMotionPosX > radioBtn.getXPos()
+                        && mouseMotionPosY > radioBtn.getYPos()
+                        && mouseMotionPosX < (radioBtn.getXPos() + getLocalImgWidth(radioBtn.getBaseImage()))
+                        && mouseMotionPosY < (radioBtn.getYPos() + getLocalImgHeight(radioBtn.getBaseImage()))
+                        && radioBtn.isEnabled()) { //and that it is enabled
+
+                    //set the hover
+                    radioBtn.setmouseHover(true);
+
+                } else {
+
+                    //make suer there is no hover over that button
+                    radioBtn.setmouseHover(false);
+                }
+
+            }
         }
 
         repaint();
