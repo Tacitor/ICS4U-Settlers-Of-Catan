@@ -8,18 +8,20 @@ package krampitzkreutzwisersettlersofcatan.gui;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
 import textures.ImageRef;
 
 /**
  *
  * @author Tacitor
  */
-public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseMotionListener {
+public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
 
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -34,6 +36,12 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     private SettlerLbl playerNumLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
+    //Settler Radio Buttons
+    private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn;
+    //arry for each group of radio buttons
+    private SettlerRadioBtn[] settlerRadioPlayerNumBtns;
+    //main array for all the radio buttons groups
+    private SettlerRadioBtn[][] settlerRadioBtnGroups;
 
     //Fonts
     public Font COMPASS_GOLD;
@@ -75,6 +83,16 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         playerNumLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         //add them to the array
         settlerLbls = new SettlerLbl[]{playerNumLbl};
+
+        //setup the radio buttons
+        playerNum2RBtn = new SettlerRadioBtn(true, true, 3);
+        playerNum3RBtn = new SettlerRadioBtn(true, false, 4);
+        playerNum4RBtn = new SettlerRadioBtn(true, false, 5);
+        //add them to the group array
+        settlerRadioPlayerNumBtns = new SettlerRadioBtn[]{playerNum2RBtn, playerNum3RBtn, playerNum4RBtn};
+        //add the group to the main array
+        settlerRadioBtnGroups = new SettlerRadioBtn[1][];
+        settlerRadioBtnGroups[0] = settlerRadioPlayerNumBtns;
 
     }
 
@@ -145,6 +163,14 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         }
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
+        //draw the radio buttons
+        //itterate over the groups
+        for (SettlerRadioBtn[] settlerRadioBtnGroup : settlerRadioBtnGroups) {
+            for (SettlerRadioBtn settlerRadioBtn : settlerRadioBtnGroup) {
+                settlerRadioBtn.draw(g2d, this);
+            }
+        }
+
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d, localScaleFactor);
@@ -161,6 +187,15 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
         playerNumLbl.setXPos(localScaleInt(300));
         playerNumLbl.setYPos(localScaleInt(200));
+
+        playerNum2RBtn.setXPos(playerNumLbl.getXPos());
+        playerNum2RBtn.setYPos(playerNumLbl.getYPos() + localScaleInt(50));
+
+        playerNum3RBtn.setXPos(playerNum2RBtn.getXPos() + localScaleInt(80));
+        playerNum3RBtn.setYPos(playerNum2RBtn.getYPos());
+
+        playerNum4RBtn.setXPos(playerNum3RBtn.getXPos() + localScaleInt(80));
+        playerNum4RBtn.setYPos(playerNum2RBtn.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
@@ -251,5 +286,15 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+    }
+
+    @Override
+    public int getLocalImgWidth(Image image) {
+        return sDMenuFrame.getImgWidthLocal(image, this);
+    }
+
+    @Override
+    public int getLocalImgHeight(Image image) {
+        return sDMenuFrame.getImgWidthLocal(image, this);
     }
 }
