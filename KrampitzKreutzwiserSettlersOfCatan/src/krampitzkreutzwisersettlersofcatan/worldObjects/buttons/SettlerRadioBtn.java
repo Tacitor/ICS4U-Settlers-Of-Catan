@@ -8,7 +8,9 @@ package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import krampitzkreutzwisersettlersofcatan.gui.SDScaleImageResizeable;
 import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
 import textures.ImageRef;
 import static textures.ImageRef.ERROR_IMAGE;
@@ -174,34 +176,76 @@ public class SettlerRadioBtn extends SettlerComponent {
     }
 
     /**
+     * This method is used to make other methods interoperable with deprecated
+     * called from the gamePanel and calls from other classes.
+     *
+     * @param image
+     * @param parent
+     * @return
+     */
+    private int custGetImgWidth(Image image, JComponent parent) {
+
+        //check if need to use gamepanel
+        if (parent instanceof GamePanel) {
+            return ((GamePanel) parent).getImgWidth(image);
+        } else if (parent instanceof SDScaleImageResizeable) {
+            return ((SDScaleImageResizeable) parent).getLocalImgWidth(image);
+        } else {
+            System.out.println("ERROR: custGetImgWidth() in SettlerRadioBtn does not have a case for this type of JComponent");
+            return 50;
+        }
+    }
+
+    /**
+     * This method is used to make other methods interoperable with deprecated
+     * called from the gamePanel and calls from other classes.
+     * 
+     * @param image
+     * @param parent
+     * @return 
+     */
+    private int custGetImgHeight(Image image, JComponent parent) {
+
+        //check if need to use gamepanel
+        if (parent instanceof GamePanel) {
+            return ((GamePanel) parent).getImgHeight(image);
+        } else if (parent instanceof SDScaleImageResizeable) {
+            return ((SDScaleImageResizeable) parent).getLocalImgHeight(image);
+        } else {
+            System.out.println("ERROR: custGetImgHeight() in SettlerRadioBtn does not have a case for this type of JComponent");
+            return 50;
+        }
+    }
+
+    /**
      * Draw the radio button
      *
      * @param g2d
-     * @param theGamePanel
+     * @param parent - the parent responsible for the sizing
      */
-    public void draw(Graphics2D g2d, GamePanel theGamePanel) {
+    public void draw(Graphics2D g2d, JComponent parent) {
 
         //draw the base        
         g2d.drawImage(baseImage,
                 xPos,
                 yPos,
-                theGamePanel.getImgWidth(baseImage),
-                theGamePanel.getImgHeight(baseImage), null);
+                custGetImgWidth(baseImage, parent),
+                custGetImgHeight(baseImage, parent), null);
 
         //draw the text
         g2d.drawImage(textImage,
                 xPos,
                 yPos,
-                theGamePanel.getImgWidth(textImage),
-                theGamePanel.getImgHeight(textImage), null);
+                custGetImgWidth(textImage, parent),
+                custGetImgHeight(textImage, parent), null);
 
         //draw the selected overlay if required
         if (selected) {
             g2d.drawImage(selectionImage,
                     xPos,
                     yPos,
-                    theGamePanel.getImgWidth(selectionImage),
-                    theGamePanel.getImgHeight(selectionImage), null);
+                    custGetImgWidth(selectionImage, parent),
+                    custGetImgHeight(selectionImage, parent), null);
         }
 
         //draw the tab selected overlay if required
@@ -210,14 +254,14 @@ public class SettlerRadioBtn extends SettlerComponent {
             g2d.drawImage(tabSelectionImages[0],
                     xPos - GamePanel.scaleInt(5),
                     yPos - GamePanel.scaleInt(5),
-                    theGamePanel.getImgWidth(tabSelectionImages[0]),
-                    theGamePanel.getImgHeight(tabSelectionImages[0]), null);
+                    custGetImgWidth(tabSelectionImages[0], parent),
+                    custGetImgHeight(tabSelectionImages[0], parent), null);
             //draw the right
             g2d.drawImage(tabSelectionImages[1],
-                    xPos + theGamePanel.getImgWidth(baseImage) + GamePanel.scaleInt(5) - theGamePanel.getImgWidth(tabSelectionImages[1]),
+                    xPos + custGetImgWidth(baseImage, parent) + GamePanel.scaleInt(5) - custGetImgWidth(tabSelectionImages[1], parent),
                     yPos - GamePanel.scaleInt(5),
-                    theGamePanel.getImgWidth(tabSelectionImages[1]),
-                    theGamePanel.getImgHeight(tabSelectionImages[1]), null);
+                    custGetImgWidth(tabSelectionImages[1], parent),
+                    custGetImgHeight(tabSelectionImages[1], parent), null);
         }
 
         //draw the disabled overlay if required
@@ -225,8 +269,8 @@ public class SettlerRadioBtn extends SettlerComponent {
             g2d.drawImage(disabledImage,
                     xPos,
                     yPos,
-                    theGamePanel.getImgWidth(disabledImage),
-                    theGamePanel.getImgHeight(disabledImage), null);
+                    custGetImgWidth(disabledImage, parent),
+                    custGetImgHeight(disabledImage, parent), null);
         }
 
         //draw the mouseHover overlay if required
@@ -234,8 +278,8 @@ public class SettlerRadioBtn extends SettlerComponent {
             g2d.drawImage(hoverImage,
                     xPos,
                     yPos,
-                    theGamePanel.getImgWidth(hoverImage),
-                    theGamePanel.getImgHeight(hoverImage), null);
+                    custGetImgWidth(hoverImage, parent),
+                    custGetImgHeight(hoverImage, parent), null);
         }
 
     }
