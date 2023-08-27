@@ -295,6 +295,6 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
     @Override
     public int getLocalImgHeight(Image image) {
-        return sDMenuFrame.getImgWidthLocal(image, this);
+        return sDMenuFrame.getImgHeightLocal(image, this);
     }
 }

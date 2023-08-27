@@ -115,27 +115,23 @@ public class SettlerRadioBtn extends SettlerComponent {
     public void updateButtonImages() {
         switch (type) {
             case 0:
-                //if type is road radio button
-                baseImage = RADIO_BTN_BASE;
-                disabledImage = RADIO_BTN_DISABLED;
-                selectionImage = RADIO_BTN_SELECTION;
-                hoverImage = RADIO_BTN_HOVER;
-                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
-                break;
             case 1:
-                //if type is settlement radio button
-                baseImage = RADIO_BTN_BASE;
-                disabledImage = RADIO_BTN_DISABLED;
-                selectionImage = RADIO_BTN_SELECTION;
-                hoverImage = RADIO_BTN_HOVER;
-                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
-                break;
             case 2:
                 //if type is city radio button
                 baseImage = RADIO_BTN_BASE;
                 disabledImage = RADIO_BTN_DISABLED;
                 selectionImage = RADIO_BTN_SELECTION;
                 hoverImage = RADIO_BTN_HOVER;
+                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
+                break;
+            case 3:
+            case 4:
+            case 5:
+                //if type is city radio button
+                baseImage = RADIO_SML_BTN_BASE;
+                disabledImage = RADIO_SML_BTN_DISABLED;
+                selectionImage = RADIO_SML_BTN_SELECTION;
+                hoverImage = RADIO_SML_BTN_HOVER;
                 tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
                 break;
             default:
@@ -168,6 +164,18 @@ public class SettlerRadioBtn extends SettlerComponent {
                 //if type is city radio button
                 textImage = RADIO_BTN_CITY_TEXT;
                 break;
+            case 3:
+                //if type is city radio button
+                textImage = RADIO_BTN_2_TEXT;
+                break;
+            case 4:
+                //if type is city radio button
+                textImage = RADIO_BTN_3_TEXT;
+                break;
+            case 5:
+                //if type is city radio button
+                textImage = RADIO_BTN_4_TEXT;
+                break;
             default:
                 //deflault to error image
                 textImage = ERROR_IMAGE;
@@ -199,16 +207,17 @@ public class SettlerRadioBtn extends SettlerComponent {
     /**
      * This method is used to make other methods interoperable with deprecated
      * called from the gamePanel and calls from other classes.
-     * 
+     *
      * @param image
      * @param parent
-     * @return 
+     * @return
      */
     private int custGetImgHeight(Image image, JComponent parent) {
 
         //check if need to use gamepanel
         if (parent instanceof GamePanel) {
             return ((GamePanel) parent).getImgHeight(image);
+            
         } else if (parent instanceof SDScaleImageResizeable) {
             return ((SDScaleImageResizeable) parent).getLocalImgHeight(image);
         } else {
