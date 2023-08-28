@@ -33,9 +33,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
-    private SettlerLbl playerNumLbl;
-    private SettlerLbl startResMainLbl;
-    private SettlerLbl startResSubLbl;
+    private SettlerLbl playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
@@ -88,9 +86,15 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         startResSubLbl = new SettlerLbl("Give each player one harvest from each conected hex for the last settlement placed. Only once on startup.");
         startResSubLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         startResSubLbl.setLineWrap(true);
-        startResSubLbl.setLinewrapSpace(23);
+        startResSubLbl.setLinewrapSpace(28);
+        snakeRulesMainLbl = new SettlerLbl("Snake Rules:");
+        snakeRulesMainLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        snakeRulesSubLbl = new SettlerLbl("Set up phase follows \'snake\' rules, (i.e. first pick also gets last pick) to make it more fair. For example, in a three player game the setup turns would go 1, 2, 3, 3, 2, 1.");
+        snakeRulesSubLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        snakeRulesSubLbl.setLineWrap(true);
+        snakeRulesSubLbl.setLinewrapSpace(28);
         //add them to the array
-        settlerLbls = new SettlerLbl[]{playerNumLbl, startResMainLbl, startResSubLbl};
+        settlerLbls = new SettlerLbl[]{playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl};
 
         //setup the radio buttons
         playerNum2RBtn = new SettlerRadioBtn(true, true, 3);
@@ -203,7 +207,9 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         //Label Loop
         playerNumLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         startResMainLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
-        startResSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(35)));
+        startResSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
+        snakeRulesMainLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        snakeRulesSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
         //calc the number of lines for the labels that will be multi line
 
         playerNumLbl.setXPos(localScaleInt(300));
@@ -231,6 +237,14 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
         startResNoRBtn.setXPos(startResMainLbl.getXPos() + getLocalImgWidth(startResYesRBtn.getBaseImage()) + localScaleInt(6));
         startResNoRBtn.setYPos(startResYesRBtn.getYPos());
+        
+        snakeRulesMainLbl.setXPos(startResYesRBtn.getXPos());
+        snakeRulesMainLbl.setYPos(startResYesRBtn.getYPos() + getLocalImgHeight(startResYesRBtn.getBaseImage()) + localScaleInt(60));
+
+        snakeRulesSubLbl.setXPos(snakeRulesMainLbl.getXPos());
+        snakeRulesSubLbl.setYPos(snakeRulesMainLbl.getYPos() + localScaleInt(30));
+        snakeRulesSubLbl.setSpaceForText(localScaleInt(550));
+        snakeRulesSubLbl.calcNumLines(g2d);
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
