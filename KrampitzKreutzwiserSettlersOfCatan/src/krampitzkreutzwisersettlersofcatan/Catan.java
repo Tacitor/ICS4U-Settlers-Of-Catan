@@ -82,6 +82,7 @@ public class Catan {
         //now call the game panel
         gamePanel.catanFastTickUpdate();
         gamePanel.catanAnimationTickUpdate(); //for animation
+        sDMenuFrame.repaint();
 
     }
 

@@ -39,9 +39,9 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
-    private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn;
+    private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn, startResYesRBtn, startResNoRBtn;
     //arry for each group of radio buttons
-    private SettlerRadioBtn[] settlerRadioPlayerNumBtns;
+    private SettlerRadioBtn[] settlerRadioPlayerNumBtns, settlerRadioStartResBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
 
@@ -87,7 +87,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         startResMainLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         startResSubLbl = new SettlerLbl("Give each player one harvest from each conected hex for the last settlement placed. Only once on startup.");
         startResSubLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
-        startResSubLbl.setLineWrap(true);         
+        startResSubLbl.setLineWrap(true);
         startResSubLbl.setLinewrapSpace(23);
         //add them to the array
         settlerLbls = new SettlerLbl[]{playerNumLbl, startResMainLbl, startResSubLbl};
@@ -96,15 +96,22 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         playerNum2RBtn = new SettlerRadioBtn(true, true, 3);
         playerNum3RBtn = new SettlerRadioBtn(true, false, 4);
         playerNum4RBtn = new SettlerRadioBtn(true, false, 5);
+        startResYesRBtn = new SettlerRadioBtn(true, true, 6);
+        startResNoRBtn = new SettlerRadioBtn(true, false, 7);
 
         //add them to the group array
         settlerRadioPlayerNumBtns = new SettlerRadioBtn[]{playerNum2RBtn, playerNum3RBtn, playerNum4RBtn};
-        //setup the custom radio buttons to go into the groups
-        SettlerRadioBtn.setUpGroup(settlerRadioPlayerNumBtns);
+        settlerRadioStartResBtns = new SettlerRadioBtn[]{startResYesRBtn, startResNoRBtn};
 
         //add the group to the main array
-        settlerRadioBtnGroups = new SettlerRadioBtn[1][];
+        settlerRadioBtnGroups = new SettlerRadioBtn[2][];
         settlerRadioBtnGroups[0] = settlerRadioPlayerNumBtns;
+        settlerRadioBtnGroups[1] = settlerRadioStartResBtns;
+
+        //setup the custom radio buttons to go into the groups
+        for (SettlerRadioBtn[] grp : settlerRadioBtnGroups) {
+            SettlerRadioBtn.setUpGroup(grp);
+        }
 
     }
 
@@ -217,17 +224,17 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         startResSubLbl.setXPos(startResMainLbl.getXPos());
         startResSubLbl.setYPos(startResMainLbl.getYPos() + localScaleInt(30));
         startResSubLbl.setSpaceForText(localScaleInt(550));
+        startResSubLbl.calcNumLines(g2d);
+
+        startResYesRBtn.setXPos(startResMainLbl.getXPos());
+        startResYesRBtn.setYPos(startResSubLbl.getYPos() - localScaleInt(8) + (startResSubLbl.getNumLines() * localScaleInt(startResSubLbl.getLinewrapSpace())));
+
+        startResNoRBtn.setXPos(startResMainLbl.getXPos() + getLocalImgWidth(startResYesRBtn.getBaseImage()) + localScaleInt(6));
+        startResNoRBtn.setYPos(startResYesRBtn.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
-
-        //calc the number of lines for the labels that will be multi line
-        for (SettlerLbl lbl : settlerLbls) {
-            if (lbl.getLineWrap()) {
-                lbl.calcNumLines(g2d);
-            }
-        }
 
     }
 

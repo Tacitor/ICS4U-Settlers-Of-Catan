@@ -127,6 +127,8 @@ public class SettlerRadioBtn extends SettlerComponent {
             case 3:
             case 4:
             case 5:
+            case 6:
+            case 7:
                 //if type is city radio button
                 baseImage = RADIO_SML_BTN_BASE;
                 disabledImage = RADIO_SML_BTN_DISABLED;
@@ -176,6 +178,14 @@ public class SettlerRadioBtn extends SettlerComponent {
                 //if type is city radio button
                 textImage = RADIO_BTN_4_TEXT;
                 break;
+            case 6:
+                //if type is city radio button
+                textImage = RADIO_BTN_YES_TEXT;
+                break;
+            case 7:
+                //if type is city radio button
+                textImage = RADIO_BTN_NO_TEXT;
+                break;
             default:
                 //deflault to error image
                 textImage = ERROR_IMAGE;
@@ -217,7 +227,7 @@ public class SettlerRadioBtn extends SettlerComponent {
         //check if need to use gamepanel
         if (parent instanceof GamePanel) {
             return ((GamePanel) parent).getImgHeight(image);
-            
+
         } else if (parent instanceof SDScaleImageResizeable) {
             return ((SDScaleImageResizeable) parent).getLocalImgHeight(image);
         } else {
