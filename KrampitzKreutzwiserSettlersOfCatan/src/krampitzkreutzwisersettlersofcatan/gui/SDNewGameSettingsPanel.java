@@ -34,6 +34,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     private SettlerBtn[] settlerBtns;
     //Settler Labels
     private SettlerLbl playerNumLbl;
+    private SettlerLbl startResMainLbl;
+    private SettlerLbl startResSubLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
@@ -81,8 +83,14 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         //Setup the labels
         playerNumLbl = new SettlerLbl("Number of players:");
         playerNumLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        startResMainLbl = new SettlerLbl("Starting Resources:");
+        startResMainLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        startResSubLbl = new SettlerLbl("Give each player one harvest from each conected hex for the last settlement placed. Only once on startup.");
+        startResSubLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        startResSubLbl.setLineWrap(true);         
+        startResSubLbl.setLinewrapSpace(23);
         //add them to the array
-        settlerLbls = new SettlerLbl[]{playerNumLbl};
+        settlerLbls = new SettlerLbl[]{playerNumLbl, startResMainLbl, startResSubLbl};
 
         //setup the radio buttons
         playerNum2RBtn = new SettlerRadioBtn(true, true, 3);
@@ -187,6 +195,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     private void settlerVarPos(Graphics2D g2d) {
         //Label Loop
         playerNumLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        startResMainLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        startResSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(35)));
         //calc the number of lines for the labels that will be multi line
 
         playerNumLbl.setXPos(localScaleInt(300));
@@ -201,9 +211,23 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         playerNum4RBtn.setXPos(playerNum3RBtn.getXPos() + getLocalImgWidth(playerNum3RBtn.getBaseImage()) + localScaleInt(6));
         playerNum4RBtn.setYPos(playerNum2RBtn.getYPos());
 
+        startResMainLbl.setXPos(playerNum2RBtn.getXPos());
+        startResMainLbl.setYPos(playerNum2RBtn.getYPos() + getLocalImgHeight(playerNum2RBtn.getBaseImage()) + localScaleInt(60));
+
+        startResSubLbl.setXPos(startResMainLbl.getXPos());
+        startResSubLbl.setYPos(startResMainLbl.getYPos() + localScaleInt(30));
+        startResSubLbl.setSpaceForText(localScaleInt(550));
+
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
+
+        //calc the number of lines for the labels that will be multi line
+        for (SettlerLbl lbl : settlerLbls) {
+            if (lbl.getLineWrap()) {
+                lbl.calcNumLines(g2d);
+            }
+        }
 
     }
 
