@@ -37,9 +37,9 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
-    private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn, startResYesRBtn, startResNoRBtn;
+    private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn, startResYesRBtn, startResNoRBtn, snakeRulesYesRBtn, snakeRulesNoRBtn;
     //arry for each group of radio buttons
-    private SettlerRadioBtn[] settlerRadioPlayerNumBtns, settlerRadioStartResBtns;
+    private SettlerRadioBtn[] settlerRadioPlayerNumBtns, settlerRadioStartResBtns, settlerRadioSnakeRulesBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
 
@@ -102,15 +102,19 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         playerNum4RBtn = new SettlerRadioBtn(true, false, 5);
         startResYesRBtn = new SettlerRadioBtn(true, true, 6);
         startResNoRBtn = new SettlerRadioBtn(true, false, 7);
+        snakeRulesYesRBtn = new SettlerRadioBtn(true, true, 6);
+        snakeRulesNoRBtn = new SettlerRadioBtn(true, false, 7);
 
         //add them to the group array
         settlerRadioPlayerNumBtns = new SettlerRadioBtn[]{playerNum2RBtn, playerNum3RBtn, playerNum4RBtn};
         settlerRadioStartResBtns = new SettlerRadioBtn[]{startResYesRBtn, startResNoRBtn};
+        settlerRadioSnakeRulesBtns = new SettlerRadioBtn[]{snakeRulesYesRBtn, snakeRulesNoRBtn};        
 
         //add the group to the main array
-        settlerRadioBtnGroups = new SettlerRadioBtn[2][];
+        settlerRadioBtnGroups = new SettlerRadioBtn[3][];
         settlerRadioBtnGroups[0] = settlerRadioPlayerNumBtns;
         settlerRadioBtnGroups[1] = settlerRadioStartResBtns;
+        settlerRadioBtnGroups[2] = settlerRadioSnakeRulesBtns;
 
         //setup the custom radio buttons to go into the groups
         for (SettlerRadioBtn[] grp : settlerRadioBtnGroups) {
@@ -235,7 +239,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         startResYesRBtn.setXPos(startResMainLbl.getXPos());
         startResYesRBtn.setYPos(startResSubLbl.getYPos() - localScaleInt(8) + (startResSubLbl.getNumLines() * localScaleInt(startResSubLbl.getLinewrapSpace())));
 
-        startResNoRBtn.setXPos(startResMainLbl.getXPos() + getLocalImgWidth(startResYesRBtn.getBaseImage()) + localScaleInt(6));
+        startResNoRBtn.setXPos(startResYesRBtn.getXPos() + getLocalImgWidth(startResYesRBtn.getBaseImage()) + localScaleInt(6));
         startResNoRBtn.setYPos(startResYesRBtn.getYPos());
         
         snakeRulesMainLbl.setXPos(startResYesRBtn.getXPos());
@@ -245,6 +249,12 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         snakeRulesSubLbl.setYPos(snakeRulesMainLbl.getYPos() + localScaleInt(30));
         snakeRulesSubLbl.setSpaceForText(localScaleInt(550));
         snakeRulesSubLbl.calcNumLines(g2d);
+        
+        snakeRulesYesRBtn.setXPos(snakeRulesSubLbl.getXPos());
+        snakeRulesYesRBtn.setYPos(snakeRulesSubLbl.getYPos() - localScaleInt(8) + (snakeRulesSubLbl.getNumLines() * localScaleInt(snakeRulesSubLbl.getLinewrapSpace())));
+
+        snakeRulesNoRBtn.setXPos(snakeRulesYesRBtn.getXPos() + getLocalImgWidth(snakeRulesYesRBtn.getBaseImage()) + localScaleInt(6));
+        snakeRulesNoRBtn.setYPos(snakeRulesYesRBtn.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
