@@ -53,7 +53,7 @@ public class SettlerRadioBtn extends SettlerComponent {
     private final static Image RADIO_BTN_3_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/3BtnText.png")).getImage();
     private final static Image RADIO_BTN_4_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/4BtnText.png")).getImage();
     //the texts for the long new radio buttons
-    private final static Image RADIO_BTN_LOCAL_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/sharedLocalMachineBtnText.png")).getImage();
+    private final static Image RADIO_BTN_LOCAL_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/localGame.png")).getImage();
     private final static Image RADIO_BTN_ONLINE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/infiniteBtnText.png")).getImage();
     private final static Image RADIO_BTN_STD_PC_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/standardPcBtnText.png")).getImage();
     private final static Image RADIO_BTN_INFINITE_PC_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/infiniteBtnText.png")).getImage();
