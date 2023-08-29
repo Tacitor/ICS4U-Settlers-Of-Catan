@@ -33,7 +33,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
-    private SettlerLbl playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl;
+    private SettlerLbl playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl, multiPlayerLbl, limitGmPcMainLbl, limitGmPcSubLbl, houseRuleLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
@@ -93,8 +93,20 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         snakeRulesSubLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         snakeRulesSubLbl.setLineWrap(true);
         snakeRulesSubLbl.setLinewrapSpace(28);
+        multiPlayerLbl = new SettlerLbl("Multiplayer Mode:");
+        multiPlayerLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        limitGmPcMainLbl = new SettlerLbl("Limit Game Pieces:");
+        limitGmPcMainLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        limitGmPcSubLbl = new SettlerLbl("The number of play pieces each player will have for their colour. Can be set to infite.");
+        limitGmPcSubLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        limitGmPcSubLbl.setLineWrap(true);
+        limitGmPcSubLbl.setLinewrapSpace(28);
+        houseRuleLbl = new SettlerLbl("Have a house rule you want added as an option? Add and issue to the GitHub or find any other way you want to contact me.");
+        houseRuleLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        houseRuleLbl.setLineWrap(true);
+        houseRuleLbl.setLinewrapSpace(28);
         //add them to the array
-        settlerLbls = new SettlerLbl[]{playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl};
+        settlerLbls = new SettlerLbl[]{playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl, multiPlayerLbl, limitGmPcMainLbl, limitGmPcSubLbl, houseRuleLbl};
 
         //setup the radio buttons
         playerNum2RBtn = new SettlerRadioBtn(true, true, 3);
@@ -108,7 +120,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         //add them to the group array
         settlerRadioPlayerNumBtns = new SettlerRadioBtn[]{playerNum2RBtn, playerNum3RBtn, playerNum4RBtn};
         settlerRadioStartResBtns = new SettlerRadioBtn[]{startResYesRBtn, startResNoRBtn};
-        settlerRadioSnakeRulesBtns = new SettlerRadioBtn[]{snakeRulesYesRBtn, snakeRulesNoRBtn};        
+        settlerRadioSnakeRulesBtns = new SettlerRadioBtn[]{snakeRulesYesRBtn, snakeRulesNoRBtn};
 
         //add the group to the main array
         settlerRadioBtnGroups = new SettlerRadioBtn[3][];
@@ -214,8 +226,12 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         startResSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
         snakeRulesMainLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         snakeRulesSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
-        //calc the number of lines for the labels that will be multi line
+        multiPlayerLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        limitGmPcMainLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        limitGmPcSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
+        houseRuleLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
 
+        //calc the number of lines for the labels that will be multi line
         playerNumLbl.setXPos(localScaleInt(300));
         playerNumLbl.setYPos(localScaleInt(200));
 
@@ -241,7 +257,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
         startResNoRBtn.setXPos(startResYesRBtn.getXPos() + getLocalImgWidth(startResYesRBtn.getBaseImage()) + localScaleInt(6));
         startResNoRBtn.setYPos(startResYesRBtn.getYPos());
-        
+
         snakeRulesMainLbl.setXPos(startResYesRBtn.getXPos());
         snakeRulesMainLbl.setYPos(startResYesRBtn.getYPos() + getLocalImgHeight(startResYesRBtn.getBaseImage()) + localScaleInt(60));
 
@@ -249,12 +265,28 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         snakeRulesSubLbl.setYPos(snakeRulesMainLbl.getYPos() + localScaleInt(30));
         snakeRulesSubLbl.setSpaceForText(localScaleInt(550));
         snakeRulesSubLbl.calcNumLines(g2d);
-        
+
         snakeRulesYesRBtn.setXPos(snakeRulesSubLbl.getXPos());
         snakeRulesYesRBtn.setYPos(snakeRulesSubLbl.getYPos() - localScaleInt(8) + (snakeRulesSubLbl.getNumLines() * localScaleInt(snakeRulesSubLbl.getLinewrapSpace())));
 
         snakeRulesNoRBtn.setXPos(snakeRulesYesRBtn.getXPos() + getLocalImgWidth(snakeRulesYesRBtn.getBaseImage()) + localScaleInt(6));
         snakeRulesNoRBtn.setYPos(snakeRulesYesRBtn.getYPos());
+        
+        multiPlayerLbl.setXPos(localScaleInt(900));
+        multiPlayerLbl.setYPos(playerNumLbl.getYPos());
+        
+        limitGmPcMainLbl.setXPos(multiPlayerLbl.getXPos());
+        limitGmPcMainLbl.setYPos(multiPlayerLbl.getYPos() + localScaleInt(100));
+        
+        limitGmPcSubLbl.setXPos(limitGmPcMainLbl.getXPos());
+        limitGmPcSubLbl.setYPos(limitGmPcMainLbl.getYPos() + localScaleInt(30));
+        limitGmPcSubLbl.setSpaceForText(localScaleInt(550));
+        limitGmPcSubLbl.calcNumLines(g2d);
+        
+        houseRuleLbl.setXPos(limitGmPcMainLbl.getXPos());
+        houseRuleLbl.setYPos(snakeRulesSubLbl.getYPos());
+        houseRuleLbl.setSpaceForText(localScaleInt(550));
+        houseRuleLbl.calcNumLines(g2d);
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
