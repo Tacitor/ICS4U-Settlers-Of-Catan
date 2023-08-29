@@ -241,7 +241,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
         //calc the number of lines for the labels that will be multi line
         playerNumLbl.setXPos(localScaleInt(300));
-        playerNumLbl.setYPos(localScaleInt(200));
+        playerNumLbl.setYPos(localScaleInt(170));
 
         playerNum2RBtn.setXPos(playerNumLbl.getXPos());
         playerNum2RBtn.setYPos(playerNumLbl.getYPos() + localScaleInt(15));
@@ -252,8 +252,31 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         playerNum4RBtn.setXPos(playerNum3RBtn.getXPos() + getLocalImgWidth(playerNum3RBtn.getBaseImage()) + localScaleInt(6));
         playerNum4RBtn.setYPos(playerNum2RBtn.getYPos());
 
+        multiPlayerLbl.setXPos(localScaleInt(900));
+        multiPlayerLbl.setYPos(playerNumLbl.getYPos());
+
+        multiPlayerLocRBtn.setXPos(multiPlayerLbl.getXPos());
+        multiPlayerLocRBtn.setYPos(multiPlayerLbl.getYPos() + localScaleInt(15));
+
+        multiPlayerOnlineRBtn.setXPos(multiPlayerLocRBtn.getXPos());
+        multiPlayerOnlineRBtn.setYPos(multiPlayerLocRBtn.getYPos() + getLocalImgHeight(multiPlayerLocRBtn.getBaseImage()) + localScaleInt(6));
+
+        limitGmPcMainLbl.setXPos(multiPlayerLbl.getXPos());
+        limitGmPcMainLbl.setYPos(multiPlayerOnlineRBtn.getYPos() + getLocalImgHeight(multiPlayerOnlineRBtn.getBaseImage()) + localScaleInt(60));
+
+        limitGmPcSubLbl.setXPos(limitGmPcMainLbl.getXPos());
+        limitGmPcSubLbl.setYPos(limitGmPcMainLbl.getYPos() + localScaleInt(30));
+        limitGmPcSubLbl.setSpaceForText(localScaleInt(550));
+        limitGmPcSubLbl.calcNumLines(g2d);
+
+        limitGmPc15_5_4RBtn.setXPos(limitGmPcMainLbl.getXPos());
+        limitGmPc15_5_4RBtn.setYPos(limitGmPcSubLbl.getYPos() - localScaleInt(8) + (limitGmPcSubLbl.getNumLines() * localScaleInt(limitGmPcSubLbl.getLinewrapSpace())));
+
+        limitGmPcInfRBtn.setXPos(limitGmPc15_5_4RBtn.getXPos());
+        limitGmPcInfRBtn.setYPos(limitGmPc15_5_4RBtn.getYPos() + getLocalImgHeight(limitGmPc15_5_4RBtn.getBaseImage()) + localScaleInt(6));
+
         startResMainLbl.setXPos(playerNum2RBtn.getXPos());
-        startResMainLbl.setYPos(playerNum2RBtn.getYPos() + getLocalImgHeight(playerNum2RBtn.getBaseImage()) + localScaleInt(60));
+        startResMainLbl.setYPos(limitGmPcMainLbl.getYPos());
 
         startResSubLbl.setXPos(startResMainLbl.getXPos());
         startResSubLbl.setYPos(startResMainLbl.getYPos() + localScaleInt(30));
@@ -279,29 +302,6 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
         snakeRulesNoRBtn.setXPos(snakeRulesYesRBtn.getXPos() + getLocalImgWidth(snakeRulesYesRBtn.getBaseImage()) + localScaleInt(6));
         snakeRulesNoRBtn.setYPos(snakeRulesYesRBtn.getYPos());
-
-        multiPlayerLbl.setXPos(localScaleInt(900));
-        multiPlayerLbl.setYPos(playerNumLbl.getYPos());
-
-        multiPlayerLocRBtn.setXPos(multiPlayerLbl.getXPos());
-        multiPlayerLocRBtn.setYPos(multiPlayerLbl.getYPos() + localScaleInt(15));
-
-        multiPlayerOnlineRBtn.setXPos(multiPlayerLocRBtn.getXPos());
-        multiPlayerOnlineRBtn.setYPos(multiPlayerLocRBtn.getYPos() + getLocalImgHeight(multiPlayerLocRBtn.getBaseImage()) + localScaleInt(6));
-
-        limitGmPcMainLbl.setXPos(multiPlayerLbl.getXPos());
-        limitGmPcMainLbl.setYPos(multiPlayerLbl.getYPos() + localScaleInt(100));
-
-        limitGmPcSubLbl.setXPos(limitGmPcMainLbl.getXPos());
-        limitGmPcSubLbl.setYPos(limitGmPcMainLbl.getYPos() + localScaleInt(30));
-        limitGmPcSubLbl.setSpaceForText(localScaleInt(550));
-        limitGmPcSubLbl.calcNumLines(g2d);
-
-        limitGmPc15_5_4RBtn.setXPos(limitGmPcMainLbl.getXPos());
-        limitGmPc15_5_4RBtn.setYPos(limitGmPcSubLbl.getYPos() - localScaleInt(8) + (limitGmPcSubLbl.getNumLines() * localScaleInt(limitGmPcSubLbl.getLinewrapSpace())));
-
-        limitGmPcInfRBtn.setXPos(limitGmPc15_5_4RBtn.getXPos());
-        limitGmPcInfRBtn.setYPos(limitGmPc15_5_4RBtn.getYPos() + getLocalImgHeight(limitGmPc15_5_4RBtn.getBaseImage()) + localScaleInt(6));
 
         houseRuleLbl.setXPos(limitGmPcMainLbl.getXPos());
         houseRuleLbl.setYPos(snakeRulesSubLbl.getYPos());

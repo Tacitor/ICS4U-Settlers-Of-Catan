@@ -37,6 +37,11 @@ public class SettlerRadioBtn extends SettlerComponent {
     private final static Image RADIO_SML_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioSmallBtnDisabled.png")).getImage();
     private final static Image RADIO_SML_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/rSmallBtnSelection.png")).getImage();
     private final static Image RADIO_SML_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioSmallHoverBtn.png")).getImage();
+    //statics for the longer radio buttons
+    private final static Image RADIO_LNG_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioLongBtn.png")).getImage();
+    private final static Image RADIO_LNG_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioLongBtnDisabled.png")).getImage();
+    private final static Image RADIO_LNG_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/rLongBtnSelection.png")).getImage();
+    private final static Image RADIO_LNG_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioLongHoverBtn.png")).getImage();
     //the texts for the game panel
     private final static Image RADIO_BTN_ROAD_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/roadBtnText.png")).getImage();
     private final static Image RADIO_BTN_SETTLEMENT_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/settlementBtnText.png")).getImage();
@@ -47,6 +52,11 @@ public class SettlerRadioBtn extends SettlerComponent {
     private final static Image RADIO_BTN_2_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/2BtnText.png")).getImage();
     private final static Image RADIO_BTN_3_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/3BtnText.png")).getImage();
     private final static Image RADIO_BTN_4_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/4BtnText.png")).getImage();
+    //the texts for the long new radio buttons
+    private final static Image RADIO_BTN_LOCAL_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/sharedLocalMachineBtnText.png")).getImage();
+    private final static Image RADIO_BTN_ONLINE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/infiniteBtnText.png")).getImage();
+    private final static Image RADIO_BTN_STD_PC_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/standardPcBtnText.png")).getImage();
+    private final static Image RADIO_BTN_INFINITE_PC_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/infiniteBtnText.png")).getImage();
 
     //constructors
     /**
@@ -136,6 +146,17 @@ public class SettlerRadioBtn extends SettlerComponent {
                 hoverImage = RADIO_SML_BTN_HOVER;
                 tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
                 break;
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+                //if type is city radio button
+                baseImage = RADIO_LNG_BTN_BASE;
+                disabledImage = RADIO_LNG_BTN_DISABLED;
+                selectionImage = RADIO_LNG_BTN_SELECTION;
+                hoverImage = RADIO_LNG_BTN_HOVER;
+                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
+                break;
             default:
                 //default to error images
                 baseImage = ERROR_IMAGE;
@@ -185,6 +206,22 @@ public class SettlerRadioBtn extends SettlerComponent {
             case 7:
                 //if type is city radio button
                 textImage = RADIO_BTN_NO_TEXT;
+                break;
+            case 8:
+                //if type is city radio button
+                textImage = RADIO_BTN_LOCAL_TEXT;
+                break;
+            case 9:
+                //if type is city radio button
+                textImage = RADIO_BTN_ONLINE_TEXT;
+                break;
+            case 10:
+                //if type is city radio button
+                textImage = RADIO_BTN_STD_PC_TEXT;
+                break;
+            case 11:
+                //if type is city radio button
+                textImage = RADIO_BTN_INFINITE_PC_TEXT;
                 break;
             default:
                 //deflault to error image
