@@ -29,7 +29,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn exitBtn;
+    private SettlerBtn exitBtn, startGameBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
@@ -74,10 +74,11 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
             }
         });
 
-        //setup the buttons
+        //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
+        startGameBtn = new SettlerBtn(true, 0, 24);
         //add them to the array
-        settlerBtns = new SettlerBtn[]{exitBtn};
+        settlerBtns = new SettlerBtn[]{exitBtn, startGameBtn};
         //Setup the labels
         playerNumLbl = new SettlerLbl("Number of players:");
         playerNumLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
@@ -312,6 +313,9 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
 
+        startGameBtn.setXPos(exitBtn.getXPos());
+        startGameBtn.setYPos(exitBtn.getYPos() + getLocalImgHeight(exitBtn.getBaseImage()) + localScaleInt(12));
+
     }
 
     /**
@@ -333,6 +337,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
                 //check the button that was pressed
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
+                } else if (btn.equals(startGameBtn))  {
+                    startGameBtnActionPerformed();
                 }
             }
         }
@@ -436,6 +442,10 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+    }
+
+    private void startGameBtnActionPerformed() {
+        startGameBtn.setmouseHover(false);
     }
 
     @Override
