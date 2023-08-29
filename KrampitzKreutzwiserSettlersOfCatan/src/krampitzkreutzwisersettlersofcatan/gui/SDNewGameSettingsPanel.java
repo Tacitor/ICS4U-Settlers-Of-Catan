@@ -37,9 +37,9 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
-    private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn, startResYesRBtn, startResNoRBtn, snakeRulesYesRBtn, snakeRulesNoRBtn;
+    private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn, startResYesRBtn, startResNoRBtn, snakeRulesYesRBtn, snakeRulesNoRBtn, multiPlayerLocRBtn, multiPlayerOnlineRBtn, limitGmPc15_5_4RBtn, limitGmPcInfRBtn;
     //arry for each group of radio buttons
-    private SettlerRadioBtn[] settlerRadioPlayerNumBtns, settlerRadioStartResBtns, settlerRadioSnakeRulesBtns;
+    private SettlerRadioBtn[] settlerRadioPlayerNumBtns, settlerRadioStartResBtns, settlerRadioSnakeRulesBtns, settlerRadioMultiPlayerBtns, settlerRadioLimitGmPcBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
 
@@ -116,17 +116,25 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         startResNoRBtn = new SettlerRadioBtn(true, false, 7);
         snakeRulesYesRBtn = new SettlerRadioBtn(true, true, 6);
         snakeRulesNoRBtn = new SettlerRadioBtn(true, false, 7);
+        multiPlayerLocRBtn = new SettlerRadioBtn(true, true, 8);
+        multiPlayerOnlineRBtn = new SettlerRadioBtn(true, false, 9);
+        limitGmPc15_5_4RBtn = new SettlerRadioBtn(true, true, 10);
+        limitGmPcInfRBtn = new SettlerRadioBtn(true, false, 11);
 
         //add them to the group array
         settlerRadioPlayerNumBtns = new SettlerRadioBtn[]{playerNum2RBtn, playerNum3RBtn, playerNum4RBtn};
         settlerRadioStartResBtns = new SettlerRadioBtn[]{startResYesRBtn, startResNoRBtn};
         settlerRadioSnakeRulesBtns = new SettlerRadioBtn[]{snakeRulesYesRBtn, snakeRulesNoRBtn};
+        settlerRadioMultiPlayerBtns = new SettlerRadioBtn[]{multiPlayerLocRBtn, multiPlayerOnlineRBtn};
+        settlerRadioLimitGmPcBtns = new SettlerRadioBtn[]{limitGmPc15_5_4RBtn, limitGmPcInfRBtn};
 
         //add the group to the main array
-        settlerRadioBtnGroups = new SettlerRadioBtn[3][];
+        settlerRadioBtnGroups = new SettlerRadioBtn[5][];
         settlerRadioBtnGroups[0] = settlerRadioPlayerNumBtns;
         settlerRadioBtnGroups[1] = settlerRadioStartResBtns;
         settlerRadioBtnGroups[2] = settlerRadioSnakeRulesBtns;
+        settlerRadioBtnGroups[3] = settlerRadioMultiPlayerBtns;
+        settlerRadioBtnGroups[4] = settlerRadioLimitGmPcBtns;
 
         //setup the custom radio buttons to go into the groups
         for (SettlerRadioBtn[] grp : settlerRadioBtnGroups) {
@@ -271,18 +279,30 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
         snakeRulesNoRBtn.setXPos(snakeRulesYesRBtn.getXPos() + getLocalImgWidth(snakeRulesYesRBtn.getBaseImage()) + localScaleInt(6));
         snakeRulesNoRBtn.setYPos(snakeRulesYesRBtn.getYPos());
-        
+
         multiPlayerLbl.setXPos(localScaleInt(900));
         multiPlayerLbl.setYPos(playerNumLbl.getYPos());
-        
+
+        multiPlayerLocRBtn.setXPos(multiPlayerLbl.getXPos());
+        multiPlayerLocRBtn.setYPos(multiPlayerLbl.getYPos() + localScaleInt(15));
+
+        multiPlayerOnlineRBtn.setXPos(multiPlayerLocRBtn.getXPos());
+        multiPlayerOnlineRBtn.setYPos(multiPlayerLocRBtn.getYPos() + getLocalImgHeight(multiPlayerLocRBtn.getBaseImage()) + localScaleInt(6));
+
         limitGmPcMainLbl.setXPos(multiPlayerLbl.getXPos());
         limitGmPcMainLbl.setYPos(multiPlayerLbl.getYPos() + localScaleInt(100));
-        
+
         limitGmPcSubLbl.setXPos(limitGmPcMainLbl.getXPos());
         limitGmPcSubLbl.setYPos(limitGmPcMainLbl.getYPos() + localScaleInt(30));
         limitGmPcSubLbl.setSpaceForText(localScaleInt(550));
         limitGmPcSubLbl.calcNumLines(g2d);
-        
+
+        limitGmPc15_5_4RBtn.setXPos(limitGmPcMainLbl.getXPos());
+        limitGmPc15_5_4RBtn.setYPos(limitGmPcSubLbl.getYPos() - localScaleInt(8) + (limitGmPcSubLbl.getNumLines() * localScaleInt(limitGmPcSubLbl.getLinewrapSpace())));
+
+        limitGmPcInfRBtn.setXPos(limitGmPc15_5_4RBtn.getXPos());
+        limitGmPcInfRBtn.setYPos(limitGmPc15_5_4RBtn.getYPos() + getLocalImgHeight(limitGmPc15_5_4RBtn.getBaseImage()) + localScaleInt(6));
+
         houseRuleLbl.setXPos(limitGmPcMainLbl.getXPos());
         houseRuleLbl.setYPos(snakeRulesSubLbl.getYPos());
         houseRuleLbl.setSpaceForText(localScaleInt(550));
