@@ -544,5 +544,9 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         settlerVarPos(); //update the positions real quick
         return exitMainMenuBtn.getYPos();
     }
+    
+    public SDMenuFrame getSDMenuFrame() {
+        return sDMenuFrame;
+    }
 
 }

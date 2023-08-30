@@ -640,9 +640,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 //Preform the opperations needed when leaving an online game
                 networkingCloseOpertations();
 
-                // Hide this window and show the main menu
-                superFrame.getMainMenu().setVisible(true); //show the main menu
-                superFrame.setVisible(false); //hide the parent frame 
+                // Hide this window and show the main menu                
+                superFrame.setVisible(false); //hide the parent frame
+                
+                superFrame.getMainMenu().setVisible(true);
+                superFrame.getMainMenu().getSDMenuFrame().setVisible(true);
             }
         }
 
@@ -977,8 +979,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             networkingCloseOpertations();
 
             // Hide this window and show the main menu
-            superFrame.getMainMenu().setVisible(true); //show the main menu
             superFrame.setVisible(false); //hide the parent frame 
+            
+            superFrame.getMainMenu().setVisible(true);
+            superFrame.getMainMenu().getSDMenuFrame().setVisible(true);
+            
         }
     }
 

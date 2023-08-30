@@ -514,7 +514,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
             // Hide this window and show the next screen
             //!TODO change the switching over to the new menu for new Online Games
-            //sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getNewOnlineGameMenu());
+            sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
         }
     }
 
