@@ -7,3 +7,5 @@ Junior Artist - Sage Barnard
 Former Co-Lead Developer - Evan Kreutzwiser
 
 Client - Mr. Brad Cutten
+
+QA - Sebastian Eckardt
