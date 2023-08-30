@@ -315,7 +315,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
 
         startGameBtn.setXPos(exitBtn.getXPos());
-        startGameBtn.setYPos(exitBtn.getYPos() + getLocalImgHeight(exitBtn.getBaseImage()) + localScaleInt(12));
+        startGameBtn.setYPos(exitBtn.getYPos() + getLocalImgHeight(exitBtn.getBaseImage()) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
 
     }
 

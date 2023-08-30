@@ -34,7 +34,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final UserManualUI userManualUIFrame; //referance to the user manual
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
-    private final NewGameSettings TEMPnewGameSettingsFrame;
     private final SDNewGameSettingsPanel sDNewGameSettingsPanel;
     private final ClientSettings clientSettings;
     private NewOnlineGameMenu newOnlineGameMenu;
@@ -68,7 +67,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
         gameJFrame = new GameFrame(this);
         clientSettings = new ClientSettings(this);
-        TEMPnewGameSettingsFrame = new NewGameSettings(this, gameJFrame, newOnlineGameMenu);
         sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
         loadOnlineGameMenu = new LoadOnlineGameMenu(this);
         newOnlineGameMenu = new NewOnlineGameMenu(this);
@@ -148,6 +146,9 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         g2d.drawString("Settlers of Catan",
                 (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Settlers of Catan") / 2),
                 localScaleInt(180));
+
+        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
+        g2d.drawString(Catan.GAME_VER, 10, this.getHeight() - localScaleInt(20));
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
         for (SettlerBtn btn : settlerBtns) {
@@ -318,13 +319,10 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     /**
      * Open the new game settings
      */
-    private void newGameBtnActionPerformed() {        
+    private void newGameBtnActionPerformed() {
         // Hide this window and show the New Game Settings
         newGameBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDNewGameSettingsPanel);
-        
-        //TEMP while dev for new menu is under way
-        TEMPnewGameSettingsFrame.setVisible(true);
     }
 
     /**
@@ -541,7 +539,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     public void setJoinOnlineGameMenu(JoinOnlineGameMenu joinOnlineGameMenu) {
         this.joinOnlineGameMenu = joinOnlineGameMenu;
     }
-    
+
     public int getExitMainMenuBtnYPos() {
         settlerVarPos(); //update the positions real quick
         return exitMainMenuBtn.getYPos();
