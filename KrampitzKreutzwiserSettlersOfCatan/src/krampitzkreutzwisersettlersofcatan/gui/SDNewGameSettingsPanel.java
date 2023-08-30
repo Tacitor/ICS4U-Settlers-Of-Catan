@@ -12,6 +12,7 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
@@ -337,7 +338,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
                 //check the button that was pressed
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
-                } else if (btn.equals(startGameBtn))  {
+                } else if (btn.equals(startGameBtn)) {
                     startGameBtnActionPerformed();
                 }
             }
@@ -446,6 +447,75 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
     private void startGameBtnActionPerformed() {
         startGameBtn.setmouseHover(false);
+
+        //get and set the player number selected
+        if (playerNum2RBtn.isSelected()) {
+            GamePanel.setPlayerCount(2);
+        } else if (playerNum3RBtn.isSelected()) {
+            GamePanel.setPlayerCount(3);
+        } else if (playerNum4RBtn.isSelected()) {
+            GamePanel.setPlayerCount(4);
+        }
+
+        //get and set the giveStartingResources
+        if (startResYesRBtn.isSelected()) {
+            GamePanel.setgiveStartingResources(true);
+        } else if (startResNoRBtn.isSelected()) {
+            GamePanel.setgiveStartingResources(false);
+        }
+
+        //get and set the doSnakeRules
+        if (snakeRulesYesRBtn.isSelected()) {
+            GamePanel.setDoSnakeRules(true);
+        } else if (snakeRulesNoRBtn.isSelected()) {
+            GamePanel.setDoSnakeRules(false);
+        }
+
+        //get and set the game piece limit
+        if (limitGmPcInfRBtn.isSelected()) { //if infinite is selected
+            //set all the counts to -1 to indecate infinit
+            for (int i = 1; i <= 3; i++) { //loop the piece types
+                for (int j = 1; j <= GamePanel.getPlayerCount(); j++) { //loop through the players
+
+                    GenUtil.setRemainingPlayerPieces(i, j, -1);
+                }
+            }
+
+        } else if (limitGmPc15_5_4RBtn.isSelected()) { //if the standard number of pieces is selected
+            //set all the counts to the repective regular standard values
+            for (int i = 1; i <= GamePanel.getPlayerCount(); i++) { //loop through the players
+
+                GenUtil.setRemainingPlayerPieces(1, i, 15); //number of roads
+                GenUtil.setRemainingPlayerPieces(2, i, 5); //number of settlements
+                GenUtil.setRemainingPlayerPieces(3, i, 4); //number of cities
+            }
+
+        }
+
+        //get the online play mode
+        if (multiPlayerLocRBtn.isSelected()) {
+
+            //switch back to the main menu for when ever the game terminates
+            sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+            // Hide the SDMenuFrame window and show the game
+            sDMenuFrame.setVisible(false);
+
+            //remove the online modes if the previous game was online
+            GamePanel.setOnlineMode(-1);
+            GamePanel.setCatanClient(null);
+
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(true);
+        } else {
+            //create a new creation window
+            sDMenuFrame.getSDMainMenuPanel().setNewOnlineGameMenu(new NewOnlineGameMenu(sDMenuFrame.getSDMainMenuPanel()));
+
+            sDMenuFrame.getSDMainMenuPanel().getNewOnlineGameMenu().setVisible(true);
+
+            // Hide this window and show the next screen
+            //!TODO change the switching over to the new menu for new Online Games
+            //sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getNewOnlineGameMenu());
+        }
     }
 
     @Override
