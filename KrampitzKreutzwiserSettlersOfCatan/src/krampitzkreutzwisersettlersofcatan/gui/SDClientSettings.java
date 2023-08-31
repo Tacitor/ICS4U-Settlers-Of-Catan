@@ -231,6 +231,30 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
         turnBeepNoRBtn.setXPos(turnBeepYesRBtn.getXPos() + getLocalImgWidth(turnBeepYesRBtn.getBaseImage()) + localScaleInt(6));
         turnBeepNoRBtn.setYPos(turnBeepYesRBtn.getYPos());
+        
+        displayModeLbl.setXPos(turnBeepLbl.getXPos());
+        displayModeLbl.setYPos(turnBeepNoRBtn.getYPos() + getLocalImgHeight(turnBeepNoRBtn.getBaseImage()) + localScaleInt(60));
+        
+        displayModeFullScreenRBtn.setXPos(displayModeLbl.getXPos());
+        displayModeFullScreenRBtn.setYPos(displayModeLbl.getYPos() + localScaleInt(15));
+
+        displayModeWindowedRBtn.setXPos(displayModeFullScreenRBtn.getXPos());
+        displayModeWindowedRBtn.setYPos(displayModeFullScreenRBtn.getYPos() + getLocalImgHeight(displayModeFullScreenRBtn.getBaseImage()) + localScaleInt(6));
+        
+        windowDimsLbl.setXPos(displayModeLbl.getXPos());
+        windowDimsLbl.setYPos(displayModeWindowedRBtn.getYPos() + getLocalImgHeight(displayModeWindowedRBtn.getBaseImage()) + localScaleInt(60));
+        
+        windowDims4kRBtn.setXPos(windowDimsLbl.getXPos());
+        windowDims4kRBtn.setYPos(windowDimsLbl.getYPos() + localScaleInt(15));
+
+        windowDims1080pRBtn.setXPos(windowDims4kRBtn.getXPos() + getLocalImgWidth(windowDims4kRBtn.getBaseImage()) + localScaleInt(6));
+        windowDims1080pRBtn.setYPos(windowDims4kRBtn.getYPos());
+        
+        windowDims720pRBtn.setXPos(windowDims4kRBtn.getXPos());
+        windowDims720pRBtn.setYPos(windowDims4kRBtn.getYPos() + getLocalImgHeight(windowDims4kRBtn.getBaseImage()) + localScaleInt(6));
+        
+        windowDims800x600RBtn.setXPos(windowDims720pRBtn.getXPos() + getLocalImgWidth(windowDims720pRBtn.getBaseImage()) + localScaleInt(6));
+        windowDims800x600RBtn.setYPos(windowDims720pRBtn.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
