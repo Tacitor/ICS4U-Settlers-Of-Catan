@@ -33,13 +33,13 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
-    private SettlerLbl showBoarderLbl;
+    private SettlerLbl showBoarderLbl, turnBeepLbl, displayModeLbl, windowDimsLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
-    private SettlerRadioBtn showBoarderNoRBtn, showBoarderYesRBtn;
+    private SettlerRadioBtn showBoarderYesRBtn, showBoarderNoRBtn, turnBeepYesRBtn, turnBeepNoRBtn, displayModeFullScreenRBtn, displayModeWindowedRBtn, windowDims4kRBtn, windowDims1080pRBtn, windowDims720pRBtn, windowDims800x600RBtn;
     //arry for each group of radio buttons
-    private SettlerRadioBtn[] settlerRadioShowBoarderBtns;
+    private SettlerRadioBtn[] settlerRadioShowBoarderBtns, settlerRadioTurnBeepBtns, settlerRadioDisplayModeBtns, settlerRadioWindowDimsBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
 
@@ -81,24 +81,39 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         //Setup the labels
         showBoarderLbl = new SettlerLbl("Show Menu Boarders:");
         showBoarderLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
-        /*
-        houseRuleLbl = new SettlerLbl("Have a house rule you want added as an option? Add and issue to the GitHub or find any other way you want to contact me.");
-        houseRuleLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
-        houseRuleLbl.setLineWrap(true);
-        houseRuleLbl.setLinewrapSpace(28);*/
+        turnBeepLbl = new SettlerLbl("Play Turn Beep:");
+        turnBeepLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        displayModeLbl = new SettlerLbl("Display Mode:");
+        displayModeLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        windowDimsLbl = new SettlerLbl("Windowed Dimensions:");
+        windowDimsLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         //add them to the array
-        settlerLbls = new SettlerLbl[]{showBoarderLbl};
+        settlerLbls = new SettlerLbl[]{showBoarderLbl, turnBeepLbl, displayModeLbl, windowDimsLbl};
 
-        //setup the radio buttons
-        showBoarderNoRBtn = new SettlerRadioBtn(true, true, 7);
+        //setup the radio buttons        
         showBoarderYesRBtn = new SettlerRadioBtn(true, false, 6);
+        showBoarderNoRBtn = new SettlerRadioBtn(true, true, 7);
+        turnBeepYesRBtn = new SettlerRadioBtn(true, true, 6);
+        turnBeepNoRBtn = new SettlerRadioBtn(true, false, 7);
+        displayModeFullScreenRBtn = new SettlerRadioBtn(true, true, 12);
+        displayModeWindowedRBtn = new SettlerRadioBtn(true, false, 13);
+        windowDims4kRBtn = new SettlerRadioBtn(false, false, 14);
+        windowDims1080pRBtn = new SettlerRadioBtn(false, true, 15);
+        windowDims720pRBtn = new SettlerRadioBtn(false, false, 16);
+        windowDims800x600RBtn = new SettlerRadioBtn(false, false, 17);
 
         //add them to the group array
-        settlerRadioShowBoarderBtns = new SettlerRadioBtn[]{showBoarderNoRBtn, showBoarderYesRBtn};
+        settlerRadioShowBoarderBtns = new SettlerRadioBtn[]{showBoarderYesRBtn, showBoarderNoRBtn};
+        settlerRadioTurnBeepBtns = new SettlerRadioBtn[]{turnBeepYesRBtn, turnBeepNoRBtn};
+        settlerRadioDisplayModeBtns = new SettlerRadioBtn[]{displayModeFullScreenRBtn, displayModeWindowedRBtn};
+        settlerRadioWindowDimsBtns = new SettlerRadioBtn[]{windowDims4kRBtn, windowDims1080pRBtn, windowDims720pRBtn, windowDims800x600RBtn};
 
         //add the group to the main array
-        settlerRadioBtnGroups = new SettlerRadioBtn[1][];
+        settlerRadioBtnGroups = new SettlerRadioBtn[4][];
         settlerRadioBtnGroups[0] = settlerRadioShowBoarderBtns;
+        settlerRadioBtnGroups[1] = settlerRadioTurnBeepBtns;
+        settlerRadioBtnGroups[2] = settlerRadioDisplayModeBtns;
+        settlerRadioBtnGroups[3] = settlerRadioWindowDimsBtns;
 
         //setup the custom radio buttons to go into the groups
         for (SettlerRadioBtn[] grp : settlerRadioBtnGroups) {
@@ -194,17 +209,28 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     private void settlerVarPos(Graphics2D g2d) {
         //Label Loop
         showBoarderLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
-        //houseRuleLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
+        turnBeepLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        displayModeLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        windowDimsLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
 
-        //calc the number of lines for the labels that will be multi line
+        //set positions
         showBoarderLbl.setXPos(localScaleInt(300));
         showBoarderLbl.setYPos(localScaleInt(170));
 
-        showBoarderNoRBtn.setXPos(showBoarderLbl.getXPos());
-        showBoarderNoRBtn.setYPos(showBoarderLbl.getYPos() + localScaleInt(15));
+        showBoarderYesRBtn.setXPos(showBoarderLbl.getXPos());
+        showBoarderYesRBtn.setYPos(showBoarderLbl.getYPos() + localScaleInt(15));
 
-        showBoarderYesRBtn.setXPos(showBoarderNoRBtn.getXPos() + getLocalImgWidth(showBoarderNoRBtn.getBaseImage()) + localScaleInt(6));
-        showBoarderYesRBtn.setYPos(showBoarderNoRBtn.getYPos());
+        showBoarderNoRBtn.setXPos(showBoarderYesRBtn.getXPos() + getLocalImgWidth(showBoarderYesRBtn.getBaseImage()) + localScaleInt(6));
+        showBoarderNoRBtn.setYPos(showBoarderYesRBtn.getYPos());
+
+        turnBeepLbl.setXPos(showBoarderLbl.getXPos());
+        turnBeepLbl.setYPos(showBoarderNoRBtn.getYPos() + getLocalImgHeight(showBoarderNoRBtn.getBaseImage()) + localScaleInt(60));
+
+        turnBeepYesRBtn.setXPos(turnBeepLbl.getXPos());
+        turnBeepYesRBtn.setYPos(turnBeepLbl.getYPos() + localScaleInt(15));
+
+        turnBeepNoRBtn.setXPos(turnBeepYesRBtn.getXPos() + getLocalImgWidth(turnBeepYesRBtn.getBaseImage()) + localScaleInt(6));
+        turnBeepNoRBtn.setYPos(turnBeepYesRBtn.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
