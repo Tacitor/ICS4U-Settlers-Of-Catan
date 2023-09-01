@@ -99,7 +99,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         displayModeFullScreenRBtn = new SettlerRadioBtn(true, true, 12);
         displayModeWindowedRBtn = new SettlerRadioBtn(true, false, 13);
         windowDims4kRBtn = new SettlerRadioBtn(false, false, 14);
-        windowDims1080pRBtn = new SettlerRadioBtn(false, true, 15);
+        windowDims1080pRBtn = new SettlerRadioBtn(false, false, 15);
         windowDims720pRBtn = new SettlerRadioBtn(false, false, 16);
         windowDims800x600RBtn = new SettlerRadioBtn(false, false, 17);
 
@@ -232,35 +232,35 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
         turnBeepNoRBtn.setXPos(turnBeepYesRBtn.getXPos() + getLocalImgWidth(turnBeepYesRBtn.getBaseImage()) + localScaleInt(6));
         turnBeepNoRBtn.setYPos(turnBeepYesRBtn.getYPos());
-        
+
         displayModeLbl.setXPos(turnBeepLbl.getXPos());
         displayModeLbl.setYPos(turnBeepNoRBtn.getYPos() + getLocalImgHeight(turnBeepNoRBtn.getBaseImage()) + localScaleInt(60));
-        
+
         displayModeFullScreenRBtn.setXPos(displayModeLbl.getXPos());
         displayModeFullScreenRBtn.setYPos(displayModeLbl.getYPos() + localScaleInt(15));
 
         displayModeWindowedRBtn.setXPos(displayModeFullScreenRBtn.getXPos());
         displayModeWindowedRBtn.setYPos(displayModeFullScreenRBtn.getYPos() + getLocalImgHeight(displayModeFullScreenRBtn.getBaseImage()) + localScaleInt(6));
-        
+
         windowDimsLbl.setXPos(displayModeLbl.getXPos());
         windowDimsLbl.setYPos(displayModeWindowedRBtn.getYPos() + getLocalImgHeight(displayModeWindowedRBtn.getBaseImage()) + localScaleInt(60));
-        
+
         windowDims4kRBtn.setXPos(windowDimsLbl.getXPos());
         windowDims4kRBtn.setYPos(windowDimsLbl.getYPos() + localScaleInt(15));
 
         windowDims1080pRBtn.setXPos(windowDims4kRBtn.getXPos() + getLocalImgWidth(windowDims4kRBtn.getBaseImage()) + localScaleInt(6));
         windowDims1080pRBtn.setYPos(windowDims4kRBtn.getYPos());
-        
+
         windowDims720pRBtn.setXPos(windowDims4kRBtn.getXPos());
         windowDims720pRBtn.setYPos(windowDims4kRBtn.getYPos() + getLocalImgHeight(windowDims4kRBtn.getBaseImage()) + localScaleInt(6));
-        
+
         windowDims800x600RBtn.setXPos(windowDims720pRBtn.getXPos() + getLocalImgWidth(windowDims720pRBtn.getBaseImage()) + localScaleInt(6));
         windowDims800x600RBtn.setYPos(windowDims720pRBtn.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
-        
+
         saveBtn.setXPos(exitBtn.getXPos());
         saveBtn.setYPos(exitBtn.getYPos() + getLocalImgHeight(exitBtn.getBaseImage()) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
 
@@ -300,8 +300,13 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
                     radioBtn.setSelected(true);
 
+                    //now also check if the any of the states need to be updated
+                    if (radioBtn.equals(displayModeFullScreenRBtn)) {
+                        displayModeFullScreenRBtnActionPerformed();
+                    } else if (radioBtn.equals(displayModeWindowedRBtn)) {
+                        displayModeWindowedRBtnActionPerformed();
+                    }
                 }
-
             }
         }
 
@@ -388,6 +393,24 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+    }
+
+    private void displayModeFullScreenRBtnActionPerformed() {
+        //disable all the dimension buttons
+        for (SettlerRadioBtn rBtn : settlerRadioWindowDimsBtns) {
+            rBtn.setEnabled(false);
+            rBtn.setSelected(false);
+        }
+    }
+
+    private void displayModeWindowedRBtnActionPerformed() {
+        //enable all the dimension buttons
+        for (SettlerRadioBtn rBtn : settlerRadioWindowDimsBtns) {
+            rBtn.setEnabled(true);
+        }
+        
+        //default to 1080p
+        windowDims1080pRBtn.setSelected(true);
     }
 
     @Override
