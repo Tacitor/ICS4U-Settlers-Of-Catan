@@ -29,7 +29,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn exitBtn;
+    private SettlerBtn exitBtn, saveBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
@@ -76,8 +76,9 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
+        saveBtn = new SettlerBtn(true, 0, 25);
         //add them to the array
-        settlerBtns = new SettlerBtn[]{exitBtn};
+        settlerBtns = new SettlerBtn[]{exitBtn, saveBtn};
         //Setup the labels
         showBoarderLbl = new SettlerLbl("Show Menu Boarders:");
         showBoarderLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
@@ -259,6 +260,9 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
+        
+        saveBtn.setXPos(exitBtn.getXPos());
+        saveBtn.setYPos(exitBtn.getYPos() + getLocalImgHeight(exitBtn.getBaseImage()) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
 
     }
 
