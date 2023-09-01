@@ -35,7 +35,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final SDNewGameSettingsPanel sDNewGameSettingsPanel;
-    private final ClientSettings TEMPclientSettings;
     private final SDClientSettings sDClientSettings;
     private NewOnlineGameMenu newOnlineGameMenu;
     private JoinOnlineGameMenu joinOnlineGameMenu;
@@ -67,7 +66,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         userManualUIFrame = new UserManualUI(this);
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
         gameJFrame = new GameFrame(this);
-        TEMPclientSettings = new ClientSettings(this);
         sDClientSettings = new SDClientSettings(sDMenuFrame);
         sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
         loadOnlineGameMenu = new LoadOnlineGameMenu(this);
@@ -466,9 +464,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         // Hide this window and show the settings
         optionsBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDClientSettings);
-        
-        //TEMP
-        TEMPclientSettings.setVisible(true);
     }
 
     /**
