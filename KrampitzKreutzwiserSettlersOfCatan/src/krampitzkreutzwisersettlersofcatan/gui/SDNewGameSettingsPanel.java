@@ -242,7 +242,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         houseRuleLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
 
         //calc the number of lines for the labels that will be multi line
-        playerNumLbl.setXPos(localScaleInt(300));
+        playerNumLbl.setXPos(localScaleInt(400));
         playerNumLbl.setYPos(localScaleInt(170));
 
         playerNum2RBtn.setXPos(playerNumLbl.getXPos());
@@ -254,7 +254,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         playerNum4RBtn.setXPos(playerNum3RBtn.getXPos() + getLocalImgWidth(playerNum3RBtn.getBaseImage()) + localScaleInt(6));
         playerNum4RBtn.setYPos(playerNum2RBtn.getYPos());
 
-        multiPlayerLbl.setXPos(localScaleInt(900));
+        multiPlayerLbl.setXPos(localScaleInt(1000));
         multiPlayerLbl.setYPos(playerNumLbl.getYPos());
 
         multiPlayerLocRBtn.setXPos(multiPlayerLbl.getXPos());

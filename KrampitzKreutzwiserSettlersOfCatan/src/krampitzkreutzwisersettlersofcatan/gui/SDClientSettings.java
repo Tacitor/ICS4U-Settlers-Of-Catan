@@ -215,10 +215,15 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         turnBeepLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         displayModeLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         windowDimsLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        
+        Font tempFont = g2d.getFont();
+        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(120)));
 
         //set positions
-        showBoarderLbl.setXPos(localScaleInt(300));
+        showBoarderLbl.setXPos((this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("New Game Settings") / 2)); //line up with the title
         showBoarderLbl.setYPos(localScaleInt(170));
+        
+        g2d.setFont(tempFont);
 
         showBoarderYesRBtn.setXPos(showBoarderLbl.getXPos());
         showBoarderYesRBtn.setYPos(showBoarderLbl.getYPos() + localScaleInt(15));
