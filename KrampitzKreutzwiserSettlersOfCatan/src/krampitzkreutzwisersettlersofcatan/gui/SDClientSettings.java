@@ -5,10 +5,12 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
+import Audio.AudioRef;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -285,6 +287,8 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
                 //check the button that was pressed
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
+                } else if (btn.equals(saveBtn)) {
+                    saveBtnActionPerformed();
                 }
             }
         }
@@ -408,9 +412,63 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         for (SettlerRadioBtn rBtn : settlerRadioWindowDimsBtns) {
             rBtn.setEnabled(true);
         }
-        
+
         //default to 1080p
         windowDims1080pRBtn.setSelected(true);
+    }
+
+    private void saveBtnActionPerformed() {
+        //get and set the menu boarders
+        if (showBoarderYesRBtn.isSelected()) {
+            GamePanel.setShowMenuBoarder(true);
+        } else if (showBoarderNoRBtn.isSelected()) {
+            GamePanel.setShowMenuBoarder(false);
+        }
+
+        //get the windowd mode
+        if (displayModeFullScreenRBtn.isSelected()) {
+            //fullscreeen  
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(false);
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().dispose();
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setSize(Toolkit.getDefaultToolkit().getScreenSize());
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setLocationRelativeTo(null);
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setUndecorated(true);
+        } else if (displayModeWindowedRBtn.isSelected()) {
+            //get the specific res            
+            int resWidth;
+            int resHight;
+
+            if (windowDims4kRBtn.isSelected()) {
+                resWidth = 3840;
+                resHight = 2160;
+            } else if (windowDims720pRBtn.isSelected()) {
+                resWidth = 1280;
+                resHight = 720;
+            } else if (windowDims800x600RBtn.isSelected()) {
+                resWidth = 800;
+                resHight = 600;
+            } else {
+                //default to 1080p
+                resWidth = 1920;
+                resHight = 1080;
+            }
+
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(false);
+            //set decorated
+            if (sDMenuFrame.getSDMainMenuPanel().getGameFrame().isUndecorated()) {
+                sDMenuFrame.getSDMainMenuPanel().getGameFrame().dispose();
+                sDMenuFrame.getSDMainMenuPanel().getGameFrame().setUndecorated(false);
+            }
+            //set size
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setSize(resWidth, resHight);
+        }
+
+        //get and set the playing of the turn beep
+        if (turnBeepYesRBtn.isSelected()) {
+            AudioRef.setPlayTurnBeep(true);
+        } else if (turnBeepNoRBtn.isSelected()) {
+            AudioRef.setPlayTurnBeep(false);
+        }
     }
 
     @Override

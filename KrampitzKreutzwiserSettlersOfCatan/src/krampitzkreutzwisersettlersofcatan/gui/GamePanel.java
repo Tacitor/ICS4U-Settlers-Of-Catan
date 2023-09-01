@@ -6978,7 +6978,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public static void setShowMenuBoarder(boolean showMenuBoarder) {
         GamePanel.showMenuBoarder = showMenuBoarder;
-        System.out.println(GamePanel.showMenuBoarder);
+        //debug the menu boarders
+        //System.out.println(GamePanel.showMenuBoarder);
     }
 
     /**
