@@ -36,7 +36,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
-    private SettlerLbl mainDesc;
+    private SettlerLbl mainDesc, connectionIPLbl, connectionPortLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
@@ -86,8 +86,13 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         mainDesc.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         mainDesc.setLinewrapSpace(40);
         mainDesc.setUseNewLineChar(true);
+        connectionIPLbl = new SettlerLbl("Destination IP Address or server URL:");
+        connectionIPLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        connectionPortLbl = new SettlerLbl("Connection port:");
+        connectionPortLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+
         //add them to the array
-        settlerLbls = new SettlerLbl[]{mainDesc};
+        settlerLbls = new SettlerLbl[]{mainDesc, connectionIPLbl, connectionPortLbl};
 
         //setup the radio buttons        
         //go here
@@ -194,10 +199,18 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         mainDesc.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
         mainDesc.setSpaceForText(localScaleInt(1500));
         mainDesc.calcNumLinesCarriageReturn();
+        connectionIPLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        connectionPortLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
 
         //set positions
         mainDesc.setXPos(localScaleInt(50)); //line up with the title
         mainDesc.setYPos(localScaleInt(170));
+
+        connectionIPLbl.setXPos(mainDesc.getXPos());
+        connectionIPLbl.setYPos(mainDesc.getYPos() + ((mainDesc.getNumLines() + 1) * localScaleInt(mainDesc.getLinewrapSpace())));
+
+        connectionPortLbl.setXPos(localScaleInt(1200));
+        connectionPortLbl.setYPos(connectionIPLbl.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
