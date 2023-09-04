@@ -231,7 +231,7 @@ public class SettlerLbl extends WorldObject {
 
                 //remove the part of the string already displayed so the next line will pick up where the previous left off
                 //only if this is not the last operation
-                if (i != (numLines - 1)) {
+                if (i < (numLines - 1)) {
                     text = text.substring(endChar + 2); //remove the space
                 }
 

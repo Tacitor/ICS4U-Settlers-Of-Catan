@@ -37,7 +37,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final SDNewGameSettingsPanel sDNewGameSettingsPanel;
     private final SDClientSettings sDClientSettings;
     private NewOnlineGameMenu newOnlineGameMenu;
-    private JoinOnlineGameMenu joinOnlineGameMenu;
+    private JoinOnlineGameMenu TEMPjoinOnlineGameMenu;
+    private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
     private LoadOnlineGameMenu loadOnlineGameMenu;
 
     //Attributes
@@ -471,9 +472,13 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      */
     private void joinOnlineBtnActionPerformed() {
         //create a new game joining window
-        joinOnlineGameMenu = new JoinOnlineGameMenu(this);
-        joinOnlineGameMenu.setVisible(true);
-        this.setVisible(false);
+        joinOnlineGameBtn.setmouseHover(false);
+        sDJoinOnlineGameMenu = new SDJoinOnlineGameMenu(sDMenuFrame);
+        sDMenuFrame.switchPanel(this, sDJoinOnlineGameMenu);
+        
+        //TEMP
+        TEMPjoinOnlineGameMenu = new JoinOnlineGameMenu(this);
+        TEMPjoinOnlineGameMenu.setVisible(true);
     }
 
     /**
@@ -520,24 +525,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      */
     public LoadOnlineGameMenu getLoadOnlineGameMenu() {
         return loadOnlineGameMenu;
-    }
-
-    /**
-     * Return the newOnlineGameMenu
-     *
-     * @return
-     */
-    public JoinOnlineGameMenu getJoinOnlineGameMenu() {
-        return joinOnlineGameMenu;
-    }
-
-    /**
-     * Mutator for the joinOnlineGameMenu
-     *
-     * @param joinOnlineGameMenu
-     */
-    public void setJoinOnlineGameMenu(JoinOnlineGameMenu joinOnlineGameMenu) {
-        this.joinOnlineGameMenu = joinOnlineGameMenu;
     }
 
     public int getExitMainMenuBtnYPos() {

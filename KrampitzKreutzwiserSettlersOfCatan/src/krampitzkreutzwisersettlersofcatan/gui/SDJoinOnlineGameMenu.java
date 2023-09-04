@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
+import dataFiles.OldCode;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,6 +13,8 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.io.InputStream;
+import java.util.Scanner;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
@@ -79,8 +82,10 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         //add them to the array
         settlerBtns = new SettlerBtn[]{exitBtn};
         //Setup the labels
-        mainDesc = new SettlerLbl("Show Menu Boarders:");
+        mainDesc = new SettlerLbl("To join an online game please ensure the folowing:");
         mainDesc.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        mainDesc.setLinewrapSpace(40);
+        mainDesc.setUseNewLineChar(true);
         //add them to the array
         settlerLbls = new SettlerLbl[]{mainDesc};
 
@@ -95,6 +100,8 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         for (SettlerRadioBtn[] grp : settlerRadioBtnGroups) {
             SettlerRadioBtn.setUpGroup(grp);
         }
+
+        loadMaterial();
 
     }
 
@@ -185,6 +192,8 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     private void settlerVarPos(Graphics2D g2d) {
         //Label Loop
         mainDesc.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
+        mainDesc.setSpaceForText(localScaleInt(1500));
+        mainDesc.calcNumLinesCarriageReturn();
 
         //set positions
         mainDesc.setXPos(localScaleInt(50)); //line up with the title
@@ -316,6 +325,37 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+    }
+
+    /**
+     * Read the instructions from in the data file
+     */
+    public final void loadMaterial() {
+
+        // Declare variablesD
+        Scanner fileReader;
+        InputStream file = OldCode.class.getResourceAsStream("joinOnlineGame.txt");
+        String fileContents = "";
+
+        // Try to read the file
+        try {
+            // Create the scanner to read the file
+            fileReader = new Scanner(file);
+
+            // Read the entire file into a string
+            while (fileReader.hasNextLine()) {
+                // Read the line of the file into a line of the string
+                fileContents += fileReader.nextLine() + "\n";
+            }
+        } catch (Exception e) {
+            // Set the sring to be displayed to an error message
+            fileContents = "Error: credits file could not be read.";
+            // Output the jsvs error to the standard output
+            System.out.println("Error reading credits file: " + e);
+        }
+
+        // Display the file's contents from the string
+        mainDesc.setText(fileContents);
     }
 
     @Override
