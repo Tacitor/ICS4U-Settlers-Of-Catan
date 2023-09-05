@@ -37,7 +37,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final SDNewGameSettingsPanel sDNewGameSettingsPanel;
     private final SDClientSettings sDClientSettings;
     private NewOnlineGameMenu newOnlineGameMenu;
-    private JoinOnlineGameMenu TEMPjoinOnlineGameMenu;
     private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
     private LoadOnlineGameMenu loadOnlineGameMenu;
 
@@ -475,10 +474,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         joinOnlineGameBtn.setmouseHover(false);
         sDJoinOnlineGameMenu = new SDJoinOnlineGameMenu(sDMenuFrame);
         sDMenuFrame.switchPanel(this, sDJoinOnlineGameMenu);
-        
-        //TEMP
-        TEMPjoinOnlineGameMenu = new JoinOnlineGameMenu(this);
-        TEMPjoinOnlineGameMenu.setVisible(true);
     }
 
     /**
