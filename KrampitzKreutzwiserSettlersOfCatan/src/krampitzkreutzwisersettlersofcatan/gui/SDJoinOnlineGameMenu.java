@@ -18,6 +18,7 @@ import java.util.Scanner;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerTxtBx;
 import textures.ImageRef;
 
 /**
@@ -25,7 +26,7 @@ import textures.ImageRef;
  * @author Tacitor
  */
 public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
-
+    
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
@@ -45,6 +46,10 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     //private SettlerRadioBtn[] settlerRadioGROUPBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
+    //settler text boxes
+    private SettlerTxtBx connectionIPTxtBx;
+    //the array for the text boxes
+    private SettlerTxtBx[] settlerTxtBxs;
 
     //Fonts
     public Font COMPASS_GOLD;
@@ -56,7 +61,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
      */
     public SDJoinOnlineGameMenu(SDMenuFrame sDFrame) {
         sDMenuFrame = sDFrame;
-
+        
         COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
 
         //add the mouse motion listener
@@ -106,8 +111,13 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
             SettlerRadioBtn.setUpGroup(grp);
         }
 
+        //setup the text boxes
+        connectionIPTxtBx = new SettlerTxtBx(true, 0);
+        //add it to the array
+        settlerTxtBxs = new SettlerTxtBx[]{connectionIPTxtBx};
+        
         loadMaterial();
-
+        
     }
 
     /**
@@ -128,7 +138,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
      * @param g
      */
     private void draw(Graphics g) {
-
+        
         Graphics2D g2d = (Graphics2D) g;
 
         //update the scale factor
@@ -143,7 +153,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
                 0,
                 this.getWidth(),
                 this.getHeight(), this);
-
+        
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(120)));
         g2d.setColor(DomesticTradePanel.BEIGE_COLOUR);
 
@@ -151,7 +161,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         g2d.drawString("Join Online Game Server",
                 (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Join Online Game Server") / 2),
                 localScaleInt(100));
-
+        
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
@@ -173,7 +183,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
             if (btn.isMouseHover()) {
                 sDMenuFrame.drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1, this);
             }
-
+            
         }
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
@@ -188,6 +198,11 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d, localScaleFactor);
+        }
+
+        //draw all the text boxes
+        for (SettlerTxtBx txtBx : settlerTxtBxs) {
+            txtBx.draw(g2d, this);
         }
     }
 
@@ -205,17 +220,20 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         //set positions
         mainDesc.setXPos(localScaleInt(50)); //line up with the title
         mainDesc.setYPos(localScaleInt(170));
-
+        
         connectionIPLbl.setXPos(mainDesc.getXPos());
         connectionIPLbl.setYPos(mainDesc.getYPos() + ((mainDesc.getNumLines() + 1) * localScaleInt(mainDesc.getLinewrapSpace())));
-
+        
+        connectionIPTxtBx.setXPos(connectionIPLbl.getXPos());
+        connectionIPTxtBx.setYPos(connectionIPLbl.getYPos() + localScaleInt(30));
+        
         connectionPortLbl.setXPos(localScaleInt(1200));
         connectionPortLbl.setYPos(connectionIPLbl.getYPos());
-
+        
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
-
+        
     }
 
     /**
@@ -287,13 +305,13 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
                 //set the hover
                 btn.setmouseHover(true);
-
+                
             } else {
 
                 //make suer there is no hover over that button
                 btn.setmouseHover(false);
             }
-
+            
         }
 
         //check if the player moved the mouse over one of the SettlerRadionBtns
@@ -307,16 +325,16 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
                     //set the hover
                     radioBtn.setmouseHover(true);
-
+                    
                 } else {
 
                     //make suer there is no hover over that button
                     radioBtn.setmouseHover(false);
                 }
-
+                
             }
         }
-
+        
         repaint();
     }
 
@@ -329,12 +347,12 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     public static int localScaleInt(int num) {
         return (int) (num / localScaleFactor);
     }
-
+    
     @Override
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Mouse Dragged");
     }
-
+    
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
@@ -370,12 +388,12 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         // Display the file's contents from the string
         mainDesc.setText(fileContents);
     }
-
+    
     @Override
     public int getLocalImgWidth(Image image) {
         return sDMenuFrame.getImgWidthLocal(image, this);
     }
-
+    
     @Override
     public int getLocalImgHeight(Image image) {
         return sDMenuFrame.getImgHeightLocal(image, this);
