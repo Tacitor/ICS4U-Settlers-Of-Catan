@@ -20,6 +20,7 @@ import textures.ImageRef;
 public class SettlerTxtBx extends SettlerComponent {
 
     //attibutes
+    protected boolean selected; //did the user click on the text box and select it.
     protected int cursorPos; //the position of the cursor. This is where text gets added and removed from
     protected int startDisplayPos; //the position of where to start displaying the text withing the box.
     protected char[] chars; //the char array that will contain the text of the text box.
@@ -41,6 +42,7 @@ public class SettlerTxtBx extends SettlerComponent {
         this.type = type;
         mouseHover = false;
         tabSelected = false;
+        selected = false;
 
         updateText();
         updateButtonImages();
