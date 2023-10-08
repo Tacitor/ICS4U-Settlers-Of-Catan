@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -45,6 +46,8 @@ public class SettlerTxtBx extends SettlerComponent {
         mouseHover = false;
         tabSelected = false;
         selected = false;
+        cursorPos = 0;
+        startDisplayPos = 0;
 
         updateText();
         updateButtonImages();
@@ -85,7 +88,7 @@ public class SettlerTxtBx extends SettlerComponent {
                 hoverImage = ImageRef.ERROR_IMAGE;
                 break;
         }
-        
+
         tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
     }
 
@@ -104,6 +107,9 @@ public class SettlerTxtBx extends SettlerComponent {
         //check to make sure the call is correct
         if (parent instanceof SDScaleImageResizeable) {
             SDScaleImageResizeable SDParent = (SDScaleImageResizeable) parent;
+
+            //save the colour it came with to restore afterwards
+            Color colour = g2d.getColor();
 
             //draw the base        
             g2d.drawImage(baseImage,
@@ -150,9 +156,41 @@ public class SettlerTxtBx extends SettlerComponent {
                         SDParent.getLocalImgHeight(tabSelectionImages[1]),
                         null);
             }
+
+            g2d.setColor(new Color(74, 54, 37));
+
+            if (selected) {
+                //draw a small cursor
+                g2d.fillRect(xPos + GenUtil.interoperableScaleInt(10, parent),
+                        yPos + GenUtil.interoperableScaleInt(8, parent),
+                        GenUtil.interoperableScaleInt(3, parent),
+                        GenUtil.interoperableScaleInt(SDParent.getLocalImgHeight(baseImage) - GenUtil.interoperableScaleInt(16, parent), parent));
+            }
+
+            //reset the colour to what it came in with
+            g2d.setColor(colour);
+
         } else {
             System.out.println("ERROR: The parent JComponent in draw method of SettlerTxtBx does not implement SDScaleImageResizeable.");
         }
+    }
+
+    /**
+     * Access the selected state of the button
+     *
+     * @return
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /**
+     * Mutate the selected state of the button
+     *
+     * @param selected
+     */
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override

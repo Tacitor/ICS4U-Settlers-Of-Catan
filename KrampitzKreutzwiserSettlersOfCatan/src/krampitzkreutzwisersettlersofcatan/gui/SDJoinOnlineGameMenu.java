@@ -6,6 +6,7 @@
 package krampitzkreutzwisersettlersofcatan.gui;
 
 import dataFiles.OldCode;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -243,6 +244,9 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
      */
     public void mouseClick(MouseEvent evt) {
 
+        //deselect all the text boxes and then later enable one if there was a click on it
+        connectionIPTxtBx.setSelected(false);
+
         //check if the player clicked on one of the SettlerBtns
         //loop through all the custom buttons
         for (SettlerBtn btn : settlerBtns) {
@@ -358,13 +362,14 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
                     && mouseMotionPosY < (bx.getYPos() + sDMenuFrame.getImgHeightLocal(bx.getBaseImage(), this))
                     && bx.isEnabled()) { //and that it is enabled
 
-                //set the hover
-                bx.setmouseHover(true);
+                //set the type of cursor to display for the mouse pointer
+                this.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 
             } else {
-
-                //make suer there is no hover over that button
-                bx.setmouseHover(false);
+                //check if there is a non default cursor
+                if (this.getCursor().getType() != Cursor.DEFAULT_CURSOR) {
+                    this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
             }
 
         }
@@ -392,12 +397,13 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }
-    
+
     /**
      * Action to perform when the user clicks on the text box
      */
     private void connectionIPTxtBxActionPerformed() {
-        System.out.println("Clicked!");
+        //set the text box to selected so that it can accept keyboard input
+        connectionIPTxtBx.setSelected(true);
     }
 
     /**
