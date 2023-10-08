@@ -344,7 +344,8 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
      * @param num
      * @return
      */
-    public static int localScaleInt(int num) {
+    @Override
+    public int localScaleInt(int num) {
         return (int) (num / localScaleFactor);
     }
     

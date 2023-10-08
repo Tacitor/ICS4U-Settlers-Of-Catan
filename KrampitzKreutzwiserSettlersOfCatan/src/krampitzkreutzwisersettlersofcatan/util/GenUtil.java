@@ -5,6 +5,11 @@
  */
 package krampitzkreutzwisersettlersofcatan.util;
 
+import java.awt.Image;
+import javax.swing.JComponent;
+import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import krampitzkreutzwisersettlersofcatan.gui.SDScaleImageResizeable;
+
 /**
  *
  * @author Tacitor
@@ -143,6 +148,71 @@ public class GenUtil {
             getPieceArray(pieceType)[playerNum]++;
         }
 
+    }
+
+    /**
+     * This method is used to make other methods interoperable with deprecated
+     * called from the gamePanel and calls from other classes.
+     *
+     * @param image
+     * @param parent
+     * @return
+     */
+     public static int interoperableGetImgWidth(Image image, JComponent parent) {
+
+        //check if need to use gamepanel
+        if (parent instanceof GamePanel) {
+            return ((GamePanel) parent).getImgWidth(image);
+        } else if (parent instanceof SDScaleImageResizeable) {
+            return ((SDScaleImageResizeable) parent).getLocalImgWidth(image);
+        } else {
+            System.out.println("ERROR: interoperableGetImgWidth() in SettlerRadioBtn does not have a case for this type of JComponent");
+            return 50;
+        }
+    }
+
+    /**
+     * This method is used to make other methods interoperable with deprecated
+     * called from the gamePanel and calls from other classes.
+     *
+     * @param image
+     * @param parent
+     * @return
+     */
+    public static int interoperableGetImgHeight(Image image, JComponent parent) {
+
+        //check if need to use gamepanel
+        if (parent instanceof GamePanel) {
+            return ((GamePanel) parent).getImgHeight(image);
+
+        } else if (parent instanceof SDScaleImageResizeable) {
+            return ((SDScaleImageResizeable) parent).getLocalImgHeight(image);
+        } else {
+            System.out.println("ERROR: interoperableGetImgHeight() in SettlerRadioBtn does not have a case for this type of JComponent");
+            return 50;
+        }
+    }
+    
+    /**
+     * This method is used to make other methods interoperable with deprecated
+     * called from the gamePanel and calls from other classes.
+     *
+     * @param num
+     * @param parent
+     * @return
+     */
+    public static int interoperableScaleInt(int num, JComponent parent) {
+
+        //check if need to use gamepanel
+        if (parent instanceof GamePanel) {
+            return GamePanel.scaleInt(num);
+
+        } else if (parent instanceof SDScaleImageResizeable) {
+            return ((SDScaleImageResizeable) parent).localScaleInt(num);
+        } else {
+            System.out.println("ERROR: interoperableScaleInt() in SettlerRadioBtn does not have a case for this type of JComponent");
+            return 50;
+        }
     }
 
 }

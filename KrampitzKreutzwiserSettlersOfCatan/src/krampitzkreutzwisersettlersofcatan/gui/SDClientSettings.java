@@ -390,7 +390,8 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
      * @param num
      * @return
      */
-    public static int localScaleInt(int num) {
+    @Override
+    public int localScaleInt(int num) {
         return (int) (num / localScaleFactor);
     }
 

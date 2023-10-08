@@ -10,6 +10,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import krampitzkreutzwisersettlersofcatan.gui.SDScaleImageResizeable;
+import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
 import textures.ImageRef;
 
@@ -27,6 +28,7 @@ public class SettlerTxtBx extends SettlerComponent {
 
     //static attributes    
     private final static Image TEXT_BOX_REG_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioLongBtn.png")).getImage();
+    private final static Image TEXT_BOX_REG_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioLongHoverBtn.png")).getImage();
 
     /**
      * Primary Constructor
@@ -73,7 +75,7 @@ public class SettlerTxtBx extends SettlerComponent {
                 //if the type is standard sized text box
                 baseImage = TEXT_BOX_REG_BASE;
                 disabledImage = ImageRef.ERROR_IMAGE;
-                hoverImage = ImageRef.ERROR_IMAGE;
+                hoverImage = TEXT_BOX_REG_HOVER;
                 break;
 
             default:
@@ -83,6 +85,8 @@ public class SettlerTxtBx extends SettlerComponent {
                 hoverImage = ImageRef.ERROR_IMAGE;
                 break;
         }
+        
+        tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
     }
 
     @Override
@@ -126,6 +130,24 @@ public class SettlerTxtBx extends SettlerComponent {
                         yPos,
                         SDParent.getLocalImgWidth(hoverImage),
                         SDParent.getLocalImgHeight(hoverImage),
+                        null);
+            }
+
+            //draw the tab selected overlay if required
+            if (tabSelected) {
+                //draw the left
+                g2d.drawImage(tabSelectionImages[0],
+                        xPos - GenUtil.interoperableScaleInt(5, parent),
+                        yPos - GenUtil.interoperableScaleInt(5, parent),
+                        SDParent.getLocalImgWidth(tabSelectionImages[0]),
+                        SDParent.getLocalImgHeight(tabSelectionImages[0]),
+                        null);
+                //draw the right
+                g2d.drawImage(tabSelectionImages[1],
+                        xPos + SDParent.getLocalImgWidth(baseImage) + GenUtil.interoperableScaleInt(5, parent) - SDParent.getLocalImgWidth(tabSelectionImages[1]),
+                        yPos - GenUtil.interoperableScaleInt(5, parent),
+                        SDParent.getLocalImgWidth(tabSelectionImages[1]),
+                        SDParent.getLocalImgHeight(tabSelectionImages[1]),
                         null);
             }
         } else {

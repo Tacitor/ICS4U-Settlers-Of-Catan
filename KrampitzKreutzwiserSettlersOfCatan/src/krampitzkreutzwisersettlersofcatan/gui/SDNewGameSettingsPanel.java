@@ -431,7 +431,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
      * @param num
      * @return
      */
-    public static int localScaleInt(int num) {
+    @Override
+    public int localScaleInt(int num) {
         return (int) (num / localScaleFactor);
     }
 

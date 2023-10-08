@@ -12,8 +12,9 @@ import java.awt.Image;
  * @author Tacitor
  */
 public interface SDScaleImageResizeable {
-    
+
     public int getLocalImgWidth(Image image);
-    public int getLocalImgHeight(Image image);    
-    
+    public int getLocalImgHeight(Image image);
+    public int localScaleInt(int num);
+
 }
