@@ -8,6 +8,7 @@ package krampitzkreutzwisersettlersofcatan.gui;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -526,9 +527,28 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         settlerVarPos(); //update the positions real quick
         return exitMainMenuBtn.getYPos();
     }
-    
+
     public SDMenuFrame getSDMenuFrame() {
         return sDMenuFrame;
+    }
+
+    /**
+     * What to do when the user clicks a key on their keyboard This will be
+     * called by the SDMenuFrame
+     *
+     * @param evt
+     */
+    public void keyPress(KeyEvent evt) {
+
+        //pass on the KeyEvent to the right panel.
+        //Check if the SDJoinOnlineGameMenu is active
+        if (sDJoinOnlineGameMenu != null && sDJoinOnlineGameMenu.isVisible()) {
+            //pass it on
+            System.out.println("Yes");
+        } else {
+            System.out.println("No");
+        }
+
     }
 
 }

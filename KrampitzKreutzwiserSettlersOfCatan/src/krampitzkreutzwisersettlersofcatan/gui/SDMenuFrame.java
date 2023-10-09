@@ -12,6 +12,8 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -23,11 +25,11 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-public class SDMenuFrame extends javax.swing.JFrame {
+public class SDMenuFrame extends javax.swing.JFrame implements KeyListener {
 
     private Dimension screenSize; //keeps track of the display the game is being played on
     private SDMainMenuPanel sDMainMenuPanel;
-    
+
     //attributes
     final static int MENU_PACKING_HEIGHT = 12;
 
@@ -54,6 +56,8 @@ public class SDMenuFrame extends javax.swing.JFrame {
         add(sDMainMenuPanel);
         setUndecorated(true);
         setLocationRelativeTo(null); //centre the frame on the screen
+        addKeyListener(this); //allow the game to access presses on the keyboard
+        this.setFocusTraversalKeysEnabled(false); //set to ignore tabbing keys and treat them like regular presses
 
         //Then do another check to see if to run in the online debug mode
         //This would mean running in 720p windowed with decorations
@@ -198,8 +202,25 @@ public class SDMenuFrame extends javax.swing.JFrame {
         remove(oldPanel);
         add(newPanel);
         newPanel.setVisible(true);
+        this.setFocusable(true); //ensure the Frame has the keyListener focus.
 
         newPanel.repaint();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        //do nothing
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        //send this to the main menu
+        sDMainMenuPanel.keyPress(e);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        //do nothing
     }
 
 }
