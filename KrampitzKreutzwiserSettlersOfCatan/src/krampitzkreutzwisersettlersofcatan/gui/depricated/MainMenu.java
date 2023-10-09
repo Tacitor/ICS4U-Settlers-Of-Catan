@@ -19,6 +19,7 @@ import textures.ImageRef;
  * @author Tacitor
  * @author Evan
  */
+@Deprecated
 public class MainMenu extends javax.swing.JFrame {
 
     private final UserManualUI userManualUIFrame; //referance to the user manual
