@@ -7,13 +7,13 @@ package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 
 import animation.TextBxAnimationData;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import krampitzkreutzwisersettlersofcatan.gui.SDScaleImageResizeable;
-import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
 import textures.ImageRef;
 
@@ -29,6 +29,8 @@ public class SettlerTxtBx extends SettlerComponent {
     protected int startDisplayPos; //the position of where to start displaying the text withing the box.
     protected char[] chars; //the char array that will contain the text of the text box.
     private TextBxAnimationData textBxAnimationData;
+
+    private StringBuilder drawnSB; //the string builder used to assemble a string when it needs to draw the char array stored in this text box
 
     //static attributes    
     private final static Image TEXT_BOX_REG_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioLongBtn.png")).getImage();
@@ -164,6 +166,7 @@ public class SettlerTxtBx extends SettlerComponent {
 
             //save the colour it came with to restore afterwards
             Color colour = g2d.getColor();
+            Font font = g2d.getFont();
 
             //draw the base        
             g2d.drawImage(baseImage,
@@ -183,6 +186,49 @@ public class SettlerTxtBx extends SettlerComponent {
                         null);
             }
 
+            //draw the tab selected overlay if required
+            if (tabSelected) {
+                //draw the left
+                g2d.drawImage(tabSelectionImages[0],
+                        xPos - SDParent.localScaleInt(5),
+                        yPos - SDParent.localScaleInt(5),
+                        SDParent.getLocalImgWidth(tabSelectionImages[0]),
+                        SDParent.getLocalImgHeight(tabSelectionImages[0]),
+                        null);
+                //draw the right
+                g2d.drawImage(tabSelectionImages[1],
+                        xPos + SDParent.getLocalImgWidth(baseImage) + SDParent.localScaleInt(5) - SDParent.getLocalImgWidth(tabSelectionImages[1]),
+                        yPos - SDParent.localScaleInt(5),
+                        SDParent.getLocalImgWidth(tabSelectionImages[1]),
+                        SDParent.getLocalImgHeight(tabSelectionImages[1]),
+                        null);
+            }
+
+            g2d.setColor(new Color(74, 54, 37));
+            g2d.setFont(new Font(font.getName(), font.getStyle(), SDParent.localScaleInt(30)));
+
+            //draw the text
+            //set up the string to draw
+            drawnSB = new StringBuilder();
+            //loop through the chars and assemble a string
+            for (int i = 0; i < chars.length && (int) chars[i] != 0; i++) {
+                drawnSB.append(chars[i]);
+            }
+            drawnSB.trimToSize();
+            //draw the text
+            g2d.drawString(drawnSB.toString(),
+                    xPos + SDParent.localScaleInt(10),
+                    yPos + SDParent.localScaleInt(28));
+
+            //draw the blinking cursor if selected
+            if (selected && getAnimationFrame()) {
+                //draw a small cursor
+                g2d.fillRect(xPos + SDParent.localScaleInt(10),
+                        yPos + SDParent.localScaleInt(8),
+                        SDParent.localScaleInt(3),
+                        SDParent.localScaleInt(SDParent.getLocalImgHeight(baseImage) - SDParent.localScaleInt(16)));
+            }
+
             //draw the mouseHover overlay if required
             if (mouseHover) {
                 g2d.drawImage(hoverImage,
@@ -193,36 +239,9 @@ public class SettlerTxtBx extends SettlerComponent {
                         null);
             }
 
-            //draw the tab selected overlay if required
-            if (tabSelected) {
-                //draw the left
-                g2d.drawImage(tabSelectionImages[0],
-                        xPos - GenUtil.interoperableScaleInt(5, parent),
-                        yPos - GenUtil.interoperableScaleInt(5, parent),
-                        SDParent.getLocalImgWidth(tabSelectionImages[0]),
-                        SDParent.getLocalImgHeight(tabSelectionImages[0]),
-                        null);
-                //draw the right
-                g2d.drawImage(tabSelectionImages[1],
-                        xPos + SDParent.getLocalImgWidth(baseImage) + GenUtil.interoperableScaleInt(5, parent) - SDParent.getLocalImgWidth(tabSelectionImages[1]),
-                        yPos - GenUtil.interoperableScaleInt(5, parent),
-                        SDParent.getLocalImgWidth(tabSelectionImages[1]),
-                        SDParent.getLocalImgHeight(tabSelectionImages[1]),
-                        null);
-            }
-
-            g2d.setColor(new Color(74, 54, 37));
-
-            if (selected && getAnimationFrame()) {
-                //draw a small cursor
-                g2d.fillRect(xPos + GenUtil.interoperableScaleInt(10, parent),
-                        yPos + GenUtil.interoperableScaleInt(8, parent),
-                        GenUtil.interoperableScaleInt(3, parent),
-                        GenUtil.interoperableScaleInt(SDParent.getLocalImgHeight(baseImage) - GenUtil.interoperableScaleInt(16, parent), parent));
-            }
-
             //reset the colour to what it came in with
             g2d.setColor(colour);
+            g2d.setFont(font);
 
         } else {
             System.out.println("ERROR: The parent JComponent in draw method of SettlerTxtBx does not implement SDScaleImageResizeable.");
@@ -281,11 +300,6 @@ public class SettlerTxtBx extends SettlerComponent {
                 cursorPos++;
             }
 
-        }
-
-        System.out.println("String: ");
-        for (int i = 0; i < chars.length; i++) {
-            System.out.print(chars[i]);
         }
 
     }
