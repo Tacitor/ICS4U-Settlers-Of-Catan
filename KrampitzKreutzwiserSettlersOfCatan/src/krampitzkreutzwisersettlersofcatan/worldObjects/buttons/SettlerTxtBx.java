@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 
+import animation.TextBxAnimationData;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -26,10 +27,12 @@ public class SettlerTxtBx extends SettlerComponent {
     protected int cursorPos; //the position of the cursor. This is where text gets added and removed from
     protected int startDisplayPos; //the position of where to start displaying the text withing the box.
     protected char[] chars; //the char array that will contain the text of the text box.
+    private TextBxAnimationData textBxAnimationData;
 
     //static attributes    
     private final static Image TEXT_BOX_REG_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioLongBtn.png")).getImage();
     private final static Image TEXT_BOX_REG_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioLongHoverBtn.png")).getImage();
+    private final static int CURSOR_BLINK_FRAME_NUM = 2; //the number of frames in the blink sequence of the cursor (just 2: on, and off)
 
     /**
      * Primary Constructor
@@ -48,6 +51,8 @@ public class SettlerTxtBx extends SettlerComponent {
         selected = false;
         cursorPos = 0;
         startDisplayPos = 0;
+        
+        textBxAnimationData = new TextBxAnimationData();
 
         updateText();
         updateButtonImages();
@@ -95,6 +100,53 @@ public class SettlerTxtBx extends SettlerComponent {
     @Override
     public void updateText() {
         textImage = null;
+    }
+
+    /**
+     * Get the current frame of the animation. For the cursor, whether or not it
+     * is blinking. Return true if the cursor should be displayed.
+     *
+     * @return
+     */
+    public boolean getAnimationFrame() {
+        //the image the method will return
+        boolean drawCursor;
+        int frameTime;
+
+        //the index of the array that contains the current frame of animation
+        int frameIndex;
+
+        //pick one of the frame times
+        frameTime = textBxAnimationData.getFrameTimeBlink();
+
+        //decide if a new frame needs to be displayed or if the current one is still the one it should be on
+        if (System.currentTimeMillis() - (textBxAnimationData.getLastFrameStart()) > frameTime) {
+            //yes it is time for a new frame
+
+            //debug frame times
+            //System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
+            //calculate the index the frame needs to be pulled from
+            frameIndex = textBxAnimationData.getCurrentFrameIndex() + 1; //the new frame will just be one after the current one
+
+            //and make a check that it won't be out of bounds
+            if (frameIndex >= CURSOR_BLINK_FRAME_NUM) {
+                frameIndex = 0; //reset it to the beginning
+            }
+
+            //get the new frame
+            drawCursor = frameIndex == 1;
+
+            //update the time
+            textBxAnimationData.setLastFrameStart(System.currentTimeMillis());
+
+            //update the frame index
+            textBxAnimationData.setCurrentFrameIndex(frameIndex);
+
+        } else { //if the minimum frame has not yet passed pass the current frame again
+            drawCursor = textBxAnimationData.getCurrentFrameIndex() == 1;
+        }
+
+        return drawCursor;
     }
 
     /**
@@ -159,7 +211,7 @@ public class SettlerTxtBx extends SettlerComponent {
 
             g2d.setColor(new Color(74, 54, 37));
 
-            if (selected) {
+            if (selected && getAnimationFrame()) {
                 //draw a small cursor
                 g2d.fillRect(xPos + GenUtil.interoperableScaleInt(10, parent),
                         yPos + GenUtil.interoperableScaleInt(8, parent),
@@ -191,6 +243,12 @@ public class SettlerTxtBx extends SettlerComponent {
      */
     public void setSelected(boolean selected) {
         this.selected = selected;
+        
+        //if the box gets deselected reset the animation
+        if (!selected) {
+            textBxAnimationData.setCurrentFrameIndex(0);
+            textBxAnimationData.setLastFrameStart(0);
+        }
     }
 
     @Override
