@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -445,5 +446,22 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     @Override
     public int getLocalImgHeight(Image image) {
         return sDMenuFrame.getImgHeightLocal(image, this);
+    }
+
+    /**
+     * What to do when the user clicks a key on their keyboard This will be
+     * called by the SDMainMenuPanel which was called by the SDMenuFrame
+     *
+     * @param evt
+     */
+    public void keyPress(KeyEvent evt) {
+
+        //check if there is a selected text box ready for input
+        for (SettlerTxtBx bx : settlerTxtBxs) {
+            if (bx.isSelected() && bx.isEnabled()) { //and that it is enabled
+
+                bx.keyPress(evt);
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import animation.TextBxAnimationData;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import krampitzkreutzwisersettlersofcatan.gui.SDScaleImageResizeable;
@@ -51,7 +52,7 @@ public class SettlerTxtBx extends SettlerComponent {
         selected = false;
         cursorPos = 0;
         startDisplayPos = 0;
-        
+
         textBxAnimationData = new TextBxAnimationData();
 
         updateText();
@@ -243,11 +244,36 @@ public class SettlerTxtBx extends SettlerComponent {
      */
     public void setSelected(boolean selected) {
         this.selected = selected;
-        
+
         //if the box gets deselected reset the animation
         if (!selected) {
             textBxAnimationData.setCurrentFrameIndex(0);
             textBxAnimationData.setLastFrameStart(0);
+        }
+    }
+
+    /**
+     * What to do when the user clicks a key on their keyboard This will be
+     * called by the SDJoinOnlineGameMenu which was called by the
+     * SDMainMenuPanel which was called by the SDMenuFrame
+     *
+     * @param evt
+     */
+    public void keyPress(KeyEvent evt) {
+        //only add in certain ASCII values. Care about alpha numberic, colons, slashed, dots, etc.
+        //Allow: A-Z, a-z, 0-9, -, ., _, ~, :, /, ?, #, [, ], @, !, $, &, ', (, ), *, +, ,, ;, %, and = 
+
+        int keyCharCode = (int)evt.getKeyChar();
+
+        //check within the interested ranges
+        if ((keyCharCode >= 33 && keyCharCode <= 59)
+                || keyCharCode == 61
+                || (keyCharCode >= 63 && keyCharCode <= 91)
+                || keyCharCode == 93
+                || keyCharCode == 95
+                || (keyCharCode >= 97 && keyCharCode <= 126)) {
+            System.out.println("Key press: " + keyCharCode + " - " + (char)keyCharCode);
+
         }
     }
 

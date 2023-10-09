@@ -544,9 +544,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         //Check if the SDJoinOnlineGameMenu is active
         if (sDJoinOnlineGameMenu != null && sDJoinOnlineGameMenu.isVisible()) {
             //pass it on
-            System.out.println("Yes");
-        } else {
-            System.out.println("No");
+            sDJoinOnlineGameMenu.keyPress(evt);
         }
 
     }
