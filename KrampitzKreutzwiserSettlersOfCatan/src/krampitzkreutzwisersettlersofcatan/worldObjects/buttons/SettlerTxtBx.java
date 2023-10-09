@@ -52,6 +52,7 @@ public class SettlerTxtBx extends SettlerComponent {
         selected = false;
         cursorPos = 0;
         startDisplayPos = 0;
+        chars = new char[128];
 
         textBxAnimationData = new TextBxAnimationData();
 
@@ -263,7 +264,7 @@ public class SettlerTxtBx extends SettlerComponent {
         //only add in certain ASCII values. Care about alpha numberic, colons, slashed, dots, etc.
         //Allow: A-Z, a-z, 0-9, -, ., _, ~, :, /, ?, #, [, ], @, !, $, &, ', (, ), *, +, ,, ;, %, and = 
 
-        int keyCharCode = (int)evt.getKeyChar();
+        int keyCharCode = (int) evt.getKeyChar();
 
         //check within the interested ranges
         if ((keyCharCode >= 33 && keyCharCode <= 59)
@@ -272,9 +273,21 @@ public class SettlerTxtBx extends SettlerComponent {
                 || keyCharCode == 93
                 || keyCharCode == 95
                 || (keyCharCode >= 97 && keyCharCode <= 126)) {
-            System.out.println("Key press: " + keyCharCode + " - " + (char)keyCharCode);
+
+            //add it to the char array if it's within bounds
+            if (cursorPos < chars.length) {
+                chars[cursorPos] = (char) keyCharCode;
+                //move the cursor
+                cursorPos++;
+            }
 
         }
+
+        System.out.println("String: ");
+        for (int i = 0; i < chars.length; i++) {
+            System.out.print(chars[i]);
+        }
+
     }
 
     @Override
