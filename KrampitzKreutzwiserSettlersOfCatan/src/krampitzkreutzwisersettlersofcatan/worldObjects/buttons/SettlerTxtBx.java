@@ -220,13 +220,10 @@ public class SettlerTxtBx extends SettlerComponent {
                     xPos + SDParent.localScaleInt(10),
                     yPos + SDParent.localScaleInt(28));
 
-            //clear the String builder now that the text has been drawn
-            drawnSB = null;
-
             //draw the blinking cursor if selected
             if (selected && getAnimationFrame()) {
                 //draw a small cursor
-                g2d.fillRect(xPos + SDParent.localScaleInt(10),
+                g2d.fillRect(xPos + SDParent.localScaleInt(10) + g2d.getFontMetrics().stringWidth(drawnSB.toString().substring(0, cursorPos - startDisplayPos)),
                         yPos + SDParent.localScaleInt(8),
                         SDParent.localScaleInt(3),
                         SDParent.localScaleInt(SDParent.getLocalImgHeight(baseImage) - SDParent.localScaleInt(16)));
@@ -301,6 +298,9 @@ public class SettlerTxtBx extends SettlerComponent {
                 chars[cursorPos] = (char) keyCharCode;
                 //move the cursor
                 cursorPos++;
+
+                //clear the String builder now that the text has changed
+                drawnSB = null;
             }
 
         }
