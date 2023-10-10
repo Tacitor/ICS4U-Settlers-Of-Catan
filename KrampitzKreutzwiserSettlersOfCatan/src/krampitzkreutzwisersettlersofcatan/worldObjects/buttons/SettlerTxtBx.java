@@ -208,17 +208,20 @@ public class SettlerTxtBx extends SettlerComponent {
             g2d.setFont(new Font(font.getName(), font.getStyle(), SDParent.localScaleInt(30)));
 
             //draw the text
-            //set up the string to draw
-            drawnSB = new StringBuilder();
-            //loop through the chars and assemble a string
-            for (int i = 0; i < chars.length && (int) chars[i] != 0; i++) {
-                drawnSB.append(chars[i]);
-            }
+            //generate the string to draw
+            generateStringBuilder();
+
+            //ensure that the string can be displayed fully within the bounds of the text box
+            stringDisplayCutoff(g2d, SDParent);
+
             drawnSB.trimToSize();
             //draw the text
             g2d.drawString(drawnSB.toString(),
                     xPos + SDParent.localScaleInt(10),
                     yPos + SDParent.localScaleInt(28));
+
+            //clear the String builder now that the text has been drawn
+            drawnSB = null;
 
             //draw the blinking cursor if selected
             if (selected && getAnimationFrame()) {
@@ -302,6 +305,39 @@ public class SettlerTxtBx extends SettlerComponent {
 
         }
 
+    }
+
+    /**
+     * Assemble a String Builder based off the stored chars and the start index.
+     */
+    private void generateStringBuilder() {
+        //set up the string to draw
+        drawnSB = new StringBuilder();
+        //loop through the chars and assemble a string
+        for (int i = startDisplayPos; i < chars.length && (int) chars[i] != 0; i++) {
+            drawnSB.append(chars[i]);
+        }
+    }
+
+    /**
+     * Recursively check if the string is short enough to fit in the text box
+     *
+     * @param g2d
+     */
+    private void stringDisplayCutoff(Graphics2D g2d, SDScaleImageResizeable SDParent) {
+
+        //check if String builder exists
+        if (drawnSB == null) {
+
+            System.out.println("ERROR: String builder drawnSB has not been initializied in stringDisplayCutoff()");
+        } //check if it would go out of bounds
+        else if (g2d.getFontMetrics().stringWidth(drawnSB.toString()) > (SDParent.getLocalImgWidth(baseImage) - ((SDParent.localScaleInt(10)) * 2))) {
+            //move the start index over
+            startDisplayPos++;
+
+            //rerender the string
+            generateStringBuilder();
+        }
     }
 
     @Override
