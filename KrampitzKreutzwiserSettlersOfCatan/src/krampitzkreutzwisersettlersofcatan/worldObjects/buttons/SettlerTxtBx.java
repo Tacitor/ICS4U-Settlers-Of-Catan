@@ -55,6 +55,9 @@ public class SettlerTxtBx extends SettlerComponent {
         cursorPos = 0;
         startDisplayPos = 0;
         chars = new char[128];
+        
+        chars = "1234567890fuckmepissmyassshitfuck".toCharArray();
+        cursorPos = "1234567890fuckmepissmyassshitfuck".length();
 
         textBxAnimationData = new TextBxAnimationData();
 
@@ -212,6 +215,7 @@ public class SettlerTxtBx extends SettlerComponent {
             generateStringBuilder();
 
             //ensure that the string can be displayed fully within the bounds of the text box
+            //TODO: This HAS TO BE CHANGED. IT FORCES THE END OF THE STRING TO BE DISPLAYED ONLY
             stringDisplayCutoff(g2d, SDParent);
 
             drawnSB.trimToSize();
@@ -298,10 +302,26 @@ public class SettlerTxtBx extends SettlerComponent {
                 chars[cursorPos] = (char) keyCharCode;
                 //move the cursor
                 cursorPos++;
-
-                //clear the String builder now that the text has changed
-                drawnSB = null;
             }
+
+        } else if (evt.getKeyCode() == 37 //check for arrow keys left and right
+                || evt.getKeyCode() == 39) {
+
+            //move the cursor left         
+            if (evt.getKeyCode() == 37 && cursorPos > 0) {
+                System.out.println("cursorPos: " + cursorPos + "\t\tstartDisplayPos" + startDisplayPos);
+                if (cursorPos - 1 > startDisplayPos) { //if there is no offset then the cursor can just be backed up
+                    cursorPos--;
+                } else { //if there is more text off screen to the left
+                    startDisplayPos--; //bring one more char over into view
+                    //cursorPos--;
+                }
+                
+            } else if (evt.getKeyCode() == 39 && cursorPos < drawnSB.toString().length()) {
+                cursorPos++;
+            }
+
+        } else if (false) { //check for backspace or delete key
 
         }
 
