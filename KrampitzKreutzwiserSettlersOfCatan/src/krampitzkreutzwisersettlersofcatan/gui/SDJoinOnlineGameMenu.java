@@ -234,6 +234,9 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
         connectionPortLbl.setXPos(localScaleInt(1200));
         connectionPortLbl.setYPos(connectionIPLbl.getYPos());
+        
+        connectionPortTxtBx.setXPos(connectionPortLbl.getXPos());
+        connectionPortTxtBx.setYPos(connectionPortLbl.getYPos() + localScaleInt(30));
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
@@ -358,7 +361,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         }
 
         //check if the player moved the mouse over one of the SettlerTxtBxs
-        for (SettlerTxtBx bx : settlerTxtBxs) {
+        for (SettlerTxtBx bx : settlerTxtBxs) { 
             if (mouseMotionPosX > bx.getXPos()
                     && mouseMotionPosY > bx.getYPos()
                     && mouseMotionPosX < (bx.getXPos() + sDMenuFrame.getImgWidthLocal(bx.getBaseImage(), this))
