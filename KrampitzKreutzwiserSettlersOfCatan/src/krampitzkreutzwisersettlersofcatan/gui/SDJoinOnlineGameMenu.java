@@ -49,7 +49,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
     //settler text boxes
-    private SettlerTxtBx connectionIPTxtBx;
+    private SettlerTxtBx connectionIPTxtBx, connectionPortTxtBx;
     //the array for the text boxes
     private SettlerTxtBx[] settlerTxtBxs;
 
@@ -115,8 +115,11 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
         //setup the text boxes
         connectionIPTxtBx = new SettlerTxtBx(true, 0);
+        connectionIPTxtBx.setTextStr("donau.ca");
+        connectionPortTxtBx = new SettlerTxtBx(true, 0);
+        connectionPortTxtBx.setTextStr("25570");
         //add it to the array
-        settlerTxtBxs = new SettlerTxtBx[]{connectionIPTxtBx};
+        settlerTxtBxs = new SettlerTxtBx[]{connectionIPTxtBx, connectionPortTxtBx};
 
         loadMaterial();
 
@@ -247,6 +250,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
         //deselect all the text boxes and then later enable one if there was a click on it
         connectionIPTxtBx.setSelected(false);
+        connectionPortTxtBx.setSelected(false);
 
         //check if the player clicked on one of the SettlerBtns
         //loop through all the custom buttons
@@ -286,10 +290,8 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
                     && evt.getY() < (bx.getYPos() + sDMenuFrame.getImgHeightLocal(bx.getBaseImage(), this))
                     && bx.isEnabled()) { //and that it is enabled
 
-                //check the button that was pressed
-                if (bx.equals(connectionIPTxtBx)) { //if it was the exit game button
-                    connectionIPTxtBxActionPerformed();
-                }
+                //select the box
+                bx.setSelected(true);
             }
         }
 
@@ -397,14 +399,6 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
-    }
-
-    /**
-     * Action to perform when the user clicks on the text box
-     */
-    private void connectionIPTxtBxActionPerformed() {
-        //set the text box to selected so that it can accept keyboard input
-        connectionIPTxtBx.setSelected(true);
     }
 
     /**
