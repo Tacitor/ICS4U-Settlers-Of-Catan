@@ -295,13 +295,15 @@ public class SettlerTxtBx extends SettlerComponent {
 
         int keyCharCode = (int) evt.getKeyChar();
 
-        //check within the interested ranges
-        if ((keyCharCode >= 33 && keyCharCode <= 59)
+        //check within the interested key ranges
+        //also ensure that there is room in the array (always leave the last index empty as a copy buffer if needed)
+        if (((keyCharCode >= 33 && keyCharCode <= 59)
                 || keyCharCode == 61
                 || (keyCharCode >= 63 && keyCharCode <= 91)
                 || keyCharCode == 93
                 || keyCharCode == 95
-                || (keyCharCode >= 97 && keyCharCode <= 126)) {
+                || (keyCharCode >= 97 && keyCharCode <= 126))
+                && charsNum < chars.length - 1) {
 
             //add it to the char array if it's within bounds
             if (cursorPos < chars.length) {
