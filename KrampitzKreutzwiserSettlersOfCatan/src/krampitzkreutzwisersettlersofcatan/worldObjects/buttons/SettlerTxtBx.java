@@ -63,9 +63,9 @@ public class SettlerTxtBx extends SettlerComponent {
         charsNum = 0;
         stringCutoffMode = 1;
 
-        chars = "1234567890fuckmepissmyassshitfuck".toCharArray();
-        cursorPos = "1234567890fuckmepissmyassshitfuck".length();
-        charsNum = "1234567890fuckmepissmyassshitfuck".length();
+//        chars = "1234567890fuckmepissmyassshitfuck".toCharArray();
+//        cursorPos = "1234567890fuckmepissmyassshitfuck".length();
+//        charsNum = "1234567890fuckmepissmyassshitfuck".length();
         textBxAnimationData = new TextBxAnimationData();
 
         updateText();
@@ -305,6 +305,11 @@ public class SettlerTxtBx extends SettlerComponent {
 
             //add it to the char array if it's within bounds
             if (cursorPos < chars.length) {
+                //move over any chars after the cursor pos over by 1
+                for (int i = charsNum - 1; i >= cursorPos; i--) {
+                    chars[i + 1] = chars[i];
+                }
+
                 chars[cursorPos] = (char) keyCharCode;
 
                 //move the cursor
