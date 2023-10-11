@@ -63,9 +63,6 @@ public class SettlerTxtBx extends SettlerComponent {
         charsNum = 0;
         stringCutoffMode = 1;
 
-//        chars = "1234567890fuckmepissmyassshitfuck".toCharArray();
-//        cursorPos = "1234567890fuckmepissmyassshitfuck".length();
-//        charsNum = "1234567890fuckmepissmyassshitfuck".length();
         textBxAnimationData = new TextBxAnimationData();
 
         updateText();
@@ -280,6 +277,32 @@ public class SettlerTxtBx extends SettlerComponent {
             textBxAnimationData.setCurrentFrameIndex(0);
             textBxAnimationData.setLastFrameStart(0);
         }
+    }
+
+    /**
+     * Access the text stored in the text box
+     *
+     * @return
+     */
+    public String getTextStr() {
+        StringBuilder fullStr = new StringBuilder();
+
+        //loop through ALL the chars and assemble a string
+        for (int i = 0; i < charsNum; i++) {
+            fullStr.append(chars[i]);
+        }
+
+        return fullStr.toString();
+    }
+
+    /**
+     * Mutate the text stored in the text box
+     *
+     * @param newStr
+     */
+    public void setTextStr(String newStr) {
+
+        chars = newStr.toCharArray();
     }
 
     /**
