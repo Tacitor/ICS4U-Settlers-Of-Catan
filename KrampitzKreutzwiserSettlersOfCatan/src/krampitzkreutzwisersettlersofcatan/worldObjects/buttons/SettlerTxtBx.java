@@ -301,8 +301,16 @@ public class SettlerTxtBx extends SettlerComponent {
      * @param newStr
      */
     public void setTextStr(String newStr) {
+        char newChars[] = newStr.toCharArray();
 
-        chars = newStr.toCharArray();
+        //copy over
+        System.arraycopy(newChars, 0, chars, 0, newChars.length);
+        //clear the rest
+        for (int i = newChars.length; i < chars.length; i++) {
+            chars[i] = 0;
+        }
+
+        cursorPos = charsNum = newStr.length();
     }
 
     /**
