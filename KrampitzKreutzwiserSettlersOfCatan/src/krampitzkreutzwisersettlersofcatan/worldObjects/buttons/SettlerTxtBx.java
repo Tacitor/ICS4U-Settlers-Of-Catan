@@ -354,8 +354,25 @@ public class SettlerTxtBx extends SettlerComponent {
                 cursorPos++;
             }
 
-        } else if (false) { //check for backspace or delete key
+        } else if (evt.getKeyCode() == 8 && cursorPos != 0) { //check for backspace key
+            //bring all the other chars over 1 to the left
+            for (int i = cursorPos - 1; i < charsNum; i++) {
+                chars[i] = chars[i + 1];
+            }
 
+            //count 1 less char
+            charsNum--;
+
+            //move the cursor back 1 to maintain current spot
+            cursorPos--;
+        } else if (evt.getKeyCode() == 127 && cursorPos < charsNum) { //check for delete key
+            //bring all the other chars over 1 to the left
+            for (int i = cursorPos; i < charsNum; i++) {
+                chars[i] = chars[i + 1];
+            }
+
+            //count 1 less char
+            charsNum--;
         }
 
     }
@@ -410,6 +427,7 @@ public class SettlerTxtBx extends SettlerComponent {
             //check if the cursor would go out of bounds
             if (cursorPos - startDisplayPos > drawnSB.toString().length()) {
                 //back off the end cutoff
+                //and give it more string to work with
                 endDisplayPos--;
 
                 //rerender the string
@@ -445,6 +463,9 @@ public class SettlerTxtBx extends SettlerComponent {
 
                 recurse = true;
 
+            } else if (g2d.getFontMetrics().stringWidth(drawnSB.toString()) < (SDParent.getLocalImgWidth(baseImage) - ((SDParent.localScaleInt(10)) * 3))
+                    && endDisplayPos > 0) { //if nothing goes over and there is a lot of room still. Also ensure there is still more string to re-reveal
+                endDisplayPos--;
             }
 
             if (recurse) {
