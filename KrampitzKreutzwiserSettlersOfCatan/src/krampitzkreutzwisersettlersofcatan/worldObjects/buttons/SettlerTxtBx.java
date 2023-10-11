@@ -27,7 +27,11 @@ public class SettlerTxtBx extends SettlerComponent {
     protected boolean selected; //did the user click on the text box and select it.
     protected int cursorPos; //the position of the cursor. This is where text gets added and removed from
     protected int startDisplayPos; //the position of where to start displaying the text withing the box.
+    protected int endDisplayPos; //the end to display
     protected char[] chars; //the char array that will contain the text of the text box.
+    protected int charsNum; //the number of chars that have been addded into the array
+    //is 1 for scrolling the string right with every added char
+    protected int stringCutoffMode; //the mode the dictates how to cutoff the string when it is too long to display fully.
     private TextBxAnimationData textBxAnimationData;
 
     private StringBuilder drawnSB; //the string builder used to assemble a string when it needs to draw the char array stored in this text box
@@ -54,11 +58,14 @@ public class SettlerTxtBx extends SettlerComponent {
         selected = false;
         cursorPos = 0;
         startDisplayPos = 0;
+        endDisplayPos = 0;
         chars = new char[128];
-        
+        charsNum = 0;
+        stringCutoffMode = 1;
+
         chars = "1234567890fuckmepissmyassshitfuck".toCharArray();
         cursorPos = "1234567890fuckmepissmyassshitfuck".length();
-
+        charsNum = "1234567890fuckmepissmyassshitfuck".length();
         textBxAnimationData = new TextBxAnimationData();
 
         updateText();
@@ -215,7 +222,6 @@ public class SettlerTxtBx extends SettlerComponent {
             generateStringBuilder();
 
             //ensure that the string can be displayed fully within the bounds of the text box
-            //TODO: This HAS TO BE CHANGED. IT FORCES THE END OF THE STRING TO BE DISPLAYED ONLY
             stringDisplayCutoff(g2d, SDParent);
 
             drawnSB.trimToSize();
@@ -300,24 +306,44 @@ public class SettlerTxtBx extends SettlerComponent {
             //add it to the char array if it's within bounds
             if (cursorPos < chars.length) {
                 chars[cursorPos] = (char) keyCharCode;
+
                 //move the cursor
                 cursorPos++;
+
+                //count a char added
+                charsNum++;
+
+                //check if adding chars to the end of the already existing chars
+                if (cursorPos >= charsNum) {
+                    //set a flag to cut the string off to the end (scroll over to the right with every key press)
+                    stringCutoffMode = 1;
+                }
             }
 
         } else if (evt.getKeyCode() == 37 //check for arrow keys left and right
                 || evt.getKeyCode() == 39) {
 
+            //turn off auto string scrolling
+            stringCutoffMode = 2;
+
+            //ensure the cursor is displayed
+            textBxAnimationData.setCurrentFrameIndex(0);
+            textBxAnimationData.setLastFrameStart(0);
+
             //move the cursor left         
             if (evt.getKeyCode() == 37 && cursorPos > 0) {
-                System.out.println("cursorPos: " + cursorPos + "\t\tstartDisplayPos" + startDisplayPos);
-                if (cursorPos - 1 > startDisplayPos) { //if there is no offset then the cursor can just be backed up
+                //debug the cursor movement
+                //System.out.println("cursorPos: " + cursorPos + "\t\tstartDisplayPos" + startDisplayPos);
+
+                if (cursorPos > startDisplayPos) { //if there is no offset then the cursor can just be backed up
                     cursorPos--;
                 } else { //if there is more text off screen to the left
                     startDisplayPos--; //bring one more char over into view
-                    //cursorPos--;
+                    cursorPos--;
+
                 }
-                
-            } else if (evt.getKeyCode() == 39 && cursorPos < drawnSB.toString().length()) {
+
+            } else if (evt.getKeyCode() == 39 && cursorPos < charsNum) {
                 cursorPos++;
             }
 
@@ -334,7 +360,7 @@ public class SettlerTxtBx extends SettlerComponent {
         //set up the string to draw
         drawnSB = new StringBuilder();
         //loop through the chars and assemble a string
-        for (int i = startDisplayPos; i < chars.length && (int) chars[i] != 0; i++) {
+        for (int i = startDisplayPos; i < charsNum - endDisplayPos; i++) {
             drawnSB.append(chars[i]);
         }
     }
@@ -350,13 +376,77 @@ public class SettlerTxtBx extends SettlerComponent {
         if (drawnSB == null) {
 
             System.out.println("ERROR: String builder drawnSB has not been initializied in stringDisplayCutoff()");
-        } //check if it would go out of bounds
-        else if (g2d.getFontMetrics().stringWidth(drawnSB.toString()) > (SDParent.getLocalImgWidth(baseImage) - ((SDParent.localScaleInt(10)) * 2))) {
-            //move the start index over
-            startDisplayPos++;
+        } else if (stringCutoffMode == 1) { //if we are in scroll right and type mode
+            //check if it would go out of bounds
+            if (g2d.getFontMetrics().stringWidth(drawnSB.toString()) > (SDParent.getLocalImgWidth(baseImage) - ((SDParent.localScaleInt(10)) * 2))) {
+                //move the start index over
+                startDisplayPos++;
+
+                //rerender the string
+                generateStringBuilder();
+                //recurse until it fits
+                stringDisplayCutoff(g2d, SDParent);
+            }
+        } else if (stringCutoffMode == 2) {
+            //don't adjust the startDisplayPos, just truncate off the end that does not fit
+            //check if it would go out of bounds
+            boolean recurse = false;
+
+            /*
+            System.out.println("cursorPos: " + cursorPos);
+            System.out.println("charsNum: " + charsNum);
+            System.out.println(drawnSB.toString() + " len: " + drawnSB.toString().length());
+            System.out.println("startDisplayPos: " + startDisplayPos);
+            System.out.println("endDisplayPos: " + endDisplayPos);
+            System.out.println("");
+             */
+            //check if the cursor would go out of bounds
+            if (cursorPos - startDisplayPos > drawnSB.toString().length()) {
+                //back off the end cutoff
+                endDisplayPos--;
+
+                //rerender the string
+                generateStringBuilder();
+            }
+
+            //also check if the cursor would go over
+            if ((SDParent.localScaleInt(10) + g2d.getFontMetrics().stringWidth(drawnSB.toString().substring(0, cursorPos - startDisplayPos))) > (SDParent.getLocalImgWidth(baseImage) - ((SDParent.localScaleInt(10))))) {
+                //back the cursor up
+                cursorPos--;
+
+                //shift the start pos over
+                if (startDisplayPos < charsNum) {
+                    startDisplayPos++;
+                    cursorPos++;
+
+                }
+
+                if (endDisplayPos > 0) {
+                    endDisplayPos--;
+                }
+
+                recurse = true;
+            }
 
             //rerender the string
             generateStringBuilder();
+
+            //hide anything that still goes over
+            if (g2d.getFontMetrics().stringWidth(drawnSB.toString()) > (SDParent.getLocalImgWidth(baseImage) - ((SDParent.localScaleInt(10)) * 2))) {
+                //cut off the end of the string
+                endDisplayPos++;
+
+                recurse = true;
+
+            }
+
+            if (recurse) {
+                //rerender the string
+                generateStringBuilder();
+                //recurse until it fits
+                stringDisplayCutoff(g2d, SDParent);
+            }
+
         }
     }
 
