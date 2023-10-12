@@ -86,8 +86,8 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
-        connectBtn = new SettlerBtn(true, 0, 24);
-        colourRequestBtn = new SettlerBtn(false, 0, 25);
+        connectBtn = new SettlerBtn(true, 0, 26);
+        colourRequestBtn = new SettlerBtn(false, 0, 27);
         //add them to the array
         settlerBtns = new SettlerBtn[]{exitBtn, connectBtn, colourRequestBtn};
         //Setup the labels

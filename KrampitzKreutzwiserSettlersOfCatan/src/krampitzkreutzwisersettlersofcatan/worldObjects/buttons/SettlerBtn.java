@@ -83,6 +83,8 @@ public class SettlerBtn extends SettlerComponent {
     //texts for the big button on the other menu pages
     private final static Image START_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/startGameText.png")).getImage();
     private final static Image SAVE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/saveText.png")).getImage();
+    private final static Image CONNECT_CLIENT_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientText.png")).getImage();
+    private final static Image REQUEST_COLOUR_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourText.png")).getImage();
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -246,7 +248,11 @@ public class SettlerBtn extends SettlerComponent {
             case 24:
             //if it's a big Start Game Button
             case 25:
-                //if it's a big save Button
+            //if it's a big save Button
+            case 26:
+            //if it's a big connect button for clients of the game server
+            case 27:
+                //if it's a big request colour button
                 baseImage = BIG_BTN;
                 disabledImage = BIG_DISABLED_BTN;
                 break;
@@ -379,6 +385,14 @@ public class SettlerBtn extends SettlerComponent {
             case 25:
                 //if it's a big start game button
                 textImage = SAVE_BTN_TEXT;
+                break;
+            case 26:
+                //if it's a big connect button for clients of the game server
+                textImage = CONNECT_CLIENT_BTN_TEXT;
+                break;
+            case 27:
+                //if it's a big request colour button
+                textImage = REQUEST_COLOUR_BTN_TEXT;
                 break;
             default:
                 //deflault to error image
