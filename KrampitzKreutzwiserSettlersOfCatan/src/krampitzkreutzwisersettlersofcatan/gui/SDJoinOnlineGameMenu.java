@@ -35,17 +35,17 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn exitBtn;
+    private SettlerBtn exitBtn, connectBtn, colourRequestBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
-    private SettlerLbl mainDesc, connectionIPLbl, connectionPortLbl;
+    private SettlerLbl mainDesc, connectionIPLbl, connectionPortLbl, colourSelectLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
-    //private SettlerRadioBtn RadioBtn;
+    private SettlerRadioBtn colourSelectRedRBtn, colourSelectBlueRBtn, colourSelectOrangeRBtn, colourSelectWhiteRBtn;
     //arry for each group of radio buttons
-    //private SettlerRadioBtn[] settlerRadioGROUPBtns;
+    private SettlerRadioBtn[] settlerRadioColourSelectBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
     //settler text boxes
@@ -86,8 +86,10 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
+        connectBtn = new SettlerBtn(true, 0, 24);
+        colourRequestBtn = new SettlerBtn(true, 0, 25);
         //add them to the array
-        settlerBtns = new SettlerBtn[]{exitBtn};
+        settlerBtns = new SettlerBtn[]{exitBtn, connectBtn, colourRequestBtn};
         //Setup the labels
         mainDesc = new SettlerLbl("To join an online game please ensure the folowing:");
         mainDesc.setForeground(DomesticTradePanel.BEIGE_COLOUR);
@@ -97,16 +99,24 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         connectionIPLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         connectionPortLbl = new SettlerLbl("Connection port:");
         connectionPortLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        colourSelectLbl = new SettlerLbl("Select the colour you would like to play as:");
+        colourSelectLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
 
         //add them to the array
-        settlerLbls = new SettlerLbl[]{mainDesc, connectionIPLbl, connectionPortLbl};
+        settlerLbls = new SettlerLbl[]{mainDesc, connectionIPLbl, connectionPortLbl, colourSelectLbl};
 
         //setup the radio buttons        
-        //go here
+        colourSelectRedRBtn = new SettlerRadioBtn(true, true, 3);
+        colourSelectBlueRBtn = new SettlerRadioBtn(true, false, 4);
+        colourSelectOrangeRBtn = new SettlerRadioBtn(true, false, 5);
+        colourSelectWhiteRBtn = new SettlerRadioBtn(true, false, 6);
+
         //add them to the group array
-        //go here
+        settlerRadioColourSelectBtns = new SettlerRadioBtn[]{colourSelectRedRBtn, colourSelectBlueRBtn, colourSelectOrangeRBtn, colourSelectWhiteRBtn};
+
         //add the group to the main array
-        settlerRadioBtnGroups = new SettlerRadioBtn[0][];
+        settlerRadioBtnGroups = new SettlerRadioBtn[1][];
+        settlerRadioBtnGroups[0] = settlerRadioColourSelectBtns;
 
         //setup the custom radio buttons to go into the groups
         for (SettlerRadioBtn[] grp : settlerRadioBtnGroups) {
@@ -221,6 +231,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         mainDesc.calcNumLinesCarriageReturn();
         connectionIPLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         connectionPortLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        colourSelectLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
 
         //set positions
         mainDesc.setXPos(localScaleInt(50)); //line up with the title
@@ -230,17 +241,39 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         connectionIPLbl.setYPos(mainDesc.getYPos() + ((mainDesc.getNumLines() + 1) * localScaleInt(mainDesc.getLinewrapSpace())));
 
         connectionIPTxtBx.setXPos(connectionIPLbl.getXPos());
-        connectionIPTxtBx.setYPos(connectionIPLbl.getYPos() + localScaleInt(30));
+        connectionIPTxtBx.setYPos(connectionIPLbl.getYPos() + localScaleInt(15));
 
-        connectionPortLbl.setXPos(localScaleInt(1200));
+        connectionPortLbl.setXPos(localScaleInt(1100));
         connectionPortLbl.setYPos(connectionIPLbl.getYPos());
-        
+
         connectionPortTxtBx.setXPos(connectionPortLbl.getXPos());
-        connectionPortTxtBx.setYPos(connectionPortLbl.getYPos() + localScaleInt(30));
+        connectionPortTxtBx.setYPos(connectionPortLbl.getYPos() + localScaleInt(15));
+
+        colourSelectLbl.setXPos(connectionIPLbl.getXPos());
+        colourSelectLbl.setYPos(connectionIPLbl.getYPos() + localScaleInt(70) + sDMenuFrame.getImgHeightLocal(connectionIPTxtBx.getBaseImage(), this));
+
+        colourSelectRedRBtn.setXPos(colourSelectLbl.getXPos());
+        colourSelectRedRBtn.setYPos(colourSelectLbl.getYPos() + localScaleInt(15));
+
+        colourSelectBlueRBtn.setXPos(colourSelectRedRBtn.getXPos() + getLocalImgWidth(colourSelectRedRBtn.getBaseImage()) + localScaleInt(6));
+        colourSelectBlueRBtn.setYPos(colourSelectRedRBtn.getYPos());
+
+        colourSelectOrangeRBtn.setXPos(colourSelectBlueRBtn.getXPos() + getLocalImgWidth(colourSelectBlueRBtn.getBaseImage()) + localScaleInt(6));
+        colourSelectOrangeRBtn.setYPos(colourSelectBlueRBtn.getYPos());
+
+        colourSelectWhiteRBtn.setXPos(colourSelectOrangeRBtn.getXPos() + getLocalImgWidth(colourSelectOrangeRBtn.getBaseImage()) + localScaleInt(6));
+        colourSelectWhiteRBtn.setYPos(colourSelectOrangeRBtn.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
+        
+        connectBtn.setXPos(exitBtn.getXPos());
+        connectBtn.setYPos(exitBtn.getYPos() + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
+        
+        colourRequestBtn.setXPos(connectBtn.getXPos());
+        colourRequestBtn.setYPos(connectBtn.getYPos() + sDMenuFrame.getImgHeightLocal(connectBtn.getBaseImage(), this) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
+        
 
     }
 
@@ -263,10 +296,14 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
                     && evt.getX() < (btn.getXPos() + sDMenuFrame.getImgWidthLocal(btn.getBaseImage(), this))
                     && evt.getY() < (btn.getYPos() + sDMenuFrame.getImgHeightLocal(btn.getBaseImage(), this))
                     && btn.isEnabled()) { //and that it is enabled
-
+                
                 //check the button that was pressed
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
+                } else if (btn.equals(connectBtn)) { //if it was the connectBtn button
+                    connectBtnActionPerformed();
+                } else if (btn.equals(colourRequestBtn)) { //if it was the colourRequestBtn button
+                    colourRequestBtnActionPerformed();
                 }
             }
         }
@@ -361,7 +398,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         }
 
         //check if the player moved the mouse over one of the SettlerTxtBxs
-        for (SettlerTxtBx bx : settlerTxtBxs) { 
+        for (SettlerTxtBx bx : settlerTxtBxs) {
             if (mouseMotionPosX > bx.getXPos()
                     && mouseMotionPosY > bx.getYPos()
                     && mouseMotionPosX < (bx.getXPos() + sDMenuFrame.getImgWidthLocal(bx.getBaseImage(), this))
@@ -402,6 +439,14 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+    }
+    
+    private void connectBtnActionPerformed() {
+        System.out.println("TODO: Connect...");
+    }
+
+    private void colourRequestBtnActionPerformed() {
+        System.out.println("TODO: Request the colour...");
     }
 
     /**
