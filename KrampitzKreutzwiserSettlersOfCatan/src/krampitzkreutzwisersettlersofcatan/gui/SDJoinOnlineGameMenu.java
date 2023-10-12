@@ -87,7 +87,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
         connectBtn = new SettlerBtn(true, 0, 24);
-        colourRequestBtn = new SettlerBtn(true, 0, 25);
+        colourRequestBtn = new SettlerBtn(false, 0, 25);
         //add them to the array
         settlerBtns = new SettlerBtn[]{exitBtn, connectBtn, colourRequestBtn};
         //Setup the labels
@@ -106,10 +106,10 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         settlerLbls = new SettlerLbl[]{mainDesc, connectionIPLbl, connectionPortLbl, colourSelectLbl};
 
         //setup the radio buttons        
-        colourSelectRedRBtn = new SettlerRadioBtn(true, true, 3);
-        colourSelectBlueRBtn = new SettlerRadioBtn(true, false, 4);
-        colourSelectOrangeRBtn = new SettlerRadioBtn(true, false, 5);
-        colourSelectWhiteRBtn = new SettlerRadioBtn(true, false, 6);
+        colourSelectRedRBtn = new SettlerRadioBtn(false, true, 3);
+        colourSelectBlueRBtn = new SettlerRadioBtn(false, false, 4);
+        colourSelectOrangeRBtn = new SettlerRadioBtn(false, false, 5);
+        colourSelectWhiteRBtn = new SettlerRadioBtn(false, false, 6);
 
         //add them to the group array
         settlerRadioColourSelectBtns = new SettlerRadioBtn[]{colourSelectRedRBtn, colourSelectBlueRBtn, colourSelectOrangeRBtn, colourSelectWhiteRBtn};
