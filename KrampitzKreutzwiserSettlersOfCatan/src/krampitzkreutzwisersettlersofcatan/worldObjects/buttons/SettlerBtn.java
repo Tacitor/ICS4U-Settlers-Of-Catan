@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 
+import animation.SettlerBtnAnimationData;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
@@ -19,6 +20,7 @@ public class SettlerBtn extends SettlerComponent {
 
     //data attribute
     private int mode; //the mode the button is in. Decides what text to display
+    private SettlerBtnAnimationData settlerBtnAnimationData;
 
     //static button images
     /**
@@ -121,6 +123,8 @@ public class SettlerBtn extends SettlerComponent {
         mode = 0;
         type = 0; //set to card togggle button
 
+        settlerBtnAnimationData = new SettlerBtnAnimationData();
+
         updateText(); //update the text
         updateButtonImages(); //update the base image and disabled images
     }
@@ -162,6 +166,41 @@ public class SettlerBtn extends SettlerComponent {
 
         updateText(); //update the text
         updateButtonImages(); //update the base iamge and disabled images
+    }
+
+    public int getAnimationFrame() {
+        //the image the method will return
+        int frameTime;
+
+        //the index of the array that contains the current frame of animation
+        int frameIndex = settlerBtnAnimationData.getCurrentFrameIndex();
+
+        //pick one of the frame times
+        frameTime = settlerBtnAnimationData.getFrameTime();
+
+        //decide if a new frame needs to be displayed or if the current one is still the one it should be on
+        if (System.currentTimeMillis() - (settlerBtnAnimationData.getLastFrameStart()) > frameTime) {
+            //yes it is time for a new frame
+
+            //debug frame times
+            //System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
+            //calculate the index the frame needs to be pulled from
+            frameIndex++; //the new frame will just be one after the current one
+
+            //and make a check that it won't be out of bounds
+            if (frameIndex >= CONNECT_CLIENT_BTN_CONNECTING_TEXTS.length) {
+                frameIndex = 0; //reset it to the beginning
+            }
+
+            //update the time
+            settlerBtnAnimationData.setLastFrameStart(System.currentTimeMillis());
+
+            //update the frame index
+            settlerBtnAnimationData.setCurrentFrameIndex(frameIndex);
+
+        }
+
+        return frameIndex;
     }
 
     /**
@@ -397,6 +436,9 @@ public class SettlerBtn extends SettlerComponent {
                 break;
             case 26:
                 //if it's a big connect button for clients of the game server
+                //fist set the right frame for a connection
+                connect_client_btn_texts[4] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
+
                 textImage = connect_client_btn_texts[mode];
                 break;
             case 27:
