@@ -196,6 +196,12 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
             //draw the text
             sDMenuFrame.drawSettlerBtn(g2d, btn.getTextImage(), btn, 0, this);
 
+            //draw the secondary text overlay for certain button types
+            //mainly for the connect button when it needs a failed number
+            if (btn == connectBtn) {
+                sDMenuFrame.drawSettlerBtnTextLayer(g2d, btn, "" + failCounter, this);
+            }
+
             //draw the disabled overlay if required
             if (!btn.isEnabled()) {
                 sDMenuFrame.drawSettlerBtn(g2d, btn.getDisabledImage(), btn, 0, this);

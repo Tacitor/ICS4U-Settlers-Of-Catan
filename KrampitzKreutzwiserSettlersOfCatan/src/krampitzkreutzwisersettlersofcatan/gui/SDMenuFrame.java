@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -32,6 +33,7 @@ public class SDMenuFrame extends javax.swing.JFrame implements KeyListener {
 
     //attributes
     final static int MENU_PACKING_HEIGHT = 12;
+    public static Font CALIBRI;
 
     /**
      * Main Constructor
@@ -46,6 +48,8 @@ public class SDMenuFrame extends javax.swing.JFrame implements KeyListener {
      * Initialize and set up the JFrame
      */
     private void initFrame() {
+        CALIBRI = setUpCalibriFont();
+
         sDMainMenuPanel = new SDMainMenuPanel(this);
 
         setTitle("Settlers of Catan - ICS4U Edition");
@@ -147,6 +151,69 @@ public class SDMenuFrame extends javax.swing.JFrame implements KeyListener {
                 btn.getYPos(),
                 width,
                 height, null);
+    }
+
+    /**
+     * Draw an additional layer on the SettlerBtn with Graphics 2D. Adds on an
+     * new string on top of what is already drawn.
+     *
+     * @param g2d
+     * @param btn
+     * @param text
+     * @param parent
+     */
+    public void drawSettlerBtnTextLayer(Graphics2D g2d, SettlerBtn btn, String text, JComponent parent) {
+        if (parent instanceof SDScaleImageResizeable) {
+
+            //check if need to draw the fail number
+            if (btn.getMode() == 2) {
+                SDScaleImageResizeable sdParent = (SDScaleImageResizeable) parent;
+
+                //grab the current font
+                Font oldFont = g2d.getFont();
+                Color oldColour = g2d.getColor();
+
+                //set the colour and font
+                g2d.setFont(new Font(CALIBRI.getName(), CALIBRI.getStyle(), sdParent.localScaleInt((int) (17 * 2.5))));
+                g2d.setColor(new Color(57, 39, 32));
+
+                //draw the string
+                g2d.drawString(text, btn.getXPos() + sdParent.localScaleInt(225), btn.getYPos() + sdParent.localScaleInt(55));
+                g2d.drawString(text, btn.getXPos() + sdParent.localScaleInt(225) + 1, btn.getYPos() + sdParent.localScaleInt(55));
+
+                //set it back
+                g2d.setFont(oldFont);
+                g2d.setColor(oldColour);
+            }
+        } else {
+            System.out.println("ERROR: parent is not instanceof SDScaleImageResizeable.");
+        }
+    }
+
+    /**
+     * Return the Times New Roman font. Setup and load the TrueType font from
+     * the file system for use in game.
+     *
+     * @return
+     */
+    private Font setUpCalibriFont() {
+
+        Font tempFont = null;
+
+        try {
+            //System.out.println(url.getPath());
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("font/calibri.ttf")));
+
+            tempFont = new Font("Calibri", Font.PLAIN, 17);
+
+        } catch (FontFormatException ex) {
+            System.out.println("FontFormatException: " + ex);
+        } catch (IOException ex) {
+            System.out.println("IOException: " + ex);
+        }
+
+        return tempFont;
     }
 
     /**
