@@ -84,7 +84,16 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image START_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/startGameText.png")).getImage();
     private final static Image SAVE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/saveText.png")).getImage();
     private final static Image CONNECT_CLIENT_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientText.png")).getImage();
+    private final static Image CONNECT_CLIENT_CONNECTING_0_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientConnecting0Text.png")).getImage();
+    private final static Image CONNECT_CLIENT_CONNECTING_1_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientConnecting1Text.png")).getImage();
+    private final static Image CONNECT_CLIENT_CONNECTING_2_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientConnecting2Text.png")).getImage();
+    private final static Image CONNECT_CLIENT_FAILED_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientFailedText.png")).getImage();
+    private final static Image CONNECT_CLIENT_SUCCESS_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientSuccessText.png")).getImage();
+    private final static Image CONNECT_CLIENT_NO_PORT_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientNoPortText.png")).getImage();
     private final static Image REQUEST_COLOUR_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourText.png")).getImage();
+    //array
+    private static Image[] connect_client_btn_texts = new Image[]{CONNECT_CLIENT_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, CONNECT_CLIENT_FAILED_TEXT, CONNECT_CLIENT_NO_PORT_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
+    private final static Image[] CONNECT_CLIENT_BTN_CONNECTING_TEXTS = new Image[]{CONNECT_CLIENT_CONNECTING_0_TEXT, CONNECT_CLIENT_CONNECTING_1_TEXT, CONNECT_CLIENT_CONNECTING_2_TEXT};
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -388,7 +397,7 @@ public class SettlerBtn extends SettlerComponent {
                 break;
             case 26:
                 //if it's a big connect button for clients of the game server
-                textImage = CONNECT_CLIENT_BTN_TEXT;
+                textImage = connect_client_btn_texts[mode];
                 break;
             case 27:
                 //if it's a big request colour button

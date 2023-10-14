@@ -17,6 +17,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.InputStream;
 import java.util.Scanner;
+import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
+import krampitzkreutzwisersettlersofcatan.sockets.CatanServer;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
@@ -30,6 +32,10 @@ import textures.ImageRef;
 public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
 
     private SDMenuFrame sDMenuFrame;
+
+    private CatanClient client;
+    private int failCounter; //keeps track of how many failed connection attempts there have been
+
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
     private int mouseMotionPosY;
@@ -441,7 +447,13 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     }
 
     private void connectBtnActionPerformed() {
-        System.out.println("TODO: Connect...");
+        connectBtn.setEnabled(false);
+        connectBtn.setMode(4); //mode 4 for connecting
+        //System.out.println("Connecting...");
+
+        FindServerRunnable findServerRunnable = new FindServerRunnable();
+        findServerRunnable.setDaemon(true);
+        findServerRunnable.start();
     }
 
     private void colourRequestBtnActionPerformed() {
@@ -504,5 +516,108 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
                 bx.keyPress(evt);
             }
         }
+    }
+
+    private void findServer() {
+        if (client == null) {
+            //create a new client and don't request any colour
+            client = new CatanClient(700, 200, "localhost", sDMenuFrame.getSDMainMenuPanel().getGameFrame(), 25570);
+        }
+        //create a CatanClient and connect to the ip specified
+        try {
+
+            String input = connectionPortTxtBx.getTextStr();
+
+            //=-=-=-=-=-=-=-=-=-=-=Port Check Start=-=-=-=-=-=-=-=-=-=-=
+            //make sure the port input is good
+            //if a blank feild
+            if (!input.equals("")) {
+
+                //if the feild is not blank check if it's and integer
+                try {
+                    int portNum = Integer.parseInt(input);
+
+                    //make sure no important ports
+                    if (portNum != 80 && portNum != 443) {
+
+                        client.setPort(portNum);
+                    } else {
+                        connectBtn.setMode(3); //mode 3 for a port error
+                        System.out.println("ERROR in: SDJoinOnlineGameMenu\nNo HTTP port! Try again");
+                    }
+
+                } catch (NumberFormatException e) {
+                    connectBtn.setMode(3); //mode 3 for a port error
+                    System.out.println("ERROR in: SDJoinOnlineGameMenu\nNo port num! Try again");
+                }
+
+            } else {
+                connectBtn.setMode(3); //mode 3 for a port error
+                System.out.println("ERROR in: SDJoinOnlineGameMenu\nMust have port Num! Try again");
+            }
+
+            //=-=-=-=-=-=-=-=-=-=-=Port Check End=-=-=-=-=-=-=-=-=-=-=
+            //update the ip
+            client.setIp(connectionIPTxtBx.getTextStr());
+
+            //try to connect
+            boolean succesfulConnect = client.connectToServer();
+
+            if (succesfulConnect) {
+                connectBtn.setMode(1); //mode 1 for success
+                //System.out.println("Connection Success");
+
+                client.setUpGUI();
+                client.setUpButton();
+
+                //save the client and the max number of players now because the colour request could finish first
+                GamePanel.setCatanClient(client);
+                GamePanel.setPlayerCount(client.getMaxClients());
+
+                //enable all the colour buttons
+                colourSelectRedRBtn.setEnabled(true);
+                colourSelectBlueRBtn.setEnabled(true);
+                colourSelectOrangeRBtn.setEnabled(true);
+                colourSelectWhiteRBtn.setEnabled(true);
+                colourRequestBtn.setEnabled(true);
+
+            } else {
+                //count a fail
+                failCounter++;
+
+                connectBtn.setMode(2); //set mode 2 for the failed condition
+                //Failed ( X )! Try again
+                System.out.println("ERROR in: SDJoinOnlineGameMenu\nConnection Failed (" + failCounter + ")! Try again\n");
+                connectBtn.setEnabled(true);
+            }
+        } catch (Exception e) {
+            System.out.println("Error connecting to server: \n" + e);
+        }
+    }
+
+    private class FindServerRunnable extends Thread implements Runnable {
+
+        private boolean stopRequested = false;
+
+        public synchronized void requestStop() {
+            stopRequested = true;
+        }
+
+        @Override
+        public void run() {
+            //debug the life of the thread and how long it lives for
+            //System.out.println("Started connectio attempt");
+
+            //check if this thread should stop
+            while (!stopRequested) {
+                //try to connect
+                findServer();
+                //only run once
+                stopRequested = true;
+            }
+
+            //System.out.println("done connection attempt");
+        }
+
     }
 }
