@@ -106,10 +106,10 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         settlerLbls = new SettlerLbl[]{mainDesc, connectionIPLbl, connectionPortLbl, colourSelectLbl};
 
         //setup the radio buttons        
-        colourSelectRedRBtn = new SettlerRadioBtn(false, true, 3);
-        colourSelectBlueRBtn = new SettlerRadioBtn(false, false, 4);
-        colourSelectOrangeRBtn = new SettlerRadioBtn(false, false, 5);
-        colourSelectWhiteRBtn = new SettlerRadioBtn(false, false, 6);
+        colourSelectRedRBtn = new SettlerRadioBtn(false, true, 18);
+        colourSelectBlueRBtn = new SettlerRadioBtn(false, false, 19);
+        colourSelectOrangeRBtn = new SettlerRadioBtn(false, false, 20);
+        colourSelectWhiteRBtn = new SettlerRadioBtn(false, false, 21);
 
         //add them to the group array
         settlerRadioColourSelectBtns = new SettlerRadioBtn[]{colourSelectRedRBtn, colourSelectBlueRBtn, colourSelectOrangeRBtn, colourSelectWhiteRBtn};
@@ -267,13 +267,12 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
-        
+
         connectBtn.setXPos(exitBtn.getXPos());
         connectBtn.setYPos(exitBtn.getYPos() + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
-        
+
         colourRequestBtn.setXPos(connectBtn.getXPos());
         colourRequestBtn.setYPos(connectBtn.getYPos() + sDMenuFrame.getImgHeightLocal(connectBtn.getBaseImage(), this) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
-        
 
     }
 
@@ -296,7 +295,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
                     && evt.getX() < (btn.getXPos() + sDMenuFrame.getImgWidthLocal(btn.getBaseImage(), this))
                     && evt.getY() < (btn.getYPos() + sDMenuFrame.getImgHeightLocal(btn.getBaseImage(), this))
                     && btn.isEnabled()) { //and that it is enabled
-                
+
                 //check the button that was pressed
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
@@ -440,7 +439,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }
-    
+
     private void connectBtnActionPerformed() {
         System.out.println("TODO: Connect...");
     }

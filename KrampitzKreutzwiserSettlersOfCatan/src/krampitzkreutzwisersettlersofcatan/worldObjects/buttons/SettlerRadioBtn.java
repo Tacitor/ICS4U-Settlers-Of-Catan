@@ -64,6 +64,11 @@ public class SettlerRadioBtn extends SettlerComponent {
     private final static Image RADIO_BTN_1080P_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/windowed1080pBtnText.png")).getImage();
     private final static Image RADIO_BTN_720P_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/windowed720pBtnText.png")).getImage();
     private final static Image RADIO_BTN_800X600_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/windowed800x600BtnText.png")).getImage();
+    //texts for the join online game
+    private final static Image COLOUR_SELECT_RED_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/colourSelectRed.png")).getImage();
+    private final static Image COLOUR_SELECT_BLUE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/colourSelectBlue.png")).getImage();
+    private final static Image COLOUR_SELECT_ORANGE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/colourSelectOrange.png")).getImage();
+    private final static Image COLOUR_SELECT_WHITE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/colourSelectWhite.png")).getImage();
 
     //constructors
     /**
@@ -170,7 +175,11 @@ public class SettlerRadioBtn extends SettlerComponent {
             case 15:
             case 16:
             case 17:
-                //if type windowed dimestions
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+                //if type windowed dimestions or colour selection
                 baseImage = RADIO_BTN_BASE;
                 disabledImage = RADIO_BTN_DISABLED;
                 selectionImage = RADIO_BTN_SELECTION;
@@ -266,6 +275,22 @@ public class SettlerRadioBtn extends SettlerComponent {
             case 17:
                 //if type is city radio button
                 textImage = RADIO_BTN_800X600_TEXT;
+                break;
+            case 18:
+                //if type is red radio button
+                textImage = COLOUR_SELECT_RED_TEXT;
+                break;
+            case 19:
+                //if type is blue radio button
+                textImage = COLOUR_SELECT_BLUE_TEXT;
+                break;
+            case 20:
+                //if type is orange radio button
+                textImage = COLOUR_SELECT_ORANGE_TEXT;
+                break;
+            case 21:
+                //if type is white radio button
+                textImage = COLOUR_SELECT_WHITE_TEXT;
                 break;
             default:
                 //deflault to error image
