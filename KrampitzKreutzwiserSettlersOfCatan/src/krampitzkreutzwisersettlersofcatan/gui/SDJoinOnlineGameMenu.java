@@ -18,7 +18,6 @@ import java.awt.event.MouseMotionListener;
 import java.io.InputStream;
 import java.util.Scanner;
 import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
-import krampitzkreutzwisersettlersofcatan.sockets.CatanServer;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
@@ -462,68 +461,6 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         findServerRunnable.start();
     }
 
-    private void colourRequestBtnActionPerformed() {
-        System.out.println("TODO: Request the colour...");
-    }
-
-    /**
-     * Read the instructions from in the data file
-     */
-    public final void loadMaterial() {
-
-        // Declare variablesD
-        Scanner fileReader;
-        InputStream file = OldCode.class.getResourceAsStream("joinOnlineGame.txt");
-        String fileContents = "";
-
-        // Try to read the file
-        try {
-            // Create the scanner to read the file
-            fileReader = new Scanner(file);
-
-            // Read the entire file into a string
-            while (fileReader.hasNextLine()) {
-                // Read the line of the file into a line of the string
-                fileContents += fileReader.nextLine() + "\n";
-            }
-        } catch (Exception e) {
-            // Set the sring to be displayed to an error message
-            fileContents = "Error: credits file could not be read.";
-            // Output the jsvs error to the standard output
-            System.out.println("Error reading credits file: " + e);
-        }
-
-        // Display the file's contents from the string
-        mainDesc.setText(fileContents);
-    }
-
-    @Override
-    public int getLocalImgWidth(Image image) {
-        return sDMenuFrame.getImgWidthLocal(image, this);
-    }
-
-    @Override
-    public int getLocalImgHeight(Image image) {
-        return sDMenuFrame.getImgHeightLocal(image, this);
-    }
-
-    /**
-     * What to do when the user clicks a key on their keyboard This will be
-     * called by the SDMainMenuPanel which was called by the SDMenuFrame
-     *
-     * @param evt
-     */
-    public void keyPress(KeyEvent evt) {
-
-        //check if there is a selected text box ready for input
-        for (SettlerTxtBx bx : settlerTxtBxs) {
-            if (bx.isSelected() && bx.isEnabled()) { //and that it is enabled
-
-                bx.keyPress(evt);
-            }
-        }
-    }
-
     private void findServer() {
         if (client == null) {
             //create a new client and don't request any colour
@@ -598,6 +535,116 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
             }
         } catch (Exception e) {
             System.out.println("Error connecting to server: \n" + e);
+        }
+    }
+
+    private void colourRequestBtnActionPerformed() {
+        colourRequestBtn.setMode(4); //mode 4 for connecting
+
+        int colourRequest; //store the colour to request
+
+        //get the colour the user wants
+        if (colourSelectRedRBtn.isSelected()) {
+            colourRequest = 1; //request red
+        } else if (colourSelectBlueRBtn.isSelected()) {
+            colourRequest = 2; //request blue
+        } else if (colourSelectOrangeRBtn.isSelected()) {
+            colourRequest = 3; //request orange
+        } else if (colourSelectWhiteRBtn.isSelected()) {
+            colourRequest = 4; //request white
+        } else {
+            colourRequest = 0; //default to whatever the server want to give me
+        }
+
+        //request the player colour
+        client.requestColour(colourRequest); //request any colour
+
+        //System.out.println("coluour: " + client.getClientColour());
+        //wait for the response to come through
+        while (client.getClientColour() == 0) {
+            try {
+                //while there is no assinged colour do nothing and just wait
+                //System.out.println("coluour still: " + client.getClientColour());
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                System.out.println("Error requesing colour in JoinOnlineGameMenu");
+            }
+        }
+
+        System.out.println("colourRequest: " + colourRequest);
+        System.out.println("client.getClientColour(): " + client.getClientColour() + "\n");
+
+        //if the colour request was successfule tell the game
+        if (client.getClientColour() == colourRequest) {
+
+            //once the client has been set up save it to the game panel
+            GamePanel.setOnlineMode(client.getClientColour());
+
+            colourRequestBtn.setMode(1);
+            colourRequestBtn.setEnabled(false);
+
+            //now hide this window
+            this.setVisible(false);
+        } else { //the the user that it failed
+            colourRequestBtn.setMode(2);
+        }
+    }
+
+    /**
+     * Read the instructions from in the data file
+     */
+    public final void loadMaterial() {
+
+        // Declare variablesD
+        Scanner fileReader;
+        InputStream file = OldCode.class.getResourceAsStream("joinOnlineGame.txt");
+        String fileContents = "";
+
+        // Try to read the file
+        try {
+            // Create the scanner to read the file
+            fileReader = new Scanner(file);
+
+            // Read the entire file into a string
+            while (fileReader.hasNextLine()) {
+                // Read the line of the file into a line of the string
+                fileContents += fileReader.nextLine() + "\n";
+            }
+        } catch (Exception e) {
+            // Set the sring to be displayed to an error message
+            fileContents = "Error: credits file could not be read.";
+            // Output the jsvs error to the standard output
+            System.out.println("Error reading credits file: " + e);
+        }
+
+        // Display the file's contents from the string
+        mainDesc.setText(fileContents);
+    }
+
+    @Override
+    public int getLocalImgWidth(Image image) {
+        return sDMenuFrame.getImgWidthLocal(image, this);
+    }
+
+    @Override
+    public int getLocalImgHeight(Image image) {
+        return sDMenuFrame.getImgHeightLocal(image, this);
+    }
+
+    /**
+     * What to do when the user clicks a key on their keyboard This will be
+     * called by the SDMainMenuPanel which was called by the SDMenuFrame
+     *
+     * @param evt
+     */
+    public void keyPress(KeyEvent evt) {
+
+        //check if there is a selected text box ready for input
+        for (SettlerTxtBx bx : settlerTxtBxs) {
+            if (bx.isSelected() && bx.isEnabled()) { //and that it is enabled
+
+                bx.keyPress(evt);
+            }
         }
     }
 

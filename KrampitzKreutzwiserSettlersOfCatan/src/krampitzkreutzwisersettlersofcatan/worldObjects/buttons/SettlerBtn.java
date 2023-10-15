@@ -443,7 +443,11 @@ public class SettlerBtn extends SettlerComponent {
                 break;
             case 27:
                 //if it's a big request colour button
-                textImage = REQUEST_COLOUR_BTN_TEXT;
+                //textImage = REQUEST_COLOUR_BTN_TEXT;
+
+                connect_client_btn_texts[4] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
+
+                textImage = connect_client_btn_texts[mode];
                 break;
             default:
                 //deflault to error image
