@@ -93,9 +93,11 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image CONNECT_CLIENT_SUCCESS_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientSuccessText.png")).getImage();
     private final static Image CONNECT_CLIENT_NO_PORT_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientNoPortText.png")).getImage();
     private final static Image REQUEST_COLOUR_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourText.png")).getImage();
+    private final static Image REQUEST_COLOUR_BTN_FAILED_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourTextNotAvail.png")).getImage();
     //array
     private static Image[] connect_client_btn_texts = new Image[]{CONNECT_CLIENT_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, CONNECT_CLIENT_FAILED_TEXT, CONNECT_CLIENT_NO_PORT_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
     private final static Image[] CONNECT_CLIENT_BTN_CONNECTING_TEXTS = new Image[]{CONNECT_CLIENT_CONNECTING_0_TEXT, CONNECT_CLIENT_CONNECTING_1_TEXT, CONNECT_CLIENT_CONNECTING_2_TEXT};
+    private static Image[] request_colour_btn_texts = new Image[]{REQUEST_COLOUR_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, REQUEST_COLOUR_BTN_FAILED_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -445,9 +447,9 @@ public class SettlerBtn extends SettlerComponent {
                 //if it's a big request colour button
                 //textImage = REQUEST_COLOUR_BTN_TEXT;
 
-                connect_client_btn_texts[4] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
+                request_colour_btn_texts[3] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
 
-                textImage = connect_client_btn_texts[mode];
+                textImage = request_colour_btn_texts[mode];
                 break;
             default:
                 //deflault to error image

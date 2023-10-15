@@ -539,7 +539,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     }
 
     private void colourRequestBtnActionPerformed() {
-        colourRequestBtn.setMode(4); //mode 4 for connecting
+        colourRequestBtn.setMode(3); //mode 3 for requesting a colour
 
         int colourRequest; //store the colour to request
 
