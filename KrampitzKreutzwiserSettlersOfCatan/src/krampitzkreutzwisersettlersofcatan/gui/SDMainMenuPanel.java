@@ -39,7 +39,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final SDClientSettings sDClientSettings;
     private NewOnlineGameMenu newOnlineGameMenu;
     private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
-    private LoadOnlineGameMenu loadOnlineGameMenu;
+    private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
 
     //Attributes
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -69,7 +69,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         gameJFrame = new GameFrame(this);
         sDClientSettings = new SDClientSettings(sDMenuFrame);
         sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
-        loadOnlineGameMenu = new LoadOnlineGameMenu(this);
+        sDloadOnlineGameMenu = new SDLoadOnlineGameMenu(sDMenuFrame);
         newOnlineGameMenu = new NewOnlineGameMenu(this);
 
         //add the mouse motion listener
@@ -481,10 +481,10 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      * Show the menu to load a save file to Online Mode
      */
     private void loadToOnlineBtnActionPerformed() {
-        //make a new loading from a save file window
-        loadOnlineGameMenu = new LoadOnlineGameMenu(this);
-        loadOnlineGameMenu.setVisible(true);
-        this.setVisible(false);
+        //make a new loading from a save file windows        
+        loadGameToOnlineModeBtn.setmouseHover(false);
+        sDloadOnlineGameMenu = new SDLoadOnlineGameMenu(sDMenuFrame);
+        sDMenuFrame.switchPanel(this, sDloadOnlineGameMenu);
     }
 
     /**
@@ -519,8 +519,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      *
      * @return
      */
-    public LoadOnlineGameMenu getLoadOnlineGameMenu() {
-        return loadOnlineGameMenu;
+    public SDLoadOnlineGameMenu getLoadOnlineGameMenu() {
+        return sDloadOnlineGameMenu;
     }
 
     public int getExitMainMenuBtnYPos() {

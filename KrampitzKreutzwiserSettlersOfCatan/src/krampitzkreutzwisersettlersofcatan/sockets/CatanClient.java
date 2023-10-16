@@ -338,6 +338,7 @@ public class CatanClient extends JFrame {
             theGameFrame.setVisible(true);
             theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
             theGameFrame.getMainMenu().getLoadOnlineGameMenu().setVisible(false);
+            System.out.println("Debug this ^^^: CatanClient @ startUpClient1()");
 
             //send the save file
             sendGameToServer();
