@@ -40,7 +40,7 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn exitBtn, createServerBtnBtn, colourRequestBtn;
+    private SettlerBtn exitBtn, createServerBtn, colourRequestBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
@@ -91,10 +91,10 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
-        createServerBtnBtn = new SettlerBtn(true, 0, 26);
+        createServerBtn = new SettlerBtn(true, 0, 28);
         colourRequestBtn = new SettlerBtn(false, 0, 27);
         //add them to the array
-        settlerBtns = new SettlerBtn[]{exitBtn, createServerBtnBtn, colourRequestBtn};
+        settlerBtns = new SettlerBtn[]{exitBtn, createServerBtn, colourRequestBtn};
         //Setup the labels
         mainDesc = new SettlerLbl("To join an online game please ensure the folowing:");
         mainDesc.setForeground(DomesticTradePanel.BEIGE_COLOUR);
@@ -191,12 +191,6 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
             //draw the text
             sDMenuFrame.drawSettlerBtn(g2d, btn.getTextImage(), btn, 0, this);
 
-            //draw the secondary text overlay for certain button types
-            //mainly for the connect button when it needs a failed number
-            if (btn == createServerBtnBtn) {
-                sDMenuFrame.drawSettlerBtnTextLayer(g2d, btn, "" + failCounter, this);
-            }
-
             //draw the disabled overlay if required
             if (!btn.isEnabled()) {
                 sDMenuFrame.drawSettlerBtn(g2d, btn.getDisabledImage(), btn, 0, this);
@@ -268,11 +262,11 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
 
-        createServerBtnBtn.setXPos(exitBtn.getXPos());
-        createServerBtnBtn.setYPos(exitBtn.getYPos() + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
+        createServerBtn.setXPos(exitBtn.getXPos());
+        createServerBtn.setYPos(exitBtn.getYPos() + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
 
-        colourRequestBtn.setXPos(createServerBtnBtn.getXPos());
-        colourRequestBtn.setYPos(createServerBtnBtn.getYPos() + sDMenuFrame.getImgHeightLocal(createServerBtnBtn.getBaseImage(), this) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
+        colourRequestBtn.setXPos(createServerBtn.getXPos());
+        colourRequestBtn.setYPos(createServerBtn.getYPos() + sDMenuFrame.getImgHeightLocal(createServerBtn.getBaseImage(), this) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
 
     }
 
@@ -298,8 +292,8 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
                 //check the button that was pressed
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
-                } else if (btn.equals(createServerBtnBtn)) { //if it was the connectBtn button
-                    connectBtnActionPerformed();
+                } else if (btn.equals(createServerBtn)) { //if it was the connectBtn button
+                    createServerBtnActionPerformed();
                 } else if (btn.equals(colourRequestBtn)) { //if it was the colourRequestBtn button
                     colourRequestBtnActionPerformed();
                 }
@@ -443,7 +437,7 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         System.out.println("TODO: request colour");
     }
 
-    private void connectBtnActionPerformed() {
+    private void createServerBtnActionPerformed() {
         System.out.println("TODO: connect");
     }
 

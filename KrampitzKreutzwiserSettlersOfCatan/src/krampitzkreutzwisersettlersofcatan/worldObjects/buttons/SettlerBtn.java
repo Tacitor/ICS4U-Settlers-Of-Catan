@@ -94,10 +94,12 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image CONNECT_CLIENT_NO_PORT_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientNoPortText.png")).getImage();
     private final static Image REQUEST_COLOUR_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourText.png")).getImage();
     private final static Image REQUEST_COLOUR_BTN_FAILED_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourTextNotAvail.png")).getImage();
+    private final static Image CREATE_SERVER_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/createServerText.png")).getImage();
     //array
     private static Image[] connect_client_btn_texts = new Image[]{CONNECT_CLIENT_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, CONNECT_CLIENT_FAILED_TEXT, CONNECT_CLIENT_NO_PORT_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
     private final static Image[] CONNECT_CLIENT_BTN_CONNECTING_TEXTS = new Image[]{CONNECT_CLIENT_CONNECTING_0_TEXT, CONNECT_CLIENT_CONNECTING_1_TEXT, CONNECT_CLIENT_CONNECTING_2_TEXT};
     private static Image[] request_colour_btn_texts = new Image[]{REQUEST_COLOUR_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, REQUEST_COLOUR_BTN_FAILED_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
+    private static Image[] create_server_btn_texts = new Image[]{CREATE_SERVER_BTN_TEXT, CONNECT_CLIENT_NO_PORT_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -302,7 +304,9 @@ public class SettlerBtn extends SettlerComponent {
             case 26:
             //if it's a big connect button for clients of the game server
             case 27:
-                //if it's a big request colour button
+            //if it's a big request colour button
+            case 28:
+                //if it's a big create server button
                 baseImage = BIG_BTN;
                 disabledImage = BIG_DISABLED_BTN;
                 break;
@@ -445,11 +449,17 @@ public class SettlerBtn extends SettlerComponent {
                 break;
             case 27:
                 //if it's a big request colour button
-                //textImage = REQUEST_COLOUR_BTN_TEXT;
 
                 request_colour_btn_texts[3] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
 
                 textImage = request_colour_btn_texts[mode];
+                break;
+            case 28:
+
+                //if it's a create server button
+                create_server_btn_texts[2] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
+
+                textImage = create_server_btn_texts[mode];
                 break;
             default:
                 //deflault to error image
