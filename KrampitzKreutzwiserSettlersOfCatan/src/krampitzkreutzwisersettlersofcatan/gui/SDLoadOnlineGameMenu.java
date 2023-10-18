@@ -15,9 +15,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
+import krampitzkreutzwisersettlersofcatan.sockets.CatanServer;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
@@ -33,7 +40,8 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     private SDMenuFrame sDMenuFrame;
 
     private CatanClient client;
-    private int failCounter; //keeps track of how many failed connection attempts there have been
+    private CatanServer server;
+    private int portNum;
 
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
@@ -434,11 +442,204 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     }
 
     private void colourRequestBtnActionPerformed() {
-        System.out.println("TODO: request colour");
+
+        colourRequestBtn.setMode(3);
+
+        int colourRequest; //store the colour to request
+
+        //get the colour the user wants
+        if (colourSelectRedRBtn.isSelected()) {
+            colourRequest = 1; //request red
+        } else if (colourSelectBlueRBtn.isSelected()) {
+            colourRequest = 2; //request blue
+        } else if (colourSelectOrangeRBtn.isSelected()) {
+            colourRequest = 3; //request orange
+        } else if (colourSelectWhiteRBtn.isSelected()) {
+            colourRequest = 4; //request white
+        } else {
+            colourRequest = 0; //default to what every the server want to give me
+        }
+
+        //request the player colour
+        client.requestColour(colourRequest); //request any colour
+
+        //System.out.println("coluour: " + client.getClientColour());
+        //wait for the response to come through
+        while (client.getClientColour() == 0) {
+            try {
+                //while there is no assinged colour do nothing and just wait
+                //System.out.println("coluour still: " + client.getClientColour());
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                System.out.println("Error requesing colour in JoinOnlineGameMenu");
+            }
+        }
+
+        //if the colour request was successfule tell the game
+        if (client.getClientColour() == colourRequest) {
+
+            //once the client has been set up save it to the game panel
+            GamePanel.setOnlineMode(client.getClientColour());
+
+            colourRequestBtn.setMode(1);
+            colourRequestBtn.setEnabled(false);
+        } else { //the the user that it failed
+            colourRequestBtn.setMode(2);
+        }
+
     }
 
     private void createServerBtnActionPerformed() {
-        System.out.println("TODO: connect");
+        createServerBtn.setMode(2);
+
+        String input = connectionPortTxtBx.getTextStr();
+
+        //make sure the input is good
+        //if a blank feild
+        if (!input.equals("")) {
+
+            //if the feild is not blank check if it's and integer
+            try {
+                int portNum = Integer.parseInt(input);
+
+                //make sure no important ports
+                if (portNum != 80 && portNum != 443) {
+
+                    this.portNum = portNum;
+
+                    //=-=-=-=-=-=-=-=-=Save file Start=-=-=-=-=-=-=-=-=
+                    JFileChooser saveFileLoader = new JFileChooser(); //make a new file chooser
+
+                    //create a filter for catan save files
+                    FileFilter catanSaveFile = new FileFilter() {
+                        //add the description
+                        @Override
+                        public String getDescription() {
+                            return "Catan Save File (*.catan)";
+                        }
+
+                        //add the logic for the filter
+                        @Override
+                        public boolean accept(File f) {
+                            //if it's a directory ignor it
+                            if (f.isDirectory()) {
+                                return true;
+                            } else { //if it's a file only show it if it's a .catan file
+                                return f.getName().toLowerCase().endsWith(".catan");
+                            }
+                        }
+                    };
+
+                    //set up the file choose and call it
+                    saveFileLoader.setDialogTitle("Select a Save File to Open:");
+                    saveFileLoader.addChoosableFileFilter(catanSaveFile);
+                    saveFileLoader.setFileFilter(catanSaveFile);
+                    int userLoadSelection = saveFileLoader.showOpenDialog(this);
+
+                    //check if the user selected a file
+                    if (userLoadSelection == JFileChooser.APPROVE_OPTION) {
+
+                        //test if it is a vailid save file
+                        try {
+                            File savefile = new File(saveFileLoader.getSelectedFile().getPath());
+                            Scanner scanner = new Scanner(savefile);
+
+                            //reset the game                            
+                            sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+
+                            //check if it is a vailid game save
+                            if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
+                                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                                createServerBtn.setMode(0);
+                            } else { //if it is a real save file
+                                //check if the next line hold the player count
+                                if (scanner.nextLine().equals("playerCount:")) {
+                                    //set the player count
+                                    GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
+                                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+
+                                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().loadFromFile(saveFileLoader.getSelectedFile().getPath());
+
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                                    createServerBtn.setMode(0);
+                                }
+                            }
+
+                        } catch (FileNotFoundException e) {
+                            JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
+                            createServerBtn.setMode(0);
+                        }
+
+                    } else { //if there was so file selected
+                        JOptionPane.showMessageDialog(null, "There was no file selected.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                        createServerBtn.setMode(0);
+                    }
+
+                    //=-=-=-=-=-=-=-=-=Save file End=-=-=-=-=-=-=-=-=
+                    //disable the connection button
+                    createServerBtn.setEnabled(false);
+
+                    //run the server and client setup
+                    runSetup();
+                } else {
+                    createServerBtn.setMode(1);
+                }
+
+            } catch (NumberFormatException e) {
+                createServerBtn.setMode(1);
+            }
+
+        } else {
+            createServerBtn.setMode(1);
+        }
+    }
+
+    /**
+     * Sets everything up for other player to join over a network
+     */
+    public void runSetup() {
+        serverStartUp();
+        createFirstClient();
+
+        //enable all the colour buttons
+        colourSelectRedRBtn.setEnabled(true);
+        colourSelectBlueRBtn.setEnabled(true);
+        colourSelectOrangeRBtn.setEnabled(true);
+        colourSelectWhiteRBtn.setEnabled(true);
+        colourRequestBtn.setEnabled(true);
+    }
+
+    /**
+     * Create the local server
+     */
+    private void serverStartUp() {
+        server = new CatanServer(GamePanel.getPlayerCount(), portNum);
+
+        //create a new thread for the server
+        Thread t = new Thread(() -> {
+            server.acceptConnections();
+        });
+
+        //start running the server
+        t.start();
+    }
+
+    /**
+     * Creates a client to connect to the local server
+     */
+    private void createFirstClient() {
+        //create the new client and request to be the red player
+        client = new CatanClient(700, 200, "localhost", sDMenuFrame.getSDMainMenuPanel().getGameFrame(), portNum);
+        client.connectToServer();
+        client.setUpGUI();
+        client.setUpButton();
+        
+        createServerBtn.setMode(0); //reset to default text 
+
+        //pass the client to the game panel
+        GamePanel.setCatanClient(client);
+
     }
 
     /**
