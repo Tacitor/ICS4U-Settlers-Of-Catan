@@ -545,6 +545,9 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         if (sDJoinOnlineGameMenu != null && sDJoinOnlineGameMenu.isVisible()) {
             //pass it on
             sDJoinOnlineGameMenu.keyPress(evt);
+        } else if (sDloadOnlineGameMenu != null && sDloadOnlineGameMenu.isVisible()) { //Check if the SDLoadOnlineGameMenu is active
+            //pass it on
+            sDloadOnlineGameMenu.keyPress(evt);
         }
 
     }
