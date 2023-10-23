@@ -14,6 +14,7 @@ import textures.ImageRef;
  * @author Tacitor
  * @author Evan
  */
+@Deprecated
 public class NewOnlineGameMenu extends javax.swing.JFrame {
 
     private final SDMainMenuPanel mainMenuFrame;
