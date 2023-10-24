@@ -69,8 +69,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         gameJFrame = new GameFrame(this);
         sDClientSettings = new SDClientSettings(sDMenuFrame);
         sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
-        sDloadOnlineGameMenu = new SDLoadOnlineGameMenu(sDMenuFrame);
-        sDnewOnlineGameMenu = new SDNewOnlineGameMenu(sDMenuFrame);
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -548,6 +546,9 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         } else if (sDloadOnlineGameMenu != null && sDloadOnlineGameMenu.isVisible()) { //Check if the SDLoadOnlineGameMenu is active
             //pass it on
             sDloadOnlineGameMenu.keyPress(evt);
+        } else if (sDnewOnlineGameMenu != null && sDnewOnlineGameMenu.isVisible()) { //Check if the sDnewOnlineGameMenu is active
+            //pass it on
+            sDnewOnlineGameMenu.keyPress(evt);
         }
 
     }
