@@ -344,7 +344,94 @@ public class SDNewOnlineGameMenu extends javax.swing.JPanel implements MouseMoti
     }
 
     private void createServerBtnActionPerformed() {
-        System.out.println("TODO: Create the server");
+        String input = connectionPortTxtBx.getTextStr();
+
+        //make sure the input is good
+        //if a blank feild
+        if (!input.equals("")) {
+
+            //if the feild is not blank check if it's and integer
+            try {
+                int portNum = Integer.parseInt(input);
+
+                //make sure no important ports
+                if (portNum != 80 && portNum != 443) {
+
+                    this.portNum = portNum;
+
+                    //disable the button
+                    createServerBtn.setEnabled(false);
+
+                    //display a message showing that the server is being set up
+                    createServerBtn.setMode(2);
+
+                    //run the set up
+                    runSetup();
+                } else {
+                    createServerBtn.setMode(1);
+                }
+
+            } catch (NumberFormatException e) {
+                createServerBtn.setMode(1);
+            }
+
+        } else {
+            createServerBtn.setMode(1);
+        }
+    }
+
+    /**
+     * Sets everything up for other player to join over a network
+     */
+    public void runSetup() {
+        //reset the game panel
+        sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+
+        serverStartUp();
+        createFirstClient();
+
+        //show that the setup is complete by resetting the button to the default state
+        createServerBtn.setMode(0);
+
+    }
+
+    /**
+     * Create the local server
+     */
+    private void serverStartUp() {
+        server = new CatanServer(GamePanel.getPlayerCount(), portNum);
+
+        //create a new thread for the server
+        Thread t = new Thread(() -> {
+            server.acceptConnections();
+        });
+
+        //start running the server
+        t.start();
+    }
+
+    /**
+     * Creates a client to connect to the local server
+     */
+    private void createFirstClient() {
+        //create the new client and request to be the red player
+        client = new CatanClient(700, 200, "localhost", sDMenuFrame.getSDMainMenuPanel().getGameFrame(), portNum);
+        client.connectToServer();
+        client.setUpGUI();
+        client.setUpButton();
+
+        //request the player colour
+        client.requestColour(1); //request the red player
+
+        //wait for the response to come through
+        while (client.getClientColour() == 0) {
+            //while there is no assinged colour do nothing and just wait
+        }
+
+        //once the client has been set up save it to the game panel
+        GamePanel.setOnlineMode(client.getClientColour());
+        GamePanel.setCatanClient(client);
+
     }
 
     /**

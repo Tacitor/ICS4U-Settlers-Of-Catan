@@ -583,8 +583,10 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
             colourRequestBtn.setMode(1);
             colourRequestBtn.setEnabled(false);
 
-            //now hide this window
-            this.setVisible(false);
+            //reset to the main menu
+            sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+            //now hide the main menu frame window
+            sDMenuFrame.setVisible(false);
         } else { //the the user that it failed
             colourRequestBtn.setMode(2);
         }

@@ -332,13 +332,16 @@ public class CatanClient extends JFrame {
             //update the build buttons ingame
             theGameFrame.getGamePanel().updateBuildButtons();
 
-            //setup the game that will be played
-            //theGameFrame.resetGamePanel();
             //make it visible
             theGameFrame.setVisible(true);
-            theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
-            theGameFrame.getMainMenu().getLoadOnlineGameMenu().setVisible(false);
-            System.out.println("Debug this ^^^: CatanClient @ startUpClient1()");
+
+            if (theGameFrame.getMainMenu().getNewOnlineGameMenu().isVisible()) {
+                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getNewOnlineGameMenu(), theGameFrame.getMainMenu());
+            } else if (theGameFrame.getMainMenu().getLoadOnlineGameMenu().isVisible()) {
+                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getLoadOnlineGameMenu(), theGameFrame.getMainMenu());
+            }
+            //hide the main menu frame
+            theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
 
             //send the save file
             sendGameToServer();
