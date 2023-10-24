@@ -37,7 +37,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final SDNewGameSettingsPanel sDNewGameSettingsPanel;
     private final SDClientSettings sDClientSettings;
-    private NewOnlineGameMenu newOnlineGameMenu;
+    private SDNewOnlineGameMenu sDnewOnlineGameMenu;
     private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
     private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
 
@@ -70,7 +70,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         sDClientSettings = new SDClientSettings(sDMenuFrame);
         sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
         sDloadOnlineGameMenu = new SDLoadOnlineGameMenu(sDMenuFrame);
-        newOnlineGameMenu = new NewOnlineGameMenu(this);
+        sDnewOnlineGameMenu = new SDNewOnlineGameMenu(sDMenuFrame);
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -501,17 +501,17 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      *
      * @return
      */
-    public NewOnlineGameMenu getNewOnlineGameMenu() {
-        return newOnlineGameMenu;
+    public SDNewOnlineGameMenu getNewOnlineGameMenu() {
+        return sDnewOnlineGameMenu;
     }
 
     /**
      * Mutator for the newOnlineGameMenu
      *
-     * @param newOnlineGameMenu
+     * @param sDnewOnlineGameMenu
      */
-    public void setNewOnlineGameMenu(NewOnlineGameMenu newOnlineGameMenu) {
-        this.newOnlineGameMenu = newOnlineGameMenu;
+    public void setNewOnlineGameMenu(SDNewOnlineGameMenu sDnewOnlineGameMenu) {
+        this.sDnewOnlineGameMenu = sDnewOnlineGameMenu;
     }
 
     /**
