@@ -371,7 +371,7 @@ public class NewGameSettings extends javax.swing.JFrame {
             this.setVisible(false);
             //create a new creation window
             newOnlineGameMenu = new NewOnlineGameMenu(mainMenuFrame);
-            mainMenuFrame.setNewOnlineGameMenu(newOnlineGameMenu);
+            //mainMenuFrame.setNewOnlineGameMenu(newOnlineGameMenu);
             newOnlineGameMenu.setVisible(true);
         }
     }//GEN-LAST:event_startGameBtnActionPerformed
