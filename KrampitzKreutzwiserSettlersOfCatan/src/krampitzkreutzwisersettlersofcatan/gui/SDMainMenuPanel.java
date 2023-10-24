@@ -32,7 +32,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private SDMenuFrame sDMenuFrame;
 
     //ref to the other Menu elements
-    private final UserManualUI userManualUIFrame; //referance to the user manual
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final SDNewGameSettingsPanel sDNewGameSettingsPanel;
@@ -64,7 +63,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
 
         COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
 
-        userManualUIFrame = new UserManualUI(this);
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
         gameJFrame = new GameFrame(this);
         sDClientSettings = new SDClientSettings(sDMenuFrame);
@@ -245,8 +243,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
                     optionBtnActionPerformed();
                 } else if (btn.equals(creditsBtn)) {
                     creditsBtnActionPerformed();
-                } else if (btn.equals(userManualBtn)) {
-                    rulesBtnActionPerformed();
                 }
             }
         }
@@ -404,15 +400,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         // Hide this window and show the credits
         creditsBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDCreditsPanel);
-    }
-
-    /**
-     * Show the User Manual
-     */
-    private void rulesBtnActionPerformed() {
-        // Hide this window and show the user manual
-        this.setVisible(false);
-        userManualUIFrame.setVisible(true);
     }
 
     /**
