@@ -441,7 +441,7 @@ public class SDNewOnlineGameMenu extends javax.swing.JPanel implements MouseMoti
 
         // Declare variablesD
         Scanner fileReader;
-        InputStream file = OldCode.class.getResourceAsStream("loadOnlineGame.txt");
+        InputStream file = OldCode.class.getResourceAsStream("newOnlineGame.txt");
         String fileContents = "";
 
         // Try to read the file
