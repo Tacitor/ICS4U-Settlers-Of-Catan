@@ -25,7 +25,7 @@ import textures.ImageRef;
  * @author Tacitor
  */
 public class SDClientSettings extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
-    
+
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
@@ -56,7 +56,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
      */
     public SDClientSettings(SDMenuFrame sDFrame) {
         sDMenuFrame = sDFrame;
-        
+
         COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
 
         //add the mouse motion listener
@@ -123,7 +123,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         for (SettlerRadioBtn[] grp : settlerRadioBtnGroups) {
             SettlerRadioBtn.setUpGroup(grp);
         }
-        
+
     }
 
     /**
@@ -144,7 +144,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
      * @param g
      */
     private void draw(Graphics g) {
-        
+
         Graphics2D g2d = (Graphics2D) g;
 
         //update the scale factor
@@ -159,7 +159,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
                 0,
                 this.getWidth(),
                 this.getHeight(), this);
-        
+
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(120)));
         g2d.setColor(DomesticTradePanel.BEIGE_COLOUR);
 
@@ -167,7 +167,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         g2d.drawString("New Game Settings",
                 (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("New Game Settings") / 2),
                 localScaleInt(100));
-        
+
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
 
         //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
@@ -189,7 +189,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
             if (btn.isMouseHover()) {
                 sDMenuFrame.drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1, this);
             }
-            
+
         }
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
@@ -216,62 +216,62 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         turnBeepLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         displayModeLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         windowDimsLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
-        
+
         Font tempFont = g2d.getFont();
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(120)));
 
         //set positions
         showBoarderLbl.setXPos((this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("New Game Settings") / 2)); //line up with the title
         showBoarderLbl.setYPos(localScaleInt(170));
-        
+
         g2d.setFont(tempFont);
-        
+
         showBoarderYesRBtn.setXPos(showBoarderLbl.getXPos());
         showBoarderYesRBtn.setYPos(showBoarderLbl.getYPos() + localScaleInt(15));
-        
+
         showBoarderNoRBtn.setXPos(showBoarderYesRBtn.getXPos() + getLocalImgWidth(showBoarderYesRBtn.getBaseImage()) + localScaleInt(6));
         showBoarderNoRBtn.setYPos(showBoarderYesRBtn.getYPos());
-        
+
         turnBeepLbl.setXPos(showBoarderLbl.getXPos());
         turnBeepLbl.setYPos(showBoarderNoRBtn.getYPos() + getLocalImgHeight(showBoarderNoRBtn.getBaseImage()) + localScaleInt(60));
-        
+
         turnBeepYesRBtn.setXPos(turnBeepLbl.getXPos());
         turnBeepYesRBtn.setYPos(turnBeepLbl.getYPos() + localScaleInt(15));
-        
+
         turnBeepNoRBtn.setXPos(turnBeepYesRBtn.getXPos() + getLocalImgWidth(turnBeepYesRBtn.getBaseImage()) + localScaleInt(6));
         turnBeepNoRBtn.setYPos(turnBeepYesRBtn.getYPos());
-        
+
         displayModeLbl.setXPos(turnBeepLbl.getXPos());
         displayModeLbl.setYPos(turnBeepNoRBtn.getYPos() + getLocalImgHeight(turnBeepNoRBtn.getBaseImage()) + localScaleInt(60));
-        
+
         displayModeFullScreenRBtn.setXPos(displayModeLbl.getXPos());
         displayModeFullScreenRBtn.setYPos(displayModeLbl.getYPos() + localScaleInt(15));
-        
+
         displayModeWindowedRBtn.setXPos(displayModeFullScreenRBtn.getXPos());
         displayModeWindowedRBtn.setYPos(displayModeFullScreenRBtn.getYPos() + getLocalImgHeight(displayModeFullScreenRBtn.getBaseImage()) + localScaleInt(6));
-        
+
         windowDimsLbl.setXPos(displayModeLbl.getXPos());
         windowDimsLbl.setYPos(displayModeWindowedRBtn.getYPos() + getLocalImgHeight(displayModeWindowedRBtn.getBaseImage()) + localScaleInt(60));
-        
+
         windowDims4kRBtn.setXPos(windowDimsLbl.getXPos());
         windowDims4kRBtn.setYPos(windowDimsLbl.getYPos() + localScaleInt(15));
-        
+
         windowDims1080pRBtn.setXPos(windowDims4kRBtn.getXPos() + getLocalImgWidth(windowDims4kRBtn.getBaseImage()) + localScaleInt(6));
         windowDims1080pRBtn.setYPos(windowDims4kRBtn.getYPos());
-        
+
         windowDims720pRBtn.setXPos(windowDims4kRBtn.getXPos());
         windowDims720pRBtn.setYPos(windowDims4kRBtn.getYPos() + getLocalImgHeight(windowDims4kRBtn.getBaseImage()) + localScaleInt(6));
-        
+
         windowDims800x600RBtn.setXPos(windowDims720pRBtn.getXPos() + getLocalImgWidth(windowDims720pRBtn.getBaseImage()) + localScaleInt(6));
         windowDims800x600RBtn.setYPos(windowDims720pRBtn.getYPos());
-        
+
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
-        
+
         saveBtn.setXPos(exitBtn.getXPos());
         saveBtn.setYPos(exitBtn.getYPos() + getLocalImgHeight(exitBtn.getBaseImage()) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
-        
+
     }
 
     /**
@@ -352,13 +352,13 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
                 //set the hover
                 btn.setmouseHover(true);
-                
+
             } else {
 
                 //make suer there is no hover over that button
                 btn.setmouseHover(false);
             }
-            
+
         }
 
         //check if the player moved the mouse over one of the SettlerRadionBtns
@@ -372,16 +372,16 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
                     //set the hover
                     radioBtn.setmouseHover(true);
-                    
+
                 } else {
 
                     //make suer there is no hover over that button
                     radioBtn.setmouseHover(false);
                 }
-                
+
             }
         }
-        
+
         repaint();
     }
 
@@ -395,17 +395,17 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     public int localScaleInt(int num) {
         return (int) (num / localScaleFactor);
     }
-    
+
     @Override
     public void mouseDragged(MouseEvent e) {
         //System.out.println("Mouse Dragged");
     }
-    
+
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }
-    
+
     private void displayModeFullScreenRBtnActionPerformed() {
         //disable all the dimension buttons
         for (SettlerRadioBtn rBtn : settlerRadioWindowDimsBtns) {
@@ -413,7 +413,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
             rBtn.setSelected(false);
         }
     }
-    
+
     private void displayModeWindowedRBtnActionPerformed() {
         //enable all the dimension buttons
         for (SettlerRadioBtn rBtn : settlerRadioWindowDimsBtns) {
@@ -423,7 +423,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         //default to 1080p
         windowDims1080pRBtn.setSelected(true);
     }
-    
+
     private void saveBtnActionPerformed() {
         //get and set the menu boarders
         if (showBoarderYesRBtn.isSelected()) {
@@ -431,7 +431,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         } else if (showBoarderNoRBtn.isSelected()) {
             GamePanel.setShowMenuBoarder(false);
         }
-        
+
         JFrame frames[] = new JFrame[]{sDMenuFrame, sDMenuFrame.getSDMainMenuPanel().getGameFrame()};
         boolean currrentVis;
 
@@ -441,7 +441,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
             for (JFrame frm : frames) {
                 currrentVis = frm.isVisible();
-                
+
                 frm.setVisible(false);
                 frm.dispose();
                 frm.setSize(Toolkit.getDefaultToolkit().getScreenSize());
@@ -453,7 +453,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
             //get the specific res            
             int resWidth;
             int resHight;
-            
+
             if (windowDims4kRBtn.isSelected()) {
                 resWidth = 3840;
                 resHight = 2160;
@@ -468,15 +468,21 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
                 resWidth = 1920;
                 resHight = 1080;
             }
-            
-            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(false);
-            //set decorated
-            if (sDMenuFrame.getSDMainMenuPanel().getGameFrame().isUndecorated()) {
-                sDMenuFrame.getSDMainMenuPanel().getGameFrame().dispose();
-                sDMenuFrame.getSDMainMenuPanel().getGameFrame().setUndecorated(false);
+
+            for (JFrame frm : frames) {
+                currrentVis = frm.isVisible();
+
+                frm.setVisible(false);
+                //set decorated
+                if (frm.isUndecorated()) {
+                    frm.dispose();
+                    frm.setUndecorated(false);
+                }
+                //set size
+                frm.setSize(resWidth, resHight);
+
+                frm.setVisible(currrentVis);
             }
-            //set size
-            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setSize(resWidth, resHight);
         }
 
         //get and set the playing of the turn beep
@@ -486,12 +492,12 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
             AudioRef.setPlayTurnBeep(false);
         }
     }
-    
+
     @Override
     public int getLocalImgWidth(Image image) {
         return sDMenuFrame.getImgWidthLocal(image, this);
     }
-    
+
     @Override
     public int getLocalImgHeight(Image image) {
         return sDMenuFrame.getImgHeightLocal(image, this);
