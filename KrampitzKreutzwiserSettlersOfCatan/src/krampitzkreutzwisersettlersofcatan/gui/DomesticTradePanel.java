@@ -46,7 +46,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
     //array for the labels
     private SettlerLbl[] settlerLbls;
 
-    private Color beigeColor = new Color(255, 255, 225);
+    public static Color BEIGE_COLOUR = new Color(255, 255, 225);
 
     //data for card drawing
     /**
@@ -164,11 +164,11 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         initiatePlayersStaticCardsLbl = new SettlerLbl("ERROR: 2");
 
         //setup the colour
-        titleLbl.setForeground(beigeColor); //beige
-        playerSelectLbl.setForeground(beigeColor);
-        initiatePlayerReceivesLbl.setForeground(beigeColor);
-        initiatePlayerGivesLbl.setForeground(beigeColor);
-        initiatePlayersStaticCardsLbl.setForeground(beigeColor);
+        titleLbl.setForeground(BEIGE_COLOUR); //beige
+        playerSelectLbl.setForeground(BEIGE_COLOUR);
+        initiatePlayerReceivesLbl.setForeground(BEIGE_COLOUR);
+        initiatePlayerGivesLbl.setForeground(BEIGE_COLOUR);
+        initiatePlayersStaticCardsLbl.setForeground(BEIGE_COLOUR);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //update the Settler Label positions
         settlerVarPos(g2d); //update the positions
 
-        g2d.setColor(beigeColor);
+        g2d.setColor(BEIGE_COLOUR);
 
         //draw the background image
         g2d.drawImage(ImageRef.WOOD_BACKGROUND,
@@ -311,7 +311,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         //=-=-=-=END OF draw the player icons=-=-=-=
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
-            settlerLbl.draw(g2d);
+            settlerLbl.draw(g2d, GamePanel.scaleFactor);
         }
 
         //=-=-=-=draw on the player dots for the labels=-=-=-=
@@ -407,7 +407,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
         drawCards(g2d, 2, tradeCardsGivePlayerStartedDomestic);
 
         //reset the colour
-        g2d.setColor(beigeColor);
+        g2d.setColor(BEIGE_COLOUR);
 
         //draw the progress bar of the trade process
         //calc where the bar should start being drawn
@@ -558,7 +558,7 @@ public class DomesticTradePanel extends JPanel implements MouseMotionListener {
                         break;
                 }
 
-                g2d.setColor(beigeColor);
+                g2d.setColor(BEIGE_COLOUR);
 
                 //draw one each of the 5 card types
                 //draw the card image

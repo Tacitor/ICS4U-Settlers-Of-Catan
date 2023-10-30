@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.worldObjects.buttons;
 
+import animation.SettlerBtnAnimationData;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import krampitzkreutzwisersettlersofcatan.worldObjects.WorldObject;
@@ -19,6 +20,7 @@ public class SettlerBtn extends SettlerComponent {
 
     //data attribute
     private int mode; //the mode the button is in. Decides what text to display
+    private SettlerBtnAnimationData settlerBtnAnimationData;
 
     //static button images
     /**
@@ -53,7 +55,7 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image UNLOCK_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/unlockTradeDomesticText.png")).getImage();
     //domestic trade accept button
     private final static Image ACCEPT_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/acceptTradeDomesticText.png")).getImage();
-    private final static Image CANCEL_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/cancelTradeDomesticText.png")).getImage();    
+    private final static Image CANCEL_TRADE_DOMESTIC = new ImageIcon(ImageRef.class.getResource("settlerBtn/domesticTrade/cancelTradeDomesticText.png")).getImage();
 
     //util buttons
     //build
@@ -61,6 +63,43 @@ public class SettlerBtn extends SettlerComponent {
     //exit buttons
     private final static Image EXIT_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitSaveText.png")).getImage();
     private final static Image EXIT_NO_SAVE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/exitNoSaveText.png")).getImage();
+
+    //SD Main Menu buttons
+    private final static Image BIG_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigBtn.png")).getImage();
+    private final static Image BIG_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigBtnDisabled.png")).getImage();
+    //Big shorts
+    private final static Image BIG_SHORT_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigShortBtn.png")).getImage();
+    private final static Image BIG_SHORT_DISABLED_BTN = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/bigShortBtnDisabled.png")).getImage();
+    //Text Images
+    private final static Image NEW_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/newGameText.png")).getImage();
+    private final static Image LOAD_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadGameText.png")).getImage();
+    private final static Image LOAD_AUTOSAVE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadAutosaveText.png")).getImage();
+    private final static Image OPTIONS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/optionsText.png")).getImage();
+    private final static Image JOIN_ONLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/joinOnlineGameText.png")).getImage();
+    private final static Image LOAD_GAME_TO_ONLINE_MODE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadGameToOnlineModeText.png")).getImage();
+    private final static Image CREDITS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/creditsText.png")).getImage();
+    private final static Image USER_MANUAL_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/userManualText.png")).getImage();
+    private final static Image GAME_EXIT_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/exitText.png")).getImage();
+    private final static Image BACK_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/backText.png")).getImage();
+
+    //texts for the big button on the other menu pages
+    private final static Image START_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/startGameText.png")).getImage();
+    private final static Image SAVE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/saveText.png")).getImage();
+    private final static Image CONNECT_CLIENT_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientText.png")).getImage();
+    private final static Image CONNECT_CLIENT_CONNECTING_0_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientConnecting0Text.png")).getImage();
+    private final static Image CONNECT_CLIENT_CONNECTING_1_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientConnecting1Text.png")).getImage();
+    private final static Image CONNECT_CLIENT_CONNECTING_2_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientConnecting2Text.png")).getImage();
+    private final static Image CONNECT_CLIENT_FAILED_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientFailedText.png")).getImage();
+    private final static Image CONNECT_CLIENT_SUCCESS_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientSuccessText.png")).getImage();
+    private final static Image CONNECT_CLIENT_NO_PORT_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientNoPortText.png")).getImage();
+    private final static Image REQUEST_COLOUR_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourText.png")).getImage();
+    private final static Image REQUEST_COLOUR_BTN_FAILED_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourTextNotAvail.png")).getImage();
+    private final static Image CREATE_SERVER_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/createServerText.png")).getImage();
+    //array
+    private static Image[] connect_client_btn_texts = new Image[]{CONNECT_CLIENT_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, CONNECT_CLIENT_FAILED_TEXT, CONNECT_CLIENT_NO_PORT_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
+    private final static Image[] CONNECT_CLIENT_BTN_CONNECTING_TEXTS = new Image[]{CONNECT_CLIENT_CONNECTING_0_TEXT, CONNECT_CLIENT_CONNECTING_1_TEXT, CONNECT_CLIENT_CONNECTING_2_TEXT};
+    private static Image[] request_colour_btn_texts = new Image[]{REQUEST_COLOUR_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, REQUEST_COLOUR_BTN_FAILED_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
+    private static Image[] create_server_btn_texts = new Image[]{CREATE_SERVER_BTN_TEXT, CONNECT_CLIENT_NO_PORT_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -87,6 +126,8 @@ public class SettlerBtn extends SettlerComponent {
         tabSelected = false;
         mode = 0;
         type = 0; //set to card togggle button
+
+        settlerBtnAnimationData = new SettlerBtnAnimationData();
 
         updateText(); //update the text
         updateButtonImages(); //update the base image and disabled images
@@ -129,6 +170,41 @@ public class SettlerBtn extends SettlerComponent {
 
         updateText(); //update the text
         updateButtonImages(); //update the base iamge and disabled images
+    }
+
+    public int getAnimationFrame() {
+        //the image the method will return
+        int frameTime;
+
+        //the index of the array that contains the current frame of animation
+        int frameIndex = settlerBtnAnimationData.getCurrentFrameIndex();
+
+        //pick one of the frame times
+        frameTime = settlerBtnAnimationData.getFrameTime();
+
+        //decide if a new frame needs to be displayed or if the current one is still the one it should be on
+        if (System.currentTimeMillis() - (settlerBtnAnimationData.getLastFrameStart()) > frameTime) {
+            //yes it is time for a new frame
+
+            //debug frame times
+            //System.out.println("Frame time: " + (System.currentTimeMillis() - lastFrameStart));
+            //calculate the index the frame needs to be pulled from
+            frameIndex++; //the new frame will just be one after the current one
+
+            //and make a check that it won't be out of bounds
+            if (frameIndex >= CONNECT_CLIENT_BTN_CONNECTING_TEXTS.length) {
+                frameIndex = 0; //reset it to the beginning
+            }
+
+            //update the time
+            settlerBtnAnimationData.setLastFrameStart(System.currentTimeMillis());
+
+            //update the frame index
+            settlerBtnAnimationData.setCurrentFrameIndex(frameIndex);
+
+        }
+
+        return frameIndex;
     }
 
     /**
@@ -189,11 +265,50 @@ public class SettlerBtn extends SettlerComponent {
             case 11:
             //if it's a domestic trade lock button
             case 12:
-                //if it's a domestic trade accept button
+            //if it's a domestic trade accept button
             case 13:
                 //if it'a a cancel domestic trade button
                 baseImage = CARD_BTN; //still has the right length
                 disabledImage = CARD_DISABLED_BTN;
+                break;
+            case 14:
+            //If it's a new game button
+            case 15:
+            //If it's a load game button
+            case 16:
+            //if it's a Join onlime game button
+            case 17:
+            //if it's a load game to online mode button
+            case 18:
+                //if it's a big exit button for the SD main menu
+                baseImage = BIG_BTN;
+                disabledImage = BIG_DISABLED_BTN;
+                break;
+            case 19:
+            //if it's a big short load autosave button for the SD main menu
+            case 20:
+            //if it's a big short options button for the SD main menu
+            case 21:
+            //if it's a big short credits button for the SD main menu
+            case 22:
+                //if it's a big short user manual button for the SD main menu
+                baseImage = BIG_SHORT_BTN;
+                disabledImage = BIG_SHORT_DISABLED_BTN;
+                break;
+            case 23:
+            //if it's a big back button
+            case 24:
+            //if it's a big Start Game Button
+            case 25:
+            //if it's a big save Button
+            case 26:
+            //if it's a big connect button for clients of the game server
+            case 27:
+            //if it's a big request colour button
+            case 28:
+                //if it's a big create server button
+                baseImage = BIG_BTN;
+                disabledImage = BIG_DISABLED_BTN;
                 break;
             default:
                 //default to error images
@@ -276,6 +391,75 @@ public class SettlerBtn extends SettlerComponent {
             case 13:
                 //if its a cancel domestic trade button
                 textImage = CANCEL_TRADE_DOMESTIC;
+                break;
+            case 14:
+                //if it's a big new game button for the SD main menu
+                textImage = NEW_GAME_BTN_TEXT;
+                break;
+            case 15:
+                //if it's a big load game button for the SD main menu
+                textImage = LOAD_GAME_BTN_TEXT;
+                break;
+            case 16:
+                //if it's a big join online gam button for the SD main menu
+                textImage = JOIN_ONLINE_GAME_BTN_TEXT;
+                break;
+            case 17:
+                //if it's a big load to online mode button for the SD main menu
+                textImage = LOAD_GAME_TO_ONLINE_MODE_BTN_TEXT;
+                break;
+            case 18:
+                //if it's a big exit button for the SD main menu
+                textImage = GAME_EXIT_BTN_TEXT;
+                break;
+            case 19:
+                //if it's a load autosave button for the SD main menu
+                textImage = LOAD_AUTOSAVE_BTN_TEXT;
+                break;
+            case 20:
+                //if it's a options button for the SD main menu
+                textImage = OPTIONS_BTN_TEXT;
+                break;
+            case 21:
+                //if it's a credits button for the SD main menu
+                textImage = CREDITS_BTN_TEXT;
+                break;
+            case 22:
+                //if it's a user manual button for the SD main menu
+                textImage = USER_MANUAL_BTN_TEXT;
+                break;
+            case 23:
+                //if it's a big back button
+                textImage = BACK_BTN_TEXT;
+                break;
+            case 24:
+                //if it's a big start game button
+                textImage = START_GAME_BTN_TEXT;
+                break;
+            case 25:
+                //if it's a big start game button
+                textImage = SAVE_BTN_TEXT;
+                break;
+            case 26:
+                //if it's a big connect button for clients of the game server
+                //fist set the right frame for a connection
+                connect_client_btn_texts[4] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
+
+                textImage = connect_client_btn_texts[mode];
+                break;
+            case 27:
+                //if it's a big request colour button
+
+                request_colour_btn_texts[3] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
+
+                textImage = request_colour_btn_texts[mode];
+                break;
+            case 28:
+
+                //if it's a create server button
+                create_server_btn_texts[2] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
+
+                textImage = create_server_btn_texts[mode];
                 break;
             default:
                 //deflault to error image

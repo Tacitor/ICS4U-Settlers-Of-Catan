@@ -6,7 +6,7 @@
 package krampitzkreutzwisersettlersofcatan;
 
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
-import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
+import krampitzkreutzwisersettlersofcatan.gui.SDMenuFrame;
 
 /**
  *
@@ -15,10 +15,10 @@ import krampitzkreutzwisersettlersofcatan.gui.MainMenu;
 public class Catan {
 
     public static GamePanel gamePanel;
-    public static MainMenu menu;
+    public static SDMenuFrame sDMenuFrame;
     public static final String SAVE_FILE_VER = "V15"; //the save file version needed
-    public static final String GAME_VER = "v6.0.2 - Reduced Residence Revision Redux"; //the version of the game/program
-    
+    public static final String GAME_VER = "pre-v6.1.0 - Main Menu Modification"; //the version of the game/program
+
     public static final boolean DEBUG_ONLINE_MODE = false; //if this is true then the game will lauch in decorated windowed 720p
 
     //fast pulse vars
@@ -30,31 +30,8 @@ public class Catan {
         //record the time
         prevTime = System.currentTimeMillis();
 
-        /* Set the Windows 10 look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        menu = new MainMenu();
-        menu.setVisible(true);
+        sDMenuFrame = new SDMenuFrame();
+        sDMenuFrame.setVisible(true);
         updateGamePanel();
 
         //set up the fast game pulse
@@ -65,7 +42,7 @@ public class Catan {
     }
 
     public static void updateGamePanel() {
-        gamePanel = menu.getGameFrame().getGamePanel();
+        gamePanel = sDMenuFrame.getSDMainMenuPanel().getGameFrame().getGamePanel();
     }
 
     /**
@@ -81,6 +58,7 @@ public class Catan {
         //now call the game panel
         gamePanel.catanFastTickUpdate();
         gamePanel.catanAnimationTickUpdate(); //for animation
+        sDMenuFrame.repaint();
 
     }
 

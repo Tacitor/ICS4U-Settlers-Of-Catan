@@ -524,7 +524,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //calc the number of lines for the labels that will be multi line
         for (SettlerLbl lbl : settlerLbls) {
             if (lbl.getLineWrap()) {
-                lbl.calcNumLines(g2d, this);
+                lbl.calcNumLines(g2d);
             }
         }
 
@@ -640,9 +640,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                 //Preform the opperations needed when leaving an online game
                 networkingCloseOpertations();
 
-                // Hide this window and show the main menu
-                superFrame.getMainMenu().setVisible(true); //show the main menu
-                superFrame.setVisible(false); //hide the parent frame 
+                // Hide this window and show the main menu                
+                superFrame.setVisible(false); //hide the parent frame
+                
+                superFrame.getMainMenu().setVisible(true);
+                superFrame.getMainMenu().getSDMenuFrame().setVisible(true);
             }
         }
 
@@ -977,8 +979,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             networkingCloseOpertations();
 
             // Hide this window and show the main menu
-            superFrame.getMainMenu().setVisible(true); //show the main menu
             superFrame.setVisible(false); //hide the parent frame 
+            
+            superFrame.getMainMenu().setVisible(true);
+            superFrame.getMainMenu().getSDMenuFrame().setVisible(true);
+            
         }
     }
 
@@ -4040,7 +4045,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                     case 0:
                         //if there isn't actually a dev card yet and the player is just selecting
                         instructionLbl.setText("Please select a development card");
-                        subInstructionLbl.setText("Hover over the card to get a description (coming soon)");
+                        subInstructionLbl.setText("Hover over the card to get a description");
                         break;
                     case 1:
                         //knight card
@@ -5724,7 +5729,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         settlerVarPos(g2d); //update the positions of the custon labels
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
-            settlerLbl.draw(g2d);
+            settlerLbl.draw(g2d, scaleFactor);
         }
 
         //reset the font
@@ -6973,7 +6978,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      */
     public static void setShowMenuBoarder(boolean showMenuBoarder) {
         GamePanel.showMenuBoarder = showMenuBoarder;
-        System.out.println(GamePanel.showMenuBoarder);
+        //debug the menu boarders
+        //System.out.println(GamePanel.showMenuBoarder);
     }
 
     /**

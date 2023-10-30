@@ -1,0 +1,19 @@
+Select a port to create your game server. Then click "Create Server".
+
+
+AYou have created a new Online Catan Game! A server has been started on you local machine.
+ Now you need to select the colour you would like to play as. For the remaining players to
+ connect you must open a port to you local machine. The players can connect over your IP 
+ using whatever port you chose.
+
+
+AYOU are REQUIRED to portforward the port number of choosing.
+
+
+ANOTE: The game board will automatically display only after ALL users have connected.
+
+A
+
+A
+
+A

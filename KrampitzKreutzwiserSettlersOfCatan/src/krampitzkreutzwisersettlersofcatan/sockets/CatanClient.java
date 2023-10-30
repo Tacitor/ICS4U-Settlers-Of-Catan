@@ -332,12 +332,16 @@ public class CatanClient extends JFrame {
             //update the build buttons ingame
             theGameFrame.getGamePanel().updateBuildButtons();
 
-            //setup the game that will be played
-            //theGameFrame.resetGamePanel();
             //make it visible
             theGameFrame.setVisible(true);
-            theGameFrame.getMainMenu().getNewOnlineGameMenu().setVisible(false);
-            theGameFrame.getMainMenu().getLoadOnlineGameMenu().setVisible(false);
+
+            if (theGameFrame.getMainMenu().getNewOnlineGameMenu().isVisible()) {
+                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getNewOnlineGameMenu(), theGameFrame.getMainMenu());
+            } else if (theGameFrame.getMainMenu().getLoadOnlineGameMenu().isVisible()) {
+                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getLoadOnlineGameMenu(), theGameFrame.getMainMenu());
+            }
+            //hide the main menu frame
+            theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
 
             //send the save file
             sendGameToServer();
@@ -506,6 +510,14 @@ public class CatanClient extends JFrame {
 
                             //save that a file was recived
                             firstFileRecieve = false;
+
+                            //ensure that the main menu is no longer visibled
+                            if (theGameFrame.getMainMenu().getJoinOnlineGameMenu() != null && theGameFrame.getMainMenu().getJoinOnlineGameMenu().isVisible()) {
+                                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getJoinOnlineGameMenu(), theGameFrame.getMainMenu());
+
+                            }
+                            //hide the main menu frame
+                            theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
                         }
                         //save the time before any savinging and reloading of the new save file for online play
                         long oldTime = System.currentTimeMillis();

@@ -1,0 +1,18 @@
+To join an online game please ensure the following:
+    1) You have a connection to the Internet
+    2) You have another player hosting the server on their local machine and they also have a
+        connection to the Internet.
+
+
+    2.5) This player must also port forward a port of their choice for TCP (maybe port 25570).
+
+Then connect to the Catan server using the public IP of the host and the port 25570 (this is
+Aonly the default, your host may be using a different port). 
+
+
+AOnce all the players have connected the game will begin.
+
+
+A
+
+A
