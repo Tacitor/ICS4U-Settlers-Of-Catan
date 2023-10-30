@@ -483,6 +483,11 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
             colourRequestBtn.setMode(1);
             colourRequestBtn.setEnabled(false);
+
+            colourSelectRedRBtn.setEnabled(false);
+            colourSelectBlueRBtn.setEnabled(false);
+            colourSelectOrangeRBtn.setEnabled(false);
+            colourSelectWhiteRBtn.setEnabled(false);
         } else { //the the user that it failed
             colourRequestBtn.setMode(2);
         }
@@ -634,7 +639,7 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         client.connectToServer();
         client.setUpGUI();
         client.setUpButton();
-        
+
         createServerBtn.setMode(0); //reset to default text 
 
         //pass the client to the game panel
