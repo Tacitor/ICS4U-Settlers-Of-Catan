@@ -508,6 +508,15 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         return sDloadOnlineGameMenu;
     }
 
+    /**
+     * Return the sDJoinOnlineGameMenu
+     *
+     * @return
+     */
+    public SDJoinOnlineGameMenu getJoinOnlineGameMenu() {
+        return sDJoinOnlineGameMenu;
+    }
+
     public int getExitMainMenuBtnYPos() {
         settlerVarPos(); //update the positions real quick
         return exitMainMenuBtn.getYPos();

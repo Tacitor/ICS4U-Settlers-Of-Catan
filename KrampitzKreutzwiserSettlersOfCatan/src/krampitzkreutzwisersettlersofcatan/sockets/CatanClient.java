@@ -510,6 +510,14 @@ public class CatanClient extends JFrame {
 
                             //save that a file was recived
                             firstFileRecieve = false;
+
+                            //ensure that the main menu is no longer visibled
+                            if (theGameFrame.getMainMenu().getJoinOnlineGameMenu() != null && theGameFrame.getMainMenu().getJoinOnlineGameMenu().isVisible()) {
+                                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getJoinOnlineGameMenu(), theGameFrame.getMainMenu());
+
+                            }
+                            //hide the main menu frame
+                            theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
                         }
                         //save the time before any savinging and reloading of the new save file for online play
                         long oldTime = System.currentTimeMillis();
