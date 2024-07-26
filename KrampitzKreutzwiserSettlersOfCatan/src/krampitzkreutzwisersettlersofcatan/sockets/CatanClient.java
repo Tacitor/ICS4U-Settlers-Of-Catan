@@ -335,7 +335,7 @@ public class CatanClient extends JFrame {
             //make it visible
             theGameFrame.setVisible(true);
 
-            if (theGameFrame.getMainMenu().getNewOnlineGameMenu().isVisible()) {
+            if (theGameFrame.getMainMenu().getNewOnlineGameMenu() != null && theGameFrame.getMainMenu().getNewOnlineGameMenu().isVisible()) {
                 theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getNewOnlineGameMenu(), theGameFrame.getMainMenu());
             } else if (theGameFrame.getMainMenu().getLoadOnlineGameMenu().isVisible()) {
                 theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getLoadOnlineGameMenu(), theGameFrame.getMainMenu());

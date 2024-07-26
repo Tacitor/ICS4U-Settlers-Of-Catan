@@ -130,7 +130,8 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
 
         //setup the text boxes
         connectionIPTxtBx = new SettlerTxtBx(true, 0);
-        connectionIPTxtBx.setTextStr("donau.ca");
+        //connectionIPTxtBx.setTextStr("donau.ca");
+        connectionIPTxtBx.setTextStr("localhost");
         connectionPortTxtBx = new SettlerTxtBx(true, 0);
         connectionPortTxtBx.setTextStr("25570");
         //add it to the array
