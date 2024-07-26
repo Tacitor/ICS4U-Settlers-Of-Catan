@@ -844,7 +844,7 @@ public class CatanClient extends JFrame {
                 ArrayList<Integer> tradeCardsAlreadyHadPlayerStartedDomestic, ArrayList<Integer> tradeCardsAlreadyHadPlayerSelected) {
 
             //debugg the data sending
-            System.out.println("Sending data!");
+            //System.out.println("Sending data!");
 
             try {
                 dataOut.writeInt(5); //tell the server that it is reveiving the data of a domestic trade
