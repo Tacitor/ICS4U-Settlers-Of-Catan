@@ -18,7 +18,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.InputStream;
 import java.util.Scanner;
 import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
-import krampitzkreutzwisersettlersofcatan.sockets.CatanServer;
+import krampitzkreutzwisersettlersofcatan.sockets.OldCatanServer;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerTxtBx;
@@ -33,7 +33,8 @@ public class SDNewOnlineGameMenu extends javax.swing.JPanel implements MouseMoti
     private final SDMenuFrame sDMenuFrame;
 
     private CatanClient client;
-    private CatanServer server;
+    //Local server using the old @Depricated class. This going forward only the server in the new SettlerServer project and package is maintained.
+    private OldCatanServer server;
     private int portNum;
 
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -396,10 +397,10 @@ public class SDNewOnlineGameMenu extends javax.swing.JPanel implements MouseMoti
     }
 
     /**
-     * Create the local server
+     * Create the local server using the old @Depricated class. This going forward only the server in the new SettlerServer project and package is maintained.
      */
     private void serverStartUp() {
-        server = new CatanServer(GamePanel.getPlayerCount(), portNum);
+        server = new OldCatanServer(GamePanel.getPlayerCount(), portNum);
 
         //create a new thread for the server
         Thread t = new Thread(() -> {

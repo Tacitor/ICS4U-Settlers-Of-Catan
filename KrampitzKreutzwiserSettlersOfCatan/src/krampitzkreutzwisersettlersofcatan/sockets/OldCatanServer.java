@@ -15,8 +15,9 @@ import java.util.ArrayList;
 /**
  *
  * @author Tacitor
+ * @deprecated 
  */
-public class CatanServer {
+public class OldCatanServer {
 
     //The reciving socket
     private ServerSocket serverSocket;
@@ -37,7 +38,7 @@ public class CatanServer {
      * @param maxClients
      * @param port
      */
-    public CatanServer(int maxClients, int port) {
+    public OldCatanServer(int maxClients, int port) {
         //no clients have connected yet
         numClients = 0;
         //save the number of clients that will connect
