@@ -46,7 +46,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, joinOnlineGameBtn, loadGameToOnlineModeBtn, creditsBtn, userManualBtn, exitMainMenuBtn;
+    private SettlerBtn onlineGameBtn, offlineGameBtn, optionsBtn, creditsBtn, userManualBtn, exitMainMenuBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
 
@@ -87,18 +87,15 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         });
 
         //setup the buttons
-        newGameBtn = new SettlerBtn(true, 0, 14);
-        loadGameBtn = new SettlerBtn(true, 0, 15);
-        loadAutosaveBtn = new SettlerBtn(true, 0, 19);
+        onlineGameBtn = new SettlerBtn(true, 0, 29);
+        offlineGameBtn = new SettlerBtn(true, 0, 30);
         optionsBtn = new SettlerBtn(true, 0, 20);
-        joinOnlineGameBtn = new SettlerBtn(true, 0, 16);
-        loadGameToOnlineModeBtn = new SettlerBtn(true, 0, 17);
         creditsBtn = new SettlerBtn(true, 0, 21);
         userManualBtn = new SettlerBtn(false, 0, 22);
         exitMainMenuBtn = new SettlerBtn(true, 0, 18);
 
         //add them to the array
-        settlerBtns = new SettlerBtn[]{newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, joinOnlineGameBtn, loadGameToOnlineModeBtn, creditsBtn, userManualBtn, exitMainMenuBtn};
+        settlerBtns = new SettlerBtn[]{onlineGameBtn, offlineGameBtn, optionsBtn, creditsBtn, userManualBtn, exitMainMenuBtn};
 
     }
 
@@ -178,31 +175,22 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private void settlerVarPos() {
         int menuPackingHeight = SDMenuFrame.MENU_PACKING_HEIGHT;
 
-        newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
-        newGameBtn.setYPos(localScaleInt(250));
+        onlineGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
+        onlineGameBtn.setYPos(localScaleInt(250));
 
-        loadGameBtn.setXPos(newGameBtn.getXPos());
-        loadGameBtn.setYPos(newGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(loadGameBtn.getBaseImage(), this));
+        offlineGameBtn.setXPos(onlineGameBtn.getXPos());
+        offlineGameBtn.setYPos(onlineGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(offlineGameBtn.getBaseImage(), this));
 
-        loadAutosaveBtn.setXPos(newGameBtn.getXPos());
-        loadAutosaveBtn.setYPos(loadGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(optionsBtn.getBaseImage(), this));
+        optionsBtn.setXPos(offlineGameBtn.getXPos());
+        optionsBtn.setYPos(offlineGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(offlineGameBtn.getBaseImage(), this));
 
-        optionsBtn.setXPos(loadAutosaveBtn.getXPos() + localScaleInt(12) + sDMenuFrame.getImgWidthLocal(optionsBtn.getBaseImage(), this));
-        optionsBtn.setYPos(loadAutosaveBtn.getYPos());
-
-        joinOnlineGameBtn.setXPos(newGameBtn.getXPos());
-        joinOnlineGameBtn.setYPos(optionsBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(joinOnlineGameBtn.getBaseImage(), this));
-
-        loadGameToOnlineModeBtn.setXPos(newGameBtn.getXPos());
-        loadGameToOnlineModeBtn.setYPos(joinOnlineGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(loadGameToOnlineModeBtn.getBaseImage(), this));
-
-        creditsBtn.setXPos(newGameBtn.getXPos());
-        creditsBtn.setYPos(loadGameToOnlineModeBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(creditsBtn.getBaseImage(), this));
+        creditsBtn.setXPos(onlineGameBtn.getXPos());
+        creditsBtn.setYPos(optionsBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(creditsBtn.getBaseImage(), this));
 
         userManualBtn.setXPos(creditsBtn.getXPos() + localScaleInt(12) + sDMenuFrame.getImgWidthLocal(userManualBtn.getBaseImage(), this));
         userManualBtn.setYPos(creditsBtn.getYPos());
 
-        exitMainMenuBtn.setXPos(newGameBtn.getXPos());
+        exitMainMenuBtn.setXPos(onlineGameBtn.getXPos());
         //Old Height
         //this.getHeight() - localScaleInt(20) - sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this)
         exitMainMenuBtn.setYPos(userManualBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this));
@@ -228,17 +216,11 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
                 if (btn.equals(exitMainMenuBtn)) { //if it was the exit game button
 
                     exitMainMenuBtnPressed();
-
-                } else if (btn.equals(newGameBtn)) {
-                    newGameBtnActionPerformed();
-                } else if (btn.equals(loadAutosaveBtn)) {
-                    loadAutosaveBtnActionPerformed();
-                } else if (btn.equals(loadGameBtn)) {
-                    loadGameBtnActionPerformed();
-                } else if (btn.equals(joinOnlineGameBtn)) {
-                    joinOnlineBtnActionPerformed();
-                } else if (btn.equals(loadGameToOnlineModeBtn)) {
-                    loadToOnlineBtnActionPerformed();
+                    
+                } else if (btn.equals(onlineGameBtn)) {
+                    onlineGameBtnActionPerformed();
+                } else if (btn.equals(offlineGameBtn)) {
+                    offlineGameBtnActionPerformed();
                 } else if (btn.equals(optionsBtn)) {
                     optionBtnActionPerformed();
                 } else if (btn.equals(creditsBtn)) {
@@ -310,14 +292,23 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private void exitMainMenuBtnPressed() {
         System.exit(0);
     }
+    
+    /**
+     * Open the online game settings
+     */
+    private void onlineGameBtnActionPerformed() {
+        // Hide this window and show the New Game Settings
+        onlineGameBtn.setmouseHover(false);
+        sDMenuFrame.switchPanel(this, null);
+    }
 
     /**
-     * Open the new game settings
+     * Open the offline game settings
      */
-    private void newGameBtnActionPerformed() {
+    private void offlineGameBtnActionPerformed() {
         // Hide this window and show the New Game Settings
-        newGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, sDNewGameSettingsPanel);
+        offlineGameBtn.setmouseHover(false);
+        sDMenuFrame.switchPanel(this, null);
     }
 
     /**
@@ -450,26 +441,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         // Hide this window and show the settings
         optionsBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDClientSettings);
-    }
-
-    /**
-     * Show the menu to join an Online Game
-     */
-    private void joinOnlineBtnActionPerformed() {
-        //create a new game joining window
-        joinOnlineGameBtn.setmouseHover(false);
-        sDJoinOnlineGameMenu = new SDJoinOnlineGameMenu(sDMenuFrame);
-        sDMenuFrame.switchPanel(this, sDJoinOnlineGameMenu);
-    }
-
-    /**
-     * Show the menu to load a save file to Online Mode
-     */
-    private void loadToOnlineBtnActionPerformed() {
-        //make a new loading from a save file windows        
-        loadGameToOnlineModeBtn.setmouseHover(false);
-        sDloadOnlineGameMenu = new SDLoadOnlineGameMenu(sDMenuFrame);
-        sDMenuFrame.switchPanel(this, sDloadOnlineGameMenu);
     }
 
     /**
