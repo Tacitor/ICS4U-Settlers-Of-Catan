@@ -95,6 +95,8 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image REQUEST_COLOUR_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourText.png")).getImage();
     private final static Image REQUEST_COLOUR_BTN_FAILED_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourTextNotAvail.png")).getImage();
     private final static Image CREATE_SERVER_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/createServerText.png")).getImage();
+    private final static Image ONLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/mainOnlineGameText.png")).getImage();
+    private final static Image OFFLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/mainOfflineGameText.png")).getImage();
     //array
     private static Image[] connect_client_btn_texts = new Image[]{CONNECT_CLIENT_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, CONNECT_CLIENT_FAILED_TEXT, CONNECT_CLIENT_NO_PORT_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
     private final static Image[] CONNECT_CLIENT_BTN_CONNECTING_TEXTS = new Image[]{CONNECT_CLIENT_CONNECTING_0_TEXT, CONNECT_CLIENT_CONNECTING_1_TEXT, CONNECT_CLIENT_CONNECTING_2_TEXT};
@@ -306,7 +308,11 @@ public class SettlerBtn extends SettlerComponent {
             case 27:
             //if it's a big request colour button
             case 28:
-                //if it's a big create server button
+            //if it's a big create server button
+            case 29:
+            //if it's a big online game button
+            case 30:
+                //if it's a big offline game button
                 baseImage = BIG_BTN;
                 disabledImage = BIG_DISABLED_BTN;
                 break;
@@ -437,7 +443,7 @@ public class SettlerBtn extends SettlerComponent {
                 textImage = START_GAME_BTN_TEXT;
                 break;
             case 25:
-                //if it's a big start game button
+                //if it's a big save button
                 textImage = SAVE_BTN_TEXT;
                 break;
             case 26:
@@ -460,6 +466,14 @@ public class SettlerBtn extends SettlerComponent {
                 create_server_btn_texts[2] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
 
                 textImage = create_server_btn_texts[mode];
+                break;
+            case 29:
+                //if it's an online game button for the SD main menu
+                textImage = ONLINE_GAME_BTN_TEXT;
+                break;
+            case 30:
+                //if it's an offline game button for the SD main menu
+                textImage = OFFLINE_GAME_BTN_TEXT;
                 break;
             default:
                 //deflault to error image
