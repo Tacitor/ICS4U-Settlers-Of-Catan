@@ -39,6 +39,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
     private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
     private SDOnlineGamePanel onlineGameSettingsPanel;
+    private SDOfflineGamePanel offlineGameSettingsPanel;
 
     //Attributes
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -69,7 +70,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         
         //TODO: make new JPanels for these 2 and initialize them here
         onlineGameSettingsPanel = new SDOnlineGamePanel(sDMenuFrame);
-        //offlineGameSettingsPanel;
+        offlineGameSettingsPanel = new SDOfflineGamePanel(sDMenuFrame);
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -91,7 +92,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
 
         //setup the buttons
         onlineGameBtn = new SettlerBtn(true, 0, 29);
-        offlineGameBtn = new SettlerBtn(false, 0, 30);
+        offlineGameBtn = new SettlerBtn(true, 0, 30);
         optionsBtn = new SettlerBtn(true, 0, 20);
         creditsBtn = new SettlerBtn(true, 0, 21);
         userManualBtn = new SettlerBtn(false, 0, 22);
@@ -311,7 +312,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private void offlineGameBtnActionPerformed() {
         // Hide this window and show the New Game Settings
         offlineGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, null);
+        sDMenuFrame.switchPanel(this, offlineGameSettingsPanel);
     }
 
     /**
