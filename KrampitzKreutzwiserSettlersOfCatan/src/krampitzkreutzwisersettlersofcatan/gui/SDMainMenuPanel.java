@@ -12,10 +12,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-import javax.swing.JOptionPane;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
@@ -324,47 +320,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         // Hide this window and show the credits
         creditsBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDCreditsPanel);
-    }
-
-    /**
-     * Load the Auto-save if there is one
-     */
-    private void loadAutosaveBtnActionPerformed() {
-        String autosaveLocation = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan";
-
-        //test if it is a vailid autosave file
-        try {
-            //use the predetermined auto save file location
-            File savefile = new File(autosaveLocation);
-            Scanner scanner = new Scanner(savefile);
-
-            // Hide this window and reset the game
-            this.setVisible(false);
-            gameJFrame.resetGamePanel();
-
-            //check if it is a vailid game save
-            if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
-                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
-            } else { //if it is a real save file
-                //check if the next line hold the player count
-                if (scanner.nextLine().equals("playerCount:")) {
-                    //set the player count
-                    GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
-                    gameJFrame.resetGamePanel();
-
-                    gameJFrame.loadFromFile(autosaveLocation);
-
-                } else {
-                    JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-
-            //show the game                
-            gameJFrame.setVisible(true);
-
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "There was no autosave file detected:\n" + e, "No Autosave", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     /**

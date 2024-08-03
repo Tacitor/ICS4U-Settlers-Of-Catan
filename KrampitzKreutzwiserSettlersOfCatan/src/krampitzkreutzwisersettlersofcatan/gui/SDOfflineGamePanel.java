@@ -191,7 +191,7 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
                 } else if (btn.equals(newGameBtn)) {
                     newGameBtnActionPerformed();
                 } else if (btn.equals(loadAutosaveBtn)) {
-                    System.out.println("loadAutosaveBtn");
+                    loadAutosaveBtnActionPerformed();
                 } else if (btn.equals(loadGameBtn)) {
                     loadGameBtnActionPerformed();
                 }
@@ -340,6 +340,50 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
 
         } else { //if there was so file selected
             JOptionPane.showMessageDialog(null, "There was no file selected.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Load the Auto-save if there is one
+     */
+    private void loadAutosaveBtnActionPerformed() {
+        String autosaveLocation = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan";
+
+        //test if it is a vailid autosave file
+        try {
+            //use the predetermined auto save file location
+            File savefile = new File(autosaveLocation);
+            Scanner scanner = new Scanner(savefile);
+            
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+
+            //check if it is a vailid game save
+            if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
+                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
+            } else { //if it is a real save file
+                //check if the next line hold the player count
+                if (scanner.nextLine().equals("playerCount:")) {
+                    //set the player count
+                    GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
+                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+
+                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().loadFromFile(autosaveLocation);
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            //switch back to the main menu for when ever the game terminates
+            sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+            // Hide the SDMenuFrame window and show the game
+            sDMenuFrame.setVisible(false);
+
+            //show the game                
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(true);
+
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "There was no autosave file detected:\n" + e, "No Autosave", JOptionPane.ERROR_MESSAGE);
         }
     }
 
