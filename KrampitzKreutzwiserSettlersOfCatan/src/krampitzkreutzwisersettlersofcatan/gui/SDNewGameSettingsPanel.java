@@ -34,13 +34,13 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
-    private SettlerLbl playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl, multiPlayerLbl, limitGmPcMainLbl, limitGmPcSubLbl, houseRuleLbl;
+    private SettlerLbl playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl, limitGmPcMainLbl, limitGmPcSubLbl, houseRuleLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
-    private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn, startResYesRBtn, startResNoRBtn, snakeRulesYesRBtn, snakeRulesNoRBtn, multiPlayerLocRBtn, multiPlayerOnlineRBtn, limitGmPc15_5_4RBtn, limitGmPcInfRBtn;
+    private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn, startResYesRBtn, startResNoRBtn, snakeRulesYesRBtn, snakeRulesNoRBtn, limitGmPc15_5_4RBtn, limitGmPcInfRBtn;
     //arry for each group of radio buttons
-    private SettlerRadioBtn[] settlerRadioPlayerNumBtns, settlerRadioStartResBtns, settlerRadioSnakeRulesBtns, settlerRadioMultiPlayerBtns, settlerRadioLimitGmPcBtns;
+    private SettlerRadioBtn[] settlerRadioPlayerNumBtns, settlerRadioStartResBtns, settlerRadioSnakeRulesBtns, settlerRadioLimitGmPcBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
 
@@ -95,8 +95,6 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         snakeRulesSubLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         snakeRulesSubLbl.setLineWrap(true);
         snakeRulesSubLbl.setLinewrapSpace(28);
-        multiPlayerLbl = new SettlerLbl("Multiplayer Mode:");
-        multiPlayerLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         limitGmPcMainLbl = new SettlerLbl("Limit Game Pieces:");
         limitGmPcMainLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         limitGmPcSubLbl = new SettlerLbl("The number of play pieces each player will have for their colour. Can be set to infite.");
@@ -108,7 +106,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         houseRuleLbl.setLineWrap(true);
         houseRuleLbl.setLinewrapSpace(28);
         //add them to the array
-        settlerLbls = new SettlerLbl[]{playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl, multiPlayerLbl, limitGmPcMainLbl, limitGmPcSubLbl, houseRuleLbl};
+        settlerLbls = new SettlerLbl[]{playerNumLbl, startResMainLbl, startResSubLbl, snakeRulesMainLbl, snakeRulesSubLbl, limitGmPcMainLbl, limitGmPcSubLbl, houseRuleLbl};
 
         //setup the radio buttons
         playerNum2RBtn = new SettlerRadioBtn(true, true, 3);
@@ -118,8 +116,6 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         startResNoRBtn = new SettlerRadioBtn(true, false, 7);
         snakeRulesYesRBtn = new SettlerRadioBtn(true, true, 6);
         snakeRulesNoRBtn = new SettlerRadioBtn(true, false, 7);
-        multiPlayerLocRBtn = new SettlerRadioBtn(true, true, 8);
-        multiPlayerOnlineRBtn = new SettlerRadioBtn(true, false, 9);
         limitGmPc15_5_4RBtn = new SettlerRadioBtn(true, true, 10);
         limitGmPcInfRBtn = new SettlerRadioBtn(true, false, 11);
 
@@ -127,16 +123,14 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         settlerRadioPlayerNumBtns = new SettlerRadioBtn[]{playerNum2RBtn, playerNum3RBtn, playerNum4RBtn};
         settlerRadioStartResBtns = new SettlerRadioBtn[]{startResYesRBtn, startResNoRBtn};
         settlerRadioSnakeRulesBtns = new SettlerRadioBtn[]{snakeRulesYesRBtn, snakeRulesNoRBtn};
-        settlerRadioMultiPlayerBtns = new SettlerRadioBtn[]{multiPlayerLocRBtn, multiPlayerOnlineRBtn};
         settlerRadioLimitGmPcBtns = new SettlerRadioBtn[]{limitGmPc15_5_4RBtn, limitGmPcInfRBtn};
 
         //add the group to the main array
-        settlerRadioBtnGroups = new SettlerRadioBtn[5][];
+        settlerRadioBtnGroups = new SettlerRadioBtn[4][];
         settlerRadioBtnGroups[0] = settlerRadioPlayerNumBtns;
         settlerRadioBtnGroups[1] = settlerRadioStartResBtns;
         settlerRadioBtnGroups[2] = settlerRadioSnakeRulesBtns;
-        settlerRadioBtnGroups[3] = settlerRadioMultiPlayerBtns;
-        settlerRadioBtnGroups[4] = settlerRadioLimitGmPcBtns;
+        settlerRadioBtnGroups[3] = settlerRadioLimitGmPcBtns;
 
         //setup the custom radio buttons to go into the groups
         for (SettlerRadioBtn[] grp : settlerRadioBtnGroups) {
@@ -236,7 +230,6 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         startResSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
         snakeRulesMainLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         snakeRulesSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
-        multiPlayerLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         limitGmPcMainLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
         limitGmPcSubLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
         houseRuleLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(40)));
@@ -254,17 +247,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         playerNum4RBtn.setXPos(playerNum3RBtn.getXPos() + getLocalImgWidth(playerNum3RBtn.getBaseImage()) + localScaleInt(6));
         playerNum4RBtn.setYPos(playerNum2RBtn.getYPos());
 
-        multiPlayerLbl.setXPos(localScaleInt(1000));
-        multiPlayerLbl.setYPos(playerNumLbl.getYPos());
-
-        multiPlayerLocRBtn.setXPos(multiPlayerLbl.getXPos());
-        multiPlayerLocRBtn.setYPos(multiPlayerLbl.getYPos() + localScaleInt(15));
-
-        multiPlayerOnlineRBtn.setXPos(multiPlayerLocRBtn.getXPos());
-        multiPlayerOnlineRBtn.setYPos(multiPlayerLocRBtn.getYPos() + getLocalImgHeight(multiPlayerLocRBtn.getBaseImage()) + localScaleInt(6));
-
-        limitGmPcMainLbl.setXPos(multiPlayerLbl.getXPos());
-        limitGmPcMainLbl.setYPos(multiPlayerOnlineRBtn.getYPos() + getLocalImgHeight(multiPlayerOnlineRBtn.getBaseImage()) + localScaleInt(60));
+        limitGmPcMainLbl.setXPos(localScaleInt(1000));
+        limitGmPcMainLbl.setYPos(playerNumLbl.getYPos());
 
         limitGmPcSubLbl.setXPos(limitGmPcMainLbl.getXPos());
         limitGmPcSubLbl.setYPos(limitGmPcMainLbl.getYPos() + localScaleInt(30));
@@ -278,7 +262,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         limitGmPcInfRBtn.setYPos(limitGmPc15_5_4RBtn.getYPos() + getLocalImgHeight(limitGmPc15_5_4RBtn.getBaseImage()) + localScaleInt(6));
 
         startResMainLbl.setXPos(playerNum2RBtn.getXPos());
-        startResMainLbl.setYPos(limitGmPcMainLbl.getYPos());
+        startResMainLbl.setYPos(playerNum2RBtn.getYPos() + getLocalImgHeight(playerNum2RBtn.getBaseImage()) + localScaleInt(60));
 
         startResSubLbl.setXPos(startResMainLbl.getXPos());
         startResSubLbl.setYPos(startResMainLbl.getYPos() + localScaleInt(30));
@@ -493,8 +477,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
         }
 
-        //get the online play mode
-        if (multiPlayerLocRBtn.isSelected()) {
+        //Check the online play mode from previous menu selection
+        if (/*TODO: have a boolean to check for onlie or offline play*/true) {
 
             //switch back to the main menu for when ever the game terminates
             sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());

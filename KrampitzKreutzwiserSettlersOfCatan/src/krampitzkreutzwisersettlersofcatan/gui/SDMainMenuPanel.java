@@ -70,7 +70,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         gameJFrame = new GameFrame(this);
         sDClientSettings = new SDClientSettings(sDMenuFrame);
         
-        //TODO: make new JPanels for these 2 and initialize them here
         onlineGameSettingsPanel = new SDOnlineGamePanel(sDMenuFrame);
         offlineGameSettingsPanel = new SDOfflineGamePanel(sDMenuFrame);
         

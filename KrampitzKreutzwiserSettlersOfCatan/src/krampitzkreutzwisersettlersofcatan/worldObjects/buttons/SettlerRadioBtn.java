@@ -237,12 +237,12 @@ public class SettlerRadioBtn extends SettlerComponent {
                 textImage = RADIO_BTN_NO_TEXT;
                 break;
             case 8:
-                //if type is city radio button
-                textImage = RADIO_BTN_LOCAL_TEXT;
+                //EMPTY SLOT. PLEASE REUSE THIS ONE
+                textImage = ERROR_IMAGE;
                 break;
             case 9:
-                //if type is city radio button
-                textImage = RADIO_BTN_ONLINE_TEXT;
+                //EMPTY SLOT. PLEASE REUSE THIS ONE
+                textImage = ERROR_IMAGE;
                 break;
             case 10:
                 //if type is city radio button
