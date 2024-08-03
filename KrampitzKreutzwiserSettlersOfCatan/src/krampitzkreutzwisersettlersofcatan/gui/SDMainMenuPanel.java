@@ -40,6 +40,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
     private SDOnlineGamePanel onlineGameSettingsPanel;
     private SDOfflineGamePanel offlineGameSettingsPanel;
+    
+    private SDNewGameSettingsPanel newGameSettingsPanel;
 
     //Attributes
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -71,6 +73,9 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         //TODO: make new JPanels for these 2 and initialize them here
         onlineGameSettingsPanel = new SDOnlineGamePanel(sDMenuFrame);
         offlineGameSettingsPanel = new SDOfflineGamePanel(sDMenuFrame);
+        
+        //init the newGameSettingsPanel
+        resetNewGameSettingsPanel();
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -490,6 +495,14 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      */
     public SDJoinOnlineGameMenu getJoinOnlineGameMenu() {
         return sDJoinOnlineGameMenu;
+    }
+    
+    public SDNewGameSettingsPanel getNewGameSettingsPanel() {
+        return newGameSettingsPanel;
+    }
+    
+    public void resetNewGameSettingsPanel() {
+        newGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
     }
 
     public int getExitMainMenuBtnYPos() {

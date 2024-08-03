@@ -146,16 +146,16 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
      */
     private void settlerVarPos(Graphics2D g2d) {
         int menuPackingHeight = SDMenuFrame.MENU_PACKING_HEIGHT;
-        
+
         newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(newGameBtn.getBaseImage(), this) / 2);
         newGameBtn.setYPos(localScaleInt(250));
-        
+
         joinLobbyBtn.setXPos(newGameBtn.getXPos());
         joinLobbyBtn.setYPos(newGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(joinLobbyBtn.getBaseImage(), this));
-        
+
         loadGameBtn.setXPos(joinLobbyBtn.getXPos());
         loadGameBtn.setYPos(joinLobbyBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(loadGameBtn.getBaseImage(), this));
-        
+
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
@@ -182,7 +182,7 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
                 } else if (btn.equals(newGameBtn)) {
-                    System.out.println("newGameBtn");
+                    newGameBtnActionPerformed();
                 } else if (btn.equals(joinLobbyBtn)) {
                     System.out.println("joinLobbyBtn");
                 } else if (btn.equals(loadGameBtn)) {
@@ -254,6 +254,12 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+    }
+
+    private void newGameBtnActionPerformed() {
+        // Hide this window and show the New Game Settings
+        newGameBtn.setmouseHover(false);
+        sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getNewGameSettingsPanel());
     }
 
     @Override

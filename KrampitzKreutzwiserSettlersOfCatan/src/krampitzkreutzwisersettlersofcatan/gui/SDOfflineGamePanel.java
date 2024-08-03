@@ -182,7 +182,7 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
                 } else if (btn.equals(newGameBtn)) {
-                    System.out.println("newGameBtn");
+                    newGameBtnActionPerformed();
                 } else if (btn.equals(loadAutosaveBtn)) {
                     System.out.println("loadAutosaveBtn");
                 } else if (btn.equals(loadGameBtn)) {
@@ -254,6 +254,12 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+    }
+
+    private void newGameBtnActionPerformed() {
+        // Hide this window and show the New Game Settings
+        newGameBtn.setmouseHover(false);
+        sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getNewGameSettingsPanel());
     }
 
     @Override
