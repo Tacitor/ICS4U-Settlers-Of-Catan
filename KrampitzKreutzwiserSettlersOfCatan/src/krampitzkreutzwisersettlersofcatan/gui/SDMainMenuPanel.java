@@ -15,9 +15,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
@@ -317,79 +315,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         // Hide this window and show the New Game Settings
         offlineGameBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, offlineGameSettingsPanel);
-    }
-
-    /**
-     * Load in a previous game from a save file
-     */
-    private void loadGameBtnActionPerformed() {
-        JFileChooser saveFileLoader = new JFileChooser(); //make a new file chooser
-
-        //create a filter for catan save files
-        FileFilter catanSaveFile = new FileFilter() {
-            //add the description
-            @Override
-            public String getDescription() {
-                return "Catan Save File (*.catan)";
-            }
-
-            //add the logic for the filter
-            @Override
-            public boolean accept(File f) {
-                //if it's a directory ignor it
-                if (f.isDirectory()) {
-                    return true;
-                } else { //if it's a file only show it if it's a .catan file
-                    return f.getName().toLowerCase().endsWith(".catan");
-                }
-            }
-        };
-
-        //set up the file choose and call it
-        saveFileLoader.setDialogTitle("Select a Save File to Open:");
-        saveFileLoader.addChoosableFileFilter(catanSaveFile);
-        saveFileLoader.setFileFilter(catanSaveFile);
-        int userLoadSelection = saveFileLoader.showOpenDialog(this);
-
-        //check if the user selected a file
-        if (userLoadSelection == JFileChooser.APPROVE_OPTION) {
-
-            //test if it is a vailid save file
-            try {
-                File savefile = new File(saveFileLoader.getSelectedFile().getPath());
-                Scanner scanner = new Scanner(savefile);
-
-                // Hide this window and reset the game
-                this.setVisible(false);
-                gameJFrame.resetGamePanel();
-
-                //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
-                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
-                } else { //if it is a real save file
-                    //check if the next line hold the player count
-                    if (scanner.nextLine().equals("playerCount:")) {
-                        //set the player count
-                        GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
-                        gameJFrame.resetGamePanel();
-
-                        gameJFrame.loadFromFile(saveFileLoader.getSelectedFile().getPath());
-
-                    } else {
-                        JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-
-                //show the game                
-                gameJFrame.setVisible(true);
-
-            } catch (FileNotFoundException e) {
-                JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-        } else { //if there was so file selected
-            JOptionPane.showMessageDialog(null, "There was no file selected.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     /**
