@@ -34,11 +34,11 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     //ref to the other Menu elements
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
-    private final SDNewGameSettingsPanel sDNewGameSettingsPanel;
     private final SDClientSettings sDClientSettings;
     private SDNewOnlineGameMenu sDnewOnlineGameMenu;
     private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
     private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
+    private SDOnlineGamePanel onlineGameSettingsPanel;
 
     //Attributes
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -66,12 +66,10 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
         gameJFrame = new GameFrame(this);
         sDClientSettings = new SDClientSettings(sDMenuFrame);
-        sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
         
-        /* TODO:
-        onlineGameSettingsPanel;
-        offlineGameSettingsPanel;
-        */
+        //TODO: make new JPanels for these 2 and initialize them here
+        onlineGameSettingsPanel = new SDOnlineGamePanel(sDMenuFrame);
+        //offlineGameSettingsPanel;
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -93,7 +91,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
 
         //setup the buttons
         onlineGameBtn = new SettlerBtn(true, 0, 29);
-        offlineGameBtn = new SettlerBtn(true, 0, 30);
+        offlineGameBtn = new SettlerBtn(false, 0, 30);
         optionsBtn = new SettlerBtn(true, 0, 20);
         creditsBtn = new SettlerBtn(true, 0, 21);
         userManualBtn = new SettlerBtn(false, 0, 22);
@@ -304,7 +302,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private void onlineGameBtnActionPerformed() {
         // Hide this window and show the New Game Settings
         onlineGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, null);
+        sDMenuFrame.switchPanel(this, onlineGameSettingsPanel);
     }
 
     /**

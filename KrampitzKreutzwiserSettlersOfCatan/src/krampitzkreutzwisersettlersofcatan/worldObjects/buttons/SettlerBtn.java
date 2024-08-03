@@ -75,7 +75,7 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image LOAD_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadGameText.png")).getImage();
     private final static Image LOAD_AUTOSAVE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadAutosaveText.png")).getImage();
     private final static Image OPTIONS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/optionsText.png")).getImage();
-    private final static Image JOIN_ONLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/joinOnlineGameText.png")).getImage();
+    private final static Image JOIN_LOBBY_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/joinLobbyText.png")).getImage();
     private final static Image LOAD_GAME_TO_ONLINE_MODE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadGameToOnlineModeText.png")).getImage();
     private final static Image CREDITS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/creditsText.png")).getImage();
     private final static Image USER_MANUAL_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/userManualText.png")).getImage();
@@ -408,7 +408,7 @@ public class SettlerBtn extends SettlerComponent {
                 break;
             case 16:
                 //if it's a big join online gam button for the SD main menu
-                textImage = JOIN_ONLINE_GAME_BTN_TEXT;
+                textImage = JOIN_LOBBY_BTN_TEXT;
                 break;
             case 17:
                 //if it's a big load to online mode button for the SD main menu
