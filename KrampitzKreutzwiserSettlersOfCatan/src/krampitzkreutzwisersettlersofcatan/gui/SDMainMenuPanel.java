@@ -32,10 +32,11 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private SDNewOnlineGameMenu sDnewOnlineGameMenu;
     private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
     private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
-    private SDOnlineGamePanel onlineGameSettingsPanel;
-    private SDOfflineGamePanel offlineGameSettingsPanel;
-    
-    private SDNewGameSettingsPanel newGameSettingsPanel;
+    private SDOnlineGamePanel sDOnlineGameSettingsPanel;
+    private SDOfflineGamePanel sDOfflineGameSettingsPanel;
+
+    private SDNewGameSettingsPanel sDNewGameSettingsPanel;
+    private SDJoinLobbyPanel sDJoinLobbyPanel;
 
     //Attributes
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -63,12 +64,14 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
         gameJFrame = new GameFrame(this);
         sDClientSettings = new SDClientSettings(sDMenuFrame);
-        
-        onlineGameSettingsPanel = new SDOnlineGamePanel(sDMenuFrame);
-        offlineGameSettingsPanel = new SDOfflineGamePanel(sDMenuFrame);
-        
+
+        sDOnlineGameSettingsPanel = new SDOnlineGamePanel(sDMenuFrame);
+        sDOfflineGameSettingsPanel = new SDOfflineGamePanel(sDMenuFrame);
+
         //init the newGameSettingsPanel
-        resetNewGameSettingsPanel();
+        resetSDNewGameSettingsPanel();
+        //init the join lobby panel
+        resetSDJoinLobbyPanel();
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -218,7 +221,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
                 if (btn.equals(exitMainMenuBtn)) { //if it was the exit game button
 
                     exitMainMenuBtnPressed();
-                    
+
                 } else if (btn.equals(onlineGameBtn)) {
                     onlineGameBtnActionPerformed();
                 } else if (btn.equals(offlineGameBtn)) {
@@ -294,14 +297,14 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private void exitMainMenuBtnPressed() {
         System.exit(0);
     }
-    
+
     /**
      * Open the online game settings
      */
     private void onlineGameBtnActionPerformed() {
         // Hide this window and show the New Game Settings
         onlineGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, onlineGameSettingsPanel);
+        sDMenuFrame.switchPanel(this, sDOnlineGameSettingsPanel);
     }
 
     /**
@@ -310,7 +313,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private void offlineGameBtnActionPerformed() {
         // Hide this window and show the New Game Settings
         offlineGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, offlineGameSettingsPanel);
+        sDMenuFrame.switchPanel(this, sDOfflineGameSettingsPanel);
     }
 
     /**
@@ -375,13 +378,37 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     public SDJoinOnlineGameMenu getJoinOnlineGameMenu() {
         return sDJoinOnlineGameMenu;
     }
-    
-    public SDNewGameSettingsPanel getNewGameSettingsPanel() {
-        return newGameSettingsPanel;
+
+    /**
+     * Accessor for the sDnewGameSettingsPanel
+     *
+     * @return
+     */
+    public SDNewGameSettingsPanel getSDNewGameSettingsPanel() {
+        return sDNewGameSettingsPanel;
     }
-    
-    public void resetNewGameSettingsPanel() {
-        newGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
+
+    /**
+     * Reset method for sDnewGameSettingsPanel
+     */
+    public void resetSDNewGameSettingsPanel() {
+        sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
+    }
+
+    /**
+     * Accessor for sDjoinLobbyPanel
+     *
+     * @return
+     */
+    public SDJoinLobbyPanel getSDJoinLobbyPanel() {
+        return sDJoinLobbyPanel;
+    }
+
+    /**
+     * Reset method for sDjoinLobbyPanel
+     */
+    public void resetSDJoinLobbyPanel() {
+        sDJoinLobbyPanel = new SDJoinLobbyPanel(sDMenuFrame);
     }
 
     public int getExitMainMenuBtnYPos() {

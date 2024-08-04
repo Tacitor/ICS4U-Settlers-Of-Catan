@@ -265,11 +265,11 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
 
     private void newGameBtnActionPerformed() {
         //set the new game settings to know the new game will be offline
-        sDMenuFrame.getSDMainMenuPanel().getNewGameSettingsPanel().setNewGameOffline(true);
+        sDMenuFrame.getSDMainMenuPanel().getSDNewGameSettingsPanel().setNewGameOffline(true);
         
         // Hide this window and show the New Game Settings
         newGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getNewGameSettingsPanel());
+        sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDNewGameSettingsPanel());
     }
 
     /**

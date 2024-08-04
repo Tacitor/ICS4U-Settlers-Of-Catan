@@ -1,7 +1,7 @@
 /*
  * Lukas Krampitz
- * August 2, 2024
- * The JPanel for the Online Game panel using Settler Dev Buttons.
+ * August 4, 2024
+ * The JPanel for the Join Lobby panel using Settler Dev Buttons.
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
@@ -19,7 +19,7 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
+public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
 
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -27,7 +27,7 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn newGameBtn, joinLobbyBtn, loadGameBtn, exitBtn;
+    private SettlerBtn exitBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
 
@@ -39,7 +39,7 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
      *
      * @param sDFrame
      */
-    public SDOnlineGamePanel(SDMenuFrame sDFrame) {
+    public SDJoinLobbyPanel(SDMenuFrame sDFrame) {
         sDMenuFrame = sDFrame;
 
         COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
@@ -64,11 +64,8 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
-        newGameBtn = new SettlerBtn(true, 0, 14);
-        joinLobbyBtn = new SettlerBtn(true, 0, 16);
-        loadGameBtn = new SettlerBtn(true, 0, 15);
         //add them to the array
-        settlerBtns = new SettlerBtn[]{exitBtn, newGameBtn, joinLobbyBtn, loadGameBtn};
+        settlerBtns = new SettlerBtn[]{exitBtn};
 
     }
 
@@ -110,8 +107,8 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
         g2d.setColor(DomesticTradePanel.BEIGE_COLOUR);
 
         //Draw the Title
-        g2d.drawString("Online Game",
-                (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Online Game") / 2),
+        g2d.drawString("Join Lobby",
+                (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Join Lobby") / 2),
                 localScaleInt(100));
 
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
@@ -147,14 +144,8 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
     private void settlerVarPos(Graphics2D g2d) {
         int menuPackingHeight = SDMenuFrame.MENU_PACKING_HEIGHT;
 
-        newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(newGameBtn.getBaseImage(), this) / 2);
-        newGameBtn.setYPos(localScaleInt(250));
-
-        joinLobbyBtn.setXPos(newGameBtn.getXPos());
-        joinLobbyBtn.setYPos(newGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(joinLobbyBtn.getBaseImage(), this));
-
-        loadGameBtn.setXPos(joinLobbyBtn.getXPos());
-        loadGameBtn.setYPos(joinLobbyBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(loadGameBtn.getBaseImage(), this));
+//        newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(newGameBtn.getBaseImage(), this) / 2);
+//        newGameBtn.setYPos(localScaleInt(250));
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
@@ -181,12 +172,8 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
                 //check the button that was pressed
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
-                } else if (btn.equals(newGameBtn)) {
-                    newGameBtnActionPerformed();
-                } else if (btn.equals(joinLobbyBtn)) {
-                    joinLobbyBtnActionPerformed();
-                } else if (btn.equals(loadGameBtn)) {
-                    System.out.println("loadGameBtn");
+                } else if (btn.equals(null)) {
+                    //click
                 }
             }
         }
@@ -251,33 +238,9 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
         //System.out.println("Mouse Dragged");
     }
 
-    /**
-     * Exit this panel and return to the main menu
-     */
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
-    }
-
-    /**
-     * Open the JPanel for setting the parameters for a new game
-     */
-    private void newGameBtnActionPerformed() {
-        //set the new game settings to know the new game will be online
-        sDMenuFrame.getSDMainMenuPanel().getSDNewGameSettingsPanel().setNewGameOffline(false);
-
-        // Hide this window and show the New Game Settings
-        newGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDNewGameSettingsPanel());
-    }
-
-    /**
-     *  Open the JPanel to allow a user to select a lobby for online play.
-     */
-    private void joinLobbyBtnActionPerformed() {
-        // Hide this window and show the New Game Settings
-        joinLobbyBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel());
     }
 
     @Override
