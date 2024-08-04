@@ -28,6 +28,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
     private int mouseMotionPosY;
+    
+    private boolean newGameIsOffline;
 
     //Settler Compoments
     private SettlerBtn exitBtn, startGameBtn;
@@ -74,6 +76,9 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
                 mouseClick(event);
             }
         });
+        
+        //set the default new game to offline
+        newGameIsOffline = true;
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
@@ -478,7 +483,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         }
 
         //Check the online play mode from previous menu selection
-        if (/*TODO: have a boolean to check for onlie or offline play*/true) {
+        if (newGameIsOffline) {
 
             //switch back to the main menu for when ever the game terminates
             sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
@@ -507,5 +512,21 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     @Override
     public int getLocalImgHeight(Image image) {
         return sDMenuFrame.getImgHeightLocal(image, this);
+    }
+
+    /**
+     * Accessor for determining if the new game to be created is online or offline
+     * @return 
+     */
+    public boolean isNewGameOffline() {
+        return newGameIsOffline;
+    }
+
+    /**
+     * Mutator for determining if the new game to be created is online or offline
+     * @param newGameIsOffline 
+     */
+    public void setNewGameOffline(boolean newGameIsOffline) {
+        this.newGameIsOffline = newGameIsOffline;
     }
 }

@@ -257,6 +257,9 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
     }
 
     private void newGameBtnActionPerformed() {
+        //set the new game settings to know the new game will be online
+        sDMenuFrame.getSDMainMenuPanel().getNewGameSettingsPanel().setNewGameOffline(false);
+        
         // Hide this window and show the New Game Settings
         newGameBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getNewGameSettingsPanel());
