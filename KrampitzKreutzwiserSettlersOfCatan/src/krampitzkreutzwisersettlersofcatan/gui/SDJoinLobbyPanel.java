@@ -12,6 +12,7 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import javax.swing.JOptionPane;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
 
@@ -27,7 +28,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn exitBtn;
+    private SettlerBtn refreshBtn, exitBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
 
@@ -64,8 +65,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
+        refreshBtn = new SettlerBtn(true, 0, 32);
         //add them to the array
-        settlerBtns = new SettlerBtn[]{exitBtn};
+        settlerBtns = new SettlerBtn[]{refreshBtn, exitBtn};
 
     }
 
@@ -146,6 +148,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
 //        newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(newGameBtn.getBaseImage(), this) / 2);
 //        newGameBtn.setYPos(localScaleInt(250));
+        refreshBtn.setXPos(localScaleInt(100));
+        refreshBtn.setYPos(localScaleInt(150));
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
@@ -172,8 +176,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 //check the button that was pressed
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
-                } else if (btn.equals(null)) {
-                    //click
+                } else if (btn.equals(refreshBtn)) {
+                    JOptionPane.showMessageDialog(null, "Hi Seb this button doesn't do anything yet.");
                 }
             }
         }
