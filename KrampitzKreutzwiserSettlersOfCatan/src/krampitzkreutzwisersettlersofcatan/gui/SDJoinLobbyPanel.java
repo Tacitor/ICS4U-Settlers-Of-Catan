@@ -28,7 +28,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn refreshBtn, exitBtn;
+    private SettlerBtn refreshBtn, lobby1Btn, exitBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
 
@@ -66,8 +66,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
         refreshBtn = new SettlerBtn(true, 0, 32);
+        lobby1Btn = new SettlerBtn(true, 0, 31);
         //add them to the array
-        settlerBtns = new SettlerBtn[]{refreshBtn, exitBtn};
+        settlerBtns = new SettlerBtn[]{refreshBtn, lobby1Btn, exitBtn};
 
     }
 
@@ -146,10 +147,11 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private void settlerVarPos(Graphics2D g2d) {
         int menuPackingHeight = SDMenuFrame.MENU_PACKING_HEIGHT;
 
-//        newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(newGameBtn.getBaseImage(), this) / 2);
-//        newGameBtn.setYPos(localScaleInt(250));
         refreshBtn.setXPos(localScaleInt(100));
         refreshBtn.setYPos(localScaleInt(150));
+        
+        lobby1Btn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(lobby1Btn.getBaseImage(), this) / 2);
+        lobby1Btn.setYPos(refreshBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(refreshBtn.getBaseImage(), this));
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
@@ -178,6 +180,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                     exitBtnActionPerformed();
                 } else if (btn.equals(refreshBtn)) {
                     JOptionPane.showMessageDialog(null, "Hi Seb this button doesn't do anything yet.");
+                } else if (btn.equals(lobby1Btn)) {
+                    System.out.println("Connect");
                 }
             }
         }

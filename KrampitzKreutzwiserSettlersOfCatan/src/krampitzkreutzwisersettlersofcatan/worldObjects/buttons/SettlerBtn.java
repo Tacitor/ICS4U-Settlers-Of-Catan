@@ -97,6 +97,7 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image CREATE_SERVER_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/createServerText.png")).getImage();
     private final static Image ONLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/mainOnlineGameText.png")).getImage();
     private final static Image OFFLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/mainOfflineGameText.png")).getImage();
+    private final static Image NONE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/none.png")).getImage();
     
     //texts for smaller SDMenuButtons
     private final static Image REFRESH_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/refreshBtnText.png")).getImage();
@@ -488,7 +489,7 @@ public class SettlerBtn extends SettlerComponent {
                 break;
             case 31:
                 //If it's a Lobby selection button
-                textImage = ERROR_IMAGE;
+                textImage = NONE_BTN_TEXT;
                 break;
             case 32:
                 //if it's refresh button (like in the lobby selection)
