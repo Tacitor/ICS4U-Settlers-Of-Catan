@@ -75,11 +75,11 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
-        refreshBtn = new SettlerBtn(true, 0, 32);
+        refreshBtn = new SettlerBtn(false, 0, 32);
         lobby1Btn = new SettlerBtn(true, 0, 31);
         lobby2Btn = new SettlerBtn(true, 0, 31);
         lobby3Btn = new SettlerBtn(true, 0, 31);
-        lobby4Btn = new SettlerBtn(true, 0, 31);
+        lobby4Btn = new SettlerBtn(false, 0, 31);
 
         //add them to the array
         settlerBtns = new SettlerBtn[]{refreshBtn, lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn};
@@ -94,9 +94,15 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby4NameLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
         lobby1StatLbl = new SettlerLbl("empty");
         lobby1StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
+        lobby2StatLbl = new SettlerLbl("1/2");
+        lobby2StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
+        lobby3StatLbl = new SettlerLbl("empty");
+        lobby3StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
+        lobby4StatLbl = new SettlerLbl("4/4");
+        lobby4StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
 
         //add them to the array
-        settlerLbls = new SettlerLbl[]{lobby1NameLbl, lobby2NameLbl, lobby3NameLbl, lobby4NameLbl, lobby1StatLbl};
+        settlerLbls = new SettlerLbl[]{lobby1NameLbl, lobby2NameLbl, lobby3NameLbl, lobby4NameLbl, lobby1StatLbl, lobby2StatLbl, lobby3StatLbl, lobby4StatLbl};
 
     }
 
@@ -144,7 +150,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
 
-        //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons =-=-=-=-=-=-=-=-=-=
+        //=-=-=-=-=-=-=-=-=-= Draw the Settlerbuttons Bases & Text ONLY =-=-=-=-=-=-=-=-=-=
         for (SettlerBtn btn : settlerBtns) {
             btn.updateButtonImages();
             btn.updateText();
@@ -154,6 +160,16 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
             //draw the text
             sDMenuFrame.drawSettlerBtn(g2d, btn.getTextImage(), btn, 0, this);
+        }
+
+        //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
+        //go through and draw all the labels
+        for (SettlerLbl settlerLbl : settlerLbls) {
+            settlerLbl.draw(g2d, localScaleFactor);
+        }
+
+        //Now go back and drawn the layers that do over the text
+        for (SettlerBtn btn : settlerBtns) {
 
             //draw the disabled overlay if required
             if (!btn.isEnabled()) {
@@ -164,12 +180,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 sDMenuFrame.drawSettlerBtn(g2d, btn.getHoverImage(), btn, 1, this);
             }
 
-        }
-
-        //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
-        //go through and draw all the labels
-        for (SettlerLbl settlerLbl : settlerLbls) {
-            settlerLbl.draw(g2d, localScaleFactor);
         }
     }
 
@@ -186,6 +196,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby3NameLbl.setFont(COMPASS_GOLD_45);
         lobby4NameLbl.setFont(COMPASS_GOLD_45);
         lobby1StatLbl.setFont(COMPASS_GOLD_45);
+        lobby2StatLbl.setFont(COMPASS_GOLD_45);
+        lobby3StatLbl.setFont(COMPASS_GOLD_45);
+        lobby4StatLbl.setFont(COMPASS_GOLD_45);
 
         refreshBtn.setXPos(localScaleInt(100));
         refreshBtn.setYPos(localScaleInt(150));
@@ -195,27 +208,36 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         lobby1NameLbl.setXPos(lobby1Btn.getXPos() + localScaleInt(20));
         lobby1NameLbl.setYPos(lobby1Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby1Btn.getBaseImage(), this) * 4 / 6);
-        
-        lobby1StatLbl.setXPos(lobby1NameLbl.getXPos() + localScaleInt(400));
+
+        lobby1StatLbl.setXPos(lobby1NameLbl.getXPos() + localScaleInt(450));
         lobby1StatLbl.setYPos(lobby1NameLbl.getYPos());
 
         lobby2Btn.setXPos(lobby1Btn.getXPos());
         lobby2Btn.setYPos(lobby1Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby1Btn.getBaseImage(), this));
-        
+
         lobby2NameLbl.setXPos(lobby2Btn.getXPos() + localScaleInt(20));
         lobby2NameLbl.setYPos(lobby2Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby2Btn.getBaseImage(), this) * 4 / 6);
 
+        lobby2StatLbl.setXPos(lobby2NameLbl.getXPos() + localScaleInt(450));
+        lobby2StatLbl.setYPos(lobby2NameLbl.getYPos());
+
         lobby3Btn.setXPos(lobby2Btn.getXPos());
         lobby3Btn.setYPos(lobby2Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby2Btn.getBaseImage(), this));
-        
+
         lobby3NameLbl.setXPos(lobby3Btn.getXPos() + localScaleInt(20));
         lobby3NameLbl.setYPos(lobby3Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby3Btn.getBaseImage(), this) * 4 / 6);
 
+        lobby3StatLbl.setXPos(lobby3NameLbl.getXPos() + localScaleInt(450));
+        lobby3StatLbl.setYPos(lobby3NameLbl.getYPos());
+
         lobby4Btn.setXPos(lobby3Btn.getXPos());
         lobby4Btn.setYPos(lobby3Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby3Btn.getBaseImage(), this));
-        
+
         lobby4NameLbl.setXPos(lobby4Btn.getXPos() + localScaleInt(20));
         lobby4NameLbl.setYPos(lobby4Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby4Btn.getBaseImage(), this) * 4 / 6);
+
+        lobby4StatLbl.setXPos(lobby4NameLbl.getXPos() + localScaleInt(450));
+        lobby4StatLbl.setYPos(lobby4NameLbl.getYPos());
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
