@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JOptionPane;
+import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
 
@@ -31,6 +32,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private SettlerBtn refreshBtn, lobby1Btn, exitBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
+
+    private CatanClient catanClient;
 
     //Fonts
     public Font COMPASS_GOLD;
@@ -149,7 +152,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         refreshBtn.setXPos(localScaleInt(100));
         refreshBtn.setYPos(localScaleInt(150));
-        
+
         lobby1Btn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(lobby1Btn.getBaseImage(), this) / 2);
         lobby1Btn.setYPos(refreshBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(refreshBtn.getBaseImage(), this));
 
@@ -181,7 +184,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 } else if (btn.equals(refreshBtn)) {
                     JOptionPane.showMessageDialog(null, "Hi Seb this button doesn't do anything yet.");
                 } else if (btn.equals(lobby1Btn)) {
-                    System.out.println("Connect");
+                    lobby1BtnActionPerformed();
                 }
             }
         }
@@ -251,6 +254,56 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }
 
+    /**
+     * Connect to the 1st lobby
+     */
+    private void lobby1BtnActionPerformed() {
+        FindServerRunnable findServerRunnable = new FindServerRunnable();
+        findServerRunnable.setDaemon(true);
+        findServerRunnable.start();
+    }
+
+    private void findServer() {
+        catanClient = new CatanClient(700, 200, "www.lkrampitz.net", sDMenuFrame.getSDMainMenuPanel().getGameFrame(), 25570);
+
+        try {
+
+            //try to connect
+            boolean succesfulConnect = catanClient.connectToServer();
+
+            if (succesfulConnect) {
+                System.out.println("connected to the Lobby");
+                
+                catanClient.setUpGUI();
+                
+                //save the client and the max number of players now because the colour request could finish first
+                GamePanel.setCatanClient(catanClient);
+                GamePanel.setPlayerCount(catanClient.getMaxClients());
+
+                //get the first avaibale colour
+                catanClient.requestColour(0);
+                
+                while (catanClient.getClientColour() == 0) {
+                    try {
+                        //while there is no assinged colour do nothing and just wait
+                        //System.out.println("coluour still: " + client.getClientColour());
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                        System.out.println("Error requesing colour in SDJoinLobbyPanel");
+                    }
+                }
+                
+                // once the client has been set up save it to the game panel
+                GamePanel.setOnlineMode(catanClient.getClientColour());
+
+            } else {
+                System.out.println("Error connecting to the lobby");
+            }
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex);
+        }
+    }
+
     @Override
     public int getLocalImgWidth(Image image) {
         return sDMenuFrame.getImgWidthLocal(image, this);
@@ -259,5 +312,31 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     @Override
     public int getLocalImgHeight(Image image) {
         return sDMenuFrame.getImgHeightLocal(image, this);
+    }
+
+    private class FindServerRunnable extends Thread implements Runnable {
+
+        private boolean stopRequested = false;
+
+        public synchronized void requestStop() {
+            stopRequested = true;
+        }
+
+        @Override
+        public void run() {
+            //debug the life of the thread and how long it lives for
+            //System.out.println("Started connectio attempt");
+
+            //check if this thread should stop
+            while (!stopRequested) {
+                //try to connect
+                findServer();
+                //only run once
+                stopRequested = true;
+            }
+
+            //System.out.println("done connection attempt");
+        }
+
     }
 }

@@ -419,7 +419,6 @@ public class SDNewOnlineGameMenu extends javax.swing.JPanel implements MouseMoti
         client = new CatanClient(700, 200, "localhost", sDMenuFrame.getSDMainMenuPanel().getGameFrame(), portNum);
         client.connectToServer();
         client.setUpGUI();
-        client.setUpButton();
 
         //request the player colour
         client.requestColour(1); //request the red player

@@ -264,48 +264,6 @@ public class CatanClient extends JFrame {
         return justRolledDice;
     }
 
-    public void setUpButton() {
-        //create action listener for when the button is clicked to send a message
-        ActionListener al = (ActionEvent e) -> {
-            JButton button = (JButton) e.getSource();
-            String buttonString = button.getText();
-
-            //if the player sends a chat
-            if (buttonString.equals("Send Chat")) {
-
-                justPressedSend = true;
-
-                System.out.println("[Client " + clientID + "] " + "Sending the message: " + messageToSend.getText());
-
-                updateButtons();
-
-                //send the message
-                csc.sendNewString(messageToSend.getText());
-
-                //clear the chat field
-                messageToSend.setText("");
-
-            } else if (buttonString.equals("Send File")) {
-
-                JFileChooser saveFileLoader = new JFileChooser();
-                //set up the file choose and call it
-                saveFileLoader.setDialogTitle("Select a Save File to Open:");
-                int userLoadSelection = saveFileLoader.showOpenDialog(null);
-
-                if (userLoadSelection == JFileChooser.APPROVE_OPTION) {
-
-                    updateButtons();
-
-                    sendFile(saveFileLoader.getSelectedFile().getPath());
-
-                }
-            }
-        };
-
-        sendBtn.addActionListener(al);
-        fileBtn.addActionListener(al);
-    }
-
     public void updateButtons() {
         sendBtn.setEnabled(buttonEnabled);
         //always false because the only file that should be sent is a Catan save file

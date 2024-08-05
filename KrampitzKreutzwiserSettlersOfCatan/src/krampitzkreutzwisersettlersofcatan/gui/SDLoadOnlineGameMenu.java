@@ -639,7 +639,6 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         client = new CatanClient(700, 200, "localhost", sDMenuFrame.getSDMainMenuPanel().getGameFrame(), portNum);
         client.connectToServer();
         client.setUpGUI();
-        client.setUpButton();
 
         createServerBtn.setMode(0); //reset to default text 
 
