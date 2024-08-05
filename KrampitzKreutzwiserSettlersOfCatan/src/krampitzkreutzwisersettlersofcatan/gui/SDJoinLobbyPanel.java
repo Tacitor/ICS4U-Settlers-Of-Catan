@@ -41,6 +41,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
     private CatanClient catanClient;
 
+    private int[][] lobbyStats;
+
     //Fonts
     public Font COMPASS_GOLD;
     public Font COMPASS_GOLD_45;
@@ -75,11 +77,11 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
-        refreshBtn = new SettlerBtn(false, 0, 32);
-        lobby1Btn = new SettlerBtn(true, 0, 31);
-        lobby2Btn = new SettlerBtn(true, 0, 31);
-        lobby3Btn = new SettlerBtn(true, 0, 31);
-        lobby4Btn = new SettlerBtn(false, 0, 31);
+        refreshBtn = new SettlerBtn(true, 0, 32);
+        lobby1Btn = new SettlerBtn(true, 1, 31); //set the mode to 1 for lobby 1,a nd type to 31 for a lobby button
+        lobby2Btn = new SettlerBtn(true, 2, 31); //set the mode to 2 for lobby 2,a nd type to 31 for a lobby button
+        lobby3Btn = new SettlerBtn(true, 3, 31); //set the mode to 3 for lobby 3,a nd type to 31 for a lobby button
+        lobby4Btn = new SettlerBtn(false, 4, 31); //set the mode to 4 for lobby 4,a nd type to 31 for a lobby button
 
         //add them to the array
         settlerBtns = new SettlerBtn[]{refreshBtn, lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn};
@@ -103,6 +105,25 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //add them to the array
         settlerLbls = new SettlerLbl[]{lobby1NameLbl, lobby2NameLbl, lobby3NameLbl, lobby4NameLbl, lobby1StatLbl, lobby2StatLbl, lobby3StatLbl, lobby4StatLbl};
+
+        //init the lobby stats
+        /**
+         * There are 4 arrays of size 5. Each of the 4 arrays is for 1 of the
+         * lobbies. Each lobby had the 0th index for the total number of players
+         * allowed. And each index is a binary 0 or 1 for if the corresponding
+         * player colour is present
+         */
+        lobbyStats = new int[4][5];
+
+        //temp values
+        lobbyStats[1][0] = 2; //set lobby 2 to have a max of 2 playres
+        lobbyStats[1][2] = 1; //set lobby 2 to have the blue player present
+
+        lobbyStats[3][0] = 4; //set lobby 4 to have a max of 4 playres
+        lobbyStats[3][1] = 1; //set lobby 2 to have the red player present
+        lobbyStats[3][2] = 1; //set lobby 2 to have the blue player present
+        lobbyStats[3][3] = 1; //set lobby 2 to have the orange player present
+        lobbyStats[3][4] = 1; //set lobby 2 to have the white player present
 
     }
 
@@ -160,6 +181,24 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
             //draw the text
             sDMenuFrame.drawSettlerBtn(g2d, btn.getTextImage(), btn, 0, this);
+
+            //add player dot indicators to show what colours are being used in a given lobby
+            if (btn.getType() == 31) {
+                for (int i = 1; i < 4 + 1; i++) {
+
+                    //see if this specific player dot should be drawn for a given lobby
+                    if (lobbyStats[btn.getMode() - 1][i] == 1) {
+
+                        //draw the player's indecator dot
+                        g2d.drawImage(ImageRef.PLAYER_DOTS[i],
+                                btn.getXPos() + localScaleInt(250) + localScaleInt(40 * i),
+                                btn.getYPos() + (sDMenuFrame.getImgHeightLocal(btn.getBaseImage(), this) / 8 * 3),
+                                sDMenuFrame.getImgWidthLocal(ImageRef.PLAYER_DOTS[i], this),
+                                sDMenuFrame.getImgHeightLocal(ImageRef.PLAYER_DOTS[i], this), null);
+                    }
+                }
+            }
+
         }
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
