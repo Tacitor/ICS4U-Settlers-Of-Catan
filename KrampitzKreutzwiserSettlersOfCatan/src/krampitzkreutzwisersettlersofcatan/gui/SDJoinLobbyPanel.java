@@ -14,7 +14,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JOptionPane;
 import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
+import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import textures.ImageRef;
 
 /**
@@ -30,8 +32,12 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
     //Settler Compoments
     private SettlerBtn refreshBtn, lobby1Btn, exitBtn;
+    //Settler Labels
+    private SettlerLbl lobby1Lbl;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
+    //The array for the labels
+    private SettlerLbl[] settlerLbls;
 
     private CatanClient catanClient;
 
@@ -72,6 +78,12 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby1Btn = new SettlerBtn(true, 0, 31);
         //add them to the array
         settlerBtns = new SettlerBtn[]{refreshBtn, lobby1Btn, exitBtn};
+        //set up the labels
+        lobby1Lbl = new SettlerLbl("Lobby 1");
+        lobby1Lbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
+
+        //add them to the array
+        settlerLbls = new SettlerLbl[]{lobby1Lbl};
 
     }
 
@@ -142,6 +154,10 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         }
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
+        //go through and draw all the labels
+        for (SettlerLbl settlerLbl : settlerLbls) {
+            settlerLbl.draw(g2d, localScaleFactor);
+        }
     }
 
     /**
@@ -150,11 +166,17 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private void settlerVarPos(Graphics2D g2d) {
         int menuPackingHeight = SDMenuFrame.MENU_PACKING_HEIGHT;
 
+        //lable sizes
+        lobby1Lbl.setFont(new Font(COMPASS_GOLD.getName(), Font.BOLD, localScaleInt(45)));
+
         refreshBtn.setXPos(localScaleInt(100));
         refreshBtn.setYPos(localScaleInt(150));
 
         lobby1Btn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(lobby1Btn.getBaseImage(), this) / 2);
         lobby1Btn.setYPos(refreshBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(refreshBtn.getBaseImage(), this));
+
+        lobby1Lbl.setXPos(lobby1Btn.getXPos() + localScaleInt(20));
+        lobby1Lbl.setYPos(lobby1Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby1Btn.getBaseImage(), this) * 4 / 6);
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
@@ -273,16 +295,16 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
             if (succesfulConnect) {
                 System.out.println("connected to the Lobby");
-                
+
                 catanClient.setUpGUI();
-                
+
                 //save the client and the max number of players now because the colour request could finish first
                 GamePanel.setCatanClient(catanClient);
                 GamePanel.setPlayerCount(catanClient.getMaxClients());
 
                 //get the first avaibale colour
                 catanClient.requestColour(0);
-                
+
                 while (catanClient.getClientColour() == 0) {
                     try {
                         //while there is no assinged colour do nothing and just wait
@@ -292,7 +314,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                         System.out.println("Error requesing colour in SDJoinLobbyPanel");
                     }
                 }
-                
+
                 // once the client has been set up save it to the game panel
                 GamePanel.setOnlineMode(catanClient.getClientColour());
 
