@@ -31,7 +31,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn refreshBtn, lobby1Btn, exitBtn;
+    private SettlerBtn refreshBtn, lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn;
     //Settler Labels
     private SettlerLbl lobby1Lbl;
     //The array for the buttons
@@ -76,8 +76,12 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         exitBtn = new SettlerBtn(true, 0, 23);
         refreshBtn = new SettlerBtn(true, 0, 32);
         lobby1Btn = new SettlerBtn(true, 0, 31);
+        lobby2Btn = new SettlerBtn(true, 0, 31);
+        lobby3Btn = new SettlerBtn(true, 0, 31);
+        lobby4Btn = new SettlerBtn(true, 0, 31);
+
         //add them to the array
-        settlerBtns = new SettlerBtn[]{refreshBtn, lobby1Btn, exitBtn};
+        settlerBtns = new SettlerBtn[]{refreshBtn, lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn};
         //set up the labels
         lobby1Lbl = new SettlerLbl("Lobby 1");
         lobby1Lbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
@@ -178,6 +182,15 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby1Lbl.setXPos(lobby1Btn.getXPos() + localScaleInt(20));
         lobby1Lbl.setYPos(lobby1Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby1Btn.getBaseImage(), this) * 4 / 6);
 
+        lobby2Btn.setXPos(lobby1Btn.getXPos());
+        lobby2Btn.setYPos(lobby1Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby1Btn.getBaseImage(), this));
+
+        lobby3Btn.setXPos(lobby2Btn.getXPos());
+        lobby3Btn.setYPos(lobby2Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby2Btn.getBaseImage(), this));
+
+        lobby4Btn.setXPos(lobby3Btn.getXPos());
+        lobby4Btn.setYPos(lobby3Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby3Btn.getBaseImage(), this));
+
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
@@ -206,7 +219,13 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 } else if (btn.equals(refreshBtn)) {
                     JOptionPane.showMessageDialog(null, "Hi Seb this button doesn't do anything yet.");
                 } else if (btn.equals(lobby1Btn)) {
-                    lobby1BtnActionPerformed();
+                    lobbyBtnActionPerformed(1);
+                } else if (btn.equals(lobby2Btn)) {
+                    lobbyBtnActionPerformed(2);
+                } else if (btn.equals(lobby3Btn)) {
+                    lobbyBtnActionPerformed(3);
+                } else if (btn.equals(lobby4Btn)) {
+                    lobbyBtnActionPerformed(4);
                 }
             }
         }
@@ -279,10 +298,15 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     /**
      * Connect to the 1st lobby
      */
-    private void lobby1BtnActionPerformed() {
-        FindServerRunnable findServerRunnable = new FindServerRunnable();
-        findServerRunnable.setDaemon(true);
-        findServerRunnable.start();
+    private void lobbyBtnActionPerformed(int lobbyNum) {
+        if (lobbyNum == 1) {
+
+            FindServerRunnable findServerRunnable = new FindServerRunnable();
+            findServerRunnable.setDaemon(true);
+            findServerRunnable.start();
+        } else {
+            System.out.println("Lobby" + lobbyNum);
+        }
     }
 
     private void findServer() {
