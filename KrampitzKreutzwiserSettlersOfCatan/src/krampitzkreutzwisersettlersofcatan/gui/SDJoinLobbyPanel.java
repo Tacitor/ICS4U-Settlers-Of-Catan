@@ -33,7 +33,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     //Settler Compoments
     private SettlerBtn refreshBtn, lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn;
     //Settler Labels
-    private SettlerLbl lobby1Lbl;
+    private SettlerLbl lobby1Lbl, lobby2Lbl, lobby3Lbl, lobby4Lbl;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //The array for the labels
@@ -85,9 +85,15 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         //set up the labels
         lobby1Lbl = new SettlerLbl("Lobby 1");
         lobby1Lbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
+        lobby2Lbl = new SettlerLbl("Lobby 2");
+        lobby2Lbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
+        lobby3Lbl = new SettlerLbl("Lobby 3");
+        lobby3Lbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
+        lobby4Lbl = new SettlerLbl("Lobby 4");
+        lobby4Lbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
 
         //add them to the array
-        settlerLbls = new SettlerLbl[]{lobby1Lbl};
+        settlerLbls = new SettlerLbl[]{lobby1Lbl, lobby2Lbl, lobby3Lbl, lobby4Lbl};
 
     }
 
@@ -172,6 +178,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //lable sizes
         lobby1Lbl.setFont(new Font(COMPASS_GOLD.getName(), Font.BOLD, localScaleInt(45)));
+        lobby2Lbl.setFont(new Font(COMPASS_GOLD.getName(), Font.BOLD, localScaleInt(45)));
+        lobby3Lbl.setFont(new Font(COMPASS_GOLD.getName(), Font.BOLD, localScaleInt(45)));
+        lobby4Lbl.setFont(new Font(COMPASS_GOLD.getName(), Font.BOLD, localScaleInt(45)));
 
         refreshBtn.setXPos(localScaleInt(100));
         refreshBtn.setYPos(localScaleInt(150));
@@ -184,12 +193,21 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         lobby2Btn.setXPos(lobby1Btn.getXPos());
         lobby2Btn.setYPos(lobby1Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby1Btn.getBaseImage(), this));
+        
+        lobby2Lbl.setXPos(lobby2Btn.getXPos() + localScaleInt(20));
+        lobby2Lbl.setYPos(lobby2Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby2Btn.getBaseImage(), this) * 4 / 6);
 
         lobby3Btn.setXPos(lobby2Btn.getXPos());
         lobby3Btn.setYPos(lobby2Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby2Btn.getBaseImage(), this));
+        
+        lobby3Lbl.setXPos(lobby3Btn.getXPos() + localScaleInt(20));
+        lobby3Lbl.setYPos(lobby3Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby3Btn.getBaseImage(), this) * 4 / 6);
 
         lobby4Btn.setXPos(lobby3Btn.getXPos());
         lobby4Btn.setYPos(lobby3Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby3Btn.getBaseImage(), this));
+        
+        lobby4Lbl.setXPos(lobby4Btn.getXPos() + localScaleInt(20));
+        lobby4Lbl.setYPos(lobby4Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby4Btn.getBaseImage(), this) * 4 / 6);
 
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
