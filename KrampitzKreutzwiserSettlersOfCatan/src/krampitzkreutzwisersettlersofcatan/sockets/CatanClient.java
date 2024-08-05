@@ -6,8 +6,6 @@
 package krampitzkreutzwisersettlersofcatan.sockets;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -293,9 +291,7 @@ public class CatanClient extends JFrame {
             //make it visible
             theGameFrame.setVisible(true);
 
-            if (theGameFrame.getMainMenu().getNewOnlineGameMenu() != null && theGameFrame.getMainMenu().getNewOnlineGameMenu().isVisible()) {
-                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getNewOnlineGameMenu(), theGameFrame.getMainMenu());
-            } else if (theGameFrame.getMainMenu().getLoadOnlineGameMenu() != null && theGameFrame.getMainMenu().getLoadOnlineGameMenu().isVisible()) {
+            if (theGameFrame.getMainMenu().getLoadOnlineGameMenu() != null && theGameFrame.getMainMenu().getLoadOnlineGameMenu().isVisible()) {
                 theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getLoadOnlineGameMenu(), theGameFrame.getMainMenu());
             }
             //hide the main menu frame
