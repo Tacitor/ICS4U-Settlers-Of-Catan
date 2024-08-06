@@ -497,10 +497,11 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
             sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
             sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(true);
         } else {
-            //create a new creation window
-            //sDMenuFrame.getSDMainMenuPanel().setNewOnlineGameMenu(new SDNewOnlineGameMenu(sDMenuFrame));
-
-            //sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getNewOnlineGameMenu());
+            //let the lobby selector to know not to reset certain Objects
+            sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().setJustMadeNewGame(true);
+            
+            //switch over to the lobby selection. Enforce needing an empty lobby
+            sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel());
         }
     }
 

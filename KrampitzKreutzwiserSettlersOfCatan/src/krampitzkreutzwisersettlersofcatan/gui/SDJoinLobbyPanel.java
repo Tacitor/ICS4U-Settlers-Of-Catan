@@ -42,6 +42,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private CatanClient catanClient;
 
     private int[][] lobbyStats;
+    
+    private boolean justMadeNewGame;
 
     //Fonts
     public Font COMPASS_GOLD;
@@ -411,7 +413,11 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
                 //save the client and the max number of players now because the colour request could finish first
                 GamePanel.setCatanClient(catanClient);
-                GamePanel.setPlayerCount(catanClient.getMaxClients());
+
+                //if the player has JUST made a new game they do not need this reset as it WILL otherwise remove the PieceArrays in GenUtil
+                if (!justMadeNewGame) {
+                    GamePanel.setPlayerCount(catanClient.getMaxClients());
+                }
 
                 //get the first avaibale colour
                 catanClient.requestColour(0);
@@ -428,6 +434,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
                 // once the client has been set up save it to the game panel
                 GamePanel.setOnlineMode(catanClient.getClientColour());
+                
+                //reset having just made the game
+                justMadeNewGame = false;
 
             } else {
                 System.out.println("Error connecting to the lobby");
@@ -445,6 +454,22 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     @Override
     public int getLocalImgHeight(Image image) {
         return sDMenuFrame.getImgHeightLocal(image, this);
+    }
+
+    /**
+     * Accessor for justMadeNewGame. Set to true if the player just submitted the settings for a new game.
+     * @return 
+     */
+    public boolean isJustMadeNewGame() {
+        return justMadeNewGame;
+    }
+
+    /**
+     * Mutator for justMadeNewGame. Set to true if the player just submitted the settings for a new game.
+     * @param justMadeNewGame 
+     */
+    public void setJustMadeNewGame(boolean justMadeNewGame) {
+        this.justMadeNewGame = justMadeNewGame;
     }
 
     private class FindServerRunnable extends Thread implements Runnable {
