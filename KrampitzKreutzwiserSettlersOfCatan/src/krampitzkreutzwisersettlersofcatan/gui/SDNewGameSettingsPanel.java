@@ -102,7 +102,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         snakeRulesSubLbl.setLinewrapSpace(28);
         limitGmPcMainLbl = new SettlerLbl("Limit Game Pieces:");
         limitGmPcMainLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
-        limitGmPcSubLbl = new SettlerLbl("The number of play pieces each player will have for their colour. Can be set to infite.");
+        limitGmPcSubLbl = new SettlerLbl("The number of play pieces each player will have for their colour. Can be set to infinite.");
         limitGmPcSubLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         limitGmPcSubLbl.setLineWrap(true);
         limitGmPcSubLbl.setLinewrapSpace(28);
