@@ -42,7 +42,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private CatanClient catanClient;
 
     private int[][] lobbyStats;
-    
+
     private boolean justMadeNewGame;
 
     //Fonts
@@ -434,7 +434,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
                 // once the client has been set up save it to the game panel
                 GamePanel.setOnlineMode(catanClient.getClientColour());
-                
+
                 //reset having just made the game
                 justMadeNewGame = false;
 
@@ -457,16 +457,20 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     }
 
     /**
-     * Accessor for justMadeNewGame. Set to true if the player just submitted the settings for a new game.
-     * @return 
+     * Accessor for justMadeNewGame. Set to true if the player just submitted
+     * the settings for a new game.
+     *
+     * @return
      */
     public boolean isJustMadeNewGame() {
         return justMadeNewGame;
     }
 
     /**
-     * Mutator for justMadeNewGame. Set to true if the player just submitted the settings for a new game.
-     * @param justMadeNewGame 
+     * Mutator for justMadeNewGame. Set to true if the player just submitted the
+     * settings for a new game.
+     *
+     * @param justMadeNewGame
      */
     public void setJustMadeNewGame(boolean justMadeNewGame) {
         this.justMadeNewGame = justMadeNewGame;

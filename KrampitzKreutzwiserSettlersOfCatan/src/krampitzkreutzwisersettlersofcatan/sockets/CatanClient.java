@@ -293,6 +293,9 @@ public class CatanClient extends JFrame {
 
             if (theGameFrame.getMainMenu().getLoadOnlineGameMenu() != null && theGameFrame.getMainMenu().getLoadOnlineGameMenu().isVisible()) {
                 theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getLoadOnlineGameMenu(), theGameFrame.getMainMenu());
+            } else if (theGameFrame.getMainMenu().getSDJoinLobbyPanel() != null && theGameFrame.getMainMenu().getSDJoinLobbyPanel().isVisible()) {
+                //switch back to the main menu for when ever the game terminates
+                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDJoinLobbyPanel(), theGameFrame.getMainMenu());
             }
             //hide the main menu frame
             theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
@@ -466,9 +469,9 @@ public class CatanClient extends JFrame {
                             firstFileRecieve = false;
 
                             //ensure that the main menu is no longer visibled
-                            if (theGameFrame.getMainMenu().getJoinOnlineGameMenu() != null && theGameFrame.getMainMenu().getJoinOnlineGameMenu().isVisible()) {
-                                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getJoinOnlineGameMenu(), theGameFrame.getMainMenu());
-
+                            if (theGameFrame.getMainMenu().getSDJoinLobbyPanel() != null && theGameFrame.getMainMenu().getSDJoinLobbyPanel().isVisible()) {
+                                //switch back to the main menu for when ever the game terminates
+                                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDJoinLobbyPanel(), theGameFrame.getMainMenu());
                             }
                             //hide the main menu frame
                             theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
@@ -799,7 +802,6 @@ public class CatanClient extends JFrame {
 
             //debugg the data sending
             //System.out.println("Sending data!");
-
             try {
                 dataOut.writeInt(5); //tell the server that it is reveiving the data of a domestic trade
                 dataOut.writeInt(onlineMode); //tell the server what player is sending this so it doens't send it back
