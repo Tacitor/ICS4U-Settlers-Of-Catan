@@ -28,7 +28,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
     private int mouseMotionPosX; //acording to the MouseMotionListener where is the mouse located
     private int mouseMotionPosY;
-    
+
     private boolean newGameIsOffline;
 
     //Settler Compoments
@@ -76,7 +76,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
                 mouseClick(event);
             }
         });
-        
+
         //set the default new game to offline
         newGameIsOffline = true;
 
@@ -436,6 +436,9 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     }
 
     private void startGameBtnActionPerformed() {
+        //give the game a little reset
+        sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+
         startGameBtn.setmouseHover(false);
 
         //get and set the player number selected
@@ -499,7 +502,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         } else {
             //let the lobby selector to know not to reset certain Objects
             sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().setJustMadeNewGame(true);
-            
+
             //switch over to the lobby selection. Enforce needing an empty lobby
             sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel());
         }
@@ -516,16 +519,20 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     }
 
     /**
-     * Accessor for determining if the new game to be created is online or offline
-     * @return 
+     * Accessor for determining if the new game to be created is online or
+     * offline
+     *
+     * @return
      */
     public boolean isNewGameOffline() {
         return newGameIsOffline;
     }
 
     /**
-     * Mutator for determining if the new game to be created is online or offline
-     * @param newGameIsOffline 
+     * Mutator for determining if the new game to be created is online or
+     * offline
+     *
+     * @param newGameIsOffline
      */
     public void setNewGameOffline(boolean newGameIsOffline) {
         this.newGameIsOffline = newGameIsOffline;
