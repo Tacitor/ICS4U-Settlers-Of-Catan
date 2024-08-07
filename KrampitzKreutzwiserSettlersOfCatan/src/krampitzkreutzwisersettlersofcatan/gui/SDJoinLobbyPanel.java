@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -23,7 +25,7 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
+public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable, ComponentListener {
 
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -61,6 +63,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //add the mouse motion listener
         addMouseMotionListener(this);
+
+        //Add the component listener to itself to listen for being made visible
+        addComponentListener(this);
 
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
@@ -100,7 +105,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby1StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
         lobby2StatLbl = new SettlerLbl("1/2");
         lobby2StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
-        lobby3StatLbl = new SettlerLbl("empty");
+        lobby3StatLbl = new SettlerLbl("error");
         lobby3StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
         lobby4StatLbl = new SettlerLbl("4/4");
         lobby4StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
@@ -120,6 +125,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         //temp values
         lobbyStats[1][0] = 2; //set lobby 2 to have a max of 2 playres
         lobbyStats[1][2] = 1; //set lobby 2 to have the blue player present
+
+        lobbyStats[2][0] = -1; //set lobby 3 to have connection issues to the server
 
         lobbyStats[3][0] = 4; //set lobby 4 to have a max of 4 playres
         lobbyStats[3][1] = 1; //set lobby 2 to have the red player present
@@ -474,6 +481,29 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      */
     public void setJustMadeNewGame(boolean justMadeNewGame) {
         this.justMadeNewGame = justMadeNewGame;
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        //Do nothing
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+        //Do nothing
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+        System.out.println("Shown!");
+
+        
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+        //Do nothing
     }
 
     private class FindServerRunnable extends Thread implements Runnable {

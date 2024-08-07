@@ -390,6 +390,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      */
     public void resetSDJoinLobbyPanel() {
         sDJoinLobbyPanel = new SDJoinLobbyPanel(sDMenuFrame);
+        sDJoinLobbyPanel.setVisible(false);
     }
 
     public int getExitMainMenuBtnYPos() {
