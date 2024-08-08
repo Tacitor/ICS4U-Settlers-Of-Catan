@@ -88,7 +88,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby1Btn = new SettlerBtn(true, 1, 31); //set the mode to 1 for lobby 1,a nd type to 31 for a lobby button
         lobby2Btn = new SettlerBtn(true, 2, 31); //set the mode to 2 for lobby 2,a nd type to 31 for a lobby button
         lobby3Btn = new SettlerBtn(true, 3, 31); //set the mode to 3 for lobby 3,a nd type to 31 for a lobby button
-        lobby4Btn = new SettlerBtn(false, 4, 31); //set the mode to 4 for lobby 4,a nd type to 31 for a lobby button
+        lobby4Btn = new SettlerBtn(true, 4, 31); //set the mode to 4 for lobby 4,a nd type to 31 for a lobby button
 
         //add them to the array
         settlerBtns = new SettlerBtn[]{refreshBtn, lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn};
@@ -498,7 +498,47 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         System.out.println("Shown!");
 
-        
+        //set the enable status of the lobbies depending on user new game settings crertion and player status within the lobbies.
+        if (justMadeNewGame) {
+            int btnCounter = 0;
+
+            //find any lobby button that is not empty and disable it.
+            //loop through the buttons
+            for (SettlerBtn btn : settlerBtns) {
+                if (btn.getType() == 31) {
+
+                    if (lobbyStats[btnCounter][0] != 0) {
+                        //Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
+                        btn.setEnabled(false);
+                    }
+                    //go to the next button
+                    btnCounter++;
+
+                }
+            }
+
+        } else {
+            //disable all the lobbies that are empty
+            int btnCounter = 0;
+
+            //find any lobby button that is not empty and disable it.
+            //loop through the buttons
+            for (SettlerBtn btn : settlerBtns) {
+                //Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
+                if (btn.getType() == 31) {
+                    //check if the lobby is initialized and has a cound of the amount of max players
+                    if (lobbyStats[btnCounter][0] <= 0) {
+                        
+                        
+                        btn.setEnabled(false);
+                    }
+                    //go to the next button
+                    btnCounter++;
+
+                }
+            }
+        }
+
     }
 
     @Override
