@@ -101,13 +101,13 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby3NameLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
         lobby4NameLbl = new SettlerLbl("Lobby 4");
         lobby4NameLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
-        lobby1StatLbl = new SettlerLbl("empty");
+        lobby1StatLbl = new SettlerLbl("N/A");
         lobby1StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
-        lobby2StatLbl = new SettlerLbl("1/2");
+        lobby2StatLbl = new SettlerLbl("N/A");
         lobby2StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
-        lobby3StatLbl = new SettlerLbl("error");
+        lobby3StatLbl = new SettlerLbl("N/A");
         lobby3StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
-        lobby4StatLbl = new SettlerLbl("4/4");
+        lobby4StatLbl = new SettlerLbl("N/A");
         lobby4StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
 
         //add them to the array
@@ -516,58 +516,43 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      * future too.
      */
     private void updateLobbyData() {
-        //set the enable status of the lobbies depending on user new game settings crertion and player status within the lobbies.
-        if (justMadeNewGame) {
+        //loop through all the buttons
+        for (SettlerBtn btn : settlerBtns) {
 
-            //find any lobby button that is not empty and disable it.
-            //loop through the buttons
-            for (SettlerBtn btn : settlerBtns) {
+            //look for lobby buttons
+            if (btn.getType() == 31) {
+                /**
+                 * Set it to disabled by default. There should always be
+                 * positive confirmation on if a lobby can be joined.
+                 */
+                btn.setEnabled(false);
 
-                if (btn.getType() == 31) {
-                    //set it to enabled by defualt (in case it was disable the last time the menu was shown)
-                    btn.setEnabled(true);
+                //enable the lobbies if a new game was just made
+                if (justMadeNewGame) {
 
-                    if (lobbyStats[btn.getMode() - 1][0] != 0) {
-                        //Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
-                        btn.setEnabled(false);
-                        System.out.println("Disabled: " + btn.getMode());
+                    //if a given lobby is empty it can be joined/setup
+                    //Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
+                    if (lobbyStats[btn.getMode() - 1][0] == 0) {
+                        btn.setEnabled(true);
                     }
 
-                }
-            }
-
-        } else {
-            //disable all the lobbies that are empty
-            //find any lobby button that is not empty and disable it.
-            //loop through the buttons
-            for (SettlerBtn btn : settlerBtns) {
-
-                //Assume the buttons have the same mode as the order in they are in lobbyStats
-                if (btn.getType() == 31) {
-                    //set it to enabled by defualt (in case it was disable the last time the menu was shown)
-                    btn.setEnabled(true);
-
+                } else { //enble the lobbies if a new game was not just made and the user is just joining
                     //check if the lobby is initialized and has a cound of the amount of max players
                     //checks for non empty and non errored lobbies
-                    if (lobbyStats[btn.getMode() - 1][0] <= 0) {
 
-                        btn.setEnabled(false);
-                        System.out.println("Disabled: " + btn.getMode());
-                    } else {
-                        //if the lobby is not empty and not errored check if it's full
-                        int lobbyPop = 0;
+                    int lobbyPop = 0; //the #of players in a given lobby
 
-                        for (int i = 1; i < 5; i++) {
-                            if (lobbyStats[btn.getMode() - 1][i] == 1) {
-                                lobbyPop++;
+                    //find the population of the lobby
+                    for (int i = 1; i < 5; i++) {
+                        if (lobbyStats[btn.getMode() - 1][i] == 1) {
+                            lobbyPop++;
 
-                            }
                         }
+                    }
 
-                        if (lobbyPop >= lobbyStats[btn.getMode() - 1][0]) {
-                            btn.setEnabled(false);
-                            System.out.println("Disabled: " + btn.getMode());
-                        }
+                    //enable the lobby if the population is less than the max
+                    if (lobbyPop < lobbyStats[btn.getMode() - 1][0]) {
+                        btn.setEnabled(true);
                     }
 
                 }
