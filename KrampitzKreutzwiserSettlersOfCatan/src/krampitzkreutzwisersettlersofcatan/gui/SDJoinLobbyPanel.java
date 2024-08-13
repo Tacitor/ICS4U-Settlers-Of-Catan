@@ -39,10 +39,12 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //The array for the labels
+    //NOTE: Assume the lobbyStatLbls are in the same order as the lobby buttons are in settlerBtns. Also assume that all the stat lables are in the second half of lables
     private SettlerLbl[] settlerLbls;
 
     private CatanClient catanClient;
 
+    //NOTE: Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
     private int[][] lobbyStats;
 
     private boolean justMadeNewGame;
@@ -120,6 +122,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
          * allowed. And each index is a binary 0 or 1 for if the corresponding
          * player colour is present
          */
+        //NOTE: Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
         lobbyStats = new int[4][5];
 
         //temp values
@@ -516,6 +519,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      * future too.
      */
     private void updateLobbyData() {
+        int lobbyPop;
+
         //loop through all the buttons
         for (SettlerBtn btn : settlerBtns) {
 
@@ -526,6 +531,33 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                  * positive confirmation on if a lobby can be joined.
                  */
                 btn.setEnabled(false);
+
+                lobbyPop = 0; //the #of players in a given lobby
+
+                //find the population of the lobby
+                for (int i = 1; i < 5; i++) {
+                    if (lobbyStats[btn.getMode() - 1][i] == 1) {
+                        lobbyPop++;
+
+                    }
+                }
+
+                //update the text status of the lobby
+                //also check for special conditions
+                switch (lobbyStats[btn.getMode() - 1][0]) {
+                    case 0:
+                        //if empty lobby
+                        settlerLbls[lobbyStats.length + btn.getMode() - 1].setText("empty");
+                        break;
+                    case -1:
+                        //if error state
+                        settlerLbls[lobbyStats.length + btn.getMode() - 1].setText("error");
+                        break;
+                    default:
+                        //the standard case
+                        settlerLbls[lobbyStats.length + btn.getMode() - 1].setText(lobbyPop + "/" + lobbyStats[btn.getMode() - 1][0]);
+                        break;
+                }
 
                 //enable the lobbies if a new game was just made
                 if (justMadeNewGame) {
@@ -539,16 +571,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 } else { //enble the lobbies if a new game was not just made and the user is just joining
                     //check if the lobby is initialized and has a cound of the amount of max players
                     //checks for non empty and non errored lobbies
-
-                    int lobbyPop = 0; //the #of players in a given lobby
-
-                    //find the population of the lobby
-                    for (int i = 1; i < 5; i++) {
-                        if (lobbyStats[btn.getMode() - 1][i] == 1) {
-                            lobbyPop++;
-
-                        }
-                    }
 
                     //enable the lobby if the population is less than the max
                     if (lobbyPop < lobbyStats[btn.getMode() - 1][0]) {
