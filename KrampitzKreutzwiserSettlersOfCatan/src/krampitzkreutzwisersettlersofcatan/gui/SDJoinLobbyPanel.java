@@ -527,6 +527,13 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      * future too.
      */
     private void updateLobbyData() {
+        //update the instructions
+        if (justMadeNewGame) {
+            instructionLbl.setText("Please select an empty lobby for your new game.");
+        } else {
+            instructionLbl.setText("Join a started lobby. To join an empty lobby please make a new game.");
+        }
+        
         int lobbyPop;
 
         //loop through all the buttons
