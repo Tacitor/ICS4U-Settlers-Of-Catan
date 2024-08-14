@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.gui;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,7 +36,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     //Settler Compoments
     private SettlerBtn refreshBtn, lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn;
     //Settler Labels
-    private SettlerLbl lobby1NameLbl, lobby2NameLbl, lobby3NameLbl, lobby4NameLbl, lobby1StatLbl, lobby2StatLbl, lobby3StatLbl, lobby4StatLbl;
+    private SettlerLbl lobby1NameLbl, lobby2NameLbl, lobby3NameLbl, lobby4NameLbl, lobby1StatLbl, lobby2StatLbl, lobby3StatLbl, lobby4StatLbl, instructionLbl;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //The array for the labels
@@ -111,9 +112,12 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby3StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
         lobby4StatLbl = new SettlerLbl("N/A");
         lobby4StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
+        instructionLbl = new SettlerLbl("The quick brown fox jumps over the lazy dog");
+        instructionLbl.setForeground(new Color(255, 175, 175));
 
         //add them to the array
-        settlerLbls = new SettlerLbl[]{lobby1NameLbl, lobby2NameLbl, lobby3NameLbl, lobby4NameLbl, lobby1StatLbl, lobby2StatLbl, lobby3StatLbl, lobby4StatLbl};
+        //NOTE: Assume the lobbyStatLbls are in the same order as the lobby buttons are in settlerBtns. Also assume that all the stat lables are in the second half of lables
+        settlerLbls = new SettlerLbl[]{lobby1NameLbl, lobby2NameLbl, lobby3NameLbl, lobby4NameLbl, lobby1StatLbl, lobby2StatLbl, lobby3StatLbl, lobby4StatLbl, instructionLbl};
 
         //init the lobby stats
         /**
@@ -204,9 +208,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                         //draw the player's indecator dot
                         g2d.drawImage(ImageRef.PLAYER_DOTS[i],
                                 btn.getXPos() + localScaleInt(250) + localScaleInt(40 * i),
-                                btn.getYPos() + (sDMenuFrame.getImgHeightLocal(btn.getBaseImage(), this) / 8 * 3),
-                                sDMenuFrame.getImgWidthLocal(ImageRef.PLAYER_DOTS[i], this),
-                                sDMenuFrame.getImgHeightLocal(ImageRef.PLAYER_DOTS[i], this), null);
+                                btn.getYPos() + (getLocalImgHeight(btn.getBaseImage()) / 8 * 3),
+                                getLocalImgWidth(ImageRef.PLAYER_DOTS[i]),
+                                getLocalImgHeight(ImageRef.PLAYER_DOTS[i]), null);
                     }
                 }
             }
@@ -250,49 +254,53 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby2StatLbl.setFont(COMPASS_GOLD_45);
         lobby3StatLbl.setFont(COMPASS_GOLD_45);
         lobby4StatLbl.setFont(COMPASS_GOLD_45);
+        instructionLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
 
         refreshBtn.setXPos(localScaleInt(100));
         refreshBtn.setYPos(localScaleInt(150));
+        
+        instructionLbl.setXPos(refreshBtn.getXPos());
+        instructionLbl.setYPos(refreshBtn.getYPos() + getLocalImgHeight(refreshBtn.getBaseImage()) + localScaleInt(50));
 
-        lobby1Btn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(lobby1Btn.getBaseImage(), this) / 2);
-        lobby1Btn.setYPos(refreshBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(refreshBtn.getBaseImage(), this));
+        lobby1Btn.setXPos(this.getWidth() / 2 - getLocalImgWidth(lobby1Btn.getBaseImage()) / 2);
+        lobby1Btn.setYPos(instructionLbl.getYPos() + localScaleInt(menuPackingHeight + 20));
 
         lobby1NameLbl.setXPos(lobby1Btn.getXPos() + localScaleInt(20));
-        lobby1NameLbl.setYPos(lobby1Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby1Btn.getBaseImage(), this) * 4 / 6);
+        lobby1NameLbl.setYPos(lobby1Btn.getYPos() + getLocalImgHeight(lobby1Btn.getBaseImage()) * 4 / 6);
 
         lobby1StatLbl.setXPos(lobby1NameLbl.getXPos() + localScaleInt(450));
         lobby1StatLbl.setYPos(lobby1NameLbl.getYPos());
 
         lobby2Btn.setXPos(lobby1Btn.getXPos());
-        lobby2Btn.setYPos(lobby1Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby1Btn.getBaseImage(), this));
+        lobby2Btn.setYPos(lobby1Btn.getYPos() + localScaleInt(menuPackingHeight) + getLocalImgHeight(lobby1Btn.getBaseImage()));
 
         lobby2NameLbl.setXPos(lobby2Btn.getXPos() + localScaleInt(20));
-        lobby2NameLbl.setYPos(lobby2Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby2Btn.getBaseImage(), this) * 4 / 6);
+        lobby2NameLbl.setYPos(lobby2Btn.getYPos() + getLocalImgHeight(lobby2Btn.getBaseImage()) * 4 / 6);
 
         lobby2StatLbl.setXPos(lobby2NameLbl.getXPos() + localScaleInt(450));
         lobby2StatLbl.setYPos(lobby2NameLbl.getYPos());
 
         lobby3Btn.setXPos(lobby2Btn.getXPos());
-        lobby3Btn.setYPos(lobby2Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby2Btn.getBaseImage(), this));
+        lobby3Btn.setYPos(lobby2Btn.getYPos() + localScaleInt(menuPackingHeight) + getLocalImgHeight(lobby2Btn.getBaseImage()));
 
         lobby3NameLbl.setXPos(lobby3Btn.getXPos() + localScaleInt(20));
-        lobby3NameLbl.setYPos(lobby3Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby3Btn.getBaseImage(), this) * 4 / 6);
+        lobby3NameLbl.setYPos(lobby3Btn.getYPos() + getLocalImgHeight(lobby3Btn.getBaseImage()) * 4 / 6);
 
         lobby3StatLbl.setXPos(lobby3NameLbl.getXPos() + localScaleInt(450));
         lobby3StatLbl.setYPos(lobby3NameLbl.getYPos());
 
         lobby4Btn.setXPos(lobby3Btn.getXPos());
-        lobby4Btn.setYPos(lobby3Btn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(lobby3Btn.getBaseImage(), this));
+        lobby4Btn.setYPos(lobby3Btn.getYPos() + localScaleInt(menuPackingHeight) + getLocalImgHeight(lobby3Btn.getBaseImage()));
 
         lobby4NameLbl.setXPos(lobby4Btn.getXPos() + localScaleInt(20));
-        lobby4NameLbl.setYPos(lobby4Btn.getYPos() + sDMenuFrame.getImgHeightLocal(lobby4Btn.getBaseImage(), this) * 4 / 6);
+        lobby4NameLbl.setYPos(lobby4Btn.getYPos() + getLocalImgHeight(lobby4Btn.getBaseImage()) * 4 / 6);
 
         lobby4StatLbl.setXPos(lobby4NameLbl.getXPos() + localScaleInt(450));
         lobby4StatLbl.setYPos(lobby4NameLbl.getYPos());
 
-        exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
+        exitBtn.setXPos(this.getWidth() / 2 - getLocalImgWidth(exitBtn.getBaseImage()) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
-        exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
+        exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + getLocalImgHeight(exitBtn.getBaseImage())) * 6));
 
     }
 
@@ -308,8 +316,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         for (SettlerBtn btn : settlerBtns) {
             if (evt.getX() > btn.getXPos()
                     && evt.getY() > btn.getYPos()
-                    && evt.getX() < (btn.getXPos() + sDMenuFrame.getImgWidthLocal(btn.getBaseImage(), this))
-                    && evt.getY() < (btn.getYPos() + sDMenuFrame.getImgHeightLocal(btn.getBaseImage(), this))
+                    && evt.getX() < (btn.getXPos() + getLocalImgWidth(btn.getBaseImage()))
+                    && evt.getY() < (btn.getYPos() + getLocalImgHeight(btn.getBaseImage()))
                     && btn.isEnabled()) { //and that it is enabled
 
                 //check the button that was pressed
@@ -355,8 +363,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         for (SettlerBtn btn : settlerBtns) {
             if (mouseMotionPosX > btn.getXPos()
                     && mouseMotionPosY > btn.getYPos()
-                    && mouseMotionPosX < (btn.getXPos() + sDMenuFrame.getImgWidthLocal(btn.getBaseImage(), this))
-                    && mouseMotionPosY < (btn.getYPos() + sDMenuFrame.getImgHeightLocal(btn.getBaseImage(), this))
+                    && mouseMotionPosX < (btn.getXPos() + getLocalImgWidth(btn.getBaseImage()))
+                    && mouseMotionPosY < (btn.getYPos() + getLocalImgHeight(btn.getBaseImage()))
                     && btn.isEnabled()) { //and that it is enabled
 
                 //set the hover
