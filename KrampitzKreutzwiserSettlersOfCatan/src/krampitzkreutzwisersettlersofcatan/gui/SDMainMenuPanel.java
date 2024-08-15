@@ -36,6 +36,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
 
     private SDNewGameSettingsPanel sDNewGameSettingsPanel;
     private SDJoinLobbyPanel sDJoinLobbyPanel;
+    private SDColourSelectPanel sDColourSelectPanel;
 
     //Attributes
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -71,6 +72,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         resetSDNewGameSettingsPanel();
         //init the join lobby panel
         resetSDJoinLobbyPanel();
+        //init the colour selection panel
+        resetSDColourSelectPanel();
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -391,6 +394,23 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     public void resetSDJoinLobbyPanel() {
         sDJoinLobbyPanel = new SDJoinLobbyPanel(sDMenuFrame);
         sDJoinLobbyPanel.setVisible(false);
+    }
+    
+    /**
+     * Accessor for sDColourSelectPanel
+     *
+     * @return
+     */
+    public SDColourSelectPanel getSDColourSelectPanel() {
+        return sDColourSelectPanel;
+    }
+    
+    /**
+     * Reset method for sDColourSelectPanel
+     */
+    public void resetSDColourSelectPanel() {
+        sDColourSelectPanel = new SDColourSelectPanel(sDMenuFrame);
+        sDColourSelectPanel.setVisible(false);
     }
 
     public int getExitMainMenuBtnYPos() {

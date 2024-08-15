@@ -258,9 +258,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         refreshBtn.setXPos(localScaleInt(100));
         refreshBtn.setYPos(localScaleInt(150));
-        
+
         instructionLbl.setXPos(refreshBtn.getXPos());
-        instructionLbl.setYPos(refreshBtn.getYPos() + getLocalImgHeight(refreshBtn.getBaseImage()) + localScaleInt(50));
+        instructionLbl.setYPos(refreshBtn.getYPos() + localScaleInt(90));
 
         lobby1Btn.setXPos(this.getWidth() / 2 - getLocalImgWidth(lobby1Btn.getBaseImage()) / 2);
         lobby1Btn.setYPos(instructionLbl.getYPos() + localScaleInt(menuPackingHeight + 20));
@@ -409,61 +409,24 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      * Connect to the 1st lobby
      */
     private void lobbyBtnActionPerformed(int lobbyNum) {
-        if (lobbyNum == 1) {
+        if (lobbyNum == 1 || lobbyNum == 2) {
+            System.out.println("Lobby 1/2");
 
-            FindServerRunnable findServerRunnable = new FindServerRunnable();
-            findServerRunnable.setDaemon(true);
-            findServerRunnable.start();
+            //prime the colour selection
+            sDMenuFrame.getSDMainMenuPanel().resetSDColourSelectPanel();
+            //set the params for Lobby 1
+            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyIP("www.lkrampitz.net");
+            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyPort(25570);
+            //pass the justMadeNewGame state
+            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setJustMadeNewGame(justMadeNewGame);
+            //show it
+            sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel());
+
+            //start the connection
+            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().startFindServer();
+
         } else {
             System.out.println("Lobby" + lobbyNum);
-        }
-    }
-
-    private void findServer() {
-        catanClient = new CatanClient(700, 200, "www.lkrampitz.net", sDMenuFrame.getSDMainMenuPanel().getGameFrame(), 25570);
-
-        try {
-
-            //try to connect
-            boolean succesfulConnect = catanClient.connectToServer();
-
-            if (succesfulConnect) {
-                System.out.println("connected to the Lobby");
-
-                catanClient.setUpGUI();
-
-                //save the client and the max number of players now because the colour request could finish first
-                GamePanel.setCatanClient(catanClient);
-
-                //if the player has JUST made a new game they do not need this reset as it WILL otherwise remove the PieceArrays in GenUtil
-                if (!justMadeNewGame) {
-                    GamePanel.setPlayerCount(catanClient.getMaxClients());
-                }
-
-                //get the first avaibale colour
-                catanClient.requestColour(0);
-
-                while (catanClient.getClientColour() == 0) {
-                    try {
-                        //while there is no assinged colour do nothing and just wait
-                        //System.out.println("coluour still: " + client.getClientColour());
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        System.out.println("Error requesing colour in SDJoinLobbyPanel");
-                    }
-                }
-
-                // once the client has been set up save it to the game panel
-                GamePanel.setOnlineMode(catanClient.getClientColour());
-
-                //reset having just made the game
-                justMadeNewGame = false;
-
-            } else {
-                System.out.println("Error connecting to the lobby");
-            }
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex);
         }
     }
 
@@ -533,7 +496,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         } else {
             instructionLbl.setText("Join a started lobby. To join an empty lobby please make a new game.");
         }
-        
+
         int lobbyPop;
 
         //loop through all the buttons
@@ -595,31 +558,5 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 }
             }
         }
-    }
-
-    private class FindServerRunnable extends Thread implements Runnable {
-
-        private boolean stopRequested = false;
-
-        public synchronized void requestStop() {
-            stopRequested = true;
-        }
-
-        @Override
-        public void run() {
-            //debug the life of the thread and how long it lives for
-            //System.out.println("Started connectio attempt");
-
-            //check if this thread should stop
-            while (!stopRequested) {
-                //try to connect
-                findServer();
-                //only run once
-                stopRequested = true;
-            }
-
-            //System.out.println("done connection attempt");
-        }
-
     }
 }
