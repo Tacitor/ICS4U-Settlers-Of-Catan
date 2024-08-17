@@ -28,6 +28,7 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
+@Deprecated
 public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
 
     private SDMenuFrame sDMenuFrame;
