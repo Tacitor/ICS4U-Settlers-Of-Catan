@@ -32,6 +32,10 @@ public class SettlerRadioBtn extends SettlerComponent {
     private final static Image RADIO_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioBtnDisabled.png")).getImage();
     private final static Image RADIO_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/rBtnSelection.png")).getImage();
     private final static Image RADIO_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioHoverBtn.png")).getImage();
+    private final static Image BIG_RADIO_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/bigRadioBtn.png")).getImage();
+    private final static Image BIG_RADIO_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/bigRadioBtnDisabled.png")).getImage();
+    private final static Image BIG_RADIO_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/bigRBtnSelection.png")).getImage();
+    private final static Image BIG_RADIO_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/bigRadioHoverBtn.png")).getImage();
     //statics for the smaller radio buttons
     private final static Image RADIO_SML_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioSmallBtn.png")).getImage();
     private final static Image RADIO_SML_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioSmallBtnDisabled.png")).getImage();
@@ -173,15 +177,22 @@ public class SettlerRadioBtn extends SettlerComponent {
             case 15:
             case 16:
             case 17:
-            case 18:
-            case 19:
-            case 20:
-            case 21:
-                //if type windowed dimestions or colour selection
+                //if type windowed dimestions
                 baseImage = RADIO_BTN_BASE;
                 disabledImage = RADIO_BTN_DISABLED;
                 selectionImage = RADIO_BTN_SELECTION;
                 hoverImage = RADIO_BTN_HOVER;
+                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
+                break;
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+                //if type colour selection
+                baseImage = BIG_RADIO_BTN_BASE;
+                disabledImage = BIG_RADIO_BTN_DISABLED;
+                selectionImage = BIG_RADIO_BTN_SELECTION;
+                hoverImage = BIG_RADIO_BTN_HOVER;
                 tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
                 break;
             default:
