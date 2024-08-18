@@ -309,12 +309,24 @@ public class SettlerRadioBtn extends SettlerComponent {
     }
 
     /**
-     * Draw the radio button
+     * Draw the radio button. Both layers.
+     *
+     * @param g2d
+     * @param parent
+     */
+    public void draw(Graphics2D g2d, JComponent parent) {
+        drawLower(g2d, parent);
+        drawUpper(g2d, parent);
+
+    }
+
+    /**
+     * Draw the radio button. Just the lower layers like the base and text.
      *
      * @param g2d
      * @param parent - the parent responsible for the sizing
      */
-    public void draw(Graphics2D g2d, JComponent parent) {
+    public void drawLower(Graphics2D g2d, JComponent parent) {
 
         //draw the base        
         g2d.drawImage(baseImage,
@@ -330,6 +342,16 @@ public class SettlerRadioBtn extends SettlerComponent {
                 GenUtil.interoperableGetImgWidth(textImage, parent),
                 GenUtil.interoperableGetImgHeight(textImage, parent), null);
 
+    }
+
+    /**
+     * Draw the radio button. Just the upper layers like the selection overlay,
+     * tab selectors, enabled overlay, and mouse hover overlay.
+     *
+     * @param g2d
+     * @param parent
+     */
+    public void drawUpper(Graphics2D g2d, JComponent parent) {
         //draw the selected overlay if required
         if (selected) {
             g2d.drawImage(selectionImage,
