@@ -176,14 +176,6 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         }
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
-        //draw the radio buttons
-        //itterate over the groups
-        for (SettlerRadioBtn[] settlerRadioBtnGroup : settlerRadioBtnGroups) {
-            for (SettlerRadioBtn settlerRadioBtn : settlerRadioBtnGroup) {
-                settlerRadioBtn.draw(g2d, this);
-            }
-        }
-
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d, localScaleFactor);
@@ -202,6 +194,28 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
             }
 
         }
+
+        Image[] dots = ImageRef.PLAYER_DOTS;
+
+        //draw the radio buttons
+        //itterate over the groups to draw just the lower stage
+        for (SettlerRadioBtn[] settlerRadioBtnGroup : settlerRadioBtnGroups) {
+            for (int i = 0; i < settlerRadioBtnGroup.length; i++) {
+                SettlerRadioBtn settlerRadioBtn = settlerRadioBtnGroup[i];
+
+                settlerRadioBtn.drawLower(g2d, this);
+
+                //Add the player dots to the colour select buttons
+                g2d.drawImage(dots[i + 1],
+                        settlerRadioBtn.getXPos() + getLocalImgWidth(settlerRadioBtn.getBaseImage()) - getLocalImgWidth(dots[i + 1]) - localScaleInt(20),
+                        settlerRadioBtn.getYPos() + (getLocalImgHeight(settlerRadioBtn.getBaseImage()) - getLocalImgHeight(dots[i + 1])) / 2,
+                        getLocalImgWidth(dots[i + 1]),
+                        getLocalImgHeight(dots[i + 1]), null);
+
+                settlerRadioBtn.drawUpper(g2d, this);
+            }
+        }
+
     }
 
     /**
