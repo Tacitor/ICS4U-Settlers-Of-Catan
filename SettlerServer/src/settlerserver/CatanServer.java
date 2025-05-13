@@ -38,6 +38,8 @@ public class CatanServer {
      * @param port
      */
     public CatanServer(int maxClients, int port) {
+        System.out.println("[Server " + port + "] Settting up server for " + maxClients + " players");
+        
         //no clients have connected yet
         numClients = 0;
         //save the number of clients that will connect
@@ -82,6 +84,7 @@ public class CatanServer {
                     clients[numClients - 1] = ssc;
 
                     Thread t = new Thread(ssc);
+                    t.setName("[Server " + serverSocket.getLocalPort() + ": SSC" + numClients + "]");
                     t.start();
                 } else {
                     System.out.println("[Server " + serverSocket.getLocalPort() + "] Accepted and discarded an extra socket");
@@ -104,6 +107,9 @@ public class CatanServer {
         chat = "";
     }
 
+    /**
+     * 
+     */
     void requestStop() {
         System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Stop recieved");
 
@@ -163,6 +169,13 @@ public class CatanServer {
 
         public void requestStop() {
             stopRequested = true;
+            
+            try {
+                dataIn.close();
+                dataOut.close();
+            } catch (IOException e) {
+                System.out.println("[Server " + serverSocket.getLocalPort() + "] IOException from SSC requestStop() for client#" + clientID);
+            }
         }
 
         @Override
@@ -364,6 +377,7 @@ public class CatanServer {
                 dataOut.close();
                 //I don't know why this happnes.
                 //TODO: Actually this is good. I will need to find a way to break out of dataIn.readInt() in the while loop above
+                //TODO: Have the dummy socket (CSC) write out a single int and use that to break out of the readInt()... duh...
                 System.out.println("ERROR: END reached in SSC run() for ID#" + clientID);
             } catch (IOException e) {
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC run() for ID#" + clientID + "\n" + e);

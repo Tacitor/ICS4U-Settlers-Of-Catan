@@ -34,23 +34,14 @@ public class SettlerServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //add a method here that open up the lobby aggreagetion sevrer
-        startLobbyAggregation();
-
-    }
-
-    /**
-     *
-     */
-    private static void startLobbyAggregation() {
         //call to SettlerServer constuctor to make the aggregation server
         SettlerServer lobbyAggregation = new SettlerServer();
 
         //TODO: add a method here that spins up the 4 catanServer lobbies
         lobbyAggregation.serverStartUp(2, 25571);
 
-        //start it in a new thread
         lobbyAggregation.acceptConnections();
+
     }
 
     /**
@@ -78,15 +69,12 @@ public class SettlerServer {
     }
 
     /**
-     * TEMP: Create a single lobby by default
+     * 
      */
     private void serverStartUp(int numPlayers, int port) {
         //@OUTDATED spin up a main host server. This server will always be accepting connections (limit to 6 from one IP)
         //@OUTDATED In this server on port 25570 it will provide status updates on the lobbies.
         //@OUTDATED The catan user end will disconnect from this server end once exiting the join lobby menue or once entered into a game.
-
-        System.out.println("Settting up server for " + numPlayers + " players");
-
         CatanServer leServer = new CatanServer(numPlayers, port);
         serverList.add(leServer);
 
@@ -133,6 +121,7 @@ public class SettlerServer {
 
                     //start a new thread just for that one client
                     Thread t_ssc = new Thread(ssc);
+                    t_ssc.setName("[Lobby Aggregation: SSC" + numClients + "]");
                     t_ssc.start();
                 } else {
                     System.out.println("[Lobby Aggregation] Accepted and discarded an extra socket");
@@ -232,7 +221,6 @@ public class SettlerServer {
                 dataOut.close();
 
                 //TODO: Remove the ssc from the aggregationClients list and decriment the numClients counter.
-                System.out.println("requestStop()");
             } catch (IOException ex) {
                 System.out.println("[Lobby Aggregation] IOException from SSC requestStop() for client with an IP of " + this.socket.getInetAddress());
             }
