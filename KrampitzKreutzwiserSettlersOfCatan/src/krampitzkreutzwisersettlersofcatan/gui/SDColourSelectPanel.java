@@ -84,7 +84,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
-        colourRequestBtn = new SettlerBtn(true, 0, 27);
+        colourRequestBtn = new SettlerBtn(false, 0, 27);
 
         //add them to the array
         settlerBtns = new SettlerBtn[]{colourRequestBtn, exitBtn};
@@ -466,6 +466,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
                 }
 
                 //now wait and let the player select a colour
+                colourRequestBtn.setEnabled(true);
             } else {
                 System.out.println("Error connecting to the lobby");
             }

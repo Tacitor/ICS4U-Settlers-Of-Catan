@@ -15,7 +15,10 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import javax.swing.JOptionPane;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
 import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
@@ -34,7 +37,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn refreshBtn, lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn;
+    private SettlerBtn lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn;
     //Settler Labels
     private SettlerLbl lobby1NameLbl, lobby2NameLbl, lobby3NameLbl, lobby4NameLbl, lobby1StatLbl, lobby2StatLbl, lobby3StatLbl, lobby4StatLbl, instructionLbl;
     //The array for the buttons
@@ -44,6 +47,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private SettlerLbl[] settlerLbls;
 
     private CatanClient catanClient;
+    private ClientSideConnection csc; //the socket type var to hold the connection to the lobby aggregation server
 
     //NOTE: Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
     private int[][] lobbyStats;
@@ -87,14 +91,13 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
-        refreshBtn = new SettlerBtn(true, 0, 32);
-        lobby1Btn = new SettlerBtn(true, 1, 31); //set the mode to 1 for lobby 1,a nd type to 31 for a lobby button
-        lobby2Btn = new SettlerBtn(true, 2, 31); //set the mode to 2 for lobby 2,a nd type to 31 for a lobby button
-        lobby3Btn = new SettlerBtn(true, 3, 31); //set the mode to 3 for lobby 3,a nd type to 31 for a lobby button
-        lobby4Btn = new SettlerBtn(true, 4, 31); //set the mode to 4 for lobby 4,a nd type to 31 for a lobby button
+        lobby1Btn = new SettlerBtn(false, 1, 31); //set the mode to 1 for lobby 1,a nd type to 31 for a lobby button
+        lobby2Btn = new SettlerBtn(false, 2, 31); //set the mode to 2 for lobby 2,a nd type to 31 for a lobby button
+        lobby3Btn = new SettlerBtn(false, 3, 31); //set the mode to 3 for lobby 3,a nd type to 31 for a lobby button
+        lobby4Btn = new SettlerBtn(false, 4, 31); //set the mode to 4 for lobby 4,a nd type to 31 for a lobby button
 
         //add them to the array
-        settlerBtns = new SettlerBtn[]{refreshBtn, lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn};
+        settlerBtns = new SettlerBtn[]{lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn};
         //set up the labels
         lobby1NameLbl = new SettlerLbl("Lobby 1");
         lobby1NameLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
@@ -114,6 +117,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby4StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
         instructionLbl = new SettlerLbl("The quick brown fox jumps over the lazy dog");
         instructionLbl.setForeground(new Color(255, 175, 175));
+        resetLobbyLabels();
 
         //add them to the array
         //NOTE: Assume the lobbyStatLbls are in the same order as the lobby buttons are in settlerBtns. Also assume that all the stat lables are in the second half of lables
@@ -130,6 +134,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobbyStats = new int[4][5];
 
         //temp values
+        lobbyStats[0][0] = 2;
+
         lobbyStats[1][0] = 2; //set lobby 2 to have a max of 2 playres
         lobbyStats[1][2] = 1; //set lobby 2 to have the blue player present
 
@@ -140,7 +146,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobbyStats[3][2] = 1; //set lobby 2 to have the blue player present
         lobbyStats[3][3] = 1; //set lobby 2 to have the orange player present
         lobbyStats[3][4] = 1; //set lobby 2 to have the white player present
-
     }
 
     /**
@@ -256,11 +261,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby4StatLbl.setFont(COMPASS_GOLD_45);
         instructionLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
 
-        refreshBtn.setXPos(localScaleInt(100));
-        refreshBtn.setYPos(localScaleInt(150));
-
-        instructionLbl.setXPos(refreshBtn.getXPos());
-        instructionLbl.setYPos(refreshBtn.getYPos() + localScaleInt(90));
+        instructionLbl.setXPos(100);
+        instructionLbl.setYPos(150);
 
         lobby1Btn.setXPos(this.getWidth() / 2 - getLocalImgWidth(lobby1Btn.getBaseImage()) / 2);
         lobby1Btn.setYPos(instructionLbl.getYPos() + localScaleInt(menuPackingHeight + 20));
@@ -323,8 +325,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 //check the button that was pressed
                 if (btn.equals(exitBtn)) { //if it was the exit game button
                     exitBtnActionPerformed();
-                } else if (btn.equals(refreshBtn)) {
-                    JOptionPane.showMessageDialog(null, "Hi Seb this button doesn't do anything yet.");
                 } else if (btn.equals(lobby1Btn)) {
                     lobbyBtnActionPerformed(1);
                 } else if (btn.equals(lobby2Btn)) {
@@ -403,6 +403,18 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+        
+        closeCSC();
+    }
+    
+    /**
+     * TODO:
+     */
+    private void closeCSC() {
+        //reset the csc so that the next attempt will re-estbish a new connection and the old one won't go stale
+        csc.requestStop();
+        csc = null;
+        resetLobbyLabels();
     }
 
     /**
@@ -415,8 +427,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             //prime the colour selection
             sDMenuFrame.getSDMainMenuPanel().resetSDColourSelectPanel();
             //set the params for Lobby 1
-            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyIP("www.lkrampitz.net");
-            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyPort(25570);
+            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyIP(/*"www.lkrampitz.net"*/"localhost");
+            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyPort(25571);
             //pass the justMadeNewGame state
             sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setJustMadeNewGame(justMadeNewGame);
             //show it
@@ -424,6 +436,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
             //start the connection
             sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().startFindServer();
+            
+            //Terminate connection with the lobby aggregation server
+            closeCSC();
 
         } else {
             System.out.println("Lobby" + lobbyNum);
@@ -473,7 +488,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     @Override
     public void componentShown(ComponentEvent e) {
 
-        System.out.println("Shown!");
+        //Debug component detection
+        //System.out.println("JoinLobbyPanel Shown!");
 
         updateLobbyData();
 
@@ -495,6 +511,15 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             instructionLbl.setText("Please select an empty lobby for your new game.");
         } else {
             instructionLbl.setText("Join a started lobby. To join an empty lobby please make a new game.");
+        }
+
+        //open a connection to lobby aggregation server is there is one
+        if (csc == null) {
+            csc = new ClientSideConnection(/*"www.lkrampitz.net"*/"localhost", 25570);
+            //if the connection worked then start the recieve process
+            if (csc.isSuccessfulConnect()) {
+                csc.beginRecieve();
+            }
         }
 
         int lobbyPop;
@@ -557,6 +582,88 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
                 }
             }
+        }
+    }
+
+    private void resetLobbyLabels() {
+        lobby1StatLbl.setText("");
+        lobby2StatLbl.setText("");
+        lobby3StatLbl.setText("");
+        lobby4StatLbl.setText("");
+        instructionLbl.setText("Connecting... Please wait...");
+    }
+
+    private class ClientSideConnection {
+
+        private Socket socket;
+        private DataInputStream dataIn;
+        private DataOutputStream dataOut;
+        private boolean successfulConnect;
+        private boolean cscStopRequested;
+
+        public ClientSideConnection(String ip, int port) {
+            try {
+                //establic connection
+                socket = new Socket(ip, port);
+                dataIn = new DataInputStream(socket.getInputStream());
+                dataOut = new DataOutputStream(socket.getOutputStream());
+
+                System.out.println("[Client] " + "Success when connecting to lobby agregation service");
+                //if everything else was able to be done save the success
+                successfulConnect = true;
+            } catch (IOException e) {
+                System.out.println("[Client] " + "IOException from CSC contructor while connecting to lobby agregation service");
+
+                //save the failed connection
+                successfulConnect = false;
+            }
+        }
+
+        private void regularRecive() {
+            while (!cscStopRequested) {
+                //recieving
+                System.out.println("Hello");
+                
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    System.out.println("InterruptedException in regularRecive() in SDJoinLobbyPanel");
+                }
+            }
+        }
+
+        public void beginRecieve() {
+            //wait for a message to come through
+            Thread t = new Thread(() -> {
+                //never stop listening unless told
+                while (!cscStopRequested) {
+                    regularRecive();
+                }
+            });
+            t.setName("beginRecieve() in SDJoinLobbyPanel");
+            t.start();
+        }
+
+        public boolean reciveLobbyStats() {
+            boolean bool = false;
+
+            try {
+                bool = dataIn.readBoolean();
+            } catch (IOException ex) {
+                System.out.println("[Client] " + "IOException from CSC reciveBoolean()");
+            }
+
+            return bool;
+        }
+
+        public boolean isSuccessfulConnect() {
+            return successfulConnect;
+        }
+
+        public void requestStop() {
+            this.cscStopRequested = true;
+
+            //TODO: Send the stop and disconnect request to the server and SSC too.
         }
     }
 }

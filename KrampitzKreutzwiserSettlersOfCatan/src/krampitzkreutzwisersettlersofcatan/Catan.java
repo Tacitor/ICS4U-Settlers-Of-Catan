@@ -72,6 +72,7 @@ public class Catan {
 
         @Override
         public void run() {
+            this.setName("FastGamePulseRunnable");
 
             //check if this thread should stop
             while (!stopRequested) {
