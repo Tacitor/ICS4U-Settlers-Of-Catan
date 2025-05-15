@@ -39,7 +39,7 @@ public class CatanServer {
      */
     public CatanServer(int maxClients, int port) {
         System.out.println("[Server " + port + "] Settting up server for " + maxClients + " players");
-        
+
         //no clients have connected yet
         numClients = 0;
         //save the number of clients that will connect
@@ -108,24 +108,27 @@ public class CatanServer {
     }
 
     /**
-     * 
+     *
      */
     void requestStop() {
         System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Stop recieved");
 
-        maxClients = 0;
+        //Only create a dummy socket if we need to break out of the serverSocket.accept()
+        if (numClients < maxClients) {
+            maxClients = 0;
 
-        try {
-            Socket dummy = new Socket("localhost", serverSocket.getLocalPort());
-            dummy.close();
-        } catch (IOException ex) {
-            System.out.println("[Lobby Aggregation] IOException from requestStop() in CatanServer");
-        }
+            try {
+                Socket dummy = new Socket("localhost", serverSocket.getLocalPort());
+                dummy.close();
+            } catch (IOException e) {
+                System.out.println("[Server " + serverSocket.getLocalPort() + "] IOException from requestStop() in CatanServer");
+            }
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException ex) {
-            System.out.println("[Lobby Aggregation] InterruptedException from requestStop() in CatanServer");
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                System.out.println("[Server " + serverSocket.getLocalPort() + "] InterruptedException from requestStop() in CatanServer");
+            }
         }
 
         for (ServerSideConnection ssc : clients) {
@@ -169,7 +172,7 @@ public class CatanServer {
 
         public void requestStop() {
             stopRequested = true;
-            
+
             try {
                 dataIn.close();
                 dataOut.close();
@@ -306,7 +309,7 @@ public class CatanServer {
                                 //System.out.println("[Server SSC-" + ssc.clientID + "] stopping");
                             }
 
-                            //TODO: What is causeing the GameFrame to be visable after stopping
+                            //TODO: What is causeing the GameFrame to be visable after stopping. This comment is a hold over from OldCatanServer, it may no longer be relavent.
                             break;
                         //if the server is getting the domestic trading data
                         case 5:

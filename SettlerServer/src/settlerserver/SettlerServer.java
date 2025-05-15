@@ -154,12 +154,18 @@ public class SettlerServer {
                 try {
                     Socket dummy = new Socket("localhost", LOBBY_AGGREGATION_PORT_NUM);
                     dummy.close();
-                } catch (IOException ex) {
+                } catch (IOException e) {
                     System.out.println("[Lobby Aggregation] IOException from SSC scannInput() on /stop");
                 }
 
                 stopClients();
                 stopCatanServers();
+            } else if (s.equalsIgnoreCase("/list")) {
+                System.out.println("[Lobby Aggregation] aggregationClients: " + aggregationClients);
+            } else if (s.equalsIgnoreCase("")) {
+                //Do nothing if the input is an empty String
+            } else {
+                System.out.println("[Lobby Aggregation] The command " + s + " is not recognised");
             }
         }
     }
@@ -221,7 +227,7 @@ public class SettlerServer {
                 dataOut.close();
 
                 //TODO: Remove the ssc from the aggregationClients list and decriment the numClients counter.
-            } catch (IOException ex) {
+            } catch (IOException e) {
                 System.out.println("[Lobby Aggregation] IOException from SSC requestStop() for client with an IP of " + this.socket.getInetAddress());
             }
         }
