@@ -262,7 +262,6 @@ public class OldCatanServer {
                                 //System.out.println("[Server SSC-" + ssc.clientID + "] stopping");
                             }
 
-                            //TODO: What is causeing the GameFrame to be visable after stopping
                             break;
                         //if the server is getting the domestic trading data
                         case 5:

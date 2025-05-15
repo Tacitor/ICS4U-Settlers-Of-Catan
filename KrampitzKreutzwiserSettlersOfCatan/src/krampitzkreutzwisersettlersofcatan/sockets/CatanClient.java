@@ -326,13 +326,11 @@ public class CatanClient extends JFrame {
      * Deal with the server responding to a colour change request
      */
     private void incomingColourResponse() {
-        System.out.println("[Client " + clientID + "] " + "Recieved a colour change response");
-
         //read in that boolean
         int recivedColourResponse = csc.reciveType(); //read in the int
 
         //debug the response
-        System.out.println("colour is: " + recivedColourResponse);
+        System.out.println("[Client " + clientID + "] " + "Recieved a colour change response: " + recivedColourResponse);
 
         clientColour = recivedColourResponse;
 
@@ -764,6 +762,9 @@ public class CatanClient extends JFrame {
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC sendFileStream()");
+                
+                JOptionPane.showMessageDialog(null, "[Client " + clientID + "] "
+                        + "IOException from CSC sendFileStream()", "CatanServer connection error", JOptionPane.ERROR_MESSAGE);
             }
         }
 

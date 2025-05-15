@@ -134,8 +134,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobbyStats = new int[4][5];
 
         //temp values
-        lobbyStats[0][0] = 2;
-
         lobbyStats[1][0] = 2; //set lobby 2 to have a max of 2 playres
         lobbyStats[1][2] = 1; //set lobby 2 to have the blue player present
 

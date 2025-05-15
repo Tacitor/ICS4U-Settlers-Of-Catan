@@ -29,7 +29,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final SDClientSettings sDClientSettings;
-    private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
+    @Deprecated private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
     private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
     private SDOnlineGamePanel sDOnlineGameSettingsPanel;
     private SDOfflineGamePanel sDOfflineGameSettingsPanel;

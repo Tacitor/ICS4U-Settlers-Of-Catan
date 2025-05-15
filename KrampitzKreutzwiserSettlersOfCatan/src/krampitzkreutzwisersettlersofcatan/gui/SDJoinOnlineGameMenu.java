@@ -572,8 +572,9 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
             }
         }
 
-        System.out.println("colourRequest: " + colourRequest);
-        System.out.println("client.getClientColour(): " + client.getClientColour() + "\n");
+        //debug the colour request
+        //System.out.println("colourRequest: " + colourRequest);
+        //System.out.println("client.getClientColour(): " + client.getClientColour() + "\n");
 
         //if the colour request was successfule tell the game
         if (client.getClientColour() == colourRequest) {
