@@ -23,6 +23,7 @@ public class CatanServer {
     //the number of clients what have connected
     private int numClients;
     private int maxClients; //the number of clients that will connect
+    private boolean stopRequested;
     private ArrayList<Integer> availableColours;
 
     //The array of clients
@@ -45,6 +46,8 @@ public class CatanServer {
         //save the number of clients that will connect
         this.maxClients = maxClients;
 
+        stopRequested = false;
+
         //create the list of available colours
         availableColours = new ArrayList<>();
         for (int i = 1; i < maxClients + 1; i++) {
@@ -58,7 +61,7 @@ public class CatanServer {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from server contructor");
+            System.out.println("[Server " + port + "] " + "IOException from server contructor");
         }
     }
 
@@ -70,10 +73,9 @@ public class CatanServer {
                 //create a reciving socket on the server side
                 Socket s = serverSocket.accept();
 
-                //start a new thread just for that one client unless there this client is over the limit.
-                //This inidcates there was some sort of race condition. Or it means that there has been a call to requestStop()
+                //It means that there has been a call to requestStop()
                 //and a dummy socket was made to break out of `serverSocket.accept()` above.
-                if (numClients < maxClients) {
+                if (!stopRequested) {
                     //count it as a client
                     numClients++;
                     System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Client #" + numClients + " has connected");
@@ -112,6 +114,7 @@ public class CatanServer {
      */
     void requestStop() {
         System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Stop recieved");
+        stopRequested = true;
 
         //Only create a dummy socket if we need to break out of the serverSocket.accept()
         if (numClients < maxClients) {
@@ -131,9 +134,21 @@ public class CatanServer {
             }
         }
 
+        stopSSCClients();
+    }
+
+    /**
+     * Loop through the clients array and send out a command #6 over the SSC
+     * clients to the CSCs. The CSC will get this boolean of true with a command
+     * of #6 and will echo the boolean back under the same command #6. This will
+     * get every connected SSC to break out of dataIn.readInt() and be able to
+     * exit the while loop.
+     */
+    private void stopSSCClients() {
         for (ServerSideConnection ssc : clients) {
-            if (ssc != null) {
+            if (ssc != null) { //TODO: Do we need a condition here to proect against tring to use the ssc after it has aleady been closed? Check if stopRequested is true.
                 ssc.requestStop();
+                ssc.sendBoolean(true, 6);
             }
         }
     }
@@ -172,13 +187,6 @@ public class CatanServer {
 
         public void requestStop() {
             stopRequested = true;
-
-            try {
-                dataIn.close();
-                dataOut.close();
-            } catch (IOException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] IOException from SSC requestStop() for client#" + clientID);
-            }
         }
 
         @Override
@@ -302,14 +310,8 @@ public class CatanServer {
                         case 4:
 
                             //debug the stop reqesting
-                            //System.out.println("[Server " + serverSocket.getLocalPort() + "] got stop");
-                            //tell all the threads to die
-                            for (ServerSideConnection ssc : clients) {
-                                ssc.requestStop();
-                                //System.out.println("[Server SSC-" + ssc.clientID + "] stopping");
-                            }
-
-                            //TODO: What is causeing the GameFrame to be visable after stopping. This comment is a hold over from OldCatanServer, it may no longer be relavent.
+                            System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Stop request command #4 in SSC run() for ID#" + clientID);
+                            stopSSCClients();
                             break;
                         //if the server is getting the domestic trading data
                         case 5:
@@ -371,6 +373,11 @@ public class CatanServer {
                             }
 
                             break;
+                        //if the server is getting an update that a stop has been requested
+                        case 6:
+                            System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Stop request command #6 in SSC run() for ID#" + clientID);
+
+                            break;
                         default:
                             break;
                     }
@@ -378,10 +385,8 @@ public class CatanServer {
 
                 dataIn.close();
                 dataOut.close();
-                //I don't know why this happnes.
-                //TODO: Actually this is good. I will need to find a way to break out of dataIn.readInt() in the while loop above
-                //TODO: Have the dummy socket (CSC) write out a single int and use that to break out of the readInt()... duh...
-                System.out.println("ERROR: END reached in SSC run() for ID#" + clientID);
+
+                System.out.println("[Server " + serverSocket.getLocalPort() + "] End reached in SSC run() for ID#" + clientID);
             } catch (IOException e) {
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC run() for ID#" + clientID + "\n" + e);
             }
@@ -479,7 +484,7 @@ public class CatanServer {
          *
          * @param msg
          */
-        public void sendBoolean(boolean msg, int msgType) {
+        public void sendBoolean(boolean msg, int msgType) {            
             try {
                 dataOut.writeInt(msgType); //tell the client what type of message they are reciving
                 dataOut.writeBoolean(msg);

@@ -237,7 +237,6 @@ public class SettlerServer {
          */
         @Override
         public void run() {
-            //TODO: Add a csc on the JoinLobbyPanel
             System.out.println("[Lobby Aggregation] Done from SSC run() for client with an IP of " + this.socket.getInetAddress());
         }
 
