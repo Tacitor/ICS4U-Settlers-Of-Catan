@@ -6861,11 +6861,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //System.out.println("Updateing online");
 
         //check if the game is for online play
-        if (onlineMode != -1) {
+        if (onlineMode != -1 && !onlineClient.isCscStopRequested()) {
             //save the sate of the dice roll animation
             onlineClient.setJustRolledDice(dice.getJustRolled());
             //if it is send the save file to the server
             onlineClient.sendGameToServer();
+        } else if (onlineMode != -1 && onlineClient.isCscStopRequested()) {
+            JOptionPane.showMessageDialog(this, "There is no open connection to the CatanServer.\nAn open connection is needed to play online.", "Network error with CatanServer", JOptionPane.ERROR_MESSAGE);
         }
 
         //and check for a win

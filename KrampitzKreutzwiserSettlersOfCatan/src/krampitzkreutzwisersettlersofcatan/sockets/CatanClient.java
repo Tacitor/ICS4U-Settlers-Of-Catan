@@ -152,8 +152,17 @@ public class CatanClient extends JFrame {
     public void sendStop() {
 
         //send the requestion
-        csc.sendStopCommand();
+        csc.sendStopCommand4();
 
+    }
+
+    /**
+     * Has this CSC been requested to stop.
+     *
+     * @return
+     */
+    public boolean isCscStopRequested() {
+        return cscStopRequested;
     }
 
     /**
@@ -221,6 +230,7 @@ public class CatanClient extends JFrame {
                 while (!cscStopRequested) {
                     regularRecive();
                 }
+                System.out.println("[Client " + clientID + "] End reached for regularRecive()");
             });
             t.start();
         }
@@ -315,6 +325,7 @@ public class CatanClient extends JFrame {
             while (!cscStopRequested) {
                 regularRecive();
             }
+            System.out.println("[Client 1] End reached for regularRecive()");
         } else if (type == 3) {
             incomingColourResponse();
 
@@ -530,6 +541,17 @@ public class CatanClient extends JFrame {
                     theGameFrame.getDomesticTradePanel().updateComponentState();
                     theGameFrame.getDomesticTradePanel().repaint();
                 }
+
+                break;
+
+            //If the SSC send out a stop command
+            case 6:
+                cscStopRequested = true;
+
+                //waste the dummy bool
+                csc.reciveBoolean();
+
+                csc.sendStopCommand6();
 
                 break;
             default:
@@ -762,7 +784,7 @@ public class CatanClient extends JFrame {
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC sendFileStream()");
-                
+
                 JOptionPane.showMessageDialog(null, "[Client " + clientID + "] "
                         + "IOException from CSC sendFileStream()", "CatanServer connection error", JOptionPane.ERROR_MESSAGE);
             }
@@ -779,16 +801,40 @@ public class CatanClient extends JFrame {
             }
         }
 
-        public void sendStopCommand() {
+        /**
+         * Start a CSC triggered stop. This will come from the GamePanel game
+         * ending. Will trigger a command #6 stop once it reached the
+         * CatanServer.
+         */
+        public void sendStopCommand4() {
 
             try {
-                dataOut.writeInt(4); //tell the server it is reveiving a stop command
+                dataOut.writeInt(4); //tell the server it is reveiving a stop command #4
                 dataOut.flush();
 
+            } catch (IOException e) {
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendStopCommand4():\n" + e);
+            }
+        }
+
+        /**
+         * A SSC triggered stop. This is send to the SSC to break it out of a
+         * dataIn.readInt(). The run() will end since the SSC has already had
+         * its stop requested. It only needs a command code to break it out of
+         * the dataOutputStream.
+         */
+        public void sendStopCommand6() {
+
+            try {
+                dataOut.writeInt(6); //tell the server it is reveiving a stop command #6
+                dataOut.flush();
+
+                dataIn.close();
+                dataOut.close();
                 socket.close();
 
             } catch (IOException e) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendStopCommand():\n" + e);
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendStopCommand6():\n" + e);
             }
         }
 
