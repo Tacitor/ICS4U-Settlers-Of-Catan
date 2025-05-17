@@ -159,6 +159,7 @@ public class CatanServer {
         private DataInputStream dataIn;
         private DataOutputStream dataOut;
         private int clientID;
+        private int clientColour;
 
         //has the thread been reqested to stop?
         private boolean stopRequested = false;
@@ -292,6 +293,7 @@ public class CatanServer {
                             //send the client the result of the request
                             if (hasColour) {
                                 clients[clientID - 1].sendColourResponse(colourRequest); //message type 3: colour request
+                                clients[clientID - 1].clientColour = colourRequest;
                             } else {
                                 clients[clientID - 1].sendColourResponse(-1);
                             }
@@ -367,7 +369,7 @@ public class CatanServer {
                             //send the data back out to all the clients
                             //except the sender
                             for (ServerSideConnection client : clients) {
-                                if (client.clientID != onlineModeOfSender) {
+                                if (client.clientColour != onlineModeOfSender) {
                                     client.sendDomesticTradeData(onlineModeOfSender, playerStartedDomestic, playerSelectedForTrade, domesticTradeMode, tradeCardsGivePlayerStartedDomestic, tradeCardsReceivePlayerStartedDomestic, tradeCardsAlreadyHadPlayerStartedDomestic, tradeCardsAlreadyHadPlayerSelected);
                                 }
                             }
