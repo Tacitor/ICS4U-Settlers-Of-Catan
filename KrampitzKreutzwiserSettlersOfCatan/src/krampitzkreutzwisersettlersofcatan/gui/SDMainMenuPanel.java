@@ -12,6 +12,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
@@ -29,7 +31,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final SDClientSettings sDClientSettings;
-    @Deprecated private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
+    @Deprecated
+    private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
     private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
     private SDOnlineGamePanel sDOnlineGameSettingsPanel;
     private SDOfflineGamePanel sDOfflineGameSettingsPanel;
@@ -62,7 +65,19 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
 
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
+
         gameJFrame = new GameFrame(this);
+        //Ensure that when the GameFrame is closed it will have any networking and sockets closed.
+        gameJFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                boolean doClose = gameJFrame.getGamePanel().backNoSaveBtnClicked();
+                if (doClose) {
+                    gameJFrame.dispose();
+                }
+            }
+        });
+
         sDClientSettings = new SDClientSettings(sDMenuFrame);
 
         sDOnlineGameSettingsPanel = new SDOnlineGamePanel(sDMenuFrame);
@@ -395,7 +410,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         sDJoinLobbyPanel = new SDJoinLobbyPanel(sDMenuFrame);
         sDJoinLobbyPanel.setVisible(false);
     }
-    
+
     /**
      * Accessor for sDColourSelectPanel
      *
@@ -404,7 +419,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     public SDColourSelectPanel getSDColourSelectPanel() {
         return sDColourSelectPanel;
     }
-    
+
     /**
      * Reset method for sDColourSelectPanel
      */

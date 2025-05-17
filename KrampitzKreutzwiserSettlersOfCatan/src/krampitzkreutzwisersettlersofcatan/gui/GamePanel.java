@@ -968,10 +968,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
     /**
      * Exit the gamePanel without saving
+     *
+     * @return userExit - This value is true if the user confirms the choice to
+     * exit the game.
      */
-    private void backNoSaveBtnClicked() {
-        int overwrite;
-        overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
+    public boolean backNoSaveBtnClicked() {
+        int overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
+        boolean userExit = false;
+
         //If the user really want to leave let them
         if (overwrite == 0) {
 
@@ -984,7 +988,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
             superFrame.getMainMenu().setVisible(true);
             superFrame.getMainMenu().getSDMenuFrame().setVisible(true);
 
+            userExit = true;
         }
+
+        return userExit;
     }
 
     /**
