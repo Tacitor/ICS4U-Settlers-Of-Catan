@@ -485,6 +485,13 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
         }
 
+        /**
+         * Reinitialize game based on settings selected. Skipping this can cause
+         * issue with setup order and other down steam calculation made at
+         * gamePanel start up.
+         */
+        sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+
         //Check the online play mode from previous menu selection
         if (newGameIsOffline) {
 
@@ -497,7 +504,6 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
             GamePanel.setOnlineMode(-1);
             GamePanel.setCatanClient(null);
 
-            sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
             sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(true);
         } else {
             //let the lobby selector to know not to reset certain Objects
