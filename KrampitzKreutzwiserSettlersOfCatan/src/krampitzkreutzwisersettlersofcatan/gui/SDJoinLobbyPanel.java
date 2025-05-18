@@ -661,7 +661,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         public void requestStop() {
             this.cscStopRequested = true;
 
-            //TODO: Send the stop and disconnect request to the server and SSC too.
+            //TODO: Send the stop and disconnect request to the aggregation server and SSC too. This also include removeing the disconnected SSC from the lobby aggregation clients list
         }
     }
 }

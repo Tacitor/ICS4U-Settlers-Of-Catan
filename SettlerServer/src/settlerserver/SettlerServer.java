@@ -18,6 +18,8 @@ import java.util.Scanner;
  * @author Tacitor
  */
 public class SettlerServer {
+    
+    public static final boolean DEBUG_OUTPUT = true;
 
     //The recieving Socket
     private ServerSocket leSocket;
@@ -69,7 +71,7 @@ public class SettlerServer {
     }
 
     /**
-     * 
+     *
      */
     private void serverStartUp(int numPlayers, int port) {
         //@OUTDATED spin up a main host server. This server will always be accepting connections (limit to 6 from one IP)

@@ -68,6 +68,7 @@ public class CatanServer {
     public void acceptConnections() {
         try {
             System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Waiting for connections...");
+            printDebugLnBr();
             //wait until all the clients have connected
             while (numClients < maxClients) {
                 //create a reciving socket on the server side
@@ -146,10 +147,19 @@ public class CatanServer {
      */
     private void stopSSCClients() {
         for (ServerSideConnection ssc : clients) {
-            if (ssc != null) { //TODO: Do we need a condition here to proect against tring to use the ssc after it has aleady been closed? Check if stopRequested is true.
+            if (ssc != null && !ssc.stopRequested) {
                 ssc.requestStop();
                 ssc.sendBoolean(true, 6);
             }
+        }
+    }
+
+    /**
+     *
+     */
+    private void printDebugLnBr() {
+        if (SettlerServer.DEBUG_OUTPUT) {
+            System.out.print("\n");
         }
     }
 
@@ -305,6 +315,7 @@ public class CatanServer {
 
                                 //debug the data coming in
                                 System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Send begin command to Client 1");
+                                printDebugLnBr();
                             }
 
                             break;
@@ -486,7 +497,7 @@ public class CatanServer {
          *
          * @param msg
          */
-        public void sendBoolean(boolean msg, int msgType) {            
+        public void sendBoolean(boolean msg, int msgType) {
             try {
                 dataOut.writeInt(msgType); //tell the client what type of message they are reciving
                 dataOut.writeBoolean(msg);

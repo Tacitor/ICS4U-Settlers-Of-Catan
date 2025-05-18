@@ -152,7 +152,9 @@ public class CatanClient extends JFrame {
     public void sendStop() {
 
         //send the requestion
-        csc.sendStopCommand4();
+        if (!cscStopRequested) {
+            csc.sendStopCommand4();
+        }
 
     }
 
