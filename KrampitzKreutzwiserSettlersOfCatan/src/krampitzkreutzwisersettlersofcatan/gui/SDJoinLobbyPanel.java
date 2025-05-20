@@ -401,10 +401,10 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
-        
+
         closeCSC();
     }
-    
+
     /**
      * TODO:
      */
@@ -420,7 +420,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      */
     private void lobbyBtnActionPerformed(int lobbyNum) {
         if (lobbyNum == 1 || lobbyNum == 2) {
-            System.out.println("Lobby 1/2");
+            System.out.println("[LA Client] Connecting to Lobby 1/2...");
 
             //prime the colour selection
             sDMenuFrame.getSDMainMenuPanel().resetSDColourSelectPanel();
@@ -434,12 +434,12 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
             //start the connection
             sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().startFindServer();
-            
+
             //Terminate connection with the lobby aggregation server
             closeCSC();
 
         } else {
-            System.out.println("Lobby" + lobbyNum);
+            System.out.println("[LA Client] Connecting to Lobby " + lobbyNum + "...");
         }
     }
 
@@ -488,7 +488,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //Debug component detection
         //System.out.println("JoinLobbyPanel Shown!");
-
         updateLobbyData();
 
     }
@@ -593,6 +592,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
     private class ClientSideConnection {
 
+        private int laID;
         private Socket socket;
         private DataInputStream dataIn;
         private DataOutputStream dataOut;
@@ -606,40 +606,69 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 dataIn = new DataInputStream(socket.getInputStream());
                 dataOut = new DataOutputStream(socket.getOutputStream());
 
-                System.out.println("[Client] " + "Success when connecting to lobby agregation service");
+                //now that a connection has been establichsed get the number for this client
+                laID = dataIn.readInt();
+
+                System.out.println("[LA Client " + laID + "] Success when connecting to lobby aggregation service");
                 //if everything else was able to be done save the success
                 successfulConnect = true;
             } catch (IOException e) {
-                System.out.println("[Client] " + "IOException from CSC contructor while connecting to lobby agregation service");
+                System.out.println("[LA Client " + laID + "] IOException from CSC contructor while connecting to lobby aggregation service");
 
                 //save the failed connection
                 successfulConnect = false;
             }
         }
 
-        private void regularRecive() {
+        private void receive() {
+            System.out.println("[LA Client " + laID + "] Starting receive()");
+
             while (!cscStopRequested) {
-                //recieving
-                System.out.println("Hello");
-                
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    System.out.println("InterruptedException in regularRecive() in SDJoinLobbyPanel");
+                //receiving
+                int type = csc.reciveType();
+
+                switch (type) {
+                    case 1:
+                        //receive the lobby stats
+                        break;
+                    case 2:
+                        //receive when the when it is done restart an empty server and change the number of players
+                        break;
+                    case 4: //for a SSC close
+                        cscStopRequested = true;
+
+                        sendStopCommand(4);
+                        break;
                 }
+
             }
+
+            System.out.println("[LA Client " + laID + "] End reached for receive()");
+            //TODO: Disable the lobby buttons if this panel is shown.
         }
 
         public void beginRecieve() {
-            //wait for a message to come through
             Thread t = new Thread(() -> {
-                //never stop listening unless told
-                while (!cscStopRequested) {
-                    regularRecive();
-                }
+                receive();
+
             });
-            t.setName("beginRecieve() in SDJoinLobbyPanel");
+            t.setName("receive() in SDJoinLobbyPanel");
             t.start();
+        }
+
+        public int reciveType() {
+            int msg = 0;
+
+            try {
+                msg = dataIn.readInt();
+            } catch (IOException ex) {
+                System.out.println("[LA Client " + laID + "] IOException from CSC reciveType():\n" + ex);
+
+                //request a stop
+                cscStopRequested = true;
+            }
+
+            return msg;
         }
 
         public boolean reciveLobbyStats() {
@@ -648,7 +677,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             try {
                 bool = dataIn.readBoolean();
             } catch (IOException ex) {
-                System.out.println("[Client] " + "IOException from CSC reciveBoolean()");
+                System.out.println("[LA Client " + laID + "] " + "IOException from CSC reciveBoolean()");
             }
 
             return bool;
@@ -659,9 +688,28 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         }
 
         public void requestStop() {
-            this.cscStopRequested = true;
-
-            //TODO: Send the stop and disconnect request to the aggregation server and SSC too. This also include removeing the disconnected SSC from the lobby aggregation clients list
+            //send the requestion
+            if (!cscStopRequested) {
+                csc.sendStopCommand(3);
+            }
         }
+
+        /**
+         * Valid only for type 3 or 4
+         *
+         * @param type
+         */
+        public void sendStopCommand(int type) {
+
+            //TODO: Validate the type to 3 or 4. Throw an exeption if not correct.
+            try {
+                dataOut.writeInt(type); //tell the server it is reveiving a LA stop command #3
+                dataOut.flush();
+
+            } catch (IOException e) {
+                System.out.println("[LA Client " + laID + "] " + "IOException from CSC sendStopCommand3()");
+            }
+        }
+
     }
 }

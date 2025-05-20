@@ -18,13 +18,13 @@ import java.util.Scanner;
  * @author Tacitor
  */
 public class SettlerServer {
-    
+
     public static final boolean DEBUG_OUTPUT = true;
 
     //The recieving Socket
     private ServerSocket leSocket;
     //the number of clients currently connected
-    private int numClients;
+    private int latestClient;
     private boolean stopRequested;
     //An array of all the clients
     private ArrayList<ServerSideConnection> aggregationClients;
@@ -52,7 +52,7 @@ public class SettlerServer {
     public SettlerServer() {
         System.out.println("[Lobby Aggregation] Creating service");
         //no clients yet
-        numClients = 0;
+        latestClient = 0;
 
         //no stop request
         stopRequested = false;
@@ -112,18 +112,18 @@ public class SettlerServer {
                 //only add the socket if there is no stop request
                 if (!stopRequested) {
                     //count it as a client
-                    numClients++;
+                    latestClient++;
 
-                    System.out.println("[Lobby Aggregation] " + "Client #" + numClients + " has connected with an IP of: " + s.getInetAddress());
+                    System.out.println("[Lobby Aggregation] " + "Client #" + latestClient + " has connected with an IP of: " + s.getInetAddress());
                     //create a new SSC for to keep track of that incoming socket
-                    ServerSideConnection ssc = new ServerSideConnection(s);
+                    ServerSideConnection ssc = new ServerSideConnection(s, latestClient);
 
                     //save that new ssc to the ArrayList of clients
                     aggregationClients.add(ssc);
 
                     //start a new thread just for that one client
                     Thread t_ssc = new Thread(ssc);
-                    t_ssc.setName("[Lobby Aggregation: SSC" + numClients + "]");
+                    t_ssc.setName("[Lobby Aggregation: SSC" + latestClient + "]");
                     t_ssc.start();
                 } else {
                     System.out.println("[Lobby Aggregation] Accepted and discarded an extra socket");
@@ -177,7 +177,10 @@ public class SettlerServer {
      */
     private void stopClients() {
         for (ServerSideConnection leSSC : aggregationClients) {
-            leSSC.requestStop();
+            if (!leSSC.stopRequested) {
+                leSSC.requestStop();
+                leSSC.sendSscStop();
+            }
         }
     }
 
@@ -195,6 +198,7 @@ public class SettlerServer {
      */
     private class ServerSideConnection implements Runnable {
 
+        private int laID;
         private Socket socket;
         private DataInputStream dataIn;
         private DataOutputStream dataOut;
@@ -206,8 +210,9 @@ public class SettlerServer {
          *
          * @param socket
          */
-        public ServerSideConnection(Socket socket) {
+        public ServerSideConnection(Socket socket, int laID) {
             this.socket = socket;
+            this.laID = laID;
 
             //setup the data streams
             try {
@@ -223,15 +228,6 @@ public class SettlerServer {
          */
         public void requestStop() {
             stopRequested = true;
-
-            try {
-                dataIn.close();
-                dataOut.close();
-
-                //TODO: Remove the ssc from the aggregationClients list and decriment the numClients counter.
-            } catch (IOException e) {
-                System.out.println("[Lobby Aggregation] IOException from SSC requestStop() for client with an IP of " + this.socket.getInetAddress());
-            }
         }
 
         /**
@@ -239,7 +235,49 @@ public class SettlerServer {
          */
         @Override
         public void run() {
-            System.out.println("[Lobby Aggregation] Done from SSC run() for client with an IP of " + this.socket.getInetAddress());
+            try {
+                //when a client first connects send it's ID
+                dataOut.writeInt(laID);
+
+                //loop state after all startup business is complete
+                while (!stopRequested) {
+
+                    //accept a new message
+                    int type = dataIn.readInt(); //get the type of transmision
+
+                    switch (type) {
+                        case 1: //if the client sent a lobby stats request
+                            //sent the lobby stats
+                            break;
+
+                        case 2: //if the client sent a request to restart an empty server and change the number of players
+                            // tell the client when it is done
+                            break;
+
+                        case 3: //for a CSC triggerd termination
+                            System.out.println("[Lobby Aggregation] Stop request command #3 in SSC run() for ID#" + laID);
+
+                            stopRequested = true;
+                            sendSscStop();
+                            break;
+                        case 4: //for a SSC close.
+                            System.out.println("[Lobby Aggregation] Stop request command #4 in SSC run() for ID#" + laID);
+                            break;
+                    }
+                }
+
+                //We're done here, wrap this up
+                dataIn.close();
+                dataOut.close();
+                socket.close();
+
+                aggregationClients.remove(this);
+
+                System.out.println("[Lobby Aggregation] Done from SSC run() for client with an IP of " + this.socket.getInetAddress());
+
+            } catch (IOException e) {
+                System.out.println("[Lobby Aggregation] IOException from SSC run() for ID#" + laID + "\n" + e);
+            }
         }
 
         /**
@@ -249,6 +287,18 @@ public class SettlerServer {
         @Override
         public String toString() {
             return "ServerSideConnection: " + socket.getInetAddress();
+        }
+
+        /**
+         *
+         */
+        private void sendSscStop() {
+            try {
+                dataOut.writeInt(4); //tell the client what type of message they are reciving
+                dataOut.flush();
+            } catch (IOException e) {
+                System.out.println("[Lobby Aggregation] IOException from SSC sendSscStop() for ID#" + laID + "\n" + e);
+            }
         }
     }
 

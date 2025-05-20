@@ -215,7 +215,7 @@ public class CatanServer {
                     int type = dataIn.readInt(); //get the type of transmision
                     //if the client sent a chat message
                     switch (type) {
-                        case 1:
+                        case 1: //TODO: Remove the chat message type
                             //read the chat message
                             String newMsg = dataIn.readUTF();
                             //check if a user wants to clear the chat
@@ -398,6 +398,7 @@ public class CatanServer {
 
                 dataIn.close();
                 dataOut.close();
+                socket.close();
 
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] End reached in SSC run() for ID#" + clientID);
             } catch (IOException e) {

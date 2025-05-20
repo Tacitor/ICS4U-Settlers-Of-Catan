@@ -183,7 +183,7 @@ public class CatanClient extends JFrame {
         this.setIconImage(ImageRef.ICON);
     }
 
-    public void setUpGUI() {
+    public void setUpGUI() { //TODO: Remove the setUpGUI() function make this not a frame of sorts
         //get up the GUI
         this.setSize(width, height);
         this.setTitle("Catan Socket Test - Client #" + clientID);
@@ -430,7 +430,7 @@ public class CatanClient extends JFrame {
         int type = csc.reciveType();
 
         switch (type) {
-            case 1:
+            case 1: //TODO: Remove the chat message type
                 //wait for newest message from other client
                 String msg = csc.reciveNewString();
                 messageRecived.setText(msg);
@@ -457,14 +457,19 @@ public class CatanClient extends JFrame {
                     try {
                         //ensure the directory is there
                         Files.createDirectories(Paths.get(ONLINE_SAVE_LOCATION));
-
+                        System.out.println("[Client " + clientID + "] Before file creation...");
+                        
                         //create a file to save it to
                         File file = new File(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
+                        
+                        System.out.println("[Client " + clientID + "] After file creation...");
 
                         //take read and write acess
                         file.setExecutable(true);
                         file.setReadable(true);
                         file.setWritable(true);
+                        
+                        System.out.println("[Client " + clientID + "] After perms update...");
 
                         //Create and output stream at the directory
                         FileOutputStream fos = new FileOutputStream(file);
@@ -494,8 +499,6 @@ public class CatanClient extends JFrame {
                             //hide the main menu frame
                             theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
                         }
-                        //save the time before any savinging and reloading of the new save file for online play
-                        long oldTime = System.currentTimeMillis();
 
                         //load the save from the other client in the online game
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
@@ -503,6 +506,10 @@ public class CatanClient extends JFrame {
                         //System.out.println("Animation load time: " + (System.currentTimeMillis() - oldTime));
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
+                        System.out.println("[Client " + clientID + "] There was an error loading the save file:\n" + exception);
+                        //TODO: often this will trigger and it did not before. Look into why:
+                        //java.io.FileNotFoundException: (Access is denied)
+                        //happens so often for client 2. I have not yet seen it for client 1. Some how the perms need to be updated I think. When trying to write file to disk maybe need to delete the existing one or something? 
                     } catch (IOException exception) {
                         JOptionPane.showMessageDialog(null, "There was an IOException loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
                     }   //System.out.println("Chat is : \n" + fileTypeRecieve.getChat());                    
