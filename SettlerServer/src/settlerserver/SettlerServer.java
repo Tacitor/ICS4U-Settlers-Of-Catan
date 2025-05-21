@@ -247,7 +247,8 @@ public class SettlerServer {
 
                     switch (type) {
                         case 1: //if the client sent a lobby stats request
-                            //sent the lobby stats
+                            System.out.println("[Lobby Aggregation] Lobby stats request command #1 in SSC run() for ID#" + laID);
+                            sendLobbyStats();
                             break;
 
                         case 2: //if the client sent a request to restart an empty server and change the number of players
@@ -298,6 +299,35 @@ public class SettlerServer {
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Lobby Aggregation] IOException from SSC sendSscStop() for ID#" + laID + "\n" + e);
+            }
+        }
+
+        /**
+         * Send all the statistics about the game servers to the CSC.
+         *
+         * @param msg
+         */
+        public void sendLobbyStats() {
+            int[] colours;
+
+            try {
+                dataOut.writeInt(1); //tell the client what type of message they are reciving
+
+                dataOut.writeInt(serverList.size());
+                for (CatanServer cs : serverList) {
+                    colours = cs.getColoursTaken();
+
+                    dataOut.writeInt(cs.getSocketPort());
+                    dataOut.writeInt(cs.getMaxClients());
+                    dataOut.writeInt(colours.length);
+                    for (int i = 0; i < colours.length; i++) {
+                        dataOut.writeInt(colours[i]);
+                    }
+                }
+
+                dataOut.flush();
+            } catch (IOException e) {
+                System.out.println("[Lobby Aggregation] IOException from SSC sendLobbyStats() for ID#" + laID + "\n" + e);
             }
         }
     }

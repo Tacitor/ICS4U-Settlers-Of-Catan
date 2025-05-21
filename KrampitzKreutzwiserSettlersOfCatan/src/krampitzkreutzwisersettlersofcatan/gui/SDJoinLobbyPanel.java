@@ -19,6 +19,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
 import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
 import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
@@ -117,7 +118,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby4StatLbl.setForeground(GenUtil.BUTTON_TEXT_BROWN);
         instructionLbl = new SettlerLbl("The quick brown fox jumps over the lazy dog");
         instructionLbl.setForeground(new Color(255, 175, 175));
-        resetLobbyLabels();
+        resetLobbyElements();
 
         //add them to the array
         //NOTE: Assume the lobbyStatLbls are in the same order as the lobby buttons are in settlerBtns. Also assume that all the stat lables are in the second half of lables
@@ -406,13 +407,13 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     }
 
     /**
-     * TODO:
+     *
      */
     private void closeCSC() {
         //reset the csc so that the next attempt will re-estbish a new connection and the old one won't go stale
         csc.requestStop();
         csc = null;
-        resetLobbyLabels();
+        resetLobbyElements();
     }
 
     /**
@@ -510,7 +511,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             instructionLbl.setText("Join a started lobby. To join an empty lobby please make a new game.");
         }
 
-        //open a connection to lobby aggregation server is there is one
+        //open a connection to lobby aggregation server if there isn't one.
         if (csc == null) {
             csc = new ClientSideConnection(/*"www.lkrampitz.net"*/"localhost", 25570);
             //if the connection worked then start the recieve process
@@ -518,6 +519,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 csc.beginRecieve();
             }
         }
+
+        //Send the first requestLobbyStats()
+        csc.requestLobbyStats();
 
         int lobbyPop;
 
@@ -582,12 +586,79 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         }
     }
 
-    private void resetLobbyLabels() {
+    private void resetLobbyElements() {
         lobby1StatLbl.setText("");
         lobby2StatLbl.setText("");
         lobby3StatLbl.setText("");
         lobby4StatLbl.setText("");
         instructionLbl.setText("Connecting... Please wait...");
+        
+        for (SettlerBtn btn : settlerBtns) {
+            if (!btn.equals(exitBtn)) {
+                btn.setEnabled(false);
+            }
+        }
+    }
+
+    private class LobbyStats {
+
+        private int port;
+        private int maxClients;
+        private int numClients;
+        private int[] coloursTaken;
+
+        public LobbyStats(int port) {
+            this.port = port;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public int getMaxClients() {
+            return maxClients;
+        }
+
+        public void setMaxClients(int maxClients) {
+            this.maxClients = maxClients;
+        }
+
+        public int getNumClients() {
+            return numClients;
+        }
+
+        /**
+         * ...Note: changing this value will reset the coloursTaken.
+         *
+         * @param numClients
+         */
+        public void setNumClients(int numClients) {
+            this.numClients = numClients;
+
+            //reset the taken colours
+            coloursTaken = new int[numClients];
+        }
+
+        public int[] getColoursTaken() {
+            return coloursTaken;
+        }
+
+        public boolean setColoursTaken(int[] coloursTaken) {
+            boolean success = false;
+
+            if (coloursTaken.length == this.coloursTaken.length && coloursTaken.length == numClients) {
+                this.coloursTaken = coloursTaken;
+                success = true;
+            }
+
+            return success;
+        }
+
+        @Override
+        public String toString() {
+            return "LobbyStats: \nPort: " + port + "\nmaxClients: " + maxClients + "\nnumClients: " + numClients
+                    + "\ncoloursTaken: " + Arrays.toString(coloursTaken);
+        }
     }
 
     private class ClientSideConnection {
@@ -629,7 +700,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
                 switch (type) {
                     case 1:
-                        //receive the lobby stats
+                        LobbyStats lss[] = reciveLobbyStats();
+                        System.out.println("Got LobbyStats: " + Arrays.toString(lss));
                         break;
                     case 2:
                         //receive when the when it is done restart an empty server and change the number of players
@@ -643,8 +715,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
             }
 
-            System.out.println("[LA Client " + laID + "] End reached for receive()");
-            //TODO: Disable the lobby buttons if this panel is shown.
+            System.out.println("[LA Client " + laID + "] End reached for receive()\n");
         }
 
         public void beginRecieve() {
@@ -662,7 +733,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             try {
                 msg = dataIn.readInt();
             } catch (IOException ex) {
-                System.out.println("[LA Client " + laID + "] IOException from CSC reciveType():\n" + ex);
+                System.out.println("[LA Client " + laID + "] IOException from CSC reciveType():\n\t" + ex);
 
                 //request a stop
                 cscStopRequested = true;
@@ -671,16 +742,54 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             return msg;
         }
 
-        public boolean reciveLobbyStats() {
-            boolean bool = false;
+        public void requestLobbyStats() {
+            try {
+                dataOut.writeInt(1); //tell the server it is reveiving a request for lobby stats #1
+                dataOut.flush();
+
+            } catch (IOException e) {
+                System.out.println("[LA Client " + laID + "] " + "IOException from CSC requestLobbyStats()");
+            }
+        }
+
+        public LobbyStats[] reciveLobbyStats() {
+            LobbyStats lb[] = null;
+            int tempInt;
+            boolean success;
 
             try {
-                bool = dataIn.readBoolean();
+                tempInt = dataIn.readInt(); //read in the number of lobbies.
+                lb = new LobbyStats[tempInt];
+                int[] colours;
+
+                for (int i = 0; i < lb.length; i++) {
+                    tempInt = dataIn.readInt(); //read in the port
+                    lb[i] = new LobbyStats(tempInt);
+
+                    tempInt = dataIn.readInt(); //read in the max clients
+                    lb[i].setMaxClients(tempInt);
+
+                    tempInt = dataIn.readInt(); //read in the number of connected clients
+                    colours = new int[tempInt];
+                    lb[i].setNumClients(tempInt);
+
+                    for (int j = 0; j < lb[i].getNumClients(); j++) {
+                        colours[j] = dataIn.readInt();
+                    }
+                    success = lb[i].setColoursTaken(colours);
+
+                    if (!success) {
+                        throw new IllegalArgumentException("False result from setColoursTaken()");
+                    }
+
+                }
+            } catch (IllegalArgumentException ex) {
+                System.out.println("[LA Client " + laID + "] " + "IllegalArgumentException from CSC reciveLobbyStats() \n\t" + ex);
             } catch (IOException ex) {
-                System.out.println("[LA Client " + laID + "] " + "IOException from CSC reciveBoolean()");
+                System.out.println("[LA Client " + laID + "] " + "IOException from CSC reciveLobbyStats()");
             }
 
-            return bool;
+            return lb;
         }
 
         public boolean isSuccessfulConnect() {
