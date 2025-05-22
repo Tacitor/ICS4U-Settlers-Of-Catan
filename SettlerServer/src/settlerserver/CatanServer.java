@@ -45,7 +45,7 @@ public class CatanServer {
         numClients = 0;
         //save the number of clients that will connect
         this.maxClients = maxClients;
-        
+
         stopRequested = false;
 
         //create the list of available colours
@@ -64,7 +64,7 @@ public class CatanServer {
             System.out.println("[Server " + port + "] " + "IOException from server contructor");
         }
     }
-    
+
     public void acceptConnections() {
         try {
             System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Waiting for connections...");
@@ -85,7 +85,7 @@ public class CatanServer {
 
                     //save that new ssc to the list of clients
                     clients[numClients - 1] = ssc;
-                    
+
                     Thread t = new Thread(ssc);
                     t.setName("[Server " + serverSocket.getLocalPort() + ": SSC" + numClients + "]");
                     t.start();
@@ -101,11 +101,11 @@ public class CatanServer {
             System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from acceptConnections");
         }
     }
-    
+
     private void updateChat(String newMsg) {
         chat += newMsg;
     }
-    
+
     private void clearChat() {
         chat = "";
     }
@@ -120,21 +120,21 @@ public class CatanServer {
         //Only create a dummy socket if we need to break out of the serverSocket.accept()
         if (numClients < maxClients) {
             maxClients = 0;
-            
+
             try {
                 Socket dummy = new Socket("localhost", serverSocket.getLocalPort());
                 dummy.close();
             } catch (IOException e) {
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] IOException from requestStop() in CatanServer");
             }
-            
+
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] InterruptedException from requestStop() in CatanServer");
             }
         }
-        
+
         stopSSCClients();
     }
 
@@ -176,11 +176,11 @@ public class CatanServer {
      */
     public int[] getColoursTaken() {
         int[] taken = new int[numClients];
-        
+
         for (int i = 0; i < numClients; i++) {
             taken[i] = clients[i].clientColour;
         }
-        
+
         return taken;
     }
 
@@ -192,9 +192,9 @@ public class CatanServer {
             System.out.print("\n");
         }
     }
-    
+
     private class ServerSideConnection implements Runnable {
-        
+
         private Socket socket; //the socket that this client connected with
         private DataInputStream dataIn;
         private DataOutputStream dataOut;
@@ -221,15 +221,15 @@ public class CatanServer {
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC constuctor for client#" + id);
             }
         }
-        
+
         public int getID() {
             return clientID;
         }
-        
+
         public void requestStop() {
             stopRequested = true;
         }
-        
+
         @Override
         public void run() {
             try {
@@ -252,7 +252,7 @@ public class CatanServer {
                             if (newMsg.equals("/clear")) {
                                 clearChat();
                                 updateChat("[Server " + serverSocket.getLocalPort() + "] Client #" + clientID + " cleared chat\n");
-                                
+
                             } else { //else add the new string
 
                                 //if a message come from client 1
@@ -299,7 +299,7 @@ public class CatanServer {
                                     //System.out.println("[CatanServer] " +"Sent it");
                                     //System.out.println("[CatanServer] " +"\nCurrent chat is :\n" + chat);
                                     client.sendFile(chat, fileAsStream, fileName, justRolledDice);
-                                    
+
                                 }
                             }
                             break;
@@ -312,7 +312,7 @@ public class CatanServer {
 
                             //check if the client gave a specific colour
                             if (colourRequest != 0) {
-                                
+
                                 hasColour = availableColours.contains(colourRequest);
 
                                 //if that colour is in the list take it out
@@ -320,7 +320,7 @@ public class CatanServer {
                                     availableColours.remove(new Integer(Integer.toString(colourRequest)));
                                 }
                             } else {
-                                
+
                                 hasColour = true;
 
                                 //give them the first next colour
@@ -347,7 +347,7 @@ public class CatanServer {
                                 System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Send begin command to Client 1");
                                 printDebugLnBr();
                             }
-                            
+
                             break;
                         //if the server is getting a stop command
                         case 4:
@@ -414,22 +414,22 @@ public class CatanServer {
                                     client.sendDomesticTradeData(onlineModeOfSender, playerStartedDomestic, playerSelectedForTrade, domesticTradeMode, tradeCardsGivePlayerStartedDomestic, tradeCardsReceivePlayerStartedDomestic, tradeCardsAlreadyHadPlayerStartedDomestic, tradeCardsAlreadyHadPlayerSelected);
                                 }
                             }
-                            
+
                             break;
                         //if the server is getting an update that a stop has been requested
                         case 6:
                             System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Stop request command #6 in SSC run() for ID#" + clientID);
-                            
+
                             break;
                         default:
                             break;
                     }
                 }
-                
+
                 dataIn.close();
                 dataOut.close();
                 socket.close();
-                
+
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] End reached in SSC run() for ID#" + clientID);
             } catch (IOException e) {
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC run() for ID#" + clientID + "\n" + e);
@@ -473,11 +473,11 @@ public class CatanServer {
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC sendNewString()");
             }
         }
-        
+
         public void sendDomesticTradeData(int onlineModeOfSender, int playerStartedDomestic, int playerSelectedForTrade, int domesticTradeMode,
                 int[] tradeCardsGivePlayerStartedDomestic, int[] tradeCardsReceivePlayerStartedDomestic,
                 int[] tradeCardsAlreadyHadPlayerStartedDomestic, int[] tradeCardsAlreadyHadPlayerSelected) {
-            
+
             try {
                 dataOut.writeInt(5); //tell the client they are reciving domestic trade data
                 dataOut.writeInt(onlineModeOfSender); //tell the recipeient who send the trade data
@@ -516,7 +516,7 @@ public class CatanServer {
                 for (int i = 0; i < tradeCardsAlreadyHadPlayerSelected.length; i++) {
                     dataOut.writeInt(tradeCardsAlreadyHadPlayerSelected[i]);
                 }
-                
+
                 dataOut.flush();
             } catch (IOException e) {
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC sendDomesticTradeData()");
@@ -561,7 +561,7 @@ public class CatanServer {
         public String toString() {
             return "ClientID: " + clientID;
         }
-        
+
     }
-    
+
 }
