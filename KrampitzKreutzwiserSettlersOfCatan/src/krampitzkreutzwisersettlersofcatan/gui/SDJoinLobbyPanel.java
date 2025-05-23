@@ -20,6 +20,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
+import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
 import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
@@ -59,12 +60,16 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     public Font COMPASS_GOLD;
     public Font COMPASS_GOLD_45;
 
+    public static String CATAN_SERVER_URL;
+
     /**
      * Main Constructor
      *
      * @param sDFrame
      */
     public SDJoinLobbyPanel(SDMenuFrame sDFrame) {
+        CATAN_SERVER_URL = Catan.DEBUG_SETTLER_SERVER ? "localhost" : "www.lkrampitz.net";
+
         sDMenuFrame = sDFrame;
 
         COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
@@ -426,7 +431,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             //prime the colour selection
             sDMenuFrame.getSDMainMenuPanel().resetSDColourSelectPanel();
             //set the params for Lobby 1
-            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyIP(/*"www.lkrampitz.net"*/"localhost");
+            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyIP(CATAN_SERVER_URL);
             sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyPort(25571);
             //pass the justMadeNewGame state
             sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setJustMadeNewGame(justMadeNewGame);
@@ -513,7 +518,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //open a connection to lobby aggregation server if there isn't one.
         if (csc == null) {
-            csc = new ClientSideConnection(/*"www.lkrampitz.net"*/"localhost", 25570);
+            csc = new ClientSideConnection(CATAN_SERVER_URL, 25570);
             //if the connection worked then start the recieve process
             if (csc.isSuccessfulConnect()) {
                 csc.beginRecieve();
@@ -592,7 +597,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         lobby3StatLbl.setText("");
         lobby4StatLbl.setText("");
         instructionLbl.setText("Connecting... Please wait...");
-        
+
         for (SettlerBtn btn : settlerBtns) {
             if (!btn.equals(exitBtn)) {
                 btn.setEnabled(false);
@@ -702,6 +707,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                     case 1:
                         LobbyStats lss[] = reciveLobbyStats();
                         System.out.println("Got LobbyStats: " + Arrays.toString(lss));
+
+                        //TODO: Use this to update the lobby buttons. Will need to play together with updateLobbyData()
                         break;
                     case 2:
                         //receive when the when it is done restart an empty server and change the number of players
