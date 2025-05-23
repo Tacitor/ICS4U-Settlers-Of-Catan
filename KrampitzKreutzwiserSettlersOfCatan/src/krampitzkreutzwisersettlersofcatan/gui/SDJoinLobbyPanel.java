@@ -52,7 +52,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private ClientSideConnection csc; //the socket type var to hold the connection to the lobby aggregation server
 
     //NOTE: Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
-    private int[][] lobbyStats;
+    private LobbyStats[] lobbyStats;
 
     private boolean justMadeNewGame;
 
@@ -137,19 +137,11 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
          * player colour is present
          */
         //NOTE: Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
-        lobbyStats = new int[4][5];
-
-        //temp values
-        lobbyStats[1][0] = 2; //set lobby 2 to have a max of 2 playres
-        lobbyStats[1][2] = 1; //set lobby 2 to have the blue player present
-
-        lobbyStats[2][0] = -1; //set lobby 3 to have connection issues to the server
-
-        lobbyStats[3][0] = 4; //set lobby 4 to have a max of 4 playres
-        lobbyStats[3][1] = 1; //set lobby 2 to have the red player present
-        lobbyStats[3][2] = 1; //set lobby 2 to have the blue player present
-        lobbyStats[3][3] = 1; //set lobby 2 to have the orange player present
-        lobbyStats[3][4] = 1; //set lobby 2 to have the white player present
+        lobbyStats = new LobbyStats[4];
+        //init all the lobby stats to empty lobbies with connection issues by default
+        for (int i = 0; i < lobbyStats.length; i++) {
+            lobbyStats[i] = new LobbyStats();
+        }
     }
 
     /**
@@ -209,18 +201,17 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
             //add player dot indicators to show what colours are being used in a given lobby
             if (btn.getType() == 31) {
-                for (int i = 1; i < 4 + 1; i++) {
 
-                    //see if this specific player dot should be drawn for a given lobby
-                    if (lobbyStats[btn.getMode() - 1][i] == 1) {
+                //see if this specific player dot should be drawn for a given lobby
+                for (int playerNum : lobbyStats[btn.getMode() - 1].getColoursTaken()) {
 
-                        //draw the player's indecator dot
-                        g2d.drawImage(ImageRef.PLAYER_DOTS[i],
-                                btn.getXPos() + localScaleInt(250) + localScaleInt(40 * i),
-                                btn.getYPos() + (getLocalImgHeight(btn.getBaseImage()) / 8 * 3),
-                                getLocalImgWidth(ImageRef.PLAYER_DOTS[i]),
-                                getLocalImgHeight(ImageRef.PLAYER_DOTS[i]), null);
-                    }
+                    //draw the player's indecator dot
+                    g2d.drawImage(ImageRef.PLAYER_DOTS[playerNum],
+                            btn.getXPos() + localScaleInt(250) + localScaleInt(40 * playerNum),
+                            btn.getYPos() + (getLocalImgHeight(btn.getBaseImage()) / 8 * 3),
+                            getLocalImgWidth(ImageRef.PLAYER_DOTS[playerNum]),
+                            getLocalImgHeight(ImageRef.PLAYER_DOTS[playerNum]), null);
+
                 }
             }
 
@@ -494,13 +485,30 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //Debug component detection
         //System.out.println("JoinLobbyPanel Shown!");
-        updateLobbyData();
+        requestLobbyData();
 
     }
 
     @Override
     public void componentHidden(ComponentEvent e) {
         //Do nothing
+    }
+
+    /**
+     *
+     */
+    private void requestLobbyData() {
+        //open a connection to lobby aggregation server if there isn't one.
+        if (csc == null) {
+            csc = new ClientSideConnection(CATAN_SERVER_URL, 25570);
+            //if the connection worked then start the recieve process
+            if (csc.isSuccessfulConnect()) {
+                csc.beginRecieve();
+            }
+        }
+
+        //Send the first requestLobbyStats()
+        csc.requestLobbyStats();
     }
 
     /**
@@ -516,20 +524,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             instructionLbl.setText("Join a started lobby. To join an empty lobby please make a new game.");
         }
 
-        //open a connection to lobby aggregation server if there isn't one.
-        if (csc == null) {
-            csc = new ClientSideConnection(CATAN_SERVER_URL, 25570);
-            //if the connection worked then start the recieve process
-            if (csc.isSuccessfulConnect()) {
-                csc.beginRecieve();
-            }
-        }
-
-        //Send the first requestLobbyStats()
-        csc.requestLobbyStats();
-
-        int lobbyPop;
-
         //loop through all the buttons
         for (SettlerBtn btn : settlerBtns) {
 
@@ -541,19 +535,11 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                  */
                 btn.setEnabled(false);
 
-                lobbyPop = 0; //the #of players in a given lobby
-
-                //find the population of the lobby
-                for (int i = 1; i < 5; i++) {
-                    if (lobbyStats[btn.getMode() - 1][i] == 1) {
-                        lobbyPop++;
-
-                    }
-                }
+                int numClients = lobbyStats[btn.getMode() - 1].getNumClients(); //the #of players in a given lobby
 
                 //update the text status of the lobby
                 //also check for special conditions
-                switch (lobbyStats[btn.getMode() - 1][0]) {
+                switch (lobbyStats[btn.getMode() - 1].getMaxClients()) {
                     case 0:
                         //if empty lobby
                         settlerLbls[lobbyStats.length + btn.getMode() - 1].setText("empty");
@@ -564,7 +550,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                         break;
                     default:
                         //the standard case
-                        settlerLbls[lobbyStats.length + btn.getMode() - 1].setText(lobbyPop + "/" + lobbyStats[btn.getMode() - 1][0]);
+                        settlerLbls[lobbyStats.length + btn.getMode() - 1].setText(numClients + "/" + lobbyStats[btn.getMode() - 1].getMaxClients());
                         break;
                 }
 
@@ -573,7 +559,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
                     //if a given lobby is empty it can be joined/setup
                     //Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
-                    if (lobbyStats[btn.getMode() - 1][0] == 0) {
+                    if (lobbyStats[btn.getMode() - 1].getMaxClients() == 0) {
                         btn.setEnabled(true);
                     }
 
@@ -582,7 +568,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                     //checks for non empty and non errored lobbies
 
                     //enable the lobby if the population is less than the max
-                    if (lobbyPop < lobbyStats[btn.getMode() - 1][0]) {
+                    if (numClients < lobbyStats[btn.getMode() - 1].getMaxClients()) {
                         btn.setEnabled(true);
                     }
 
@@ -613,7 +599,16 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         private int[] coloursTaken;
 
         public LobbyStats(int port) {
+            this();
+
             this.port = port;
+        }
+
+        private LobbyStats() {
+            port = -1;
+            maxClients = -1;
+            numClients = 0;
+            coloursTaken = new int[0];
         }
 
         public int getPort() {
@@ -705,10 +700,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
                 switch (type) {
                     case 1:
-                        LobbyStats lss[] = reciveLobbyStats();
-                        System.out.println("Got LobbyStats: " + Arrays.toString(lss));
-
-                        //TODO: Use this to update the lobby buttons. Will need to play together with updateLobbyData().
+                        lobbyStats = reciveLobbyStats();
+                        updateLobbyData();
                         break;
                     case 2:
                         //receive when the when it is done restart an empty server and change the number of players

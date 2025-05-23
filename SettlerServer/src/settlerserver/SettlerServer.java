@@ -88,6 +88,11 @@ public class SettlerServer {
 
         //start running the server
         t.start();
+
+        //Add some filler servers
+        serverList.add(null);
+        serverList.add(null);
+        serverList.add(null);
     }
 
     /**
@@ -189,7 +194,9 @@ public class SettlerServer {
      */
     private void stopCatanServers() {
         for (CatanServer cs : serverList) {
-            cs.requestStop();
+            if (cs != null) {
+                cs.requestStop();
+            }
         }
     }
 
@@ -315,13 +322,20 @@ public class SettlerServer {
 
                 dataOut.writeInt(serverList.size());
                 for (CatanServer cs : serverList) {
-                    colours = cs.getColoursTaken();
+                    if (cs == null) {
+                        dataOut.writeInt(-1); //give a port of -1
+                        dataOut.writeInt(-1); //give max clients of -1
+                        dataOut.writeInt(0); //give 0 current clients
 
-                    dataOut.writeInt(cs.getSocketPort());
-                    dataOut.writeInt(cs.getMaxClients());
-                    dataOut.writeInt(colours.length);
-                    for (int i = 0; i < colours.length; i++) {
-                        dataOut.writeInt(colours[i]);
+                    } else {
+                        colours = cs.getColoursTaken();
+
+                        dataOut.writeInt(cs.getSocketPort());
+                        dataOut.writeInt(cs.getMaxClients());
+                        dataOut.writeInt(colours.length);
+                        for (int i = 0; i < colours.length; i++) {
+                            dataOut.writeInt(colours[i]);
+                        }
                     }
                 }
 
