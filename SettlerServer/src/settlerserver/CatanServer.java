@@ -242,6 +242,7 @@ public class CatanServer {
                 //loop state after all startup business is complete
                 while (!stopRequested) {
                     //accept a message
+                    //TODO: There is a bug with stopping the CatanServer when there is one player connected after requesting a colour. LA stopes and main CS stop but the CS SSC lives on at this line.
                     int type = dataIn.readInt(); //get the type of transmision
                     //if the client sent a chat message
                     switch (type) {

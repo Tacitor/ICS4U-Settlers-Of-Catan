@@ -114,7 +114,7 @@ public class SettlerServer {
                     //count it as a client
                     latestClient++;
 
-                    System.out.println("[Lobby Aggregation] " + "Client #" + latestClient + " has connected with an IP of: " + s.getInetAddress());
+                    System.out.println("[Lobby Aggregation] Client #" + latestClient + " has connected with an IP of: " + s.getInetAddress());
                     //create a new SSC for to keep track of that incoming socket
                     ServerSideConnection ssc = new ServerSideConnection(s, latestClient);
 
@@ -219,7 +219,7 @@ public class SettlerServer {
                 dataIn = new DataInputStream(socket.getInputStream());
                 dataOut = new DataOutputStream(socket.getOutputStream());
             } catch (IOException e) {
-                System.out.println("[Lobby Aggregation] IOException from SSC constuctor for client with an IP of " + this.socket.getInetAddress());
+                System.out.println("[Lobby Aggregation] Client #" + latestClient + " had IOException from SSC constuctor for client with an IP of: " + this.socket.getInetAddress());
             }
         }
 
@@ -274,7 +274,7 @@ public class SettlerServer {
 
                 aggregationClients.remove(this);
 
-                System.out.println("[Lobby Aggregation] Done from SSC run() for client with an IP of " + this.socket.getInetAddress());
+                System.out.println("[Lobby Aggregation] Client #" + latestClient + " is done SSC run() for client with an IP of: " + this.socket.getInetAddress());
 
             } catch (IOException e) {
                 System.out.println("[Lobby Aggregation] IOException from SSC run() for ID#" + laID + "\n" + e);

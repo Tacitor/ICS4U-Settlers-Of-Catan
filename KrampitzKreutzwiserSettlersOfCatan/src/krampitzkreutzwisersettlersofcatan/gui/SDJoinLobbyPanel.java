@@ -708,7 +708,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                         LobbyStats lss[] = reciveLobbyStats();
                         System.out.println("Got LobbyStats: " + Arrays.toString(lss));
 
-                        //TODO: Use this to update the lobby buttons. Will need to play together with updateLobbyData()
+                        //TODO: Use this to update the lobby buttons. Will need to play together with updateLobbyData().
                         break;
                     case 2:
                         //receive when the when it is done restart an empty server and change the number of players
