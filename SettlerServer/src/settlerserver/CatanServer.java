@@ -18,8 +18,15 @@ import java.util.ArrayList;
  */
 public class CatanServer {
 
+    /**
+     * A static counter that ticks up with each CatanServer construction. Used
+     * to assign an ID to a CatanServer.
+     */
+    private static int latestID = 0;
+
     //The reciving socket
     private ServerSocket serverSocket;
+    private int catanServerID;
     //the number of clients what have connected
     private int numClients;
     private int maxClients; //the number of clients that will connect
@@ -37,8 +44,9 @@ public class CatanServer {
      */
     public CatanServer() {
         maxClients = 0;
+        catanServerID = getNextID();
 
-        System.out.println("[Server N/A] Settting up server for " + maxClients + " players. This is an empty dummy server.");
+        System.out.println("[Server " + catanServerID + "] Settting up server for " + maxClients + " players. This is an empty dummy server.");
 
         serverSocket = null;
         numClients = 0;
@@ -54,7 +62,8 @@ public class CatanServer {
      * @param port
      */
     public CatanServer(int maxClients, int port) {
-        System.out.println("[Server " + port + "] Settting up server for " + maxClients + " players");
+        catanServerID = getNextID();
+        System.out.println("[Server " + catanServerID + "] Settting up server for " + maxClients + " players on port: " + port);
 
         //no clients have connected yet
         numClients = 0;
@@ -76,13 +85,17 @@ public class CatanServer {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            System.out.println("[Server " + port + "] " + "IOException from server contructor");
+            System.out.println("[Server " + catanServerID + "] " + "IOException from server contructor");
         }
+    }
+
+    private static int getNextID() {
+        return ++latestID;
     }
 
     public void acceptConnections() {
         try {
-            System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Waiting for connections...");
+            System.out.println("[Server " + catanServerID + "] " + "Waiting for connections...");
             printDebugLnBr();
             //wait until all the clients have connected
             while (numClients < maxClients) {
@@ -94,7 +107,7 @@ public class CatanServer {
                 if (!stopRequested) {
                     //count it as a client
                     numClients++;
-                    System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Client #" + numClients + " has connected");
+                    System.out.println("[Server " + catanServerID + "] " + "Client #" + numClients + " has connected");
                     //create a new SSC for to keep track of that incoming socket
                     ServerSideConnection ssc = new ServerSideConnection(s, numClients);
 
@@ -102,18 +115,18 @@ public class CatanServer {
                     clients[numClients - 1] = ssc;
 
                     Thread t = new Thread(ssc);
-                    t.setName("[Server " + serverSocket.getLocalPort() + ": SSC" + numClients + "]");
+                    t.setName("[Server " + catanServerID + ": SSC" + numClients + "]");
                     t.start();
                 } else {
-                    System.out.println("[Server " + serverSocket.getLocalPort() + "] Accepted and discarded an extra socket");
+                    System.out.println("[Server " + catanServerID + "] Accepted and discarded an extra socket");
                 }
             }
-            System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "We now have " + maxClients + " players. No more connections will be accepted.");
+            System.out.println("[Server " + catanServerID + "] " + "We now have " + maxClients + " players. No more connections will be accepted.");
 
             //close the server socket so another can later be created
             serverSocket.close();
         } catch (IOException e) {
-            System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from acceptConnections");
+            System.out.println("[Server " + catanServerID + "] " + "IOException from acceptConnections");
         }
     }
 
@@ -123,16 +136,11 @@ public class CatanServer {
     void requestStop() {
         //early return for servers that have already had a stop requested
         if (stopRequested) {
-            if (serverSocket == null) {
-                System.out.println("[Server N/A] Stop recieved, and skipped: already stopped.");
-            } else {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] Stop recieved, and skipped: already stopped.");
-            }
-
+            System.out.println("[Server " + catanServerID + "] Stop recieved, and skipped: already stopped.");
             return;
         }
 
-        System.out.println("[Server " + serverSocket.getLocalPort() + "] Stop recieved");
+        System.out.println("[Server " + catanServerID + "] Stop recieved");
         stopRequested = true;
 
         //Only create a dummy socket if we need to break out of the serverSocket.accept()
@@ -143,14 +151,7 @@ public class CatanServer {
                 Socket dummy = new Socket("localhost", serverSocket.getLocalPort());
                 dummy.close();
             } catch (IOException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] IOException from requestStop() in CatanServer");
-            }
-
-            //TODO: Do we need this delay?
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] InterruptedException from requestStop() in CatanServer");
+                System.out.println("[Server " + catanServerID + "] IOException from requestStop() in CatanServer");
             }
         }
 
@@ -241,7 +242,7 @@ public class CatanServer {
                 dataIn = new DataInputStream(socket.getInputStream());
                 dataOut = new DataOutputStream(socket.getOutputStream());
             } catch (IOException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC constuctor for client#" + id);
+                System.out.println("[Server " + catanServerID + "] IOException from SSC constuctor for client#" + id);
             }
         }
 
@@ -280,13 +281,13 @@ public class CatanServer {
                             while (count < fileLength) {
                                 int bytesRead = dataIn.read(fileAsStream, count, fileAsStream.length - count);
                                 //debug reciving the file
-                                //System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "bytesRead: " + bytesRead);
+                                //System.out.println("[Server " + catanServerID + "] bytesRead: " + bytesRead);
                                 if (bytesRead == -1) {
-                                    System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "didn't get a complete file");
+                                    System.out.println("[Server " + catanServerID + "] didn't get a complete file");
                                 }
                                 count += bytesRead;
                             }   //debug the file that was sent
-                            //System.out.println("[Server " + serverSocket.getLocalPort() + "] " + Arrays.toString(fileAsStream));
+                            //System.out.println("[Server " + catanServerID + "] " + Arrays.toString(fileAsStream));
 
                             //recive the dice roll boolean
                             boolean justRolledDice = dataIn.readBoolean();
@@ -344,7 +345,7 @@ public class CatanServer {
                                 clients[0].sendBoolean(true, 4); //incluse the messagy type 4 (startup command)
 
                                 //debug the data coming in
-                                System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Send begin command to Client 1");
+                                System.out.println("[Server " + catanServerID + "] Send begin command to Client 1");
                                 printDebugLnBr();
                             }
 
@@ -353,7 +354,7 @@ public class CatanServer {
                         case 4:
 
                             //debug the stop reqesting
-                            System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Stop request command #4 in SSC run() for ID#" + clientID);
+                            System.out.println("[Server " + catanServerID + "] Stop request command #4 in SSC run() for ID#" + clientID);
                             stopSSCClients();
                             break;
                         //if the server is getting the domestic trading data
@@ -418,7 +419,7 @@ public class CatanServer {
                             break;
                         //if the server is getting an update that a stop has been requested
                         case 6:
-                            System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Stop request command #6 in SSC run() for ID#" + clientID);
+                            System.out.println("[Server " + catanServerID + "] Stop request command #6 in SSC run() for ID#" + clientID);
 
                             break;
                         default:
@@ -430,9 +431,9 @@ public class CatanServer {
                 dataOut.close();
                 socket.close();
 
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] End reached in SSC run() for ID#" + clientID);
+                System.out.println("[Server " + catanServerID + "] End reached in SSC run() for ID#" + clientID);
             } catch (IOException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC run() for ID#" + clientID + "\n" + e);
+                System.out.println("[Server " + catanServerID + "] IOException from SSC run() for ID#" + clientID + "\n" + e);
             }
         }
 
@@ -447,7 +448,7 @@ public class CatanServer {
                 dataOut.writeUTF(msg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC sendNewString()");
+                System.out.println("[Server " + catanServerID + "] IOException from SSC sendNewString()");
             }
         }
 
@@ -469,7 +470,7 @@ public class CatanServer {
                 dataOut.writeBoolean(justRolledDice); //send whether or not the dice animation needs to be set
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC sendNewString()");
+                System.out.println("[Server " + catanServerID + "] IOException from SSC sendNewString()");
             }
         }
 
@@ -518,7 +519,7 @@ public class CatanServer {
 
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC sendDomesticTradeData()");
+                System.out.println("[Server " + catanServerID + "] IOException from SSC sendDomesticTradeData()");
             }
         }
 
@@ -533,7 +534,7 @@ public class CatanServer {
                 dataOut.writeBoolean(msg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC sendBoolean()");
+                System.out.println("[Server " + catanServerID + "] IOException from SSC sendBoolean()");
             }
         }
 
@@ -548,7 +549,7 @@ public class CatanServer {
                 dataOut.writeInt(msg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from SSC sendColourResponse()");
+                System.out.println("[Server " + catanServerID + "] IOException from SSC sendColourResponse()");
             }
         }
 

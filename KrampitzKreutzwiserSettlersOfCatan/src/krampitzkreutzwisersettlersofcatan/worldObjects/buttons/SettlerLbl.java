@@ -214,7 +214,11 @@ public class SettlerLbl extends WorldObject {
                 //remove the part of the string already displayed so the next line will pick up where the previous left off
                 //only if this is not the last operation
                 if (i != (numLines - 1)) {
-                    text = text.substring(endChar + 1); //remove the space
+                    try {
+                        text = text.substring(endChar + 1); //remove the space
+                    } catch (java.lang.StringIndexOutOfBoundsException e) {
+                        System.err.println("text: " + text + ", endChar: " + endChar + "\n" + e);
+                    }
                 }
             }
 

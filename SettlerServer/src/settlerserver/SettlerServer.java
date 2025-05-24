@@ -74,9 +74,6 @@ public class SettlerServer {
      *
      */
     private void serverStartUp(int numPlayers, int port) {
-        //@OUTDATED spin up a main host server. This server will always be accepting connections (limit to 6 from one IP)
-        //@OUTDATED In this server on port 25570 it will provide status updates on the lobbies.
-        //@OUTDATED The catan user end will disconnect from this server end once exiting the join lobby menue or once entered into a game.
         CatanServer leServer = new CatanServer(numPlayers, port);
         serverList.add(leServer);
 
