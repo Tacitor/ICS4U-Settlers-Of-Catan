@@ -30,7 +30,7 @@ public class SettlerServer {
     private ArrayList<ServerSideConnection> aggregationClients;
     private ArrayList<CatanServer> serverList;
 
-    private static final int LOBBY_AGGREGATION_PORT_NUM = 25570;
+    public static final int LOBBY_AGGREGATION_PORT_NUM = 25570;
 
     /**
      * @param args the command line arguments
@@ -39,9 +39,7 @@ public class SettlerServer {
         //call to SettlerServer constuctor to make the aggregation server
         SettlerServer lobbyAggregation = new SettlerServer();
 
-        //TODO: add a method here that spins up the 4 catanServer lobbies
-        lobbyAggregation.serverStartUp(2, 25571);
-
+        lobbyAggregation.serverStartUp();
         lobbyAggregation.acceptConnections();
 
     }
@@ -65,7 +63,7 @@ public class SettlerServer {
         try {
             leSocket = new ServerSocket(LOBBY_AGGREGATION_PORT_NUM);
         } catch (IOException e) {
-            System.out.println("[Lobby Aggregation] " + "IOException from SettlerServer constructor on socket creation \n" + e);
+            System.out.println("[Lobby Aggregation] IOException from SettlerServer constructor on socket creation \n" + e);
         }
 
     }
@@ -73,23 +71,49 @@ public class SettlerServer {
     /**
      *
      */
-    private void serverStartUp(int numPlayers, int port) {
-        CatanServer leServer = new CatanServer(numPlayers, port);
-        serverList.add(leServer);
+    private void serverStartUp() {        
+        for (int i = 0; i < 4; i++) {
+            serverList.add(new CatanServer());
+        }
+    }
 
-        //create a new thread for the server
-        Thread t = new Thread(() -> {
-            leServer.acceptConnections();
-        });
-        t.setName("[Server " + port + "]");
+    /**
+     * TODO: Need a new method that restarts a CatanServer. As parameters it
+     * will take the catanServerID and the new maxClients. This method will
+     * request a stop of the CatanServer with that matching ID. Without removing
+     * it from the serverList or calling a new constructor (that will assign it
+     * a new catanServerID) it will request to restart the server with the new
+     * maxClients. The CatanServer class will have a function that operates on a
+     * instance of the class. This restart method will take over almost
+     * everything the CatanServer(int, int) constructor does. In fact the
+     * CatanServer(int, int) constructor can be removed once the restart method
+     * works. The restart method also needs a clause for when the given
+     * maxClients is 0 to reset it back to the empty server state.
+     */
+    private void serverRestart(int catanServerID, int maxClients) {
+        CatanServer cs = null;
 
-        //start running the server
-        t.start();
+        for (CatanServer c : serverList) {
+            if (c.getCatanServerID() == catanServerID) {
+                cs = c;
+            }
+        }
 
-        //Add some empty servers
-        serverList.add(new CatanServer());
-        serverList.add(new CatanServer());
-        serverList.add(new CatanServer());
+        if (cs != null) {
+            boolean success = cs.requestRestart(maxClients);
+
+            if (success) {
+                //create a new thread for the server
+                Thread t = new Thread(cs::acceptConnections);
+                t.setName("[Server " + cs.getCatanServerID() + "]");
+
+                //start running the server
+                t.start();
+            }
+        } else {
+            System.out.println("[Lobby Aggregation] ERROR: Could not find a matching server with a catanServerID of: " + catanServerID);
+        }
+
     }
 
     /**
@@ -97,7 +121,8 @@ public class SettlerServer {
      */
     private void acceptConnections() {
         try {
-            System.out.println("[Lobby Aggregation] " + "Listening for connections...");
+            System.out.println("[Lobby Aggregation] Listening for connections...");
+            CatanServer.printDebugLnBr();
 
             //wait cli input
             Thread t = new Thread(() -> {
@@ -146,12 +171,12 @@ public class SettlerServer {
      */
     private void scannInput() {
         Scanner scanner = new Scanner(System.in);
-        String s;
+        String[] s;
 
         while (!stopRequested) {
-            s = scanner.nextLine();
+            s = scanner.nextLine().split(" ");
 
-            if (s.equalsIgnoreCase("/stop")) {
+            if (s[0].equalsIgnoreCase("/stop")) {
                 stopRequested = true;
                 System.out.println("[Lobby Aggregation] Stop recieved");
 
@@ -164,12 +189,24 @@ public class SettlerServer {
 
                 stopClients();
                 stopCatanServers();
-            } else if (s.equalsIgnoreCase("/list")) {
+            } else if (s[0].equalsIgnoreCase("/list")) {
                 System.out.println("[Lobby Aggregation] aggregationClients: " + aggregationClients);
-            } else if (s.equalsIgnoreCase("")) {
+            } else if (s[0].equalsIgnoreCase("/restart") || s[0].equalsIgnoreCase("/r")) {
+                try {
+                    int lobbyID = Integer.parseInt(s[1]);
+                    int maxClients = Integer.parseInt(s[2]);
+
+                    serverRestart(lobbyID, maxClients);
+                } catch (NumberFormatException e) {
+                    System.out.println("[Lobby Aggregation] NumberFormatException from SSC scannInput() on /restart\n" + e);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println("[Lobby Aggregation] ArrayIndexOutOfBoundsException from SSC scannInput() on /restart\n" + e
+                            + "\nPlease incluse a catanServerID and a max number of clients seperated by a space.");
+                }
+            } else if (s[0].equalsIgnoreCase("")) {
                 //Do nothing if the input is an empty String
             } else {
-                System.out.println("[Lobby Aggregation] The command " + s + " is not recognised");
+                System.out.println("[Lobby Aggregation] The command " + s[0] + " is not recognised");
             }
         }
     }

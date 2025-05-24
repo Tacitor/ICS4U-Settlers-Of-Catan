@@ -55,40 +55,6 @@ public class CatanServer {
         clients = new ServerSideConnection[maxClients];
     }
 
-    /**
-     * The constructor
-     *
-     * @param maxClients
-     * @param port
-     */
-    public CatanServer(int maxClients, int port) {
-        catanServerID = getNextID();
-        System.out.println("[Server " + catanServerID + "] Settting up server for " + maxClients + " players on port: " + port);
-
-        //no clients have connected yet
-        numClients = 0;
-        //save the number of clients that will connect
-        this.maxClients = maxClients;
-
-        stopRequested = false;
-
-        //create the list of available colours
-        availableColours = new ArrayList<>();
-        for (int i = 1; i < maxClients + 1; i++) {
-            availableColours.add(i);
-        }
-
-        //initialize the array
-        clients = new ServerSideConnection[maxClients];
-
-        //create the socket to listen 
-        try {
-            serverSocket = new ServerSocket(port);
-        } catch (IOException e) {
-            System.out.println("[Server " + catanServerID + "] " + "IOException from server contructor");
-        }
-    }
-
     private static int getNextID() {
         return ++latestID;
     }
@@ -96,7 +62,6 @@ public class CatanServer {
     public void acceptConnections() {
         try {
             System.out.println("[Server " + catanServerID + "] " + "Waiting for connections...");
-            printDebugLnBr();
             //wait until all the clients have connected
             while (numClients < maxClients) {
                 //create a reciving socket on the server side
@@ -133,7 +98,7 @@ public class CatanServer {
     /**
      *
      */
-    void requestStop() {
+    public void requestStop() {
         //early return for servers that have already had a stop requested
         if (stopRequested) {
             System.out.println("[Server " + catanServerID + "] Stop recieved, and skipped: already stopped.");
@@ -156,6 +121,66 @@ public class CatanServer {
         }
 
         stopSSCClients();
+    }
+
+    /**
+     * TODO: The CatanServer class will have a function that operates on a instance of
+     * the class. This restart method will take over almost everything the
+     * CatanServer(int, int) constructor does. In fact the CatanServer(int, int)
+     * constructor can be removed once the restart method works. The restart
+     * method also needs a clause for when the given maxClients is 0 to reset it
+     * back to the empty server state.
+     *
+     * @param maxClients Must be values 2-4 or 0
+     * @return
+     */
+    public boolean requestRestart(int maxClients) {
+        boolean success = false;
+
+        if (maxClients >= 2 && maxClients <= 4) {
+            requestStop();
+
+            try {
+                //Wait until the stop has fully propogated before attempting a restart
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                System.out.println("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
+            }
+
+            int port = SettlerServer.LOBBY_AGGREGATION_PORT_NUM + catanServerID;
+            System.out.println("[Server " + catanServerID + "] Settting up server for " + maxClients + " players on port: " + port);
+
+            //no clients have connected yet
+            numClients = 0;
+            //save the number of clients that will connect
+            this.maxClients = maxClients;
+
+            stopRequested = false;
+
+            //create the list of available colours
+            availableColours = new ArrayList<>();
+            for (int i = 1; i < maxClients + 1; i++) {
+                availableColours.add(i);
+            }
+
+            //initialize the array
+            clients = new ServerSideConnection[maxClients];
+
+            //create the socket to listen 
+            try {
+                serverSocket = new ServerSocket(port);
+
+                success = true;
+            } catch (IOException e) {
+                System.out.println("[Server " + catanServerID + "] IOException from server requestRestart()");
+            }
+        } else if (maxClients == 0) {
+            System.out.println("TODO: Make empty server after restart");
+        } else {
+            System.out.println("[Server " + catanServerID + "] ERROR: Invalid input for requestRestart(). The maxClients value of: " + maxClients + " is not within 2-4 or 0.");
+        }
+
+        return success;
     }
 
     /**
@@ -207,7 +232,7 @@ public class CatanServer {
     /**
      *
      */
-    private void printDebugLnBr() {
+    public static void printDebugLnBr() {
         if (SettlerServer.DEBUG_OUTPUT) {
             System.out.print("\n");
         }
