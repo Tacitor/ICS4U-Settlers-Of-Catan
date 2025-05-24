@@ -186,12 +186,8 @@ public class CatanServer {
      *
      * @return
      */
-    public int getSocketPort() {
-        if (serverSocket == null) {
-            return -1;
-        } else {
-            return serverSocket.getLocalPort();
-        }
+    public int getCatanServerID() {
+        return catanServerID;
     }
 
     /**

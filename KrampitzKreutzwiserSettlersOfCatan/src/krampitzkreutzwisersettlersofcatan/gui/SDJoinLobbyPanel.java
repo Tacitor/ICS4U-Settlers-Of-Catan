@@ -593,26 +593,26 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
     private class LobbyStats {
 
-        private int port;
+        private int catanServerID;
         private int maxClients;
         private int numClients;
         private int[] coloursTaken;
 
         private LobbyStats() {
-            port = -1;
+            catanServerID = -1;
             maxClients = -1;
             numClients = 0;
             coloursTaken = new int[0];
         }
         
-        public LobbyStats(int port) {
+        public LobbyStats(int catanServerID) {
             this();
 
-            this.port = port;
+            this.catanServerID = catanServerID;
         }
 
-        public int getPort() {
-            return port;
+        public int getCatanServerID() {
+            return catanServerID;
         }
 
         public int getMaxClients() {
@@ -656,7 +656,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         @Override
         public String toString() {
-            return "LobbyStats: \nPort: " + port + "\nmaxClients: " + maxClients + "\nnumClients: " + numClients
+            return "LobbyStats: \ncatanServerID: " + catanServerID + "\nmaxClients: " + maxClients + "\nnumClients: " + numClients
                     + "\ncoloursTaken: " + Arrays.toString(coloursTaken);
         }
     }
@@ -763,7 +763,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                 int[] colours;
 
                 for (int i = 0; i < lb.length; i++) {
-                    tempInt = dataIn.readInt(); //read in the port
+                    tempInt = dataIn.readInt(); //read in the catanServerID
                     lb[i] = new LobbyStats(tempInt);
 
                     tempInt = dataIn.readInt(); //read in the max clients

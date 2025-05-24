@@ -321,7 +321,7 @@ public class SettlerServer {
                 for (CatanServer cs : serverList) {
                     colours = cs.getColoursTaken();
 
-                    dataOut.writeInt(cs.getSocketPort());
+                    dataOut.writeInt(cs.getCatanServerID());
                     dataOut.writeInt(cs.getMaxClients());
                     dataOut.writeInt(colours.length);
                     for (int i = 0; i < colours.length; i++) {
