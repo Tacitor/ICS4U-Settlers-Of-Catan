@@ -810,13 +810,16 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
          */
         public void sendStopCommand(int type) {
 
-            //TODO: Validate the type to 3 or 4. Throw an exeption if not correct.
-            try {
-                dataOut.writeInt(type); //tell the server it is reveiving a LA stop command #3
-                dataOut.flush();
+            if (type == 3 || type == 4) {
+                try {
+                    dataOut.writeInt(type); //tell the server it is reveiving a LA stop command #3 or #4
+                    dataOut.flush();
 
-            } catch (IOException e) {
-                System.out.println("[LA Client " + laID + "] " + "IOException from CSC sendStopCommand3()");
+                } catch (IOException e) {
+                    System.out.println("[LA Client " + laID + "] " + "IOException from CSC sendStopCommand()");
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid type specified: " + type + ". Must be either 3 or 4.");
             }
         }
 
