@@ -89,10 +89,10 @@ public class SettlerServer {
         //start running the server
         t.start();
 
-        //Add some filler servers
-        serverList.add(null);
-        serverList.add(null);
-        serverList.add(null);
+        //Add some empty servers
+        serverList.add(new CatanServer());
+        serverList.add(new CatanServer());
+        serverList.add(new CatanServer());
     }
 
     /**
@@ -281,7 +281,7 @@ public class SettlerServer {
 
                 aggregationClients.remove(this);
 
-                System.out.println("[Lobby Aggregation] Client #" + latestClient + " is done SSC run() for client with an IP of: " + this.socket.getInetAddress());
+                System.out.println("[Lobby Aggregation] Client #" + latestClient + " is done SSC run() for client with an IP of: " + this.socket.getInetAddress() + "\n");
 
             } catch (IOException e) {
                 System.out.println("[Lobby Aggregation] IOException from SSC run() for ID#" + laID + "\n" + e);
@@ -322,21 +322,15 @@ public class SettlerServer {
 
                 dataOut.writeInt(serverList.size());
                 for (CatanServer cs : serverList) {
-                    if (cs == null) {
-                        dataOut.writeInt(-1); //give a port of -1
-                        dataOut.writeInt(-1); //give max clients of -1
-                        dataOut.writeInt(0); //give 0 current clients
+                    colours = cs.getColoursTaken();
 
-                    } else {
-                        colours = cs.getColoursTaken();
-
-                        dataOut.writeInt(cs.getSocketPort());
-                        dataOut.writeInt(cs.getMaxClients());
-                        dataOut.writeInt(colours.length);
-                        for (int i = 0; i < colours.length; i++) {
-                            dataOut.writeInt(colours[i]);
-                        }
+                    dataOut.writeInt(cs.getSocketPort());
+                    dataOut.writeInt(cs.getMaxClients());
+                    dataOut.writeInt(colours.length);
+                    for (int i = 0; i < colours.length; i++) {
+                        dataOut.writeInt(colours[i]);
                     }
+
                 }
 
                 dataOut.flush();

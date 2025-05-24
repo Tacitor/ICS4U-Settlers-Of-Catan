@@ -29,7 +29,24 @@ public class CatanServer {
     //The array of clients
     private ServerSideConnection[] clients;
 
-    //TODO: Make a new constructor here that takes no params. This will create a dummy server with no socket and a max players of 0;
+    /**
+     * Constructs a dummy server with no socket and a max players of 0. With a
+     * player max of 0 the game can detect it as empty. Later if a player
+     * selects it there will come the request to restart the server with the
+     * requested max player count.
+     */
+    public CatanServer() {
+        maxClients = 0;
+
+        System.out.println("[Server N/A] Settting up server for " + maxClients + " players. This is an empty dummy server.");
+
+        serverSocket = null;
+        numClients = 0;
+        stopRequested = true;
+        availableColours = new ArrayList<>();
+        clients = new ServerSideConnection[maxClients];
+    }
+
     /**
      * The constructor
      *
@@ -104,7 +121,18 @@ public class CatanServer {
      *
      */
     void requestStop() {
-        System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "Stop recieved");
+        //early return for servers that have already had a stop requested
+        if (stopRequested) {
+            if (serverSocket == null) {
+                System.out.println("[Server N/A] Stop recieved, and skipped: already stopped.");
+            } else {
+                System.out.println("[Server " + serverSocket.getLocalPort() + "] Stop recieved, and skipped: already stopped.");
+            }
+
+            return;
+        }
+
+        System.out.println("[Server " + serverSocket.getLocalPort() + "] Stop recieved");
         stopRequested = true;
 
         //Only create a dummy socket if we need to break out of the serverSocket.accept()
@@ -118,6 +146,7 @@ public class CatanServer {
                 System.out.println("[Server " + serverSocket.getLocalPort() + "] IOException from requestStop() in CatanServer");
             }
 
+            //TODO: Do we need this delay?
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -157,7 +186,11 @@ public class CatanServer {
      * @return
      */
     public int getSocketPort() {
-        return serverSocket.getLocalPort();
+        if (serverSocket == null) {
+            return -1;
+        } else {
+            return serverSocket.getLocalPort();
+        }
     }
 
     /**

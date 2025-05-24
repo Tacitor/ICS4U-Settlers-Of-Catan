@@ -598,17 +598,17 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         private int numClients;
         private int[] coloursTaken;
 
-        public LobbyStats(int port) {
-            this();
-
-            this.port = port;
-        }
-
         private LobbyStats() {
             port = -1;
             maxClients = -1;
             numClients = 0;
             coloursTaken = new int[0];
+        }
+        
+        public LobbyStats(int port) {
+            this();
+
+            this.port = port;
         }
 
         public int getPort() {

@@ -164,7 +164,7 @@ public class CatanClient extends JFrame {
         this.setIconImage(ImageRef.ICON);
     }
 
-    public void startClientThread() { //TODO: rename this
+    public void startClientThread() {
         //specific behaviour for the client numbers
         if (clientID == 1) {
             //go ahead and wait for the server to send the startup signal
