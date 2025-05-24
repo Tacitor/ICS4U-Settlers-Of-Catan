@@ -5,7 +5,6 @@
  */
 package krampitzkreutzwisersettlersofcatan.sockets;
 
-import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -31,15 +30,7 @@ public class CatanClient extends JFrame {
             + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan";
     public static final String ONLINE_SAVE_NAME = File.separator + "latestOnline";
     public static final String ONLINE_SAVE_TYPE = ".catan";
-
-    private int width;
-    private int height;
-    private Container contentPane;
-    private JTextArea header;
-    private JTextArea messageRecived;
-    private JTextArea messageToSend;
-    private JButton sendBtn;
-    private JButton fileBtn;
+    ;
 
     private int clientID;
     private int clientColour; //the colour of the player the client will be speaking for. Often but not always the same as the client ID. 0 for no request and 1-4 for that colour
@@ -49,8 +40,6 @@ public class CatanClient extends JFrame {
     private boolean successfulConnect = false; //did this client successfully connect to the server
     private GameFrame theGameFrame;
 
-    private String chat;
-    private boolean buttonEnabled;
     private boolean justPressedSend = false; //if this client waiting for the first transmision from the server
     private boolean firstFileRecieve; //is the client waiting for it's first catan file recive and waiting to set up the game
     private boolean firstClientGotStatup = false; //only used if this is client #1. Stores if the startup command has been recived yet
@@ -87,14 +76,6 @@ public class CatanClient extends JFrame {
             System.out.println("[Client] " + "Error loading Windows Look and feel");
         }
 
-        this.width = width;
-        this.height = height;
-        contentPane = this.getContentPane();
-        header = new JTextArea();
-        messageRecived = new JTextArea();
-        messageToSend = new JTextArea();
-        sendBtn = new JButton();
-        fileBtn = new JButton();
         this.ip = ip;
         this.port = port;
         theGameFrame = gameFrame;
@@ -183,40 +164,12 @@ public class CatanClient extends JFrame {
         this.setIconImage(ImageRef.ICON);
     }
 
-    public void setUpGUI() { //TODO: Remove the setUpGUI() function make this not a frame of sorts
-        //get up the GUI
-        this.setSize(width, height);
-        this.setTitle("Catan Socket Test - Client #" + clientID);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        contentPane.setLayout(new GridLayout(1, 5, 10, 10));
-        contentPane.add(header);
-        contentPane.add(messageRecived);
-        contentPane.add(messageToSend);
-        contentPane.add(sendBtn);
-        contentPane.add(fileBtn);
-        header.setText("Most recent message: ");
-        header.setWrapStyleWord(true);
-        header.setLineWrap(true);
-        header.setEditable(false);
-        header.setFont(new Font("Arial", Font.PLAIN, 12));
-        messageRecived.setWrapStyleWord(true);
-        messageRecived.setLineWrap(true);
-        messageRecived.setEditable(false);
-        messageRecived.setFont(new Font("Arial", Font.PLAIN, 12));
-        messageToSend.setText("Type here...");
-        messageToSend.setWrapStyleWord(true);
-        messageToSend.setLineWrap(true);
-        messageToSend.setEditable(true);
-        messageToSend.setFont(new Font("Arial", Font.PLAIN, 12));
-        sendBtn.setText("Send Chat");
-        fileBtn.setText("Send File");
-        contentPane.setForeground(Color.green);
-        contentPane.setBackground(Color.gray);
+    public void setUpGUI() { //TODO: rename this
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setIcon();
 
         //specific behaviour for the client numbers
         if (clientID == 1) {
-            header.setText("You are client number 1. Please wait for the rest of the clients to connect before starting\n\nMost recent message: -->");
             //go ahead and wait for the server to send the startup signal
             Thread t = new Thread(() -> {
                 while (!firstClientGotStatup) {
@@ -225,7 +178,6 @@ public class CatanClient extends JFrame {
             });
             t.start();
         } else {
-            header.setText("You are client number " + clientID + ". Please wait for client#1 to begin after the rest of the clients have connected\n\nMost recent message: -->");
             //wait for a message to come through
             Thread t = new Thread(() -> {
                 //never stop listening unless told
@@ -237,8 +189,6 @@ public class CatanClient extends JFrame {
             t.start();
         }
 
-        buttonEnabled = false;
-        updateButtons();
         //no longer show the catan Client window
         this.setVisible(false);
     }
@@ -274,12 +224,6 @@ public class CatanClient extends JFrame {
         return justRolledDice;
     }
 
-    public void updateButtons() {
-        sendBtn.setEnabled(buttonEnabled);
-        //always false because the only file that should be sent is a Catan save file
-        fileBtn.setEnabled(false);
-    }
-
     /**
      * Enables the button for client 1 when the server sends the signal
      */
@@ -292,10 +236,6 @@ public class CatanClient extends JFrame {
             //place to store the boolean
             //and assign it to the value the server sends
             boolean recivedBoolean = csc.reciveBoolean();
-
-            //set the button to the value
-            buttonEnabled = recivedBoolean;
-            updateButtons();
 
             //update the build buttons ingame
             theGameFrame.getGamePanel().updateBuildButtons();
@@ -410,9 +350,6 @@ public class CatanClient extends JFrame {
             //System.out.println(Arrays.toString(fileBytes));
             csc.sendFileStream(fileBytes, fileName, justRolledDice); //send the file
 
-            //clear the chat field
-            messageToSend.setText("");
-
             justPressedSend = true;
 
             fileStream.close();
@@ -430,18 +367,10 @@ public class CatanClient extends JFrame {
         int type = csc.reciveType();
 
         switch (type) {
-            case 1: //TODO: Remove the chat message type
-                //wait for newest message from other client
-                String msg = csc.reciveNewString();
-                messageRecived.setText(msg);
-                //header.setText("C " + justPressedSend); //debug the turn detection
-                buttonEnabled = true;
-                break;
             case 2:
                 //else if type is 2
                 //recive the file
                 FileTypeRecieve fileTypeRecieve = csc.recieveFile();
-                messageRecived.setText(fileTypeRecieve.getChat());
                 //header.setText("D " + justPressedSend); //debug the turn detection
 
                 //now only actually save the file if THIS client didn't send it
@@ -457,20 +386,18 @@ public class CatanClient extends JFrame {
                     try {
                         //ensure the directory is there
                         Files.createDirectories(Paths.get(ONLINE_SAVE_LOCATION));
-                        System.out.println("[Client " + clientID + "] Before file creation...");
-                        
+                        //System.out.println("[Client " + clientID + "] Before file creation...");
+
                         //create a file to save it to
                         File file = new File(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
-                        
-                        System.out.println("[Client " + clientID + "] After file creation...");
 
+                        //System.out.println("[Client " + clientID + "] After file creation...");
                         //take read and write acess
                         file.setExecutable(true);
                         file.setReadable(true);
                         file.setWritable(true);
-                        
-                        System.out.println("[Client " + clientID + "] After perms update...");
 
+                        //System.out.println("[Client " + clientID + "] After perms update...");
                         //Create and output stream at the directory
                         FileOutputStream fos = new FileOutputStream(file);
 
@@ -512,8 +439,7 @@ public class CatanClient extends JFrame {
                         //happens so often for client 2. I have not yet seen it for client 1. Some how the perms need to be updated I think. When trying to write file to disk maybe need to delete the existing one or something? 
                     } catch (IOException exception) {
                         JOptionPane.showMessageDialog(null, "There was an IOException loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
-                    }   //System.out.println("Chat is : \n" + fileTypeRecieve.getChat());                    
-                    buttonEnabled = true;
+                    }   //System.out.println("Chat is : \n" + fileTypeRecieve.getChat());
 
                 }
                 break;
@@ -564,7 +490,6 @@ public class CatanClient extends JFrame {
 
                 break;
             default:
-                buttonEnabled = false;
                 break;
         }
 
@@ -572,8 +497,6 @@ public class CatanClient extends JFrame {
         if (justPressedSend) {
             justPressedSend = false;
         }
-
-        updateButtons();
     }
 
     /**
@@ -699,24 +622,17 @@ public class CatanClient extends JFrame {
     private class FileTypeRecieve {
 
         private byte[] file;
-        private String chat;
         private String fileName;
         private boolean justRolledDice;
 
         public FileTypeRecieve() {
             this.file = new byte[1];
-            this.chat = "";
         }
 
-        public FileTypeRecieve(byte[] file, String chat, String fileName, boolean justRolledDice) {
+        public FileTypeRecieve(byte[] file, String fileName, boolean justRolledDice) {
             this.file = file;
-            this.chat = chat;
             this.fileName = fileName;
             this.justRolledDice = justRolledDice;
-        }
-
-        public String getChat() {
-            return chat;
         }
 
         public byte[] getFile() {
@@ -757,10 +673,7 @@ public class CatanClient extends JFrame {
                 clientID = dataIn.readInt();
                 //the the totalClientNum
                 totalClientNum = dataIn.readInt();
-                //get the starting chat
-                chat = dataIn.readUTF();
                 System.out.println("[Client " + clientID + "] " + "Connected to a server as Client #" + clientID);
-                messageRecived.setText(chat);
 
                 //if everything else was able to be done save the success
                 successfulConnect = true;
@@ -914,13 +827,11 @@ public class CatanClient extends JFrame {
         }
 
         public FileTypeRecieve recieveFile() {
-            String msg = "";
             byte[] file = new byte[1];
             String fileName = "";
             boolean justRolledDice = false;
 
             try {
-                msg = dataIn.readUTF();
                 //get the file length
                 file = new byte[dataIn.readInt()];
                 //get the fileName
@@ -944,7 +855,7 @@ public class CatanClient extends JFrame {
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC recieveFile()");
             }
 
-            return new FileTypeRecieve(file, msg, fileName, justRolledDice);
+            return new FileTypeRecieve(file, fileName, justRolledDice);
         }
 
         /**

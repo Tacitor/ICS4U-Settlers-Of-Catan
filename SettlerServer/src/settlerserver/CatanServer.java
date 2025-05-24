@@ -29,9 +29,7 @@ public class CatanServer {
     //The array of clients
     private ServerSideConnection[] clients;
 
-    //A starting String
-    private String chat = "Hello from server\n";
-
+    //TODO: Make a new constructor here that takes no params. This will create a dummy server with no socket and a max players of 0;
     /**
      * The constructor
      *
@@ -100,14 +98,6 @@ public class CatanServer {
         } catch (IOException e) {
             System.out.println("[Server " + serverSocket.getLocalPort() + "] " + "IOException from acceptConnections");
         }
-    }
-
-    private void updateChat(String newMsg) {
-        chat += newMsg;
-    }
-
-    private void clearChat() {
-        chat = "";
     }
 
     /**
@@ -236,7 +226,6 @@ public class CatanServer {
                 //when a client first connects send it's ID and the chat in it's current state
                 dataOut.writeInt(clientID);
                 dataOut.writeInt(maxClients); //the the client how many clients there will be
-                dataOut.writeUTF(chat);
                 dataOut.flush(); //send it
 
                 //loop state after all startup business is complete
@@ -246,32 +235,9 @@ public class CatanServer {
                     int type = dataIn.readInt(); //get the type of transmision
                     //if the client sent a chat message
                     switch (type) {
-                        case 1: //TODO: Remove the chat message type
-                            //read the chat message
-                            String newMsg = dataIn.readUTF();
-                            //check if a user wants to clear the chat
-                            if (newMsg.equals("/clear")) {
-                                clearChat();
-                                updateChat("[Server " + serverSocket.getLocalPort() + "] Client #" + clientID + " cleared chat\n");
-
-                            } else { //else add the new string
-
-                                //if a message come from client 1
-                                updateChat("Client #" + clientID + ": " + newMsg + "\n");
-                            }   //send the new chat out to all the clients
-                            for (ServerSideConnection client : clients) {
-                                client.sendNewString(chat);
-                            }
-
-                            //debug the chat
-                            //System.out.println("[CatanServer] " +"Chat is now: \"\n" + chat + "\" chat end.");
-                            break;
                         case 2:
                             //if the client sent a file
-
-                            //tell all the clients about the file
-                            updateChat("[Server " + serverSocket.getLocalPort() + "] Client #" + clientID + " has sent a file to everyone's SettlerDevs folder\n");
-                            //and read in the length from the socket
+                            //read in the length from the socket
                             int fileLength = dataIn.readInt();
                             //read in the file name and extension
                             String fileName = dataIn.readUTF();
@@ -299,7 +265,7 @@ public class CatanServer {
                                     //debug how many times it was sent
                                     //System.out.println("[CatanServer] " +"Sent it");
                                     //System.out.println("[CatanServer] " +"\nCurrent chat is :\n" + chat);
-                                    client.sendFile(chat, fileAsStream, fileName, justRolledDice);
+                                    client.sendFile(fileAsStream, fileName, justRolledDice);
 
                                 }
                             }
@@ -461,10 +427,9 @@ public class CatanServer {
          * @param fileName
          * @param justRolledDice
          */
-        public void sendFile(String msg, byte[] fileData, String fileName, boolean justRolledDice) {
+        public void sendFile(byte[] fileData, String fileName, boolean justRolledDice) {
             try {
                 dataOut.writeInt(2); //tell the client they are reciving a file and chat message
-                dataOut.writeUTF(msg);
                 dataOut.writeInt(fileData.length); //send the length of the file
                 dataOut.writeUTF(fileName); //send the file name
                 dataOut.write(fileData, 0, fileData.length); //send the file
