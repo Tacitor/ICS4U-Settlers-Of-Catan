@@ -454,7 +454,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
             boolean succesfulConnect = catanClient.connectToServer();
 
             if (succesfulConnect) {
-                catanClient.setUpGUI();
+                catanClient.startClientThread();
 
                 //save the client and the max number of players now because the colour request could finish first
                 GamePanel.setCatanClient(catanClient);

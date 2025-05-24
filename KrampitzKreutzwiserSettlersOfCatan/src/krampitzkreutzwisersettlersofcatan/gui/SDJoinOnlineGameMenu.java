@@ -512,7 +512,7 @@ public class SDJoinOnlineGameMenu extends javax.swing.JPanel implements MouseMot
                 connectBtn.setMode(1); //mode 1 for success
                 //System.out.println("Connection Success");
 
-                client.setUpGUI();
+                client.startClientThread();
 
                 //save the client and the max number of players now because the colour request could finish first
                 GamePanel.setCatanClient(client);

@@ -638,7 +638,7 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
         //create the new client and request to be the red player
         client = new CatanClient(700, 200, "localhost", sDMenuFrame.getSDMainMenuPanel().getGameFrame(), portNum);
         client.connectToServer();
-        client.setUpGUI();
+        client.startClientThread();
 
         createServerBtn.setMode(0); //reset to default text 
 

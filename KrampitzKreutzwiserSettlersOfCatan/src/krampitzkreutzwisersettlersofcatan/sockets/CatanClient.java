@@ -164,10 +164,7 @@ public class CatanClient extends JFrame {
         this.setIconImage(ImageRef.ICON);
     }
 
-    public void setUpGUI() { //TODO: rename this
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setIcon();
-
+    public void startClientThread() { //TODO: rename this
         //specific behaviour for the client numbers
         if (clientID == 1) {
             //go ahead and wait for the server to send the startup signal
@@ -188,9 +185,6 @@ public class CatanClient extends JFrame {
             });
             t.start();
         }
-
-        //no longer show the catan Client window
-        this.setVisible(false);
     }
 
     public boolean connectToServer() {
