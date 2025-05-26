@@ -63,7 +63,7 @@ public class SettlerServer {
         try {
             leSocket = new ServerSocket(LOBBY_AGGREGATION_PORT_NUM);
         } catch (IOException e) {
-            System.out.println("[Lobby Aggregation] IOException from SettlerServer constructor on socket creation \n" + e);
+            System.err.println("[Lobby Aggregation] IOException from SettlerServer constructor on socket creation \n" + e);
         }
 
     }
@@ -101,7 +101,7 @@ public class SettlerServer {
                 t.start();
             }
         } else {
-            System.out.println("[Lobby Aggregation] ERROR: Could not find a matching server with a catanServerID of: " + catanServerID);
+            System.err.println("[Lobby Aggregation] ERROR: Could not find a matching server with a catanServerID of: " + catanServerID);
         }
 
     }
@@ -147,12 +147,12 @@ public class SettlerServer {
                 }
 
             }
-            System.out.println("[Lobby Aggregation] " + "Stop was requested. Closing service.");
+            System.out.println("[Lobby Aggregation] Stop was requested. Closing service.");
 
             //close the server socket so another can later be created
             leSocket.close();
         } catch (IOException e) {
-            System.out.println("[Lobby Aggregation] " + "IOException from acceptConnections \n" + e);
+            System.err.println("[Lobby Aggregation] IOException from acceptConnections \n" + e);
         }
     }
 
@@ -174,7 +174,7 @@ public class SettlerServer {
                     Socket dummy = new Socket("localhost", LOBBY_AGGREGATION_PORT_NUM);
                     dummy.close();
                 } catch (IOException e) {
-                    System.out.println("[Lobby Aggregation] IOException from SSC scannInput() on /stop");
+                    System.err.println("[Lobby Aggregation] IOException from SSC scannInput() on /stop");
                 }
 
                 stopClients();
@@ -188,15 +188,15 @@ public class SettlerServer {
 
                     serverRestart(lobbyID, maxClients);
                 } catch (NumberFormatException e) {
-                    System.out.println("[Lobby Aggregation] NumberFormatException from SSC scannInput() on /restart\n" + e);
+                    System.err.println("[Lobby Aggregation] NumberFormatException from SSC scannInput() on /restart\n" + e);
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("[Lobby Aggregation] ArrayIndexOutOfBoundsException from SSC scannInput() on /restart\n" + e
+                    System.err.println("[Lobby Aggregation] ArrayIndexOutOfBoundsException from SSC scannInput() on /restart\n" + e
                             + "\nPlease incluse a catanServerID and a max number of clients seperated by a space.");
                 }
             } else if (s[0].equalsIgnoreCase("")) {
                 //Do nothing if the input is an empty String
             } else {
-                System.out.println("[Lobby Aggregation] The command " + s[0] + " is not recognised");
+                System.err.println("[Lobby Aggregation] The command " + s[0] + " is not recognised");
             }
         }
     }
@@ -250,7 +250,7 @@ public class SettlerServer {
                 dataIn = new DataInputStream(socket.getInputStream());
                 dataOut = new DataOutputStream(socket.getOutputStream());
             } catch (IOException e) {
-                System.out.println("[Lobby Aggregation] Client #" + laID + " had IOException from SSC constuctor for client with an IP of: " + this.socket.getInetAddress());
+                System.err.println("[Lobby Aggregation] Client #" + laID + " had IOException from SSC constuctor for client with an IP of: " + this.socket.getInetAddress());
             }
         }
 
@@ -278,7 +278,7 @@ public class SettlerServer {
 
                     switch (type) {
                         case 1: //if the client sent a lobby stats request
-                            System.out.println("[Lobby Aggregation] Lobby stats request command #1 in SSC run() for ID#" + laID);
+                            //System.out.println("[Lobby Aggregation] Lobby stats request command #1 in SSC run() for ID#" + laID);
                             sendLobbyStats();
                             break;
 
@@ -313,7 +313,7 @@ public class SettlerServer {
                 System.out.println("[Lobby Aggregation] Client #" + laID + " is done SSC run() for client with an IP of: " + this.socket.getInetAddress() + "\n");
 
             } catch (IOException e) {
-                System.out.println("[Lobby Aggregation] IOException from SSC run() for ID#" + laID + "\n" + e);
+                System.err.println("[Lobby Aggregation] IOException from SSC run() for ID#" + laID + "\n" + e);
             }
         }
 
@@ -334,7 +334,7 @@ public class SettlerServer {
                 dataOut.writeInt(4); //tell the client what type of message they are reciving
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Lobby Aggregation] IOException from SSC sendSscStop() for ID#" + laID + "\n" + e);
+                System.err.println("[Lobby Aggregation] IOException from SSC sendSscStop() for ID#" + laID + "\n" + e);
             }
         }
 
@@ -364,7 +364,7 @@ public class SettlerServer {
 
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Lobby Aggregation] IOException from SSC sendLobbyStats() for ID#" + laID + "\n" + e);
+                System.err.println("[Lobby Aggregation] IOException from SSC sendLobbyStats() for ID#" + laID + "\n" + e);
             }
         }
     }

@@ -716,9 +716,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                         lobbyStats = reciveLobbyStats();
                         updateLobbyData();
                         break;
-                    case 2:
-                        //receive when the when it is done restart an empty server and change the number of players
-                        break;
                     case 4: //for a SSC close
                         cscStopRequested = true;
 

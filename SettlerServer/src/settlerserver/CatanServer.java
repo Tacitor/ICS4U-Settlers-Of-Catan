@@ -61,7 +61,7 @@ public class CatanServer {
 
     public void acceptConnections() {
         try {
-            System.out.println("[Server " + catanServerID + "] " + "Waiting for connections...");
+            System.out.println("[Server " + catanServerID + "] Waiting for connections...");
             //wait until all the clients have connected
             while (numClients < maxClients) {
                 //create a reciving socket on the server side
@@ -72,7 +72,7 @@ public class CatanServer {
                 if (!stopRequested) {
                     //count it as a client
                     numClients++;
-                    System.out.println("[Server " + catanServerID + "] " + "Client #" + numClients + " has connected");
+                    System.out.println("[Server " + catanServerID + "] Client #" + numClients + " has connected");
                     //create a new SSC for to keep track of that incoming socket
                     ServerSideConnection ssc = new ServerSideConnection(s, numClients);
 
@@ -83,17 +83,17 @@ public class CatanServer {
                     t.setName("[Server " + catanServerID + ": SSC" + numClients + "]");
                     t.start();
 
-                    //TODO: Send this up the chain to SettlerServer and send updated stats to all connected LA CSCs
+                    //TODO: Send this up the chain to SettlerServer and send updated stats to all connected LA CSCs. Will need a static method in SettlerServer will be called.
                 } else {
                     System.out.println("[Server " + catanServerID + "] Accepted and discarded an extra socket");
                 }
             }
-            System.out.println("[Server " + catanServerID + "] " + "We now have " + maxClients + " players. No more connections will be accepted.");
+            System.out.println("[Server " + catanServerID + "] We now have " + maxClients + " players. No more connections will be accepted.");
 
             //close the server socket so another can later be created
             serverSocket.close();
         } catch (IOException e) {
-            System.out.println("[Server " + catanServerID + "] " + "IOException from acceptConnections");
+            System.err.println("[Server " + catanServerID + "] IOException from acceptConnections");
         }
     }
 
@@ -118,7 +118,7 @@ public class CatanServer {
                 Socket dummy = new Socket("localhost", serverSocket.getLocalPort());
                 dummy.close();
             } catch (IOException e) {
-                System.out.println("[Server " + catanServerID + "] IOException from requestStop() in CatanServer");
+                System.err.println("[Server " + catanServerID + "] IOException from requestStop() in CatanServer");
             }
         }
 
@@ -141,7 +141,7 @@ public class CatanServer {
                 //Wait until the stop has fully propogated before attempting a restart
                 Thread.sleep(200);
             } catch (InterruptedException e) {
-                System.out.println("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
+                System.err.println("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
             }
 
             int port = SettlerServer.LOBBY_AGGREGATION_PORT_NUM + catanServerID;
@@ -169,12 +169,12 @@ public class CatanServer {
 
                 success = true;
             } catch (IOException e) {
-                System.out.println("[Server " + catanServerID + "] IOException from server requestRestart()");
+                System.err.println("[Server " + catanServerID + "] IOException from server requestRestart()");
             }
         } else if (maxClients == 0) {
             System.out.println("TODO: Make empty server after restart");
         } else {
-            System.out.println("[Server " + catanServerID + "] ERROR: Invalid input for requestRestart(). The maxClients value of: " + maxClients + " is not within 2-4 or 0.");
+            System.err.println("[Server " + catanServerID + "] ERROR: Invalid input for requestRestart(). The maxClients value of: " + maxClients + " is not within 2-4 or 0.");
         }
 
         return success;
@@ -260,7 +260,7 @@ public class CatanServer {
                 dataIn = new DataInputStream(socket.getInputStream());
                 dataOut = new DataOutputStream(socket.getOutputStream());
             } catch (IOException e) {
-                System.out.println("[Server " + catanServerID + "] IOException from SSC constuctor for client#" + id);
+                System.err.println("[Server " + catanServerID + "] IOException from SSC constuctor for client#" + id);
             }
         }
 
@@ -301,7 +301,7 @@ public class CatanServer {
                                 //debug reciving the file
                                 //System.out.println("[Server " + catanServerID + "] bytesRead: " + bytesRead);
                                 if (bytesRead == -1) {
-                                    System.out.println("[Server " + catanServerID + "] didn't get a complete file");
+                                    System.err.println("[Server " + catanServerID + "] didn't get a complete file");
                                 }
                                 count += bytesRead;
                             }   //debug the file that was sent
@@ -451,7 +451,7 @@ public class CatanServer {
 
                 System.out.println("[Server " + catanServerID + "] End reached in SSC run() for ID#" + clientID);
             } catch (IOException e) {
-                System.out.println("[Server " + catanServerID + "] IOException from SSC run() for ID#" + clientID + "\n" + e);
+                System.err.println("[Server " + catanServerID + "] IOException from SSC run() for ID#" + clientID + "\n" + e);
             }
         }
 
@@ -466,7 +466,7 @@ public class CatanServer {
                 dataOut.writeUTF(msg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + catanServerID + "] IOException from SSC sendNewString()");
+                System.err.println("[Server " + catanServerID + "] IOException from SSC sendNewString()");
             }
         }
 
@@ -488,7 +488,7 @@ public class CatanServer {
                 dataOut.writeBoolean(justRolledDice); //send whether or not the dice animation needs to be set
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + catanServerID + "] IOException from SSC sendNewString()");
+                System.err.println("[Server " + catanServerID + "] IOException from SSC sendNewString()");
             }
         }
 
@@ -537,7 +537,7 @@ public class CatanServer {
 
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + catanServerID + "] IOException from SSC sendDomesticTradeData()");
+                System.err.println("[Server " + catanServerID + "] IOException from SSC sendDomesticTradeData()");
             }
         }
 
@@ -552,7 +552,7 @@ public class CatanServer {
                 dataOut.writeBoolean(msg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + catanServerID + "] IOException from SSC sendBoolean()");
+                System.err.println("[Server " + catanServerID + "] IOException from SSC sendBoolean()");
             }
         }
 
@@ -567,7 +567,7 @@ public class CatanServer {
                 dataOut.writeInt(msg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Server " + catanServerID + "] IOException from SSC sendColourResponse()");
+                System.err.println("[Server " + catanServerID + "] IOException from SSC sendColourResponse()");
             }
         }
 
