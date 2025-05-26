@@ -71,24 +71,14 @@ public class SettlerServer {
     /**
      *
      */
-    private void serverStartUp() {        
+    private void serverStartUp() {
         for (int i = 0; i < 4; i++) {
             serverList.add(new CatanServer());
         }
     }
 
     /**
-     * TODO: Need a new method that restarts a CatanServer. As parameters it
-     * will take the catanServerID and the new maxClients. This method will
-     * request a stop of the CatanServer with that matching ID. Without removing
-     * it from the serverList or calling a new constructor (that will assign it
-     * a new catanServerID) it will request to restart the server with the new
-     * maxClients. The CatanServer class will have a function that operates on a
-     * instance of the class. This restart method will take over almost
-     * everything the CatanServer(int, int) constructor does. In fact the
-     * CatanServer(int, int) constructor can be removed once the restart method
-     * works. The restart method also needs a clause for when the given
-     * maxClients is 0 to reset it back to the empty server state.
+     *
      */
     private void serverRestart(int catanServerID, int maxClients) {
         CatanServer cs = null;
@@ -260,7 +250,7 @@ public class SettlerServer {
                 dataIn = new DataInputStream(socket.getInputStream());
                 dataOut = new DataOutputStream(socket.getOutputStream());
             } catch (IOException e) {
-                System.out.println("[Lobby Aggregation] Client #" + latestClient + " had IOException from SSC constuctor for client with an IP of: " + this.socket.getInetAddress());
+                System.out.println("[Lobby Aggregation] Client #" + laID + " had IOException from SSC constuctor for client with an IP of: " + this.socket.getInetAddress());
             }
         }
 
@@ -293,7 +283,12 @@ public class SettlerServer {
                             break;
 
                         case 2: //if the client sent a request to restart an empty server and change the number of players
-                            // tell the client when it is done
+                            //read in the catanServerID
+                            int catanServerID = dataIn.readInt();
+                            //read in the maxClients
+                            int maxClients = dataIn.readInt();
+
+                            serverRestart(catanServerID, maxClients);
                             break;
 
                         case 3: //for a CSC triggerd termination
@@ -315,7 +310,7 @@ public class SettlerServer {
 
                 aggregationClients.remove(this);
 
-                System.out.println("[Lobby Aggregation] Client #" + latestClient + " is done SSC run() for client with an IP of: " + this.socket.getInetAddress() + "\n");
+                System.out.println("[Lobby Aggregation] Client #" + laID + " is done SSC run() for client with an IP of: " + this.socket.getInetAddress() + "\n");
 
             } catch (IOException e) {
                 System.out.println("[Lobby Aggregation] IOException from SSC run() for ID#" + laID + "\n" + e);

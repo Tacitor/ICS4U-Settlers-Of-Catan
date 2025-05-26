@@ -82,6 +82,8 @@ public class CatanServer {
                     Thread t = new Thread(ssc);
                     t.setName("[Server " + catanServerID + ": SSC" + numClients + "]");
                     t.start();
+
+                    //TODO: Send this up the chain to SettlerServer and send updated stats to all connected LA CSCs
                 } else {
                     System.out.println("[Server " + catanServerID + "] Accepted and discarded an extra socket");
                 }
@@ -124,12 +126,7 @@ public class CatanServer {
     }
 
     /**
-     * TODO: The CatanServer class will have a function that operates on a instance of
-     * the class. This restart method will take over almost everything the
-     * CatanServer(int, int) constructor does. In fact the CatanServer(int, int)
-     * constructor can be removed once the restart method works. The restart
-     * method also needs a clause for when the given maxClients is 0 to reset it
-     * back to the empty server state.
+     * This restart this CatanServer object with a specific number of players.
      *
      * @param maxClients Must be values 2-4 or 0
      * @return

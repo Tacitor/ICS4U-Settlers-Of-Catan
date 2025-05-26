@@ -61,6 +61,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     public Font COMPASS_GOLD_45;
 
     public static String CATAN_SERVER_URL;
+    public static final int CATAN_SERVER_PORT = 25570;
 
     /**
      * Main Constructor
@@ -416,28 +417,40 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      * Connect to the 1st lobby
      */
     private void lobbyBtnActionPerformed(int lobbyNum) {
-        if (lobbyNum == 1 || lobbyNum == 2) {
-            System.out.println("[LA Client] Connecting to Lobby 1/2...");
+        /**
+         * Check if justMadeNewGame, and restart the CatanServer if so with the
+         * new maxPlayers. We can safely assume the is open an valid otherwise
+         * there would have not been a click on a button.
+         */
+        if (justMadeNewGame) {
 
-            //prime the colour selection
-            sDMenuFrame.getSDMainMenuPanel().resetSDColourSelectPanel();
-            //set the params for Lobby 1
-            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyIP(CATAN_SERVER_URL);
-            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyPort(25571);
-            //pass the justMadeNewGame state
-            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setJustMadeNewGame(justMadeNewGame);
-            //show it
-            sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel());
-
-            //start the connection
-            sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().startFindServer();
-
-            //Terminate connection with the lobby aggregation server
-            closeCSC();
-
-        } else {
-            System.out.println("[LA Client] Connecting to Lobby " + lobbyNum + "...");
+            if (lobbyStats[lobbyNum].getMaxClients() == 0) {
+                //Assume that SDNewGameSettings has written the updated player setting by this point.
+                csc.requestServerRestart(lobbyNum, GamePanel.getPlayerCount());
+            } else {
+                System.out.println("[LA Client] ERROR: The selected lobby is not empty after creating a new game.");
+                return;
+            }
         }
+
+        System.out.println("[LA Client] Connecting to Lobby " + lobbyNum + "...");
+
+        //prime the colour selection
+        sDMenuFrame.getSDMainMenuPanel().resetSDColourSelectPanel();
+        //set the params for the selected lobby 
+        sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyIP(CATAN_SERVER_URL);
+        //Assumes the lobbies have the ports sequencial starting at CATAN_SERVER_PORT
+        sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyPort(CATAN_SERVER_PORT + lobbyNum);
+        //pass the justMadeNewGame state
+        sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setJustMadeNewGame(justMadeNewGame);
+        //show it
+        sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel());
+
+        //start the connection
+        sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().startFindServer();
+
+        //Terminate connection with the lobby aggregation server
+        closeCSC();
     }
 
     @Override
@@ -500,7 +513,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     private void requestLobbyData() {
         //open a connection to lobby aggregation server if there isn't one.
         if (csc == null) {
-            csc = new ClientSideConnection(CATAN_SERVER_URL, 25570);
+            csc = new ClientSideConnection(CATAN_SERVER_URL, CATAN_SERVER_PORT);
             //if the connection worked then start the recieve process
             if (csc.isSuccessfulConnect()) {
                 csc.beginRecieve();
@@ -604,7 +617,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             numClients = 0;
             coloursTaken = new int[0];
         }
-        
+
         public LobbyStats(int catanServerID) {
             this();
 
@@ -742,13 +755,30 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
             return msg;
         }
 
+        /**
+         *
+         * @param catanServerID
+         * @param maxClients
+         */
+        private void requestServerRestart(int catanServerID, int maxClients) {
+            try {
+                dataOut.writeInt(2); //tell the server it is reveiving a request to restart a CatanServer #2
+                dataOut.writeInt(catanServerID);
+                dataOut.writeInt(maxClients);
+                dataOut.flush();
+            } catch (IOException e) {
+                System.out.println("[LA Client " + laID + "] IOException from CSC requestServerRestart()");
+            }
+
+        }
+
         public void requestLobbyStats() {
             try {
                 dataOut.writeInt(1); //tell the server it is reveiving a request for lobby stats #1
                 dataOut.flush();
 
             } catch (IOException e) {
-                System.out.println("[LA Client " + laID + "] " + "IOException from CSC requestLobbyStats()");
+                System.out.println("[LA Client " + laID + "] IOException from CSC requestLobbyStats()");
             }
         }
 
@@ -784,9 +814,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
                 }
             } catch (IllegalArgumentException ex) {
-                System.out.println("[LA Client " + laID + "] " + "IllegalArgumentException from CSC reciveLobbyStats() \n\t" + ex);
+                System.out.println("[LA Client " + laID + "] IllegalArgumentException from CSC reciveLobbyStats() \n\t" + ex);
             } catch (IOException ex) {
-                System.out.println("[LA Client " + laID + "] " + "IOException from CSC reciveLobbyStats()");
+                System.out.println("[LA Client " + laID + "] IOException from CSC reciveLobbyStats()");
             }
 
             return lb;
@@ -816,10 +846,10 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                     dataOut.flush();
 
                 } catch (IOException e) {
-                    System.out.println("[LA Client " + laID + "] " + "IOException from CSC sendStopCommand()");
+                    System.out.println("[LA Client " + laID + "] IOException from CSC sendStopCommand()\n" + e);
                 }
             } else {
-                throw new IllegalArgumentException("Invalid type specified: " + type + ". Must be either 3 or 4.");
+                throw new IllegalArgumentException("[LA Client " + laID + "] Invalid type specified: " + type + ". Must be either 3 or 4.");
             }
         }
 
