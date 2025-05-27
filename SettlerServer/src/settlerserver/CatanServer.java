@@ -88,12 +88,12 @@ public class CatanServer {
                     System.out.println("[Server " + catanServerID + "] Accepted and discarded an extra socket");
                 }
             }
-            System.out.println("[Server " + catanServerID + "] We now have " + maxClients + " players. No more connections will be accepted.");
+            ColourPrint.printRed("[Server " + catanServerID + "] We now have " + maxClients + " players. No more connections will be accepted.");
 
             //close the server socket so another can later be created
             serverSocket.close();
         } catch (IOException e) {
-            System.err.println("[Server " + catanServerID + "] IOException from acceptConnections");
+            ColourPrint.printRed("[Server " + catanServerID + "] IOException from acceptConnections");
         }
     }
 
@@ -118,7 +118,7 @@ public class CatanServer {
                 Socket dummy = new Socket("localhost", serverSocket.getLocalPort());
                 dummy.close();
             } catch (IOException e) {
-                System.err.println("[Server " + catanServerID + "] IOException from requestStop() in CatanServer");
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from requestStop() in CatanServer");
             }
         }
 
@@ -141,7 +141,7 @@ public class CatanServer {
                 //Wait until the stop has fully propogated before attempting a restart
                 Thread.sleep(200);
             } catch (InterruptedException e) {
-                System.err.println("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
+                ColourPrint.printRed("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
             }
 
             int port = SettlerServer.LOBBY_AGGREGATION_PORT_NUM + catanServerID;
@@ -169,12 +169,12 @@ public class CatanServer {
 
                 success = true;
             } catch (IOException e) {
-                System.err.println("[Server " + catanServerID + "] IOException from server requestRestart()");
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from server requestRestart()");
             }
         } else if (maxClients == 0) {
             System.out.println("TODO: Make empty server after restart");
         } else {
-            System.err.println("[Server " + catanServerID + "] ERROR: Invalid input for requestRestart(). The maxClients value of: " + maxClients + " is not within 2-4 or 0.");
+            ColourPrint.printRed("[Server " + catanServerID + "] ERROR: Invalid input for requestRestart(). The maxClients value of: " + maxClients + " is not within 2-4 or 0.");
         }
 
         return success;
@@ -260,7 +260,7 @@ public class CatanServer {
                 dataIn = new DataInputStream(socket.getInputStream());
                 dataOut = new DataOutputStream(socket.getOutputStream());
             } catch (IOException e) {
-                System.err.println("[Server " + catanServerID + "] IOException from SSC constuctor for client#" + id);
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from SSC constuctor for client#" + id);
             }
         }
 
@@ -301,7 +301,7 @@ public class CatanServer {
                                 //debug reciving the file
                                 //System.out.println("[Server " + catanServerID + "] bytesRead: " + bytesRead);
                                 if (bytesRead == -1) {
-                                    System.err.println("[Server " + catanServerID + "] didn't get a complete file");
+                                    ColourPrint.printRed("[Server " + catanServerID + "] didn't get a complete file");
                                 }
                                 count += bytesRead;
                             }   //debug the file that was sent
@@ -451,7 +451,7 @@ public class CatanServer {
 
                 System.out.println("[Server " + catanServerID + "] End reached in SSC run() for ID#" + clientID);
             } catch (IOException e) {
-                System.err.println("[Server " + catanServerID + "] IOException from SSC run() for ID#" + clientID + "\n" + e);
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from SSC run() for ID#" + clientID + "\n" + e);
             }
         }
 
@@ -466,7 +466,7 @@ public class CatanServer {
                 dataOut.writeUTF(msg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.err.println("[Server " + catanServerID + "] IOException from SSC sendNewString()");
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from SSC sendNewString()");
             }
         }
 
@@ -488,7 +488,7 @@ public class CatanServer {
                 dataOut.writeBoolean(justRolledDice); //send whether or not the dice animation needs to be set
                 dataOut.flush();
             } catch (IOException e) {
-                System.err.println("[Server " + catanServerID + "] IOException from SSC sendNewString()");
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from SSC sendNewString()");
             }
         }
 
@@ -537,7 +537,7 @@ public class CatanServer {
 
                 dataOut.flush();
             } catch (IOException e) {
-                System.err.println("[Server " + catanServerID + "] IOException from SSC sendDomesticTradeData()");
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from SSC sendDomesticTradeData()");
             }
         }
 
@@ -552,7 +552,7 @@ public class CatanServer {
                 dataOut.writeBoolean(msg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.err.println("[Server " + catanServerID + "] IOException from SSC sendBoolean()");
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from SSC sendBoolean()");
             }
         }
 
@@ -567,7 +567,7 @@ public class CatanServer {
                 dataOut.writeInt(msg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.err.println("[Server " + catanServerID + "] IOException from SSC sendColourResponse()");
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from SSC sendColourResponse()");
             }
         }
 
