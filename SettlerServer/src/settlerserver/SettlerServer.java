@@ -193,10 +193,12 @@ public class SettlerServer {
                     ColourPrint.printRed("[Lobby Aggregation] ArrayIndexOutOfBoundsException from SSC scannInput() on /restart\n" + e
                             + "\nPlease incluse a catanServerID and a max number of clients seperated by a space.");
                 }
+            } else if (s[0].equalsIgnoreCase("/help")) {
+                ColourPrint.printPurple("Valid commands are: \"/list\", \"/restart\" (or \"/r\"), and \"/help\"");
             } else if (s[0].equalsIgnoreCase("")) {
                 //Do nothing if the input is an empty String
             } else {
-                ColourPrint.printRed("[Lobby Aggregation] The command " + s[0] + " is not recognised");
+                ColourPrint.printRed("[Lobby Aggregation] The command " + s[0] + " is not recognised. Use \"/help\" for a list of valid commands.");
             }
         }
     }

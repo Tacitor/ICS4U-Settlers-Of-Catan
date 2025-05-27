@@ -88,7 +88,7 @@ public class CatanServer {
                     System.out.println("[Server " + catanServerID + "] Accepted and discarded an extra socket");
                 }
             }
-            ColourPrint.printRed("[Server " + catanServerID + "] We now have " + maxClients + " players. No more connections will be accepted.");
+            ColourPrint.printGreen("[Server " + catanServerID + "] We now have " + maxClients + " players. No more connections will be accepted.");
 
             //close the server socket so another can later be created
             serverSocket.close();
