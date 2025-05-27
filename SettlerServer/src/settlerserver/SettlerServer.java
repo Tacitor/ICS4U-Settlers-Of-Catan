@@ -31,17 +31,26 @@ public class SettlerServer {
     private ArrayList<CatanServer> serverList;
 
     public static final int LOBBY_AGGREGATION_PORT_NUM = 25570;
+    private static SettlerServer lobbyAggregation;
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         //call to SettlerServer constuctor to make the aggregation server
-        SettlerServer lobbyAggregation = new SettlerServer();
+        lobbyAggregation = new SettlerServer();
 
         lobbyAggregation.serverStartUp();
         lobbyAggregation.acceptConnections();
 
+    }
+
+    /**
+     * Will propagate any statistic change in the CatanServer list. This will
+     * send the statistics to all the Lobby aggregation CSC.
+     */
+    public static void propagateCatanServerChange() {
+        lobbyAggregation.updateClientStats();
     }
 
     /**
@@ -222,6 +231,18 @@ public class SettlerServer {
         for (CatanServer cs : serverList) {
             if (cs != null) {
                 cs.requestStop();
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private void updateClientStats() {
+        System.out.println("[Lobby Aggregation] call to updateClientStats()");
+        for (ServerSideConnection leSSC : aggregationClients) {
+            if (!leSSC.stopRequested) {
+                leSSC.sendLobbyStats();
             }
         }
     }

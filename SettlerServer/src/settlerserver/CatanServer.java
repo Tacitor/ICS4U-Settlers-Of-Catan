@@ -82,8 +82,6 @@ public class CatanServer {
                     Thread t = new Thread(ssc);
                     t.setName("[Server " + catanServerID + ": SSC" + numClients + "]");
                     t.start();
-
-                    //TODO: Send this up the chain to SettlerServer and send updated stats to all connected LA CSCs. Will need a static method in SettlerServer will be called.
                 } else {
                     System.out.println("[Server " + catanServerID + "] Accepted and discarded an extra socket");
                 }
@@ -92,6 +90,9 @@ public class CatanServer {
 
             //close the server socket so another can later be created
             serverSocket.close();
+            
+            //TODO: reset and restart this server to an empty state
+            
         } catch (IOException e) {
             ColourPrint.printRed("[Server " + catanServerID + "] IOException from acceptConnections");
         }
@@ -284,6 +285,7 @@ public class CatanServer {
                 while (!stopRequested) {
                     //accept a message
                     //TODO: There is a bug with stopping the CatanServer when there is one player connected after requesting a colour. LA stopes and main CS stop but the CS SSC lives on at this line.
+                    //Related to this bug is when a client may disconnect under the same conditons this has an IOException from SSC run()
                     int type = dataIn.readInt(); //get the type of transmision
                     //if the client sent a chat message
                     switch (type) {
@@ -353,6 +355,14 @@ public class CatanServer {
                             if (hasColour) {
                                 clients[clientID - 1].sendColourResponse(colourRequest); //message type 3: colour request
                                 clients[clientID - 1].clientColour = colourRequest;
+
+                                /**
+                                 * Allow the LA server to update any LA clients.
+                                 * This will give the most up to date server
+                                 * statistics to any player with the
+                                 * SDJoinLobbyPanel open.
+                                 */
+                                SettlerServer.propagateCatanServerChange();
                             } else {
                                 clients[clientID - 1].sendColourResponse(-1);
                             }

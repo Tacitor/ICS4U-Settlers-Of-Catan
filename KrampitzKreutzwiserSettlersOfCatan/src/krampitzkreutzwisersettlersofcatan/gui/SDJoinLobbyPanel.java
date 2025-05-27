@@ -424,7 +424,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
          */
         if (justMadeNewGame) {
 
-            if (lobbyStats[lobbyNum].getMaxClients() == 0) {
+            if (lobbyStats[lobbyNum - 1].getMaxClients() == 0) {
                 //Assume that SDNewGameSettings has written the updated player setting by this point.
                 csc.requestServerRestart(lobbyNum, GamePanel.getPlayerCount());
             } else {
