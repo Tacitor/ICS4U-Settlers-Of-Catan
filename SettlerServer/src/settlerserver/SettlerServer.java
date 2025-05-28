@@ -54,6 +54,17 @@ public class SettlerServer {
     }
 
     /**
+     * When lobby statistics are requested AFTER they are sent
+     * monitorCompletedServers() can be called. This will search and find any
+     * CatanServer that has a non-zero max player count, with at least one CSC
+     * that has had a stop requested. If such a CatanServer exists it will be
+     * restarted to the empty state
+     */
+    private static void monitorCompletedServers() {
+        lobbyAggregation.checkCompletedServers();
+    }
+
+    /**
      *
      */
     public SettlerServer() {
@@ -249,6 +260,13 @@ public class SettlerServer {
         }
     }
 
+    
+    private void checkCompletedServers() {
+        for (CatanServer cs : serverList) {
+
+        }
+    }
+
     /**
      *
      */
@@ -391,6 +409,8 @@ public class SettlerServer {
             } catch (IOException e) {
                 ColourPrint.printRed("[Lobby Aggregation] IOException from SSC sendLobbyStats() for ID#" + laID + "\n" + e);
             }
+
+            monitorCompletedServers();
         }
     }
 

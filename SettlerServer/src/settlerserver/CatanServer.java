@@ -90,9 +90,13 @@ public class CatanServer {
 
             //close the server socket so another can later be created
             serverSocket.close();
-            
+
             //TODO: reset and restart this server to an empty state
-            
+            //This is 100% NOT the place to do this. It will break any existing game going on.
+            //Will need to restart the game once the last CSC has left or something like that.
+            //Perhaps there can be a monitorCompletedServers() static method in SettlerServer.
+            //When lobby stats are requested AFTER they are sent monitorCompletedServers() can be called. This will search and find any CatanServer
+            //that has a non-zero max player count, with atleast one CSC that has had a stop requested. If such a CatanServer exitsts it will be retarted to the empty state
         } catch (IOException e) {
             ColourPrint.printRed("[Server " + catanServerID + "] IOException from acceptConnections");
         }
