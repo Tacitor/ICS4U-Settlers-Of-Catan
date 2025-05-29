@@ -415,7 +415,6 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         //debug the colour request
         //System.out.println("colourRequest: " + colourRequest);
         //System.out.println("catanClient.getClientColour(): " + catanClient.getClientColour() + "\n");
-
         //if the colour request was successfule tell the game
         if (catanClient.getClientColour() == colourRequest) {
 
@@ -454,7 +453,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
             boolean succesfulConnect = catanClient.connectToServer();
 
             if (succesfulConnect) {
-                
+
                 catanClient.startClientThread();
 
                 //save the client and the max number of players now because the colour request could finish first
@@ -464,7 +463,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
                 if (!justMadeNewGame) {
                     GamePanel.setPlayerCount(catanClient.getMaxClients());
                 }
-                
+
                 justMadeNewGame = false;
                 sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().setJustMadeNewGame(justMadeNewGame);
 

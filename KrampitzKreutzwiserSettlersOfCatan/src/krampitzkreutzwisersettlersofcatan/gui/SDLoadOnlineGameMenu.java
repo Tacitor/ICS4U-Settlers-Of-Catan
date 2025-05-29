@@ -32,10 +32,6 @@ import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerTxtBx;
 import textures.ImageRef;
 
 /**
- * TODO: Save file loading will move to SDOnlineGamePanel, any networking will then
- * follow the same process as creating a new online game after the safe file is
- * loaded into the GameFrame.
- *
  * @author Tacitor
  * @deprecated
  */
