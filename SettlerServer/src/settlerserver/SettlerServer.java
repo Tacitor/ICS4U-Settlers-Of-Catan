@@ -260,10 +260,18 @@ public class SettlerServer {
         }
     }
 
-    
+    /**
+     * When lobby statistics are requested AFTER they are sent
+     * monitorCompletedServers() can be called. This will search and find any
+     * CatanServer that has a non-zero max player count, with at least one CSC
+     * that has had a stop requested. If such a CatanServer exists it will be
+     * restarted to the empty state
+     */
     private void checkCompletedServers() {
         for (CatanServer cs : serverList) {
-
+            if (cs.getMaxClients() != 0 && cs.hasStoppedClient()) {
+                cs.requestRestart(0);
+            }
         }
     }
 

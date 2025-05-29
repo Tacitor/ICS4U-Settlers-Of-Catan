@@ -145,39 +145,59 @@ public class CatanServer {
             try {
                 //Wait until the stop has fully propogated before attempting a restart
                 Thread.sleep(200);
-            } catch (InterruptedException e) {
-                ColourPrint.printRed("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
-            }
 
-            int port = SettlerServer.LOBBY_AGGREGATION_PORT_NUM + catanServerID;
-            System.out.println("[Server " + catanServerID + "] Settting up server for " + maxClients + " players on port: " + port);
+                int port = SettlerServer.LOBBY_AGGREGATION_PORT_NUM + catanServerID;
+                System.out.println("[Server " + catanServerID + "] Settting up server for " + maxClients + " players on port: " + port);
 
-            //no clients have connected yet
-            numClients = 0;
-            //save the number of clients that will connect
-            this.maxClients = maxClients;
+                //no clients have connected yet
+                numClients = 0;
+                //save the number of clients that will connect
+                this.maxClients = maxClients;
 
-            stopRequested = false;
+                stopRequested = false;
 
-            //create the list of available colours
-            availableColours = new ArrayList<>();
-            for (int i = 1; i < maxClients + 1; i++) {
-                availableColours.add(i);
-            }
+                //create the list of available colours
+                availableColours = new ArrayList<>();
+                for (int i = 1; i < maxClients + 1; i++) {
+                    availableColours.add(i);
+                }
 
-            //initialize the array
-            clients = new ServerSideConnection[maxClients];
+                //initialize the array
+                clients = new ServerSideConnection[maxClients];
 
-            //create the socket to listen 
-            try {
+                //create the socket to listen
                 serverSocket = new ServerSocket(port);
 
                 success = true;
+            } catch (InterruptedException e) {
+                ColourPrint.printRed("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
             } catch (IOException e) {
                 ColourPrint.printRed("[Server " + catanServerID + "] IOException from server requestRestart()");
             }
+
         } else if (maxClients == 0) {
-            System.out.println("TODO: Make empty server after restart");
+            //This will set stopRequested to true, so there is no need to set it in the try block
+            requestStop();
+
+            try {
+                //Wait until the stop has fully propogated before attempting a restart
+                Thread.sleep(200);
+
+                this.maxClients = maxClients;
+                System.out.println("[Server " + catanServerID + "] Settting up server for " + maxClients + " players. This is an empty dummy server.");
+
+                serverSocket = null;
+                numClients = 0;
+                availableColours = new ArrayList<>();
+                clients = new ServerSideConnection[maxClients];
+
+                //Spread the news. The user will want to see this on the lobby selection right away.
+                SettlerServer.propagateCatanServerChange();
+
+                success = true;
+            } catch (InterruptedException e) {
+                ColourPrint.printRed("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
+            }
         } else {
             ColourPrint.printRed("[Server " + catanServerID + "] ERROR: Invalid input for requestRestart(). The maxClients value of: " + maxClients + " is not within 2-4 or 0.");
         }
@@ -229,6 +249,23 @@ public class CatanServer {
         }
 
         return taken;
+    }
+
+    /**
+     * Returns true if even one SSC has a stop requested.
+     *
+     * @return
+     */
+    public boolean hasStoppedClient() {
+        boolean hasStoppedClient = false;
+
+        for (ServerSideConnection ssc : clients) {
+            if (ssc != null && ssc.stopRequested) {
+                hasStoppedClient = true;
+            }
+        }
+
+        return hasStoppedClient;
     }
 
     /**
