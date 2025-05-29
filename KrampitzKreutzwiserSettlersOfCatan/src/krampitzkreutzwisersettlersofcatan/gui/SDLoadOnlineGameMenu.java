@@ -32,9 +32,14 @@ import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerTxtBx;
 import textures.ImageRef;
 
 /**
+ * TODO: Save file loading will move to SDOnlineGamePanel, any networking will then
+ * follow the same process as creating a new online game after the safe file is
+ * loaded into the GameFrame.
  *
  * @author Tacitor
+ * @deprecated
  */
+@Deprecated
 public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
 
     private SDMenuFrame sDMenuFrame;
@@ -617,7 +622,9 @@ public class SDLoadOnlineGameMenu extends javax.swing.JPanel implements MouseMot
     }
 
     /**
-     * Create the local server using the old @Depricated class. This going forward only the server in the new SettlerServer project and package is maintained.
+     * Create the local server using the old @Depricated class. This going
+     * forward only the server in the new SettlerServer project and package is
+     * maintained.
      */
     private void serverStartUp() {
         server = new OldCatanServer(GamePanel.getPlayerCount(), portNum);

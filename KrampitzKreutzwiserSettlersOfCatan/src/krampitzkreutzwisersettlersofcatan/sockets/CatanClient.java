@@ -428,9 +428,10 @@ public class CatanClient extends JFrame {
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
                         System.out.println("[Client " + clientID + "] There was an error loading the save file:\n" + exception);
-                        //TODO: often this will trigger and it did not before. Look into why:
+                        //Sometimes might get
                         //java.io.FileNotFoundException: (Access is denied)
-                        //happens so often for client 2. I have not yet seen it for client 1. Some how the perms need to be updated I think. When trying to write file to disk maybe need to delete the existing one or something? 
+                        //happens so often for client 2. I have not yet seen it for client 1. Some how the perms need to be updated I think. When trying to write file to disk maybe need to delete the existing one or something?
+                        //Seems to mostly have been an issue when switching between v6.1.0.jar and NetBeans "run project" or "debug projeuct"
                     } catch (IOException exception) {
                         JOptionPane.showMessageDialog(null, "There was an IOException loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
                     }   //System.out.println("Chat is : \n" + fileTypeRecieve.getChat());
