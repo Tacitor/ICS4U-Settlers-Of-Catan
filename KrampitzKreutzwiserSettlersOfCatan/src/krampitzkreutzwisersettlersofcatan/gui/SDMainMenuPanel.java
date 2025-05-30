@@ -33,7 +33,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final SDClientSettings sDClientSettings;
     @Deprecated
     private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
-    private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
     private SDOnlineGamePanel sDOnlineGameSettingsPanel;
     private SDOfflineGamePanel sDOfflineGameSettingsPanel;
 
@@ -361,15 +360,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     }
 
     /**
-     * Return the newOnlineGameMenu
-     *
-     * @return
-     */
-    public SDLoadOnlineGameMenu getLoadOnlineGameMenu() {
-        return sDloadOnlineGameMenu;
-    }
-
-    /**
      * Return the sDJoinOnlineGameMenu
      *
      * @return
@@ -450,9 +440,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         if (sDJoinOnlineGameMenu != null && sDJoinOnlineGameMenu.isVisible()) {
             //pass it on
             sDJoinOnlineGameMenu.keyPress(evt);
-        } else if (sDloadOnlineGameMenu != null && sDloadOnlineGameMenu.isVisible()) { //Check if the SDLoadOnlineGameMenu is active
-            //pass it on
-            sDloadOnlineGameMenu.keyPress(evt);
         }
 
     }
