@@ -31,8 +31,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final SDClientSettings sDClientSettings;
-    @Deprecated
-    private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
     private SDOnlineGamePanel sDOnlineGameSettingsPanel;
     private SDOfflineGamePanel sDOfflineGameSettingsPanel;
 
@@ -360,15 +358,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     }
 
     /**
-     * Return the sDJoinOnlineGameMenu
-     *
-     * @return
-     */
-    public SDJoinOnlineGameMenu getJoinOnlineGameMenu() {
-        return sDJoinOnlineGameMenu;
-    }
-
-    /**
      * Accessor for the sDnewGameSettingsPanel
      *
      * @return
@@ -436,12 +425,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     public void keyPress(KeyEvent evt) {
 
         //pass on the KeyEvent to the right panel.
-        //Check if the SDJoinOnlineGameMenu is active
-        if (sDJoinOnlineGameMenu != null && sDJoinOnlineGameMenu.isVisible()) {
-            //pass it on
-            sDJoinOnlineGameMenu.keyPress(evt);
-        }
-
     }
 
 }
