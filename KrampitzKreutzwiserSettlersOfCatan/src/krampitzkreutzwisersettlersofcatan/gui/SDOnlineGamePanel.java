@@ -292,8 +292,6 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
      * complete the user may select a lobby.
      */
     private void loadGameBtnActionPerformed() {
-        System.out.println("load online");
-
         //=-=-=-=-=-=-=-=-=Save file Start=-=-=-=-=-=-=-=-=
         JFileChooser saveFileLoader = new JFileChooser(); //make a new file chooser
 
@@ -337,8 +335,6 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
                 //check if it is a vailid game save
                 if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
                     JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-
-                    //TODO: Stay on this JPanel
                 } else { //if it is a real save file
                     //check if the next line hold the player count
                     if (scanner.nextLine().equals("playerCount:")) {
@@ -350,28 +346,21 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
 
                         //let the lobby selector to know not to reset certain Objects
                         sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().setJustMadeNewGame(true);
-                        //TODO: set this false after
 
                         //switch over to the lobby selection. Enforce needing an empty lobby
                         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel());
                     } else {
                         JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-
-                        //TODO: Stay on this JPanel
                     }
                 }
 
             } catch (FileNotFoundException e) {
                 JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
-                //TODO: Stay on this JPanel
             }
 
         } else { //if there was so file selected
             JOptionPane.showMessageDialog(null, "There was no file selected.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-
-            //TODO: Stay on this JPanel
         }
-
         //=-=-=-=-=-=-=-=-=Save file End=-=-=-=-=-=-=-=-=
     }
 

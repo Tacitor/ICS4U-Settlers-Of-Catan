@@ -218,6 +218,10 @@ public class SettlerLbl extends WorldObject {
                         text = text.substring(endChar + 1); //remove the space
                     } catch (java.lang.StringIndexOutOfBoundsException e) {
                         System.err.println("text: " + text + ", endChar: " + endChar + "\n" + e);
+
+                        //text: Or end your turn to continue the game, endChar: 37
+                        //java.lang.StringIndexOutOfBoundsException: String index out of range: -1
+                        //Looks like we need a condition to check if endChar + 1 takes us out of the string. This is proving hard to reproduce.
                     }
                 }
             }
