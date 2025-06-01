@@ -163,8 +163,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      * @param g
      */
     private void draw(Graphics g) {
-
-        //TODO: Keep the LA Client alive so that here we can draw the colours already taken and the numClients and maxClients.
         Graphics2D g2d = (Graphics2D) g;
 
         //update the scale factor
@@ -407,7 +405,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     /**
      *
      */
-    private void closeCSC() {
+    public void closeCSC() {
         //reset the csc so that the next attempt will re-estbish a new connection and the old one won't go stale
         csc.requestStop();
         csc = null;
@@ -444,14 +442,13 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyPort(CATAN_SERVER_PORT + lobbyNum);
         //pass the justMadeNewGame state
         sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setJustMadeNewGame(justMadeNewGame);
+        //pass it the lobby stats
+        sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyStats(lobbyStats);
         //show it
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel());
 
         //start the connection
         sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().startFindServer();
-
-        //Terminate connection with the lobby aggregation server
-        closeCSC();
     }
 
     @Override
@@ -605,7 +602,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         }
     }
 
-    private class LobbyStats {
+    public class LobbyStats {
 
         private int catanServerID;
         private int maxClients;
@@ -716,6 +713,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                     case 1:
                         lobbyStats = reciveLobbyStats();
                         updateLobbyData();
+                        
+                        sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyStats(lobbyStats);
                         break;
                     case 4: //for a SSC close
                         cscStopRequested = true;

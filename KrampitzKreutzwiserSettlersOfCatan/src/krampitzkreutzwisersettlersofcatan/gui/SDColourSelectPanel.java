@@ -13,6 +13,8 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import static krampitzkreutzwisersettlersofcatan.gui.SDJoinLobbyPanel.CATAN_SERVER_PORT;
+import krampitzkreutzwisersettlersofcatan.gui.SDJoinLobbyPanel.LobbyStats;
 import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
@@ -33,7 +35,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
     //Settler Compoments
     private SettlerBtn colourRequestBtn, exitBtn;
     //Settler Labels
-    private SettlerLbl instructionLbl;
+    private SettlerLbl instructionLbl, lobbyLbl;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //The array for the labels
@@ -50,6 +52,9 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
     private boolean justMadeNewGame;
     private String lobbyIP;
     private int lobbyPort;
+
+    //NOTE: Assume the buttons in SDJoinLobbyPanel are in the same order in sDJoinLobbyPanel.settlerBtns as they are in lobbyStats
+    private LobbyStats[] lobbyStats; //This means lobbyStats[0] is for Lobby 1 on port 25571
 
     //Fonts
     public Font COMPASS_GOLD;
@@ -92,9 +97,12 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         instructionLbl = new SettlerLbl("Please select a colour. The game will not start until all players have done so.");
         instructionLbl.setForeground(new Color(255, 175, 175));
 
+        lobbyLbl = new SettlerLbl("ERROR: No lobby stats available");
+        lobbyLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+
         //add them to the array
         //NOTE: Assume the lobbyStatLbls are in the same order as the lobby buttons are in settlerBtns. Also assume that all the stat lables are in the second half of lables
-        settlerLbls = new SettlerLbl[]{instructionLbl};
+        settlerLbls = new SettlerLbl[]{instructionLbl, lobbyLbl};
 
         //setup the radio buttons        
         colourSelectRedRBtn = new SettlerRadioBtn(true, true, 18);
@@ -176,6 +184,25 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         }
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
+        //update the lobbyLbl text before drawing it.
+        //also draw the play dots at this point
+        if (lobbyStats != null) {
+            int lobbyNum = lobbyPort - CATAN_SERVER_PORT;
+            lobbyLbl.setText("Lobby " + (lobbyNum) + "                " + lobbyStats[lobbyNum - 1].getNumClients() + "/" + lobbyStats[lobbyNum - 1].getMaxClients());
+
+            //see if this specific player dot should be drawn for the lobby
+            for (int playerNum : lobbyStats[lobbyNum - 1].getColoursTaken()) {
+
+                //draw the player's indecator dot
+                g2d.drawImage(ImageRef.PLAYER_DOTS[playerNum],
+                        lobbyLbl.getXPos() + localScaleInt(190) + localScaleInt(40 * playerNum),
+                        lobbyLbl.getYPos() - localScaleInt(25),
+                        getLocalImgWidth(ImageRef.PLAYER_DOTS[playerNum]),
+                        getLocalImgHeight(ImageRef.PLAYER_DOTS[playerNum]), null);
+
+            }
+        }
+
         //go through and draw all the labels
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d, localScaleFactor);
@@ -226,9 +253,13 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
 
         //lable sizes
         instructionLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
+        lobbyLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
 
-        instructionLbl.setXPos(localScaleInt(100));
-        instructionLbl.setYPos(localScaleInt(240));
+        lobbyLbl.setXPos(localScaleInt(100));
+        lobbyLbl.setYPos(localScaleInt(200));
+
+        instructionLbl.setXPos(lobbyLbl.getXPos());
+        instructionLbl.setYPos(lobbyLbl.getYPos() + localScaleInt(100));
 
         colourSelectRedRBtn.setXPos(instructionLbl.getXPos());
         colourSelectRedRBtn.setYPos(instructionLbl.getYPos() + localScaleInt(15));
@@ -377,6 +408,11 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
 
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+
+        sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().closeCSC();
+
+        //TODO: Exiting at this stage will mess up the server. Fix this by propery closing the sockets.
+        //Will also need to remoce the SCS and decremint the clients array in CatanServer to make room for another player.
     }
 
     private void colourRequestBtnActionPerformed() {
@@ -521,6 +557,16 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
      */
     public void setLobbyPort(int lobbyPort) {
         this.lobbyPort = lobbyPort;
+    }
+
+    /**
+     * Mutator for the lobbyStats array.
+     *
+     * @param lobbyStats
+     */
+    public void setLobbyStats(LobbyStats[] lobbyStats) {
+        this.lobbyStats = lobbyStats;
+        System.out.println("Here in setLobbyStats");
     }
 
     /**

@@ -82,6 +82,13 @@ public class CatanServer {
                     Thread t = new Thread(ssc);
                     t.setName("[Server " + catanServerID + ": SSC" + numClients + "]");
                     t.start();
+
+                    /**
+                     * Allow the LA server to update any LA clients. This will
+                     * give the most up to date server statistics to any player
+                     * with the SDJoinLobbyPanel open.
+                     */
+                    SettlerServer.propagateCatanServerChange();
                 } else {
                     System.out.println("[Server " + catanServerID + "] Accepted and discarded an extra socket");
                 }

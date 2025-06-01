@@ -411,9 +411,17 @@ public class CatanClient extends JFrame {
                             if (theGameFrame.getMainMenu().getSDJoinLobbyPanel() != null && theGameFrame.getMainMenu().getSDJoinLobbyPanel().isVisible()) {
                                 //switch back to the main menu for when ever the game terminates
                                 theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDJoinLobbyPanel(), theGameFrame.getMainMenu());
+
+                                //if this was still visible close the LA CSC
+                                //Terminate connection with the lobby aggregation server
+                                theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
                             }
                             if (theGameFrame.getMainMenu().getSDColourSelectPanel() != null && theGameFrame.getMainMenu().getSDColourSelectPanel().isVisible()) {
                                 theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDColourSelectPanel(), theGameFrame.getMainMenu());
+                                
+                                //if this was still visible close the LA CSC
+                                //Terminate connection with the lobby aggregation server
+                                theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
                             }
                             //hide the main menu frame
                             theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
