@@ -164,6 +164,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      */
     private void draw(Graphics g) {
 
+        //TODO: Keep the LA Client alive so that here we can draw the colours already taken and the numClients and maxClients.
         Graphics2D g2d = (Graphics2D) g;
 
         //update the scale factor
