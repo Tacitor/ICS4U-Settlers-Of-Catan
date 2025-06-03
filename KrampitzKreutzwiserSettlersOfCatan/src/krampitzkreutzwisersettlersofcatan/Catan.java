@@ -5,6 +5,8 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import krampitzkreutzwisersettlersofcatan.gui.SDMenuFrame;
 
@@ -34,6 +36,17 @@ public class Catan {
         sDMenuFrame = new SDMenuFrame();
         sDMenuFrame.setVisible(true);
         updateGamePanel();
+        
+        //Ensure that when the GameFrame is closed it will have any networking and sockets closed.
+        sDMenuFrame.getSDMainMenuPanel().getGameFrame().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                boolean doClose = gamePanel.backNoSaveBtnClicked();
+                if (doClose) {
+                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().dispose();
+                }
+            }
+        });
 
         //set up the fast game pulse
         FastGamePulseRunnable fastGamePulseRunnable = new FastGamePulseRunnable();

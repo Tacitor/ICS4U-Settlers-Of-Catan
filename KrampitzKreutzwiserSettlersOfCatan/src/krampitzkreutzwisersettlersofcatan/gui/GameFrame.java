@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import textures.ImageRef;
 
@@ -52,7 +51,7 @@ public class GameFrame extends JFrame implements KeyListener {
         //setSize(800, 600);
         //setSize(600, 800);
         //setSize(3840, 2160);        
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); //make sure the user gives confirmation to close the gamefram without saving.
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); //make sure the user gives confirmation to close the gamefram without saving.
         theGamePanel = new GamePanel(this); //creates a new blank game
         add(theGamePanel); //adds it to the JFrame
         setLocationRelativeTo(null); //center the frame on screen

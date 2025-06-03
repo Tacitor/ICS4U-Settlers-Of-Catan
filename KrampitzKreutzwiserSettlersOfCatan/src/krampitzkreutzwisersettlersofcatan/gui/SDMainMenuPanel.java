@@ -12,8 +12,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
@@ -64,16 +62,6 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
 
         gameJFrame = new GameFrame(this);
-        //Ensure that when the GameFrame is closed it will have any networking and sockets closed.
-        gameJFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent event) {
-                boolean doClose = gameJFrame.getGamePanel().backNoSaveBtnClicked();
-                if (doClose) {
-                    gameJFrame.dispose();
-                }
-            }
-        });
 
         sDClientSettings = new SDClientSettings(sDMenuFrame);
 
