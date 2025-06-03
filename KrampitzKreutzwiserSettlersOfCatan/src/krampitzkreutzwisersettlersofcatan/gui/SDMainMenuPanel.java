@@ -8,6 +8,7 @@ package krampitzkreutzwisersettlersofcatan.gui;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -20,7 +21,7 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionListener {
+public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
 
     //Ref to frame this is held in
     private SDMenuFrame sDMenuFrame;
@@ -284,7 +285,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      * @param num
      * @return
      */
-    public static int localScaleInt(int num) {
+    @Override
+    public int localScaleInt(int num) {
         return (int) (num / localScaleFactor);
     }
 
@@ -413,6 +415,16 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     public void keyPress(KeyEvent evt) {
 
         //pass on the KeyEvent to the right panel.
+    }
+
+    @Override
+    public int getLocalImgWidth(Image image) {
+        throw new UnsupportedOperationException("Not supported. Call through SDMenuFrame");
+    }
+
+    @Override
+    public int getLocalImgHeight(Image image) {
+        throw new UnsupportedOperationException("Not supported. Call through SDMenuFrame");
     }
 
 }

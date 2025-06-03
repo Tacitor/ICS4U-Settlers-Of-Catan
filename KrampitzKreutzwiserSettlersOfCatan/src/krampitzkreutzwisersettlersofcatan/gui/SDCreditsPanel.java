@@ -9,6 +9,7 @@ import dataFiles.OldCode;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -22,7 +23,7 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionListener {
+public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
 
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -284,7 +285,8 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
      * @param num
      * @return
      */
-    public static int localScaleInt(int num) {
+    @Override
+    public int localScaleInt(int num) {
         return (int) (num / localScaleFactor);
     }
 
@@ -296,5 +298,15 @@ public class SDCreditsPanel extends javax.swing.JPanel implements MouseMotionLis
     private void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
+    }
+
+    @Override
+    public int getLocalImgWidth(Image image) {
+        throw new UnsupportedOperationException("Not supported. Call through SDMenuFrame.");
+    }
+
+    @Override
+    public int getLocalImgHeight(Image image) {
+        throw new UnsupportedOperationException("Not supported. Call through SDMenuFrame.");
     }
 }
