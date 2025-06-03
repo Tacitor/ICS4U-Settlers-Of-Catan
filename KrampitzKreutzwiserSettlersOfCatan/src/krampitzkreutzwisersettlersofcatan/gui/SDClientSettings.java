@@ -401,7 +401,8 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         //System.out.println("Mouse Dragged");
     }
 
-    private void exitBtnActionPerformed() {
+    @Override
+    public void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }

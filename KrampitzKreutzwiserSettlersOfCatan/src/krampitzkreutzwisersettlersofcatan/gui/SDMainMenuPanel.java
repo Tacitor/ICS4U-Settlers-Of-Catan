@@ -223,7 +223,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
                 //check the button that was pressed
                 if (btn.equals(exitMainMenuBtn)) { //if it was the exit game button
 
-                    exitMainMenuBtnPressed();
+                    exitBtnActionPerformed();
 
                 } else if (btn.equals(onlineGameBtn)) {
                     onlineGameBtnActionPerformed();
@@ -298,7 +298,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     /**
      * Closed the game
      */
-    private void exitMainMenuBtnPressed() {
+    @Override
+    public void exitBtnActionPerformed() {
         System.exit(0);
     }
 

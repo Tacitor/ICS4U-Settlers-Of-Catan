@@ -430,7 +430,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         //System.out.println("Mouse Dragged");
     }
 
-    private void exitBtnActionPerformed() {
+    @Override
+    public void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }

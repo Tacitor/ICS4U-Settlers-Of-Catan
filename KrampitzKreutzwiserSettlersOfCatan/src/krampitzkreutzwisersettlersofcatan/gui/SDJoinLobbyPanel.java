@@ -392,7 +392,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         //System.out.println("Mouse Dragged");
     }
 
-    private void exitBtnActionPerformed() {
+    @Override
+    public void exitBtnActionPerformed() {
         //reset having just made the game in the case it is still active
         justMadeNewGame = false;
 

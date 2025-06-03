@@ -261,7 +261,8 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
     /**
      * Exit this panel and return to the main menu
      */
-    private void exitBtnActionPerformed() {
+    @Override
+    public void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }

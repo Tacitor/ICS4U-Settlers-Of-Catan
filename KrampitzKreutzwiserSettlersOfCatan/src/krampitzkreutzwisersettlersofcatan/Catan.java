@@ -34,9 +34,16 @@ public class Catan {
         prevTime = System.currentTimeMillis();
 
         sDMenuFrame = new SDMenuFrame();
+        sDMenuFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                sDMenuFrame.getActiveJPanel().exitBtnActionPerformed();
+            }
+        });
+
         sDMenuFrame.setVisible(true);
         updateGamePanel();
-        
+
         //Ensure that when the GameFrame is closed it will have any networking and sockets closed.
         sDMenuFrame.getSDMainMenuPanel().getGameFrame().addWindowListener(new WindowAdapter() {
             @Override

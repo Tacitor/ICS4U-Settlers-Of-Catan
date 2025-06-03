@@ -30,6 +30,7 @@ public class SDMenuFrame extends javax.swing.JFrame implements KeyListener {
 
     private Dimension screenSize; //keeps track of the display the game is being played on
     private SDMainMenuPanel sDMainMenuPanel;
+    private SDScaleImageResizeable activeJPanel;
 
     //attributes
     final static int MENU_PACKING_HEIGHT = 12;
@@ -50,12 +51,12 @@ public class SDMenuFrame extends javax.swing.JFrame implements KeyListener {
     private void initFrame() {
         CALIBRI = setUpCalibriFont();
 
-        sDMainMenuPanel = new SDMainMenuPanel(this);
+        activeJPanel = sDMainMenuPanel = new SDMainMenuPanel(this);
 
         setTitle("Settlers of Catan - ICS4U Edition");
         setSize(screenSize);
         setIcon();
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); //make sure the user gives confirmation to close the gamefram without saving.
         //add in the JPanel
         add(sDMainMenuPanel);
         setUndecorated(true);
@@ -233,6 +234,16 @@ public class SDMenuFrame extends javax.swing.JFrame implements KeyListener {
     }
 
     /**
+     * Accessor for activeJPanel. Most useful for calling the exit operation
+     * without the user clicking the exit or back button.
+     *
+     * @return
+     */
+    public SDScaleImageResizeable getActiveJPanel() {
+        return activeJPanel;
+    }
+
+    /**
      * Return the Compass Gold font. Setup and load the TrueType font from the
      * file system for use in game.
      *
@@ -268,6 +279,7 @@ public class SDMenuFrame extends javax.swing.JFrame implements KeyListener {
         oldPanel.setVisible(false);
         remove(oldPanel);
         add(newPanel);
+        activeJPanel = (SDScaleImageResizeable) newPanel;
         newPanel.setVisible(true);
         this.setFocusable(true); //ensure the Frame has the keyListener focus.
 
