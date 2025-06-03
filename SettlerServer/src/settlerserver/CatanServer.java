@@ -134,10 +134,11 @@ public class CatanServer {
      * This restart this CatanServer object with a specific number of players.
      *
      * @param maxClients Must be values 2-4 or 0
-     * @return
+     * @return readyToAcceptConnections is true if it makes sense to call
+     * acceptConnections()
      */
     public boolean requestRestart(int maxClients) {
-        boolean success = false;
+        boolean readyToAcceptConnections = false;
 
         if (maxClients >= 2 && maxClients <= 4) {
             requestStop();
@@ -168,7 +169,7 @@ public class CatanServer {
                 //create the socket to listen
                 serverSocket = new ServerSocket(port);
 
-                success = true;
+                readyToAcceptConnections = true;
             } catch (InterruptedException e) {
                 ColourPrint.printRed("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
             } catch (IOException e) {
@@ -194,7 +195,7 @@ public class CatanServer {
                 //Spread the news. The user will want to see this on the lobby selection right away.
                 SettlerServer.propagateCatanServerChange();
 
-                success = true;
+                readyToAcceptConnections = false;
             } catch (InterruptedException e) {
                 ColourPrint.printRed("[Server " + catanServerID + "] InterruptedException from server requestRestart()");
             }
@@ -202,7 +203,7 @@ public class CatanServer {
             ColourPrint.printRed("[Server " + catanServerID + "] ERROR: Invalid input for requestRestart(). The maxClients value of: " + maxClients + " is not within 2-4 or 0.");
         }
 
-        return success;
+        return readyToAcceptConnections;
     }
 
     /**

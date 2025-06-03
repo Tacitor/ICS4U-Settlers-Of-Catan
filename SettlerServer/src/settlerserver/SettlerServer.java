@@ -110,9 +110,9 @@ public class SettlerServer {
         }
 
         if (cs != null) {
-            boolean success = cs.requestRestart(maxClients);
+            boolean readyToAcceptConnections = cs.requestRestart(maxClients);
 
-            if (success) {
+            if (readyToAcceptConnections) {
                 //create a new thread for the server
                 Thread t = new Thread(cs::acceptConnections);
                 t.setName("[Server " + cs.getCatanServerID() + "]");
