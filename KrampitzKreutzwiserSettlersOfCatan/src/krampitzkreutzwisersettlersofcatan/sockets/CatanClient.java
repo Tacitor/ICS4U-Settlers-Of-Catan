@@ -173,6 +173,7 @@ public class CatanClient extends JFrame {
                     startUpClient1();
                 }
             });
+            t.setName("CatanClient");
             t.start();
         } else {
             //wait for a message to come through
@@ -183,6 +184,7 @@ public class CatanClient extends JFrame {
                 }
                 System.out.println("[Client " + clientID + "] End reached for regularRecive()");
             });
+            t.setName("CatanClient");
             t.start();
         }
     }

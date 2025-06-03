@@ -600,6 +600,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
 
         @Override
         public void run() {
+            this.setName("FindServerRunnable");
             //debug the life of the thread and how long it lives for
             //System.out.println("Started connectio attempt");
 
