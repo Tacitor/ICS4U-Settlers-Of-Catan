@@ -413,7 +413,11 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().closeCSC();
 
         //TODO: Exiting at this stage will mess up the server. Fix this by propery closing the sockets...
-        //Will also need to remoce the SCS and decremint the clients array in CatanServer to make room for another player.
+        //Will also need to remove the SCS and decremint the clients array in CatanServer to make room for another player.
+        
+        if (catanClient != null) {
+            catanClient.sendStop(); //tell the server that this client disconected and to close the server
+        }
     }
 
     private void colourRequestBtnActionPerformed() {
@@ -481,7 +485,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
 
     }
 
-    private void findServer() {
+    private void findServer() {        
         catanClient = new CatanClient(700, 200, lobbyIP, sDMenuFrame.getSDMainMenuPanel().getGameFrame(), lobbyPort);
 
         try {
@@ -567,6 +571,8 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
      */
     public void setLobbyStats(LobbyStats[] lobbyStats) {
         this.lobbyStats = lobbyStats;
+        
+        //TODO Remove this
         System.out.println("Here in setLobbyStats");
     }
 

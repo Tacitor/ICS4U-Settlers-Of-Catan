@@ -426,6 +426,14 @@ public class CatanServer {
                             //debug the stop reqesting
                             System.out.println("[Server " + catanServerID + "] Stop request command #4 in SSC run() for ID#" + clientID);
                             stopSSCClients();
+                            
+                            //TODO: Want to remove the SCS and decremint the clients array in CatanServer to make room for another player.
+                            //Can we read in another bool or int over the DataStream? This can tell us to stopSSCClients() for all, or gracefully remove just the one that gave the request?
+                            //This is not so easy because clientID may at the end of the array or the start of clients[].
+                            //This could be fixed by using an ArrayList?
+                            //Or we just hard out  reset the whole damn thing if one client leaved at this stage? I don't like this since it might be nice for a player to
+                            //change their colour if they have regrets.
+                            clients[clientID] = null;
                             break;
                         //if the server is getting the domestic trading data
                         case 5:
