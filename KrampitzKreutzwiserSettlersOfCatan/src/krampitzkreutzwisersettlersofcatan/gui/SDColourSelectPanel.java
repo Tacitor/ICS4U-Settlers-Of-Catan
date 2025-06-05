@@ -571,9 +571,6 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
      */
     public void setLobbyStats(LobbyStats[] lobbyStats) {
         this.lobbyStats = lobbyStats;
-        
-        //TODO Remove this
-        System.out.println("Here in setLobbyStats");
     }
 
     /**
