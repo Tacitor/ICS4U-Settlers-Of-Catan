@@ -22,7 +22,7 @@ public class CatanServer {
      * A static counter that ticks up with each CatanServer construction. Used
      * to assign an ID to a CatanServer.
      */
-    private static int latestID = 0;
+    private static int latestServerID = 0;
 
     //The reciving socket
     private ServerSocket serverSocket;
@@ -56,7 +56,7 @@ public class CatanServer {
     }
 
     private static int getNextID() {
-        return ++latestID;
+        return ++latestServerID;
     }
 
     public void acceptConnections() {
@@ -76,6 +76,8 @@ public class CatanServer {
                     //create a new SSC for to keep track of that incoming socket
                     ServerSideConnection ssc = new ServerSideConnection(s, numClients);
 
+                    //TODO: Need a condition here to test if this index is null.
+                    //If not null, need to call another function to itterate over clients to find the first empty index.
                     //save that new ssc to the list of clients
                     clients[numClients - 1] = ssc;
 
@@ -425,15 +427,28 @@ public class CatanServer {
 
                             //debug the stop reqesting
                             System.out.println("[Server " + catanServerID + "] Stop request command #4 in SSC run() for ID#" + clientID);
-                            stopSSCClients();
-                            
+
                             //TODO: Want to remove the SCS and decremint the clients array in CatanServer to make room for another player.
                             //Can we read in another bool or int over the DataStream? This can tell us to stopSSCClients() for all, or gracefully remove just the one that gave the request?
                             //This is not so easy because clientID may at the end of the array or the start of clients[].
                             //This could be fixed by using an ArrayList?
                             //Or we just hard out  reset the whole damn thing if one client leaved at this stage? I don't like this since it might be nice for a player to
-                            //change their colour if they have regrets.
-                            clients[clientID] = null;
+                            //change their colour if they have regret.
+                            if (true) { //TODO: This needs to toggle between removing all clients, or just this one.
+                                //TODO: This same if needs a second condition to make sure that availableColours cannot be empty. This makes sure that a single player can leave only if the game has not yet started. Once started sracp the whole thing.
+                                stopSSCClients();
+                            } else {
+                                //Null out this client ID
+                                clients[clientID - 1] = null;
+
+                                //Bounce a stop request to break this SSC out of the readInt();
+                                this.requestStop();
+                                this.sendBoolean(true, 6);
+
+                                //make room for another client.
+                                numClients--;
+                                availableColours.add(this.clientColour);
+                            }
                             break;
                         //if the server is getting the domestic trading data
                         case 5:
