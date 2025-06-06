@@ -411,9 +411,6 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
 
         sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().closeCSC();
-
-        //TODO: Exiting at this stage will mess up the server. Fix this by propery closing the sockets...
-        //Will also need to remove the SCS and decremint the clients array in CatanServer to make room for another player.
         
         if (catanClient != null) {
             catanClient.sendStop(); //tell the server that this client disconected and to close the server
