@@ -76,10 +76,12 @@ public class CatanServer {
                     //create a new SSC for to keep track of that incoming socket
                     ServerSideConnection ssc = new ServerSideConnection(s, numClients);
 
-                    //TODO: Need a condition here to test if this index is null.
-                    //If not null, need to call another function to itterate over clients to find the first empty index.
                     //save that new ssc to the list of clients
-                    clients[numClients - 1] = ssc;
+                    if (findFirstNullClient(clients) != -1) {
+                        clients[findFirstNullClient(clients)] = ssc;
+                    } else {
+                        ColourPrint.printRed("[Server " + catanServerID + "] ERROR: clients array has no index of null value");
+                    }
 
                     Thread t = new Thread(ssc);
                     t.setName("[Server " + catanServerID + ": SSC" + numClients + "]");
@@ -278,6 +280,25 @@ public class CatanServer {
         if (SettlerServer.DEBUG_OUTPUT) {
             System.out.print("\n");
         }
+    }
+
+    /**
+     * Iterate over the given clients. Return the index of the first null in the
+     * clients array
+     *
+     * @param clients
+     * @returns -1 if no null ServerSideConnection found in clients
+     */
+    private static int findFirstNullClient(ServerSideConnection[] clients) {
+        int i = 0;
+
+        while (i < clients.length) {
+            if (clients[i++] == null) {
+                return i - 1;
+            }
+        }
+
+        return -1;
     }
 
     private class ServerSideConnection implements Runnable {
