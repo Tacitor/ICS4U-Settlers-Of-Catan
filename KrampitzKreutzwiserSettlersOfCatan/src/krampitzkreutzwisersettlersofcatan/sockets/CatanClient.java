@@ -228,46 +228,58 @@ public class CatanClient extends JFrame {
     public void startUpClient1() {
         int type = csc.reciveType();
 
-        //make sure this is for a type == 4 startup command
-        if (type == 4) {
+        switch (type) {
+            case 3:
+                incomingColourResponse();
 
-            //place to store the boolean
-            //and assign it to the value the server sends
-            boolean recivedBoolean = csc.reciveBoolean();
+                firstClientGotStatup = false;
+                break;
+            case 4: //make sure this is for a type == 4 startup command
+                //place to store the boolean
+                //and assign it to the value the server sends
+                boolean recivedBoolean = csc.reciveBoolean();
 
-            //update the build buttons ingame
-            theGameFrame.getGamePanel().updateBuildButtons();
+                //update the build buttons ingame
+                theGameFrame.getGamePanel().updateBuildButtons();
 
-            //make it visible
-            theGameFrame.setVisible(true);
+                //make it visible
+                theGameFrame.setVisible(true);
 
-            if (theGameFrame.getMainMenu().getSDJoinLobbyPanel() != null && theGameFrame.getMainMenu().getSDJoinLobbyPanel().isVisible()) {
-                //switch back to the main menu for when ever the game terminates
-                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDJoinLobbyPanel(), theGameFrame.getMainMenu());
-            }
+                if (theGameFrame.getMainMenu().getSDJoinLobbyPanel() != null && theGameFrame.getMainMenu().getSDJoinLobbyPanel().isVisible()) {
+                    //switch back to the main menu for when ever the game terminates
+                    theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDJoinLobbyPanel(), theGameFrame.getMainMenu());
+                }
 
-            if (theGameFrame.getMainMenu().getSDColourSelectPanel() != null && theGameFrame.getMainMenu().getSDColourSelectPanel().isVisible()) {
-                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDColourSelectPanel(), theGameFrame.getMainMenu());
-            }
-            //hide the main menu frame
-            theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
+                if (theGameFrame.getMainMenu().getSDColourSelectPanel() != null && theGameFrame.getMainMenu().getSDColourSelectPanel().isVisible()) {
+                    theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDColourSelectPanel(), theGameFrame.getMainMenu());
+                }
+                //hide the main menu frame
+                theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
 
-            //send the save file
-            sendGameToServer();
+                //send the save file
+                sendGameToServer();
 
-            firstClientGotStatup = true;
+                firstClientGotStatup = true;
 
-            //send it to the server
-            //start listening
-            //never stop listening unless told
-            while (!cscStopRequested) {
-                regularRecive();
-            }
-            System.out.println("[Client 1] End reached for regularRecive()");
-        } else if (type == 3) {
-            incomingColourResponse();
+                //send it to the server
+                //start listening
+                //never stop listening unless told
+                while (!cscStopRequested) {
+                    regularRecive();
+                }
+                System.out.println("[Client 1] End reached for regularRecive()");
+                break;
+            case 6: //If the SSC send out an early stop command.
+                //This kind of stop before colour selection was probaby triggered on the CSC side as a SINGLE #4 stop request
+                firstClientGotStatup = true; //set this to true only to break out of the while loop that calls startUpClient1()
+                cscStopRequested = true;
 
-            firstClientGotStatup = false;
+                //waste the dummy bool
+                csc.reciveBoolean();
+                csc.sendStopCommand6();
+                break;
+            default:
+                break;
         }
     }
 
@@ -948,7 +960,6 @@ public class CatanClient extends JFrame {
             try {
                 msg = dataIn.readInt();
             } catch (IOException ex) {
-                //TODO: Why are we getting an IOException from CSC reciveType()
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveType():\n" + ex);
 
                 //request a stop
