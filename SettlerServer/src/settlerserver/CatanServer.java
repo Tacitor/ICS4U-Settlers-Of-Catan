@@ -248,9 +248,12 @@ public class CatanServer {
      */
     public int[] getColoursTaken() {
         int[] taken = new int[numClients];
+        int iTaken = 0;
 
-        for (int i = 0; i < numClients; i++) {
-            taken[i] = clients[i].clientColour;
+        for (ServerSideConnection client : clients) {
+            if (client != null) {
+                taken[iTaken++] = client.clientColour;
+            }
         }
 
         return taken;
@@ -445,20 +448,20 @@ public class CatanServer {
                             break;
                         //if the server is getting a stop command
                         case 4:
-
-                            //debug the stop reqesting
-                            System.out.println("[Server " + catanServerID + "] Stop request command #4 in SSC run() for ID#" + clientID);
-
                             //TODO: Want to remove the SCS and decremint the clients array in CatanServer to make room for another player.
                             //Can we read in another bool or int over the DataStream? This can tell us to stopSSCClients() for all, or gracefully remove just the one that gave the request?
                             //This is not so easy because clientID may at the end of the array or the start of clients[].
                             //This could be fixed by using an ArrayList?
                             //Or we just hard out  reset the whole damn thing if one client leaved at this stage? I don't like this since it might be nice for a player to
                             //change their colour if they have regret.
-                            if (true) { //TODO: This needs to toggle between removing all clients, or just this one.
-                                //TODO: This same if needs a second condition to make sure that availableColours cannot be empty. This makes sure that a single player can leave only if the game has not yet started. Once started sracp the whole thing.
+                            boolean stopAll = dataIn.readBoolean();
+
+                            if (stopAll || availableColours.size() < 1) {
+                                System.out.println("[Server " + catanServerID + "] Stop ALL request command #4 in SSC run() for ID#" + clientID);
                                 stopSSCClients();
                             } else {
+                                System.out.println("[Server " + catanServerID + "] Stop SIGNLE request command #4 in SSC run() for ID#" + clientID);
+
                                 //Null out this client ID
                                 clients[clientID - 1] = null;
 
@@ -468,7 +471,18 @@ public class CatanServer {
 
                                 //make room for another client.
                                 numClients--;
-                                availableColours.add(this.clientColour);
+
+                                if (this.clientColour > 0) {
+                                    availableColours.add(this.clientColour);
+                                }
+
+                                //If we now have 0 or less players (god I hope not less), restrt the CS
+                                if (numClients <= 0) {
+                                    requestRestart(0);
+                                }
+
+                                //TODO: Figure out why we get a java.util.ConcurrentModificationException.
+                                //SettlerServer.propagateCatanServerChange();
                             }
                             break;
                         //if the server is getting the domestic trading data

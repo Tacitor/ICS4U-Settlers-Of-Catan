@@ -129,12 +129,14 @@ public class CatanClient extends JFrame {
 
     /**
      * Send a stopping command to the server through the CSC
+     *
+     * @param stopAll tell the sever to stop all clients. True for stopping all.
      */
-    public void sendStop() {
+    public void sendStop(boolean stopAll) {
 
         //send the requestion
         if (!cscStopRequested) {
-            csc.sendStopCommand4();
+            csc.sendStopCommand4(stopAll);
         }
 
     }
@@ -420,7 +422,7 @@ public class CatanClient extends JFrame {
                             }
                             if (theGameFrame.getMainMenu().getSDColourSelectPanel() != null && theGameFrame.getMainMenu().getSDColourSelectPanel().isVisible()) {
                                 theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDColourSelectPanel(), theGameFrame.getMainMenu());
-                                
+
                                 //if this was still visible close the LA CSC
                                 //Terminate connection with the lobby aggregation server
                                 theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
@@ -729,12 +731,15 @@ public class CatanClient extends JFrame {
         /**
          * Start a CSC triggered stop. This will come from the GamePanel game
          * ending. Will trigger a command #6 stop once it reached the
-         * CatanServer.
+         * CatanServer. Must specify if just this CSC is disconnecting or if all
+         * SSC should be stopped too. A single CSC disconnection can only
+         * happened before all players have selected their colour.
          */
-        public void sendStopCommand4() {
+        public void sendStopCommand4(boolean stopAll) {
 
             try {
                 dataOut.writeInt(4); //tell the server it is reveiving a stop command #4
+                dataOut.writeBoolean(stopAll); //tell the sever to stop all clients
                 dataOut.flush();
 
             } catch (IOException e) {
@@ -943,6 +948,7 @@ public class CatanClient extends JFrame {
             try {
                 msg = dataIn.readInt();
             } catch (IOException ex) {
+                //TODO: Why are we getting an IOException from CSC reciveType()
                 System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveType():\n" + ex);
 
                 //request a stop

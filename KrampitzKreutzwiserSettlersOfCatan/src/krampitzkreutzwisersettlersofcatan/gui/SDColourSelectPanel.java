@@ -413,7 +413,8 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().closeCSC();
         
         if (catanClient != null) {
-            catanClient.sendStop(); //tell the server that this client disconected and to close the server
+            catanClient.sendStop(false); //tell the server that this client disconected and to keep the server open and close just the one SSC
+            catanClient = null;
         }
     }
 

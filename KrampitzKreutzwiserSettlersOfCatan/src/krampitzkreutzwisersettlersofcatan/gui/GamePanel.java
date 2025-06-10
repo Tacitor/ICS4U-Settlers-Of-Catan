@@ -1000,7 +1000,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private void networkingCloseOpertations() {
         //if there is networking active stop it
         if (onlineMode != -1) {
-            onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+            onlineClient.sendStop(true); //tell the server that this client disconected and to close the server and all other SSCs
 
             //reset the game to the offline defaults
             onlineMode = -1;
