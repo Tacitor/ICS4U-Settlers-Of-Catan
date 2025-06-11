@@ -358,7 +358,7 @@ public class CatanServer {
                 //loop state after all startup business is complete
                 while (!stopRequested) {
                     //accept a message
-                    //TODO: There is a bug with stopping the CatanServer when there is one player connected after requesting a colour. LA stopes and main CS stop but the CS SSC lives on at this line.
+                    //TODO: There is a bug with stopping the CatanServer when there is one player connected after requesting a colour. LA stops and main CS stop but the CS SSC lives on at this line.
                     //Related to this bug is when a client may disconnect under the same conditons this has an IOException from SSC run()
                     int type = dataIn.readInt(); //get the type of transmision
                     //if the client sent a chat message
@@ -486,8 +486,7 @@ public class CatanServer {
                                     t.start();
                                 }
 
-                                //TODO: Figure out why we get a java.util.ConcurrentModificationException.
-                                //SettlerServer.propagateCatanServerChange();
+                                SettlerServer.propagateCatanServerChange();
                             }
                             break;
                         //if the server is getting the domestic trading data
