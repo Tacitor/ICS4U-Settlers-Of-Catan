@@ -70,39 +70,39 @@ public class CatanServer {
                 //It means that there has been a call to requestStop()
                 //and a dummy socket was made to break out of `serverSocket.accept()` above.
                 if (!stopRequested) {
-                    //count it as a client
-                    numClients++;
-                    System.out.println("[Server " + catanServerID + "] Client #" + numClients + " has connected");
-                    //create a new SSC for to keep track of that incoming socket
-                    ServerSideConnection ssc = new ServerSideConnection(s, numClients);
+                    int newClientIndex = findFirstNullClient(clients);
 
-                    //save that new ssc to the list of clients
-                    if (findFirstNullClient(clients) != -1) {
-                        clients[findFirstNullClient(clients)] = ssc;
+                    //test if we truly have room for a new client
+                    if (newClientIndex != -1) {
+                        //count it as a client
+                        numClients++;
+                        System.out.println("[Server " + catanServerID + "] Client #" + (newClientIndex + 1) + " has connected");
+                        //create a new SSC for to keep track of that incoming socket
+                        ServerSideConnection ssc = new ServerSideConnection(s, (newClientIndex + 1));
+
+                        clients[newClientIndex] = ssc;
+
+                        Thread t = new Thread(ssc);
+                        t.setName("[Server " + catanServerID + ": SSC" + numClients + "]");
+                        t.start();
+
+                        /**
+                         * Allow the LA server to update any LA clients. This
+                         * will give the most up to date server statistics to
+                         * any player with the SDJoinLobbyPanel open.
+                         */
+                        SettlerServer.propagateCatanServerChange();
                     } else {
                         ColourPrint.printRed("[Server " + catanServerID + "] ERROR: clients array has no index of null value");
                     }
 
-                    Thread t = new Thread(ssc);
-                    t.setName("[Server " + catanServerID + ": SSC" + numClients + "]");
-                    t.start();
-
-                    /**
-                     * Allow the LA server to update any LA clients. This will
-                     * give the most up to date server statistics to any player
-                     * with the SDJoinLobbyPanel open.
-                     */
-                    SettlerServer.propagateCatanServerChange();
                 } else {
                     System.out.println("[Server " + catanServerID + "] Accepted and discarded an extra socket");
                 }
             }
             ColourPrint.printGreen("[Server " + catanServerID + "] We now have " + maxClients + " players. No more connections will be accepted.");
-
-            //close the server socket so another can later be created
-            serverSocket.close();
         } catch (IOException e) {
-            ColourPrint.printRed("[Server " + catanServerID + "] IOException from acceptConnections");
+            ColourPrint.printRed("[Server " + catanServerID + "] IOException from acceptConnections\n" + e);
         }
     }
 
@@ -127,8 +127,15 @@ public class CatanServer {
                 Socket dummy = new Socket("localhost", serverSocket.getLocalPort());
                 dummy.close();
             } catch (IOException e) {
-                ColourPrint.printRed("[Server " + catanServerID + "] IOException from requestStop() in CatanServer");
+                ColourPrint.printRed("[Server " + catanServerID + "] IOException from dummy creation in requestStop() in CatanServer");
             }
+        }
+
+        try {
+            //close the server socket so another can later be created
+            serverSocket.close();
+        } catch (IOException ex) {
+            ColourPrint.printRed("[Server " + catanServerID + "] IOException from closing serverSocket in requestStop() in CatanServer");
         }
 
         stopSSCClients();
@@ -220,7 +227,6 @@ public class CatanServer {
     private void stopSSCClients() {
         for (ServerSideConnection ssc : clients) {
             if (ssc != null && !ssc.stopRequested) {
-                ssc.requestStop();
                 ssc.sendBoolean(true, 6);
             }
         }
@@ -448,12 +454,6 @@ public class CatanServer {
                             break;
                         //if the server is getting a stop command
                         case 4:
-                            //TODO: Want to remove the SCS and decremint the clients array in CatanServer to make room for another player.
-                            //Can we read in another bool or int over the DataStream? This can tell us to stopSSCClients() for all, or gracefully remove just the one that gave the request?
-                            //This is not so easy because clientID may at the end of the array or the start of clients[].
-                            //This could be fixed by using an ArrayList?
-                            //Or we just hard out  reset the whole damn thing if one client leaved at this stage? I don't like this since it might be nice for a player to
-                            //change their colour if they have regret.
                             boolean stopAll = dataIn.readBoolean();
 
                             if (stopAll || availableColours.size() < 1) {
@@ -466,7 +466,6 @@ public class CatanServer {
                                 clients[clientID - 1] = null;
 
                                 //Bounce a stop request to break this SSC out of the readInt();
-                                this.requestStop();
                                 this.sendBoolean(true, 6);
 
                                 //make room for another client.
@@ -479,6 +478,12 @@ public class CatanServer {
                                 //If we now have 0 or less players (god I hope not less), restrt the CS
                                 if (numClients <= 0) {
                                     requestRestart(0);
+                                } else if ((numClients + 1) == maxClients) {
+                                    Thread t = new Thread(() -> {
+                                        acceptConnections();
+                                    });
+                                    t.setName("[Server " + catanServerID + "]");
+                                    t.start();
                                 }
 
                                 //TODO: Figure out why we get a java.util.ConcurrentModificationException.
@@ -548,7 +553,7 @@ public class CatanServer {
                         //if the server is getting an update that a stop has been requested
                         case 6:
                             System.out.println("[Server " + catanServerID + "] Stop request command #6 in SSC run() for ID#" + clientID);
-
+                            this.requestStop(); // set this to false to drop out of the while loop
                             break;
                         default:
                             break;

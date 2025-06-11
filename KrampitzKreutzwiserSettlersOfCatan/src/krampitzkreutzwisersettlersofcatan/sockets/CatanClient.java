@@ -248,10 +248,18 @@ public class CatanClient extends JFrame {
                 if (theGameFrame.getMainMenu().getSDJoinLobbyPanel() != null && theGameFrame.getMainMenu().getSDJoinLobbyPanel().isVisible()) {
                     //switch back to the main menu for when ever the game terminates
                     theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDJoinLobbyPanel(), theGameFrame.getMainMenu());
+
+                    //if this was still visible close the LA CSC
+                    //Terminate connection with the lobby aggregation server
+                    theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
                 }
 
                 if (theGameFrame.getMainMenu().getSDColourSelectPanel() != null && theGameFrame.getMainMenu().getSDColourSelectPanel().isVisible()) {
                     theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDColourSelectPanel(), theGameFrame.getMainMenu());
+
+                    //if this was still visible close the LA CSC
+                    //Terminate connection with the lobby aggregation server
+                    theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
                 }
                 //hide the main menu frame
                 theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
@@ -277,6 +285,8 @@ public class CatanClient extends JFrame {
                 //waste the dummy bool
                 csc.reciveBoolean();
                 csc.sendStopCommand6();
+
+                System.out.println("[Client " + clientID + "] Early stop command #6 in startUpClient1()");
                 break;
             default:
                 break;
@@ -696,7 +706,7 @@ public class CatanClient extends JFrame {
                 successfulConnect = true;
 
             } catch (IOException e) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC contructor ");
+                System.out.println("[Client " + clientID + "] " + "IOException from CSC contructor\n" + e);
 
                 //save the failed connection
                 successfulConnect = false;
@@ -748,6 +758,7 @@ public class CatanClient extends JFrame {
          * happened before all players have selected their colour.
          */
         public void sendStopCommand4(boolean stopAll) {
+            System.out.println("[Client " + clientID + "] Sending Stop Command #4");
 
             try {
                 dataOut.writeInt(4); //tell the server it is reveiving a stop command #4
@@ -755,7 +766,7 @@ public class CatanClient extends JFrame {
                 dataOut.flush();
 
             } catch (IOException e) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendStopCommand4():\n" + e);
+                System.out.println("[Client " + clientID + "] IOException from CSC sendStopCommand4():\n" + e);
             }
         }
 
@@ -766,6 +777,7 @@ public class CatanClient extends JFrame {
          * the dataOutputStream.
          */
         public void sendStopCommand6() {
+            System.out.println("[Client " + clientID + "] Sending Stop Command #6");
 
             try {
                 dataOut.writeInt(6); //tell the server it is reveiving a stop command #6
@@ -776,7 +788,7 @@ public class CatanClient extends JFrame {
                 socket.close();
 
             } catch (IOException e) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendStopCommand6():\n" + e);
+                System.out.println("[Client " + clientID + "] IOException from CSC sendStopCommand6():\n" + e);
             }
         }
 
