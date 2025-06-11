@@ -415,6 +415,13 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         if (catanClient != null) {
             //TODO: tell the server that this client disconected and to keep the server open and close just the one SSC
             //Can't do this yet until edge case if fixed: If client 1 (who did new game settings) has SINGLE disconnect and reconnects as client 1 through Join Lobby the game does not start properly
+            /**
+             * To debug this follow the steps. 1. Try with 3 players see what
+             * happens. 2. Follow the static members in GamPanel and see if any
+             * change after disconnect 2.5. Find any non-static ones and see if
+             * they might be the cause
+             */
+
             catanClient.sendStop(false);
             catanClient = null;
         }
