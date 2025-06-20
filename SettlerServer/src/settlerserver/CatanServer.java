@@ -361,7 +361,6 @@ public class CatanServer {
                     //TODO: There is a bug with stopping the CatanServer when there is one player connected after requesting a colour. LA stops and main CS stop but the CS SSC lives on at this line.
                     //Related to this bug is when a client may disconnect under the same conditons this has an IOException from SSC run()
                     int type = dataIn.readInt(); //get the type of transmision
-                    //if the client sent a chat message
                     switch (type) {
                         case 2:
                             //if the client sent a file

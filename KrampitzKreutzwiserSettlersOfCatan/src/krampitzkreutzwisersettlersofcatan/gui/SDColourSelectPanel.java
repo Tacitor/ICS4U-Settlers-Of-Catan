@@ -52,6 +52,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
     private boolean justMadeNewGame;
     private String lobbyIP;
     private int lobbyPort;
+    private int mostRecentColourRequest;
 
     //NOTE: Assume the buttons in SDJoinLobbyPanel are in the same order in sDJoinLobbyPanel.settlerBtns as they are in lobbyStats
     private LobbyStats[] lobbyStats; //This means lobbyStats[0] is for Lobby 1 on port 25571
@@ -123,6 +124,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         }
 
         justMadeNewGame = false;
+        mostRecentColourRequest = -1;
 
     }
 
@@ -413,15 +415,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().closeCSC();
 
         if (catanClient != null) {
-            //TODO: tell the server that this client disconected and to keep the server open and close just the one SSC
-            //Can't do this yet until edge case if fixed: If client 1 (who did new game settings) has SINGLE disconnect and reconnects as client 1 through Join Lobby the game does not start properly
-            /**
-             * To debug this follow the steps. 1. Try with 3 players see what
-             * happens. 2. Follow the static members in GamPanel and see if any
-             * change after disconnect 2.5. Find any non-static ones and see if
-             * they might be the cause
-             */
-
+            //tell the server that this client disconected and to keep the server open and close just the one SSC
             catanClient.sendStop(false);
             catanClient = null;
         }
@@ -430,41 +424,26 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
     private void colourRequestBtnActionPerformed() {
         colourRequestBtn.setMode(3); //mode 3 for requesting a colour
 
-        int colourRequest; //store the colour to request
-
         //get the colour the user wants
         if (colourSelectRedRBtn.isSelected()) {
-            colourRequest = 1; //request red
+            mostRecentColourRequest = 1; //request red
         } else if (colourSelectBlueRBtn.isSelected()) {
-            colourRequest = 2; //request blue
+            mostRecentColourRequest = 2; //request blue
         } else if (colourSelectOrangeRBtn.isSelected()) {
-            colourRequest = 3; //request orange
+            mostRecentColourRequest = 3; //request orange
         } else if (colourSelectWhiteRBtn.isSelected()) {
-            colourRequest = 4; //request white
+            mostRecentColourRequest = 4; //request white
         } else {
-            colourRequest = 0; //default to whatever the server want to give me
+            mostRecentColourRequest = 0; //default to whatever the server want to give me
         }
 
         //request the player colour
-        catanClient.requestColour(colourRequest); //request any colour
+        catanClient.requestColour(mostRecentColourRequest); //request any colour
+    }
 
-        //System.out.println("coluour: " + client.getClientColour());
-        //wait for the response to come through
-        while (catanClient.getClientColour() == 0) {
-            try {
-                //while there is no assinged colour do nothing and just wait
-                //System.out.println("coluour still: " + catanClient.getClientColour());
-                Thread.sleep(200);
-            } catch (InterruptedException ex) {
-                System.out.println("Error requesing colour in JoinOnlineGameMenu");
-            }
-        }
-
-        //debug the colour request
-        //System.out.println("colourRequest: " + colourRequest);
-        //System.out.println("catanClient.getClientColour(): " + catanClient.getClientColour() + "\n");
+    public void completeColourRequestTransaction() {
         //if the colour request was successfule tell the game
-        if (catanClient.getClientColour() == colourRequest) {
+        if (catanClient.getClientColour() == mostRecentColourRequest) {
 
             //once the client has been set up save it to the game panel
             GamePanel.setOnlineMode(catanClient.getClientColour());
@@ -480,6 +459,9 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         } else { //the the user that it failed
             colourRequestBtn.setMode(2);
         }
+
+        //The colour request is now expired. Use -2, since -1 might be returned by the CSC
+        mostRecentColourRequest = -2;
     }
 
     /**

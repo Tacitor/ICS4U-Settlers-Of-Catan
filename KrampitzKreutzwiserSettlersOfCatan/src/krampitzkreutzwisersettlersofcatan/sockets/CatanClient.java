@@ -305,6 +305,15 @@ public class CatanClient extends JFrame {
 
         clientColour = recivedColourResponse;
 
+        /**
+         * Update the gamePanel right here right now. This needs to be done
+         * before another loop of startUpClient1() or regularRecive() can start.
+         * As an example if startUpClient1() reads in a start up command before
+         * the gamePanel gets the updated player colour then a lot of sate issue
+         * occur. Calling completeColourRequestTransaction() allows for the gamePanel to get the colour in time.
+         */
+        theGameFrame.getMainMenu().getSDColourSelectPanel().completeColourRequestTransaction();
+
     }
 
     public void sendGameToServer() {
