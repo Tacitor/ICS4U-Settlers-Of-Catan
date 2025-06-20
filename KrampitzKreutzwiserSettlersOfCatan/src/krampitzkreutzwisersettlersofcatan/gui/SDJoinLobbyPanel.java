@@ -201,6 +201,12 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
             //add player dot indicators to show what colours are being used in a given lobby
             if (btn.getType() == 31) {
+                /**
+                 * TODO: Add in icons for what game settings are active in this
+                 * lobby. Can have 1) A snake or crossed out snake for "Snake
+                 * rules". 2) Something to indicate yes or no starting
+                 * resources. 3) An icon for what the play piece counts are
+                 */
 
                 //see if this specific player dot should be drawn for a given lobby
                 for (int playerNum : lobbyStats[btn.getMode() - 1].getColoursTaken()) {
@@ -714,7 +720,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                     case 1:
                         lobbyStats = reciveLobbyStats();
                         updateLobbyData();
-                        
+
                         sDMenuFrame.getSDMainMenuPanel().getSDColourSelectPanel().setLobbyStats(lobbyStats);
                         break;
                     case 4: //for a SSC close

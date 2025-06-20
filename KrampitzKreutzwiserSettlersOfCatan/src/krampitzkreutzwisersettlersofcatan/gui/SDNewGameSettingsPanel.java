@@ -485,8 +485,6 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
             }
 
         }
-        
-        //TODO: Test to see if this goes pear shaped if playing with 3 players and client 1 DCs and reconnects NOT as client 1???
 
         /**
          * Reinitialize game based on settings selected. Skipping this can cause
@@ -495,6 +493,18 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
          */
         sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
 
+        /**
+         * TODO: This goes pear shaped if playing with 3 players and client 1
+         * DCs and reconnects NOT as client 1. The player that comes in a client
+         * 1 did not config the New game settings. Easy fix is to set the player
+         * count properly and go to hell with all the rest of the settings. This
+         * might not be the worst approach because at leat there is no error.
+         * Players may be confused, but I don't feel like writing the game
+         * settings to the server. Fuck it maybe I should just write the
+         * settings to the server the second client 1 connects that way they are
+         * safe even if they DC. They will need to be sent to the NEW client 1
+         * before sending the start up command.
+         */
         //Check the online play mode from previous menu selection
         if (newGameIsOffline) {
 
