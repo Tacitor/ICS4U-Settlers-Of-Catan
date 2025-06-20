@@ -358,8 +358,6 @@ public class CatanServer {
                 //loop state after all startup business is complete
                 while (!stopRequested) {
                     //accept a message
-                    //TODO: There is a bug with stopping the CatanServer when there is one player connected after requesting a colour. LA stops and main CS stop but the CS SSC lives on at this line.
-                    //Related to this bug is when a client may disconnect under the same conditons this has an IOException from SSC run()
                     int type = dataIn.readInt(); //get the type of transmision
                     switch (type) {
                         case 2:
@@ -478,6 +476,7 @@ public class CatanServer {
                                 if (numClients <= 0) {
                                     requestRestart(0);
                                 } else if ((numClients + 1) == maxClients) {
+                                    ColourPrint.printPurple("[Server " + catanServerID + "] Call to acceptConnections()");
                                     Thread t = new Thread(() -> {
                                         acceptConnections();
                                     });

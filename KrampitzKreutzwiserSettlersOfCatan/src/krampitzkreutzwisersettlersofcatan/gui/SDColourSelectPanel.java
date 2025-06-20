@@ -442,7 +442,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
     }
 
     public void completeColourRequestTransaction() {
-        //if the colour request was successfule tell the game
+        //if the colour request was successful tell the game
         if (catanClient.getClientColour() == mostRecentColourRequest) {
 
             //once the client has been set up save it to the game panel

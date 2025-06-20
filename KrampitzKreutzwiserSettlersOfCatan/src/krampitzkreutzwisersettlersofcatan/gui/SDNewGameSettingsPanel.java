@@ -485,6 +485,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
             }
 
         }
+        
+        //TODO: Test to see if this goes pear shaped if playing with 3 players and client 1 DCs and reconnects NOT as client 1???
 
         /**
          * Reinitialize game based on settings selected. Skipping this can cause
