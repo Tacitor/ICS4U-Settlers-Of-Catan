@@ -29,6 +29,8 @@ public class Catan {
     private static int fastPulseTime; //the number of miliseconds between fast pulses
 
     public static void main(String[] args) throws InterruptedException {
+        //TODO: Try out migrating to latest Apache NetBean with a JDK SE 21 (latest LTS)
+        
         System.out.println("Catan startup");
         //record the time
         prevTime = System.currentTimeMillis();

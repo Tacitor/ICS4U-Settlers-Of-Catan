@@ -5918,7 +5918,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param image
      * @return
      */
-    @Deprecated
     public final int getImgWidth(Image image) {
 
         if (this.getWidth() > this.getHeight()) {
@@ -5935,7 +5934,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * @param image
      * @return
      */
-    @Deprecated
     public final int getImgHeight(Image image) {
         if (this.getWidth() > this.getHeight()) {
             return (int) (image.getHeight(null) / 1080.0 * this.getHeight());
