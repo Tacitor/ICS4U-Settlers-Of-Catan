@@ -203,7 +203,7 @@ public class SettlerServer {
                             + "\nPlease incluse a catanServerID and a max number of clients seperated by a space.");
                 }
             } else if (s[0].equalsIgnoreCase("/help")) {
-                ColourPrint.printPurple("[Lobby Aggregation] Valid commands are: \"/list\", \"/restart\" (or \"/r\"), \"/update\", and \"/help\"");
+                ColourPrint.printPurple("[Lobby Aggregation] Valid commands are: \"/stop\", \"/list\", \"/restart\" (or \"/r\"), \"/update\", and \"/help\"");
             } else if (s[0].equalsIgnoreCase("/update")) {
                 propagateCatanServerChange();
             } else if (s[0].equalsIgnoreCase("")) {
