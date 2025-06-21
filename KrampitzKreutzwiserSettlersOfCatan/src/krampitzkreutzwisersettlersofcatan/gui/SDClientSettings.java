@@ -41,7 +41,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
     private SettlerRadioBtn showBoarderYesRBtn, showBoarderNoRBtn, turnBeepYesRBtn, turnBeepNoRBtn, displayModeFullScreenRBtn, displayModeWindowedRBtn, windowDims4kRBtn, windowDims1080pRBtn, windowDims720pRBtn, windowDims800x600RBtn;
-    //arry for each group of radio buttons
+    //array for each group of radio buttons
     private SettlerRadioBtn[] settlerRadioShowBoarderBtns, settlerRadioTurnBeepBtns, settlerRadioDisplayModeBtns, settlerRadioWindowDimsBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;

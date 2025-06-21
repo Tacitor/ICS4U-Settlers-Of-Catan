@@ -53,13 +53,11 @@ public class CatanClient extends JFrame {
     /**
      * Constructor
      *
-     * @param width
-     * @param height
      * @param ip
      * @param gameFrame
      * @param port
      */
-    public CatanClient(int width, int height, String ip, GameFrame gameFrame, int port) {
+    public CatanClient(String ip, GameFrame gameFrame, int port) {
         this.ip = ip;
         this.port = port;
         theGameFrame = gameFrame;
@@ -294,7 +292,8 @@ public class CatanClient extends JFrame {
          * before another loop of startUpClient1() or regularRecive() can start.
          * As an example if startUpClient1() reads in a start up command before
          * the gamePanel gets the updated player colour then a lot of sate issue
-         * occur. Calling completeColourRequestTransaction() allows for the gamePanel to get the colour in time.
+         * occur. Calling completeColourRequestTransaction() allows for the
+         * gamePanel to get the colour in time.
          */
         theGameFrame.getMainMenu().getSDColourSelectPanel().completeColourRequestTransaction();
 

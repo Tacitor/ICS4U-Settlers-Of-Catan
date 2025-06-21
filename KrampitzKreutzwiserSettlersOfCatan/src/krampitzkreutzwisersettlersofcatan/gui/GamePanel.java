@@ -6862,9 +6862,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * If the game is in online mode update the server with the current game.
      */
     public void onlineUpdateServer() {
-        //debug statemtn for updateing the game server
-        //System.out.println("Updateing online");
-
         //check if the game is for online play
         if (onlineMode != -1 && !onlineClient.isCscStopRequested()) {
             //save the sate of the dice roll animation

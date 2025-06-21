@@ -41,7 +41,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
     private SettlerRadioBtn playerNum2RBtn, playerNum3RBtn, playerNum4RBtn, startResYesRBtn, startResNoRBtn, snakeRulesYesRBtn, snakeRulesNoRBtn, limitGmPc15_5_4RBtn, limitGmPcInfRBtn;
-    //arry for each group of radio buttons
+    //array for each group of radio buttons
     private SettlerRadioBtn[] settlerRadioPlayerNumBtns, settlerRadioStartResBtns, settlerRadioSnakeRulesBtns, settlerRadioLimitGmPcBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;

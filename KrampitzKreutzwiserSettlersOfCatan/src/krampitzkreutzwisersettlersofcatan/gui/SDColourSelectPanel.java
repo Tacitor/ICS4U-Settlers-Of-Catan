@@ -43,7 +43,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
     private SettlerRadioBtn colourSelectRedRBtn, colourSelectBlueRBtn, colourSelectOrangeRBtn, colourSelectWhiteRBtn;
-    //arry for each group of radio buttons
+    //array for each group of radio buttons
     private SettlerRadioBtn[] settlerRadioColourSelectBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
@@ -434,11 +434,11 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         } else if (colourSelectWhiteRBtn.isSelected()) {
             mostRecentColourRequest = 4; //request white
         } else {
-            mostRecentColourRequest = 0; //default to whatever the server want to give me
+            mostRecentColourRequest = 0; //default to whatever the server wants to give
         }
 
         //request the player colour
-        catanClient.requestColour(mostRecentColourRequest); //request any colour
+        catanClient.requestColour(mostRecentColourRequest);
     }
 
     public void completeColourRequestTransaction() {
@@ -475,7 +475,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
     }
 
     private void findServer() {
-        catanClient = new CatanClient(700, 200, lobbyIP, sDMenuFrame.getSDMainMenuPanel().getGameFrame(), lobbyPort);
+        catanClient = new CatanClient(lobbyIP, sDMenuFrame.getSDMainMenuPanel().getGameFrame(), lobbyPort);
 
         try {
 
@@ -593,8 +593,6 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         @Override
         public void run() {
             this.setName("FindServerRunnable");
-            //debug the life of the thread and how long it lives for
-            //System.out.println("Started connectio attempt");
 
             //check if this thread should stop
             while (!stopRequested) {
@@ -603,9 +601,6 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
                 //only run once
                 stopRequested = true;
             }
-
-            //System.out.println("done connection attempt");
         }
-
     }
 }
