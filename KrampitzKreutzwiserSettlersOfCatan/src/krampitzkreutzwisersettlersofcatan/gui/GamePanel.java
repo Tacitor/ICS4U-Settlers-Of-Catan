@@ -5690,7 +5690,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         getImgHeight(PLAYER_DOTS[playerDotNum]) / 2,
                         null);
             }
-
+            //TODO: Fix the bottom two corners are not properly aligned if in windowd mode than the user resizes the JFrames
             //draw the tabSelected overlay if required
             if (btn.isTabSelected()) {
                 //draw the left

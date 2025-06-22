@@ -76,8 +76,8 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDColourSelectPanel. Calls the
-             * menu panel's click event method.
+             * Triggered when the user clicks on the SDColourSelectPanel. Calls
+             * the menu panel's click event method.
              *
              * @param event
              */
@@ -233,6 +233,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
                 SettlerRadioBtn settlerRadioBtn = settlerRadioBtnGroup[i];
 
                 settlerRadioBtn.drawLower(g2d, this);
+                //TODO: rework this entire block. Need to have fixes positions for each PLAYER. That means that the colour posions need to be flexable. This also means that black may appear 2+ times.
 
                 //Add the player dots to the colour select buttons
                 g2d.drawImage(dots[i + 1],
