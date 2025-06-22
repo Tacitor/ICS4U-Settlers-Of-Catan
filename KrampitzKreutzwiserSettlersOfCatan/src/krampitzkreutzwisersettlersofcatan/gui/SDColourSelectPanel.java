@@ -76,7 +76,7 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDCreditsPanel. Calls the
+             * Triggered when the user clicks on the SDColourSelectPanel. Calls the
              * menu panel's click event method.
              *
              * @param event

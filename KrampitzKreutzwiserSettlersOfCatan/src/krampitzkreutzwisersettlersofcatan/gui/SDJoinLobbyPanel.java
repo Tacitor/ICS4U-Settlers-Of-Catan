@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
 import krampitzkreutzwisersettlersofcatan.Catan;
-import krampitzkreutzwisersettlersofcatan.sockets.CatanClient;
 import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
@@ -48,7 +47,6 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     //NOTE: Assume the lobbyStatLbls are in the same order as the lobby buttons are in settlerBtns. Also assume that all the stat lables are in the second half of lables
     private SettlerLbl[] settlerLbls;
 
-    private CatanClient catanClient;
     private ClientSideConnection csc; //the socket type var to hold the connection to the lobby aggregation server
 
     //NOTE: Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
@@ -84,7 +82,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDCreditsPanel. Calls the
+             * Triggered when the user clicks on the SDJoinLobbyPanel. Calls the
              * menu panel's click event method.
              *
              * @param event
@@ -98,10 +96,10 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
 
         //setup the buttons        
         exitBtn = new SettlerBtn(true, 0, 23);
-        lobby1Btn = new SettlerBtn(false, 1, 31); //set the mode to 1 for lobby 1,a nd type to 31 for a lobby button
-        lobby2Btn = new SettlerBtn(false, 2, 31); //set the mode to 2 for lobby 2,a nd type to 31 for a lobby button
-        lobby3Btn = new SettlerBtn(false, 3, 31); //set the mode to 3 for lobby 3,a nd type to 31 for a lobby button
-        lobby4Btn = new SettlerBtn(false, 4, 31); //set the mode to 4 for lobby 4,a nd type to 31 for a lobby button
+        lobby1Btn = new SettlerBtn(false, 1, 31); //set the mode to 1 for lobby 1, and type to 31 for a lobby button
+        lobby2Btn = new SettlerBtn(false, 2, 31); //set the mode to 2 for lobby 2, and type to 31 for a lobby button
+        lobby3Btn = new SettlerBtn(false, 3, 31); //set the mode to 3 for lobby 3, and type to 31 for a lobby button
+        lobby4Btn = new SettlerBtn(false, 4, 31); //set the mode to 4 for lobby 4, and type to 31 for a lobby button
 
         //add them to the array
         settlerBtns = new SettlerBtn[]{lobby1Btn, lobby2Btn, lobby3Btn, lobby4Btn, exitBtn};
@@ -130,14 +128,11 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         //NOTE: Assume the lobbyStatLbls are in the same order as the lobby buttons are in settlerBtns. Also assume that all the stat lables are in the second half of lables
         settlerLbls = new SettlerLbl[]{lobby1NameLbl, lobby2NameLbl, lobby3NameLbl, lobby4NameLbl, lobby1StatLbl, lobby2StatLbl, lobby3StatLbl, lobby4StatLbl, instructionLbl};
 
-        //init the lobby stats
         /**
-         * There are 4 arrays of size 5. Each of the 4 arrays is for 1 of the
-         * lobbies. Each lobby had the 0th index for the total number of players
-         * allowed. And each index is a binary 0 or 1 for if the corresponding
-         * player colour is present
+         * There are 4 arrays. Each of the 4 arrays is for 1 of the lobbies.
+         * NOTE: Assume the buttons are in the same order in settlerBtns as they
+         * are in lobbyStats
          */
-        //NOTE: Assume the buttons are in the same order in settlerBtns as they are in lobbyStats
         lobbyStats = new LobbyStats[4];
         //init all the lobby stats to empty lobbies with connection issues by default
         for (int i = 0; i < lobbyStats.length; i++) {
@@ -420,7 +415,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     }
 
     /**
-     * Connect to the 1st lobby
+     * Connect to the specified lobby
+     *
+     * @param lobbyNum ranges from 1 to 4 inclusive.
      */
     private void lobbyBtnActionPerformed(int lobbyNum) {
         /**
@@ -513,7 +510,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     }
 
     /**
-     *
+     * Send a command #1 to the LA server. This will prompt the LA sever to send
+     * the lobby statistics back. Also ensure the LA CSC is open and not null.
      */
     private void requestLobbyData() {
         //open a connection to lobby aggregation server if there isn't one.
@@ -646,7 +644,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
         }
 
         /**
-         * ...Note: changing this value will reset the coloursTaken.
+         * Note: changing this value will reset the coloursTaken.
          *
          * @param numClients
          */

@@ -65,7 +65,7 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDCreditsPanel. Calls the
+             * Triggered when the user clicks on the SDNewGameSettingsPanel. Calls the
              * menu panel's click event method.
              *
              * @param event

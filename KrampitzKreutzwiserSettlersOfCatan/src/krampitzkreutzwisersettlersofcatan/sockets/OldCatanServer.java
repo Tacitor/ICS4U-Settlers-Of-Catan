@@ -13,9 +13,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 /**
+ * TODO: Just delete this class.
  *
  * @author Tacitor
- * @deprecated 
+ * @deprecated
  */
 public class OldCatanServer {
 

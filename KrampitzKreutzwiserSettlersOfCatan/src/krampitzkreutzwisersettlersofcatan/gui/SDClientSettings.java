@@ -21,6 +21,8 @@ import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
 import textures.ImageRef;
 
 /**
+ * TODO: Add a text-box for the user to type in an IP/URL for an alternative
+ * SettlerServer
  *
  * @author Tacitor
  */
@@ -65,7 +67,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDCreditsPanel. Calls the
+             * Triggered when the user clicks on the SDClientSettings. Calls the
              * menu panel's click event method.
              *
              * @param event
