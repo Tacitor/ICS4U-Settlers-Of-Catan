@@ -30,8 +30,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
     private final SDClientSettings sDClientSettings;
-    private SDOnlineGamePanel sDOnlineGameSettingsPanel;
-    private SDOfflineGamePanel sDOfflineGameSettingsPanel;
+    private SDOnlineGamePanel sDOnlineGamePanel;
+    private SDOfflineGamePanel sDOfflineGamePanel;
 
     private SDNewGameSettingsPanel sDNewGameSettingsPanel;
     private SDJoinLobbyPanel sDJoinLobbyPanel;
@@ -66,8 +66,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
 
         sDClientSettings = new SDClientSettings(sDMenuFrame);
 
-        sDOnlineGameSettingsPanel = new SDOnlineGamePanel(sDMenuFrame);
-        sDOfflineGameSettingsPanel = new SDOfflineGamePanel(sDMenuFrame);
+        sDOnlineGamePanel = new SDOnlineGamePanel(sDMenuFrame);
+        sDOfflineGamePanel = new SDOfflineGamePanel(sDMenuFrame);
 
         //init the newGameSettingsPanel
         resetSDNewGameSettingsPanel();
@@ -307,18 +307,16 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      * Open the online game settings
      */
     private void onlineGameBtnActionPerformed() {
-        // Hide this window and show the New Game Settings
         onlineGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, sDOnlineGameSettingsPanel);
+        sDMenuFrame.switchPanel(this, sDOnlineGamePanel);
     }
 
     /**
      * Open the offline game settings
      */
     private void offlineGameBtnActionPerformed() {
-        // Hide this window and show the New Game Settings
         offlineGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, sDOfflineGameSettingsPanel);
+        sDMenuFrame.switchPanel(this, sDOfflineGamePanel);
     }
 
     /**
