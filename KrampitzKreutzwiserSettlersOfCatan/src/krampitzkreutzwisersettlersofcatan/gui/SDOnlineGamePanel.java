@@ -57,8 +57,8 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDOnlineGamePanel. Calls the
-             * menu panel's click event method.
+             * Triggered when the user clicks on the SDOnlineGamePanel. Calls
+             * the menu panel's click event method.
              *
              * @param event
              */
@@ -302,6 +302,11 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
             @Override
             public String getDescription() {
                 return "Catan Save File (*.catan)";
+                /**
+                 * TODO: Look at all the places trying to load a file.
+                 * Consolidate all the common needs into 1 common function. Find
+                 * them by searching for uses of Scanner of File objects.
+                 */
             }
 
             //add the logic for the filter
@@ -310,7 +315,7 @@ public class SDOnlineGamePanel extends javax.swing.JPanel implements MouseMotion
                 //if it's a directory ignor it
                 if (f.isDirectory()) {
                     return true;
-                } else { //if it's a file only show it if it's a .catan file
+                } else { //if it's a file only show it if it's a .catan file 
                     return f.getName().toLowerCase().endsWith(".catan");
                 }
             }

@@ -56,7 +56,7 @@ public class SDMenuFrame extends javax.swing.JFrame implements KeyListener {
         setTitle("Settlers of Catan - ICS4U Edition");
         setSize(screenSize);
         setIcon();
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); //make sure the user gives confirmation to close the gamefram without saving.
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); //make sure the user gives confirmation to close the gameframe without saving.
         //add in the JPanel
         add(sDMainMenuPanel);
         setUndecorated(true);
