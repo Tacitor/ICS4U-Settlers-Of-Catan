@@ -11,6 +11,8 @@ package settlerserver;
  * @author Tacitor
  */
 public class ColourPrint {
+    //TODO: Look into breaking this out into another project that can be compiled into a JAR and added as a library to both main projects.
+    //This will then allow for more common shared code such as some enums perhaps for the different commands sent back and forth.
 
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_PURPLE = "\u001B[35m";
