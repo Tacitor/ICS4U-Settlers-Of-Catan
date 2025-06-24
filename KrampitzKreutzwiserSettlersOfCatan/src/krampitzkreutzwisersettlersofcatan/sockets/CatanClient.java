@@ -116,7 +116,7 @@ public class CatanClient extends JFrame {
      */
     public void sendStop(boolean stopAll) {
 
-        //send the requestion
+        //send the request if not already done so
         if (!cscStopRequested) {
             csc.sendStopCommand4(stopAll);
         }
@@ -227,24 +227,7 @@ public class CatanClient extends JFrame {
                 //make it visible
                 theGameFrame.setVisible(true);
 
-                if (theGameFrame.getMainMenu().getSDJoinLobbyPanel() != null && theGameFrame.getMainMenu().getSDJoinLobbyPanel().isVisible()) {
-                    //switch back to the main menu for when ever the game terminates
-                    theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDJoinLobbyPanel(), theGameFrame.getMainMenu());
-
-                    //if this was still visible close the LA CSC
-                    //Terminate connection with the lobby aggregation server
-                    theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
-                }
-
-                if (theGameFrame.getMainMenu().getSDColourSelectPanel() != null && theGameFrame.getMainMenu().getSDColourSelectPanel().isVisible()) {
-                    theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDColourSelectPanel(), theGameFrame.getMainMenu());
-
-                    //if this was still visible close the LA CSC
-                    //Terminate connection with the lobby aggregation server
-                    theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
-                }
-                //hide the main menu frame
-                theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
+                closeNetInit();
 
                 //send the save file
                 sendGameToServer();
@@ -283,7 +266,7 @@ public class CatanClient extends JFrame {
         int recivedColourResponse = csc.reciveType(); //read in the int
 
         //debug the response
-        System.out.println("[Client " + clientID + "] " + "Recieved a colour change response: " + recivedColourResponse);
+        System.out.println("[Client " + clientID + "] Recieved a colour change response: " + recivedColourResponse);
 
         clientColour = recivedColourResponse;
 
@@ -396,18 +379,15 @@ public class CatanClient extends JFrame {
                     try {
                         //ensure the directory is there
                         Files.createDirectories(Paths.get(ONLINE_SAVE_LOCATION));
-                        //System.out.println("[Client " + clientID + "] Before file creation...");
 
                         //create a file to save it to
                         File file = new File(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
 
-                        //System.out.println("[Client " + clientID + "] After file creation...");
                         //take read and write acess
                         file.setExecutable(true);
                         file.setReadable(true);
                         file.setWritable(true);
 
-                        //System.out.println("[Client " + clientID + "] After perms update...");
                         //Create and output stream at the directory
                         FileOutputStream fos = new FileOutputStream(file);
 
@@ -425,40 +405,17 @@ public class CatanClient extends JFrame {
                             //save that a file was recived
                             firstFileRecieve = false;
 
-                            //ensure that the main menu is no longer visibled
-                            if (theGameFrame.getMainMenu().getSDJoinLobbyPanel() != null && theGameFrame.getMainMenu().getSDJoinLobbyPanel().isVisible()) {
-                                //switch back to the main menu for when ever the game terminates
-                                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDJoinLobbyPanel(), theGameFrame.getMainMenu());
-
-                                //if this was still visible close the LA CSC
-                                //Terminate connection with the lobby aggregation server
-                                theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
-                            }
-                            if (theGameFrame.getMainMenu().getSDColourSelectPanel() != null && theGameFrame.getMainMenu().getSDColourSelectPanel().isVisible()) {
-                                theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDColourSelectPanel(), theGameFrame.getMainMenu());
-
-                                //if this was still visible close the LA CSC
-                                //Terminate connection with the lobby aggregation server
-                                theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
-                            }
-                            //hide the main menu frame
-                            theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
+                            closeNetInit();
                         }
 
                         //load the save from the other client in the online game
                         theGameFrame.getGamePanel().load(ONLINE_SAVE_LOCATION + ONLINE_SAVE_NAME + clientID + ONLINE_SAVE_TYPE);
-
-                        //System.out.println("Animation load time: " + (System.currentTimeMillis() - oldTime));
                     } catch (FileNotFoundException exception) {
                         JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
                         System.out.println("[Client " + clientID + "] There was an error loading the save file:\n" + exception);
-                        //Sometimes might get
-                        //java.io.FileNotFoundException: (Access is denied)
-                        //happens so often for client 2. I have not yet seen it for client 1. Some how the perms need to be updated I think. When trying to write file to disk maybe need to delete the existing one or something?
-                        //Seems to mostly have been an issue when switching between v6.1.0.jar and NetBeans "run project" or "debug projeuct"
                     } catch (IOException exception) {
                         JOptionPane.showMessageDialog(null, "There was an IOException loading the save file:\n" + exception, "Loading Error", JOptionPane.ERROR_MESSAGE);
-                    }   //System.out.println("Chat is : \n" + fileTypeRecieve.getChat());
+                    }
 
                 }
                 break;
@@ -516,6 +473,33 @@ public class CatanClient extends JFrame {
         if (justPressedSend) {
             justPressedSend = false;
         }
+    }
+
+    /**
+     * Close out any loose ends from initializing the networking required for
+     * online play. Common to both regularRecive() and startUpClient1()
+     */
+    private void closeNetInit() {
+        //ensure that the main menu is no longer visibled
+        if (theGameFrame.getMainMenu().getSDJoinLobbyPanel() != null && theGameFrame.getMainMenu().getSDJoinLobbyPanel().isVisible()) {
+            //switch back to the main menu for when ever the game terminates
+            theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDJoinLobbyPanel(), theGameFrame.getMainMenu());
+
+            //if this was still visible close the LA CSC
+            //Terminate connection with the lobby aggregation server
+            theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
+        }
+
+        if (theGameFrame.getMainMenu().getSDColourSelectPanel() != null && theGameFrame.getMainMenu().getSDColourSelectPanel().isVisible()) {
+            theGameFrame.getMainMenu().getSDMenuFrame().switchPanel(theGameFrame.getMainMenu().getSDColourSelectPanel(), theGameFrame.getMainMenu());
+
+            //if this was still visible close the LA CSC
+            //Terminate connection with the lobby aggregation server
+            theGameFrame.getMainMenu().getSDJoinLobbyPanel().closeCSC();
+        }
+
+        //hide the main menu frame
+        theGameFrame.getMainMenu().getSDMenuFrame().setVisible(false);
     }
 
     /**
@@ -692,13 +676,13 @@ public class CatanClient extends JFrame {
                 clientID = dataIn.readInt();
                 //the the totalClientNum
                 totalClientNum = dataIn.readInt();
-                System.out.println("[Client " + clientID + "] " + "Connected to a server as Client #" + clientID);
+                System.out.println("[Client " + clientID + "] Connected to a server as Client #" + clientID);
 
                 //if everything else was able to be done save the success
                 successfulConnect = true;
 
             } catch (IOException e) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC contructor\n" + e);
+                System.out.println("[Client " + clientID + "] IOException from CSC contructor\n" + e);
 
                 //save the failed connection
                 successfulConnect = false;
@@ -711,7 +695,7 @@ public class CatanClient extends JFrame {
                 dataOut.writeUTF(mesg);
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendNewString()");
+                System.out.println("[Client " + clientID + "] IOException from CSC sendNewString()");
             }
         }
 
@@ -724,7 +708,7 @@ public class CatanClient extends JFrame {
                 dataOut.writeBoolean(justRolledDice);
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendFileStream()");
+                System.out.println("[Client " + clientID + "] IOException from CSC sendFileStream()");
 
                 JOptionPane.showMessageDialog(null, "[Client " + clientID + "] "
                         + "IOException from CSC sendFileStream()", "CatanServer connection error", JOptionPane.ERROR_MESSAGE);
@@ -738,16 +722,19 @@ public class CatanClient extends JFrame {
                 dataOut.writeInt(colour); //send the colour the client would like
                 dataOut.flush();
             } catch (IOException e) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendColourRequest():\n" + e);
+                System.out.println("[Client " + clientID + "] IOException from CSC sendColourRequest():\n" + e);
             }
         }
 
         /**
-         * Start a CSC triggered stop. This will come from the GamePanel game
-         * ending. Will trigger a command #6 stop once it reached the
-         * CatanServer. Must specify if just this CSC is disconnecting or if all
-         * SSC should be stopped too. A single CSC disconnection can only
-         * happened before all players have selected their colour.
+         * Start a CSC triggered stop. This might come from the GamePanel game
+         * ending. Might also come from a player disconnecting prematurely. Will
+         * trigger a command #6 stop once it reached the CatanServer. Must
+         * specify if just this CSC is disconnecting or if all SSCs should be
+         * stopped too. A single CSC disconnection can only happened before all
+         * players have selected their colour.
+         *
+         * @param stopAll
          */
         public void sendStopCommand4(boolean stopAll) {
             System.out.println("[Client " + clientID + "] Sending Stop Command #4");
@@ -846,7 +833,7 @@ public class CatanClient extends JFrame {
                 dataOut.flush();
 
             } catch (IOException e) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC sendDomesticTradeData()");
+                System.out.println("[Client " + clientID + "] IOException from CSC sendDomesticTradeData()");
             }
         }
 
@@ -865,9 +852,9 @@ public class CatanClient extends JFrame {
                 while (count < file.length) {
                     int bytesRead = dataIn.read(file, count, file.length - count);
                     //debug reading the file
-                    //System.out.println("[Client " + clientID + "] " + "bytesRead: " + bytesRead);
+                    //System.out.println("[Client " + clientID + "] bytesRead: " + bytesRead);
                     if (bytesRead == -1) {
-                        System.out.println("[Client " + clientID + "] " + "didn't get a complete file");
+                        System.out.println("[Client " + clientID + "] didn't get a complete file");
                     }
                     count += bytesRead;
                 }
@@ -876,7 +863,7 @@ public class CatanClient extends JFrame {
                 justRolledDice = dataIn.readBoolean();
 
             } catch (IOException ex) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC recieveFile()");
+                System.out.println("[Client " + clientID + "] IOException from CSC recieveFile()");
             }
 
             return new FileTypeRecieve(file, fileName, justRolledDice);
@@ -939,7 +926,7 @@ public class CatanClient extends JFrame {
                 }
 
             } catch (IOException ex) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC receiveDomesticTradeData()");
+                System.out.println("[Client " + clientID + "] IOException from CSC receiveDomesticTradeData()");
             }
 
             return new DomesticTradeTypeReceive(onlineModeOfSender, playerStartedDomestic, playerSelectedForTrade, domesticTradeMode,
@@ -952,7 +939,7 @@ public class CatanClient extends JFrame {
             try {
                 msg = dataIn.readUTF();
             } catch (IOException ex) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveNewString()");
+                System.out.println("[Client " + clientID + "] IOException from CSC reciveNewString()");
             }
 
             return msg;
@@ -964,7 +951,7 @@ public class CatanClient extends JFrame {
             try {
                 msg = dataIn.readInt();
             } catch (IOException ex) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveType():\n" + ex);
+                System.out.println("[Client " + clientID + "] IOException from CSC reciveType():\n" + ex);
 
                 //request a stop
                 cscStopRequested = true;
@@ -979,7 +966,7 @@ public class CatanClient extends JFrame {
             try {
                 bool = dataIn.readBoolean();
             } catch (IOException ex) {
-                System.out.println("[Client " + clientID + "] " + "IOException from CSC reciveBoolean()");
+                System.out.println("[Client " + clientID + "] IOException from CSC reciveBoolean()");
             }
 
             return bool;
