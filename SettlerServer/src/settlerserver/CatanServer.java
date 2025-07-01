@@ -283,15 +283,6 @@ public class CatanServer {
     }
 
     /**
-     *
-     */
-    public static void printDebugLnBr() {
-        if (SettlerServer.DEBUG_OUTPUT) {
-            System.out.print("\n");
-        }
-    }
-
-    /**
      * Iterate over the given clients. Return the index of the first null in the
      * clients array
      *
@@ -445,7 +436,6 @@ public class CatanServer {
 
                                 //debug the data coming in
                                 System.out.println("[Server " + catanServerID + "] Send begin command to Client 1");
-                                printDebugLnBr();
                             }
 
                             break;

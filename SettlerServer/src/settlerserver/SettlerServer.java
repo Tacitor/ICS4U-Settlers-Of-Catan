@@ -19,8 +19,6 @@ import java.util.Scanner;
  */
 public class SettlerServer {
 
-    public static final boolean DEBUG_OUTPUT = true;
-
     //The recieving Socket
     private ServerSocket leSocket;
     //the number of clients currently connected
@@ -54,7 +52,8 @@ public class SettlerServer {
     }
 
     /**
-     *
+     * Main constructor. Initializes internal fields and ArrayLists. Opens the
+     * ServerSocket needed for future connections.
      */
     public SettlerServer() {
         System.out.println("[Lobby Aggregation] Creating service");
@@ -78,7 +77,7 @@ public class SettlerServer {
     }
 
     /**
-     *
+     * Creates four new CatanServer instances.
      */
     private void serverStartUp() {
         for (int i = 0; i < 4; i++) {
@@ -87,7 +86,12 @@ public class SettlerServer {
     }
 
     /**
+     * Restart a given CatanServer. With the specific catanServerID, and the new
+     * max number of clients a CatanServer is restarted gracefully. If
+     * successful it is made ready to accept connections once again.
      *
+     * @param catanServerID
+     * @param maxClients
      */
     private void serverRestart(int catanServerID, int maxClients) {
         CatanServer cs = null;
@@ -116,12 +120,11 @@ public class SettlerServer {
     }
 
     /**
-     *
+     * Listens and accepts new connections from sockets.
      */
     private void acceptConnections() {
         try {
             System.out.println("[Lobby Aggregation] Listening for connections...");
-            CatanServer.printDebugLnBr();
 
             //wait cli input
             Thread t = new Thread(() -> {
@@ -166,7 +169,7 @@ public class SettlerServer {
     }
 
     /**
-     *
+     * Listens for input over the CLI and runs matching commands.
      */
     private void scannInput() {
         Scanner scanner = new Scanner(System.in);
@@ -215,7 +218,7 @@ public class SettlerServer {
     }
 
     /**
-     *
+     * Triggers request to terminate all Lobby Aggregation clients.
      */
     private void stopClients() {
         for (ServerSideConnection leSSC : aggregationClients) {
@@ -227,7 +230,7 @@ public class SettlerServer {
     }
 
     /**
-     *
+     * Triggers request to terminate all CatanServers.
      */
     private void stopCatanServers() {
         for (CatanServer cs : serverList) {
@@ -238,7 +241,8 @@ public class SettlerServer {
     }
 
     /**
-     *
+     * Propagates the latest lobby statistics of the CatanServers to any Lobby
+     * Aggregation clients that are connected.
      */
     private void updateClientStats() {
         System.out.println("[Lobby Aggregation] call to updateClientStats()");
@@ -248,7 +252,7 @@ public class SettlerServer {
             }
         }
     }
-    
+
     /**
      * When lobby statistics are requested AFTER they are sent
      * monitorCompletedServers() can be called. This will search and find any
@@ -265,7 +269,7 @@ public class SettlerServer {
     }
 
     /**
-     *
+     * The instance of a socket on the Lobby Aggregation side of the server.
      */
     private class ServerSideConnection implements Runnable {
 
@@ -278,6 +282,7 @@ public class SettlerServer {
         private boolean stopRequested = false;
 
         /**
+         * Main constructor
          *
          * @param socket
          */
@@ -295,14 +300,16 @@ public class SettlerServer {
         }
 
         /**
-         *
+         * Sets flag for termination of the SSC
          */
         public void requestStop() {
             stopRequested = true;
         }
 
         /**
-         *
+         * Main process for the SSC. Will continue to loop until a stop has been
+         * requested. Deals with incoming data over the DataInputStream and
+         * takes action.
          */
         @Override
         public void run() {
@@ -358,6 +365,8 @@ public class SettlerServer {
         }
 
         /**
+         * A simplified string representation that displays the IPv4 address of
+         * this socket.
          *
          * @return
          */
@@ -367,7 +376,7 @@ public class SettlerServer {
         }
 
         /**
-         *
+         * Trigger termination with a #4 stop command to the CSC
          */
         private void sendSscStop() {
             try {
