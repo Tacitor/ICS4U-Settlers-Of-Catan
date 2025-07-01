@@ -62,6 +62,7 @@ public class CatanServer {
     public void acceptConnections() {
         try {
             System.out.println("[Server " + catanServerID + "] Waiting for connections...");
+
             //wait until all the clients have connected
             while (numClients < maxClients) {
                 //create a reciving socket on the server side

@@ -133,7 +133,6 @@ public class SettlerServer {
             t.setName("[Lobby Aggregation] scannInput()");
             t.start();
 
-            //wait until all the clients have connected
             while (!stopRequested) {
                 //create a reciving socket on the server side
                 Socket s = leSocket.accept();
