@@ -5,6 +5,7 @@
  */
 package krampitzkreutzwisersettlersofcatan.util;
 
+import java.awt.Color;
 import java.awt.Image;
 import javax.swing.JComponent;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
@@ -20,6 +21,8 @@ public class GenUtil {
     private static int[] remainingRoadPieces; //an the size of the number of players (plus 1 for the 0th player). Hold the number of reads that each player has left to build.
     private static int[] remainingSettlementPieces;
     private static int[] remainingCityPieces;
+    
+    public static Color BUTTON_TEXT_BROWN = new Color(57, 39, 32);
 
     /**
      * Given the online mode and the current player, determines which player

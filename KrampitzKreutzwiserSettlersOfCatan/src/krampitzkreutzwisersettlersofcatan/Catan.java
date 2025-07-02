@@ -5,6 +5,8 @@
  */
 package krampitzkreutzwisersettlersofcatan;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import krampitzkreutzwisersettlersofcatan.gui.SDMenuFrame;
 
@@ -17,22 +19,43 @@ public class Catan {
     public static GamePanel gamePanel;
     public static SDMenuFrame sDMenuFrame;
     public static final String SAVE_FILE_VER = "V15"; //the save file version needed
-    public static final String GAME_VER = "v6.1.0 - Main Menu Modification"; //the version of the game/program
+    public static final String GAME_VER = "pre-v6.2.0 - Native Neatened Networking"; //the version of the game/program
 
     public static final boolean DEBUG_ONLINE_MODE = false; //if this is true then the game will lauch in decorated windowed 720p
+    public static final boolean DEBUG_SETTLER_SERVER = false; //if this is true then the game will connect to localhost, and not the specified URL/IP
 
     //fast pulse vars
     private static long prevTime;
     private static int fastPulseTime; //the number of miliseconds between fast pulses
 
     public static void main(String[] args) throws InterruptedException {
+        //TODO: Try out migrating to latest Apache NetBean with a JDK SE 21 (latest LTS)
+        
         System.out.println("Catan startup");
         //record the time
         prevTime = System.currentTimeMillis();
 
         sDMenuFrame = new SDMenuFrame();
+        sDMenuFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                sDMenuFrame.getActiveJPanel().exitBtnActionPerformed();
+            }
+        });
+
         sDMenuFrame.setVisible(true);
         updateGamePanel();
+
+        //Ensure that when the GameFrame is closed it will have any networking and sockets closed.
+        sDMenuFrame.getSDMainMenuPanel().getGameFrame().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                boolean doClose = gamePanel.backNoSaveBtnClicked();
+                if (doClose) {
+                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().dispose();
+                }
+            }
+        });
 
         //set up the fast game pulse
         FastGamePulseRunnable fastGamePulseRunnable = new FastGamePulseRunnable();
@@ -72,6 +95,7 @@ public class Catan {
 
         @Override
         public void run() {
+            this.setName("FastGamePulseRunnable");
 
             //check if this thread should stop
             while (!stopRequested) {

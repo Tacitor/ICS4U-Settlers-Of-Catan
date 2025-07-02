@@ -8,16 +8,11 @@ package krampitzkreutzwisersettlersofcatan.gui;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
@@ -26,7 +21,7 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionListener {
+public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
 
     //Ref to frame this is held in
     private SDMenuFrame sDMenuFrame;
@@ -34,11 +29,13 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     //ref to the other Menu elements
     private final SDCreditsPanel sDCreditsPanel; //the new credits menu
     private final GameFrame gameJFrame; //ref to the game JFrame
-    private final SDNewGameSettingsPanel sDNewGameSettingsPanel;
     private final SDClientSettings sDClientSettings;
-    private SDNewOnlineGameMenu sDnewOnlineGameMenu;
-    private SDJoinOnlineGameMenu sDJoinOnlineGameMenu;
-    private SDLoadOnlineGameMenu sDloadOnlineGameMenu;
+    private SDOnlineGamePanel sDOnlineGamePanel;
+    private SDOfflineGamePanel sDOfflineGamePanel;
+
+    private SDNewGameSettingsPanel sDNewGameSettingsPanel;
+    private SDJoinLobbyPanel sDJoinLobbyPanel;
+    private SDColourSelectPanel sDColourSelectPanel;
 
     //Attributes
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -46,7 +43,7 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private int mouseMotionPosY;
 
     //Settler Compoments
-    private SettlerBtn newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, joinOnlineGameBtn, loadGameToOnlineModeBtn, creditsBtn, userManualBtn, exitMainMenuBtn;
+    private SettlerBtn onlineGameBtn, offlineGameBtn, optionsBtn, creditsBtn, userManualBtn, exitMainMenuBtn;
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
 
@@ -64,9 +61,20 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         COMPASS_GOLD = sDMenuFrame.setUpCompassGoldFont();
 
         sDCreditsPanel = new SDCreditsPanel(sDMenuFrame);
+
         gameJFrame = new GameFrame(this);
+
         sDClientSettings = new SDClientSettings(sDMenuFrame);
-        sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
+
+        sDOnlineGamePanel = new SDOnlineGamePanel(sDMenuFrame);
+        sDOfflineGamePanel = new SDOfflineGamePanel(sDMenuFrame);
+
+        //init the newGameSettingsPanel
+        resetSDNewGameSettingsPanel();
+        //init the join lobby panel
+        resetSDJoinLobbyPanel();
+        //init the colour selection panel
+        resetSDColourSelectPanel();
 
         //add the mouse motion listener
         addMouseMotionListener(this);
@@ -87,18 +95,15 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
         });
 
         //setup the buttons
-        newGameBtn = new SettlerBtn(true, 0, 14);
-        loadGameBtn = new SettlerBtn(true, 0, 15);
-        loadAutosaveBtn = new SettlerBtn(true, 0, 19);
+        onlineGameBtn = new SettlerBtn(true, 0, 29);
+        offlineGameBtn = new SettlerBtn(true, 0, 30);
         optionsBtn = new SettlerBtn(true, 0, 20);
-        joinOnlineGameBtn = new SettlerBtn(true, 0, 16);
-        loadGameToOnlineModeBtn = new SettlerBtn(true, 0, 17);
         creditsBtn = new SettlerBtn(true, 0, 21);
         userManualBtn = new SettlerBtn(false, 0, 22);
         exitMainMenuBtn = new SettlerBtn(true, 0, 18);
 
         //add them to the array
-        settlerBtns = new SettlerBtn[]{newGameBtn, loadGameBtn, loadAutosaveBtn, optionsBtn, joinOnlineGameBtn, loadGameToOnlineModeBtn, creditsBtn, userManualBtn, exitMainMenuBtn};
+        settlerBtns = new SettlerBtn[]{onlineGameBtn, offlineGameBtn, optionsBtn, creditsBtn, userManualBtn, exitMainMenuBtn};
 
     }
 
@@ -178,31 +183,22 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     private void settlerVarPos() {
         int menuPackingHeight = SDMenuFrame.MENU_PACKING_HEIGHT;
 
-        newGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
-        newGameBtn.setYPos(localScaleInt(250));
+        onlineGameBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitMainMenuBtn.getBaseImage(), this) / 2);
+        onlineGameBtn.setYPos(localScaleInt(250));
 
-        loadGameBtn.setXPos(newGameBtn.getXPos());
-        loadGameBtn.setYPos(newGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(loadGameBtn.getBaseImage(), this));
+        offlineGameBtn.setXPos(onlineGameBtn.getXPos());
+        offlineGameBtn.setYPos(onlineGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(offlineGameBtn.getBaseImage(), this));
 
-        loadAutosaveBtn.setXPos(newGameBtn.getXPos());
-        loadAutosaveBtn.setYPos(loadGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(optionsBtn.getBaseImage(), this));
+        optionsBtn.setXPos(offlineGameBtn.getXPos());
+        optionsBtn.setYPos(offlineGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(offlineGameBtn.getBaseImage(), this));
 
-        optionsBtn.setXPos(loadAutosaveBtn.getXPos() + localScaleInt(12) + sDMenuFrame.getImgWidthLocal(optionsBtn.getBaseImage(), this));
-        optionsBtn.setYPos(loadAutosaveBtn.getYPos());
-
-        joinOnlineGameBtn.setXPos(newGameBtn.getXPos());
-        joinOnlineGameBtn.setYPos(optionsBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(joinOnlineGameBtn.getBaseImage(), this));
-
-        loadGameToOnlineModeBtn.setXPos(newGameBtn.getXPos());
-        loadGameToOnlineModeBtn.setYPos(joinOnlineGameBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(loadGameToOnlineModeBtn.getBaseImage(), this));
-
-        creditsBtn.setXPos(newGameBtn.getXPos());
-        creditsBtn.setYPos(loadGameToOnlineModeBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(creditsBtn.getBaseImage(), this));
+        creditsBtn.setXPos(onlineGameBtn.getXPos());
+        creditsBtn.setYPos(optionsBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(creditsBtn.getBaseImage(), this));
 
         userManualBtn.setXPos(creditsBtn.getXPos() + localScaleInt(12) + sDMenuFrame.getImgWidthLocal(userManualBtn.getBaseImage(), this));
         userManualBtn.setYPos(creditsBtn.getYPos());
 
-        exitMainMenuBtn.setXPos(newGameBtn.getXPos());
+        exitMainMenuBtn.setXPos(onlineGameBtn.getXPos());
         //Old Height
         //this.getHeight() - localScaleInt(20) - sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this)
         exitMainMenuBtn.setYPos(userManualBtn.getYPos() + localScaleInt(menuPackingHeight) + sDMenuFrame.getImgHeightLocal(exitMainMenuBtn.getBaseImage(), this));
@@ -227,18 +223,12 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
                 //check the button that was pressed
                 if (btn.equals(exitMainMenuBtn)) { //if it was the exit game button
 
-                    exitMainMenuBtnPressed();
+                    exitBtnActionPerformed();
 
-                } else if (btn.equals(newGameBtn)) {
-                    newGameBtnActionPerformed();
-                } else if (btn.equals(loadAutosaveBtn)) {
-                    loadAutosaveBtnActionPerformed();
-                } else if (btn.equals(loadGameBtn)) {
-                    loadGameBtnActionPerformed();
-                } else if (btn.equals(joinOnlineGameBtn)) {
-                    joinOnlineBtnActionPerformed();
-                } else if (btn.equals(loadGameToOnlineModeBtn)) {
-                    loadToOnlineBtnActionPerformed();
+                } else if (btn.equals(onlineGameBtn)) {
+                    onlineGameBtnActionPerformed();
+                } else if (btn.equals(offlineGameBtn)) {
+                    offlineGameBtnActionPerformed();
                 } else if (btn.equals(optionsBtn)) {
                     optionBtnActionPerformed();
                 } else if (btn.equals(creditsBtn)) {
@@ -295,7 +285,8 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
      * @param num
      * @return
      */
-    public static int localScaleInt(int num) {
+    @Override
+    public int localScaleInt(int num) {
         return (int) (num / localScaleFactor);
     }
 
@@ -307,90 +298,25 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     /**
      * Closed the game
      */
-    private void exitMainMenuBtnPressed() {
+    @Override
+    public void exitBtnActionPerformed() {
         System.exit(0);
     }
 
     /**
-     * Open the new game settings
+     * Open the online game settings
      */
-    private void newGameBtnActionPerformed() {
-        // Hide this window and show the New Game Settings
-        newGameBtn.setmouseHover(false);
-        sDMenuFrame.switchPanel(this, sDNewGameSettingsPanel);
+    private void onlineGameBtnActionPerformed() {
+        onlineGameBtn.setmouseHover(false);
+        sDMenuFrame.switchPanel(this, sDOnlineGamePanel);
     }
 
     /**
-     * Load in a previous game from a save file
+     * Open the offline game settings
      */
-    private void loadGameBtnActionPerformed() {
-        JFileChooser saveFileLoader = new JFileChooser(); //make a new file chooser
-
-        //create a filter for catan save files
-        FileFilter catanSaveFile = new FileFilter() {
-            //add the description
-            @Override
-            public String getDescription() {
-                return "Catan Save File (*.catan)";
-            }
-
-            //add the logic for the filter
-            @Override
-            public boolean accept(File f) {
-                //if it's a directory ignor it
-                if (f.isDirectory()) {
-                    return true;
-                } else { //if it's a file only show it if it's a .catan file
-                    return f.getName().toLowerCase().endsWith(".catan");
-                }
-            }
-        };
-
-        //set up the file choose and call it
-        saveFileLoader.setDialogTitle("Select a Save File to Open:");
-        saveFileLoader.addChoosableFileFilter(catanSaveFile);
-        saveFileLoader.setFileFilter(catanSaveFile);
-        int userLoadSelection = saveFileLoader.showOpenDialog(this);
-
-        //check if the user selected a file
-        if (userLoadSelection == JFileChooser.APPROVE_OPTION) {
-
-            //test if it is a vailid save file
-            try {
-                File savefile = new File(saveFileLoader.getSelectedFile().getPath());
-                Scanner scanner = new Scanner(savefile);
-
-                // Hide this window and reset the game
-                this.setVisible(false);
-                gameJFrame.resetGamePanel();
-
-                //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
-                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
-                } else { //if it is a real save file
-                    //check if the next line hold the player count
-                    if (scanner.nextLine().equals("playerCount:")) {
-                        //set the player count
-                        GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
-                        gameJFrame.resetGamePanel();
-
-                        gameJFrame.loadFromFile(saveFileLoader.getSelectedFile().getPath());
-
-                    } else {
-                        JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-
-                //show the game                
-                gameJFrame.setVisible(true);
-
-            } catch (FileNotFoundException e) {
-                JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-        } else { //if there was so file selected
-            JOptionPane.showMessageDialog(null, "There was no file selected.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-        }
+    private void offlineGameBtnActionPerformed() {
+        offlineGameBtn.setmouseHover(false);
+        sDMenuFrame.switchPanel(this, sDOfflineGamePanel);
     }
 
     /**
@@ -403,73 +329,12 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     }
 
     /**
-     * Load the Auto-save if there is one
-     */
-    private void loadAutosaveBtnActionPerformed() {
-        String autosaveLocation = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan";
-
-        //test if it is a vailid autosave file
-        try {
-            //use the predetermined auto save file location
-            File savefile = new File(autosaveLocation);
-            Scanner scanner = new Scanner(savefile);
-
-            // Hide this window and reset the game
-            this.setVisible(false);
-            gameJFrame.resetGamePanel();
-
-            //check if it is a vailid game save
-            if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
-                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
-            } else { //if it is a real save file
-                //check if the next line hold the player count
-                if (scanner.nextLine().equals("playerCount:")) {
-                    //set the player count
-                    GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
-                    gameJFrame.resetGamePanel();
-
-                    gameJFrame.loadFromFile(autosaveLocation);
-
-                } else {
-                    JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-
-            //show the game                
-            gameJFrame.setVisible(true);
-
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "There was no autosave file detected:\n" + e, "No Autosave", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    /**
      * Show the Options
      */
     private void optionBtnActionPerformed() {
         // Hide this window and show the settings
         optionsBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDClientSettings);
-    }
-
-    /**
-     * Show the menu to join an Online Game
-     */
-    private void joinOnlineBtnActionPerformed() {
-        //create a new game joining window
-        joinOnlineGameBtn.setmouseHover(false);
-        sDJoinOnlineGameMenu = new SDJoinOnlineGameMenu(sDMenuFrame);
-        sDMenuFrame.switchPanel(this, sDJoinOnlineGameMenu);
-    }
-
-    /**
-     * Show the menu to load a save file to Online Mode
-     */
-    private void loadToOnlineBtnActionPerformed() {
-        //make a new loading from a save file windows        
-        loadGameToOnlineModeBtn.setmouseHover(false);
-        sDloadOnlineGameMenu = new SDLoadOnlineGameMenu(sDMenuFrame);
-        sDMenuFrame.switchPanel(this, sDloadOnlineGameMenu);
     }
 
     /**
@@ -482,39 +347,53 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     }
 
     /**
-     * Return the newOnlineGameMenu
+     * Accessor for the sDnewGameSettingsPanel
      *
      * @return
      */
-    public SDNewOnlineGameMenu getNewOnlineGameMenu() {
-        return sDnewOnlineGameMenu;
+    public SDNewGameSettingsPanel getSDNewGameSettingsPanel() {
+        return sDNewGameSettingsPanel;
     }
 
     /**
-     * Mutator for the newOnlineGameMenu
-     *
-     * @param sDnewOnlineGameMenu
+     * Reset method for sDnewGameSettingsPanel
      */
-    public void setNewOnlineGameMenu(SDNewOnlineGameMenu sDnewOnlineGameMenu) {
-        this.sDnewOnlineGameMenu = sDnewOnlineGameMenu;
+    public void resetSDNewGameSettingsPanel() {
+        sDNewGameSettingsPanel = new SDNewGameSettingsPanel(sDMenuFrame);
     }
 
     /**
-     * Return the newOnlineGameMenu
+     * Accessor for sDjoinLobbyPanel
      *
      * @return
      */
-    public SDLoadOnlineGameMenu getLoadOnlineGameMenu() {
-        return sDloadOnlineGameMenu;
+    public SDJoinLobbyPanel getSDJoinLobbyPanel() {
+        return sDJoinLobbyPanel;
     }
 
     /**
-     * Return the sDJoinOnlineGameMenu
+     * Reset method for sDjoinLobbyPanel
+     */
+    public void resetSDJoinLobbyPanel() {
+        sDJoinLobbyPanel = new SDJoinLobbyPanel(sDMenuFrame);
+        sDJoinLobbyPanel.setVisible(false);
+    }
+
+    /**
+     * Accessor for sDColourSelectPanel
      *
      * @return
      */
-    public SDJoinOnlineGameMenu getJoinOnlineGameMenu() {
-        return sDJoinOnlineGameMenu;
+    public SDColourSelectPanel getSDColourSelectPanel() {
+        return sDColourSelectPanel;
+    }
+
+    /**
+     * Reset method for sDColourSelectPanel
+     */
+    public void resetSDColourSelectPanel() {
+        sDColourSelectPanel = new SDColourSelectPanel(sDMenuFrame);
+        sDColourSelectPanel.setVisible(false);
     }
 
     public int getExitMainMenuBtnYPos() {
@@ -535,18 +414,16 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     public void keyPress(KeyEvent evt) {
 
         //pass on the KeyEvent to the right panel.
-        //Check if the SDJoinOnlineGameMenu is active
-        if (sDJoinOnlineGameMenu != null && sDJoinOnlineGameMenu.isVisible()) {
-            //pass it on
-            sDJoinOnlineGameMenu.keyPress(evt);
-        } else if (sDloadOnlineGameMenu != null && sDloadOnlineGameMenu.isVisible()) { //Check if the SDLoadOnlineGameMenu is active
-            //pass it on
-            sDloadOnlineGameMenu.keyPress(evt);
-        } else if (sDnewOnlineGameMenu != null && sDnewOnlineGameMenu.isVisible()) { //Check if the sDnewOnlineGameMenu is active
-            //pass it on
-            sDnewOnlineGameMenu.keyPress(evt);
-        }
+    }
 
+    @Override
+    public int getLocalImgWidth(Image image) {
+        throw new UnsupportedOperationException("Not supported. Call through SDMenuFrame");
+    }
+
+    @Override
+    public int getLocalImgHeight(Image image) {
+        throw new UnsupportedOperationException("Not supported. Call through SDMenuFrame");
     }
 
 }

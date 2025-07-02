@@ -21,6 +21,8 @@ import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
 import textures.ImageRef;
 
 /**
+ * TODO: Add a text-box for the user to type in an IP/URL for an alternative
+ * SettlerServer
  *
  * @author Tacitor
  */
@@ -41,7 +43,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
     private SettlerRadioBtn showBoarderYesRBtn, showBoarderNoRBtn, turnBeepYesRBtn, turnBeepNoRBtn, displayModeFullScreenRBtn, displayModeWindowedRBtn, windowDims4kRBtn, windowDims1080pRBtn, windowDims720pRBtn, windowDims800x600RBtn;
-    //arry for each group of radio buttons
+    //array for each group of radio buttons
     private SettlerRadioBtn[] settlerRadioShowBoarderBtns, settlerRadioTurnBeepBtns, settlerRadioDisplayModeBtns, settlerRadioWindowDimsBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
@@ -65,7 +67,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDCreditsPanel. Calls the
+             * Triggered when the user clicks on the SDClientSettings. Calls the
              * menu panel's click event method.
              *
              * @param event
@@ -162,7 +164,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(120)));
         g2d.setColor(DomesticTradePanel.BEIGE_COLOUR);
-
+        //TODO: Update this string
         //Draw the Title
         g2d.drawString("New Game Settings",
                 (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("New Game Settings") / 2),
@@ -401,7 +403,8 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         //System.out.println("Mouse Dragged");
     }
 
-    private void exitBtnActionPerformed() {
+    @Override
+    public void exitBtnActionPerformed() {
         exitBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
     }

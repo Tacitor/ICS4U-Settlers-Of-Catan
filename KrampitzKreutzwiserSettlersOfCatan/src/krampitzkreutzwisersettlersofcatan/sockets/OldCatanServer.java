@@ -13,10 +13,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 /**
+ * TODO: Just delete this class.
  *
  * @author Tacitor
+ * @deprecated
  */
-public class CatanServer {
+public class OldCatanServer {
 
     //The reciving socket
     private ServerSocket serverSocket;
@@ -37,7 +39,7 @@ public class CatanServer {
      * @param maxClients
      * @param port
      */
-    public CatanServer(int maxClients, int port) {
+    public OldCatanServer(int maxClients, int port) {
         //no clients have connected yet
         numClients = 0;
         //save the number of clients that will connect
@@ -261,7 +263,6 @@ public class CatanServer {
                                 //System.out.println("[Server SSC-" + ssc.clientID + "] stopping");
                             }
 
-                            //TODO: What is causeing the GameFrame to be visable after stopping
                             break;
                         //if the server is getting the domestic trading data
                         case 5:

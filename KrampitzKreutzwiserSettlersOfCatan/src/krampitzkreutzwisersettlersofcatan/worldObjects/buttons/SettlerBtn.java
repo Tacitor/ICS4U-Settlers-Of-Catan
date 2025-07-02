@@ -75,8 +75,7 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image LOAD_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadGameText.png")).getImage();
     private final static Image LOAD_AUTOSAVE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadAutosaveText.png")).getImage();
     private final static Image OPTIONS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/optionsText.png")).getImage();
-    private final static Image JOIN_ONLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/joinOnlineGameText.png")).getImage();
-    private final static Image LOAD_GAME_TO_ONLINE_MODE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/loadGameToOnlineModeText.png")).getImage();
+    private final static Image JOIN_LOBBY_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/joinLobbyText.png")).getImage();
     private final static Image CREDITS_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/creditsText.png")).getImage();
     private final static Image USER_MANUAL_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/userManualText.png")).getImage();
     private final static Image GAME_EXIT_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/exitText.png")).getImage();
@@ -94,12 +93,17 @@ public class SettlerBtn extends SettlerComponent {
     private final static Image CONNECT_CLIENT_NO_PORT_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/connectClientNoPortText.png")).getImage();
     private final static Image REQUEST_COLOUR_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourText.png")).getImage();
     private final static Image REQUEST_COLOUR_BTN_FAILED_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/requestColourTextNotAvail.png")).getImage();
-    private final static Image CREATE_SERVER_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/createServerText.png")).getImage();
+    private final static Image ONLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/mainOnlineGameText.png")).getImage();
+    private final static Image OFFLINE_GAME_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/mainOfflineGameText.png")).getImage();
+    private final static Image NONE_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/none.png")).getImage();
+
+    //texts for smaller SDMenuButtons
+    private final static Image REFRESH_BTN_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/refreshBtnText.png")).getImage();
+
     //array
     private static Image[] connect_client_btn_texts = new Image[]{CONNECT_CLIENT_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, CONNECT_CLIENT_FAILED_TEXT, CONNECT_CLIENT_NO_PORT_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
     private final static Image[] CONNECT_CLIENT_BTN_CONNECTING_TEXTS = new Image[]{CONNECT_CLIENT_CONNECTING_0_TEXT, CONNECT_CLIENT_CONNECTING_1_TEXT, CONNECT_CLIENT_CONNECTING_2_TEXT};
     private static Image[] request_colour_btn_texts = new Image[]{REQUEST_COLOUR_BTN_TEXT, CONNECT_CLIENT_SUCCESS_TEXT, REQUEST_COLOUR_BTN_FAILED_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
-    private static Image[] create_server_btn_texts = new Image[]{CREATE_SERVER_BTN_TEXT, CONNECT_CLIENT_NO_PORT_TEXT, CONNECT_CLIENT_CONNECTING_0_TEXT};
 
     //static button image arrays for text
     private final static Image[] CARD_BTN_TEXTS = new Image[]{CARD_BTN_TEXT1, CARD_BTN_TEXT2};
@@ -278,7 +282,7 @@ public class SettlerBtn extends SettlerComponent {
             case 16:
             //if it's a Join onlime game button
             case 17:
-            //if it's a load game to online mode button
+            //EMPTY BUTTON. Used to be a load game to online mode button
             case 18:
                 //if it's a big exit button for the SD main menu
                 baseImage = BIG_BTN;
@@ -306,9 +310,20 @@ public class SettlerBtn extends SettlerComponent {
             case 27:
             //if it's a big request colour button
             case 28:
-                //if it's a big create server button
+            //EMPTY BUTTON. Used to be a big create server button
+            case 29:
+            //if it's a big online game button
+            case 30:
+            //if it's a big offline game button
+            case 31:
+                //If it's a Lobby selection button
                 baseImage = BIG_BTN;
                 disabledImage = BIG_DISABLED_BTN;
+                break;
+            case 32:
+                //if it's refresh button (like in the lobby selection)
+                baseImage = TRADE_BTN; //still has the right length
+                disabledImage = TRADE_DISABLED_BTN;
                 break;
             default:
                 //default to error images
@@ -402,11 +417,12 @@ public class SettlerBtn extends SettlerComponent {
                 break;
             case 16:
                 //if it's a big join online gam button for the SD main menu
-                textImage = JOIN_ONLINE_GAME_BTN_TEXT;
+                textImage = JOIN_LOBBY_BTN_TEXT;
                 break;
             case 17:
-                //if it's a big load to online mode button for the SD main menu
-                textImage = LOAD_GAME_TO_ONLINE_MODE_BTN_TEXT;
+                //EMPTY BUTTON.
+                //Used to be "load to online mode button"
+                textImage = ERROR_IMAGE;
                 break;
             case 18:
                 //if it's a big exit button for the SD main menu
@@ -437,7 +453,7 @@ public class SettlerBtn extends SettlerComponent {
                 textImage = START_GAME_BTN_TEXT;
                 break;
             case 25:
-                //if it's a big start game button
+                //if it's a big save button
                 textImage = SAVE_BTN_TEXT;
                 break;
             case 26:
@@ -455,11 +471,25 @@ public class SettlerBtn extends SettlerComponent {
                 textImage = request_colour_btn_texts[mode];
                 break;
             case 28:
-
-                //if it's a create server button
-                create_server_btn_texts[2] = CONNECT_CLIENT_BTN_CONNECTING_TEXTS[getAnimationFrame()];
-
-                textImage = create_server_btn_texts[mode];
+                //EMPTY BUTTON.
+                //Used to be "create server button"
+                textImage = ERROR_IMAGE;
+                break;
+            case 29:
+                //if it's an online game button for the SD main menu
+                textImage = ONLINE_GAME_BTN_TEXT;
+                break;
+            case 30:
+                //if it's an offline game button for the SD main menu
+                textImage = OFFLINE_GAME_BTN_TEXT;
+                break;
+            case 31:
+                //If it's a Lobby selection button
+                textImage = NONE_BTN_TEXT;
+                break;
+            case 32:
+                //if it's refresh button (like in the lobby selection)
+                textImage = REFRESH_BTN_TEXT;
                 break;
             default:
                 //deflault to error image

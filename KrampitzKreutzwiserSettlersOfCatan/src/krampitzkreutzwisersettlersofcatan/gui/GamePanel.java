@@ -642,7 +642,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
                 // Hide this window and show the main menu                
                 superFrame.setVisible(false); //hide the parent frame
-                
+
                 superFrame.getMainMenu().setVisible(true);
                 superFrame.getMainMenu().getSDMenuFrame().setVisible(true);
             }
@@ -968,10 +968,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
     /**
      * Exit the gamePanel without saving
+     *
+     * @return userExit - This value is true if the user confirms the choice to
+     * exit the game.
      */
-    private void backNoSaveBtnClicked() {
-        int overwrite;
-        overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
+    public boolean backNoSaveBtnClicked() {
+        int overwrite = JOptionPane.showConfirmDialog(null, "Are you sure you would like to exit without saving?\nAll your progess will be lost.", "Confim", 0, JOptionPane.ERROR_MESSAGE);
+        boolean userExit = false;
+
         //If the user really want to leave let them
         if (overwrite == 0) {
 
@@ -980,11 +984,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
 
             // Hide this window and show the main menu
             superFrame.setVisible(false); //hide the parent frame 
-            
+
             superFrame.getMainMenu().setVisible(true);
             superFrame.getMainMenu().getSDMenuFrame().setVisible(true);
-            
+
+            userExit = true;
         }
+
+        return userExit;
     }
 
     /**
@@ -993,7 +1000,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
     private void networkingCloseOpertations() {
         //if there is networking active stop it
         if (onlineMode != -1) {
-            onlineClient.sendStop(); //tell the server that this client disconected and to close the server
+            onlineClient.sendStop(true); //tell the server that this client disconected and to close the server and all other SSCs
 
             //reset the game to the offline defaults
             onlineMode = -1;
@@ -4693,10 +4700,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         // Display the output in a JOptionPane
         JOptionPane.showMessageDialog(this, msg, "Game Over", JOptionPane.PLAIN_MESSAGE);
 
-        // Close the game panel
+        //Preform the opperations needed when leaving an online game
+        networkingCloseOpertations();
+
         // Hide this window and show the main menu
-        superFrame.getMainMenu().setVisible(true); //show the main menu        
         superFrame.setVisible(false); //hide the parent frame 
+
+        superFrame.getMainMenu().setVisible(true);
+        superFrame.getMainMenu().getSDMenuFrame().setVisible(true);
     }
 
     //overrides paintComponent in JPanel class
@@ -5679,7 +5690,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
                         getImgHeight(PLAYER_DOTS[playerDotNum]) / 2,
                         null);
             }
-
+            //TODO: Fix the bottom two corners are not properly aligned if in windowd mode than the user resizes the JFrames
             //draw the tabSelected overlay if required
             if (btn.isTabSelected()) {
                 //draw the left
@@ -6851,15 +6862,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
      * If the game is in online mode update the server with the current game.
      */
     public void onlineUpdateServer() {
-        //debug statemtn for updateing the game server
-        //System.out.println("Updateing online");
-
         //check if the game is for online play
-        if (onlineMode != -1) {
+        if (onlineMode != -1 && !onlineClient.isCscStopRequested()) {
             //save the sate of the dice roll animation
             onlineClient.setJustRolledDice(dice.getJustRolled());
             //if it is send the save file to the server
             onlineClient.sendGameToServer();
+        } else if (onlineMode != -1 && onlineClient.isCscStopRequested()) {
+            JOptionPane.showMessageDialog(this, "There is no open connection to the CatanServer.\nAn open connection is needed to play online.", "Network error with CatanServer", JOptionPane.ERROR_MESSAGE);
         }
 
         //and check for a win

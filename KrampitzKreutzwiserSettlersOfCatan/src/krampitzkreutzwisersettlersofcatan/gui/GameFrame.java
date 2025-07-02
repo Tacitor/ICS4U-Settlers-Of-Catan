@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import textures.ImageRef;
 
@@ -17,7 +18,7 @@ import textures.ImageRef;
  *
  * @author Tacitor
  */
-public class GameFrame extends javax.swing.JFrame implements KeyListener {
+public class GameFrame extends JFrame implements KeyListener {
 
     private final SDMainMenuPanel mainMenuPanel; //ref to the main menu
     private Dimension screenSize; //keeps track of the display the game is being played on
@@ -50,7 +51,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         //setSize(800, 600);
         //setSize(600, 800);
         //setSize(3840, 2160);        
-        setDefaultCloseOperation(EXIT_ON_CLOSE); //make sure it closes the thread when the frame closes
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); //make sure the user gives confirmation to close the gameframe without saving.
         theGamePanel = new GamePanel(this); //creates a new blank game
         add(theGamePanel); //adds it to the JFrame
         setLocationRelativeTo(null); //center the frame on screen
@@ -60,6 +61,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         setVisible(false);
         addKeyListener(this); //allow the game to access presses on the keyboard
         this.setFocusTraversalKeysEnabled(false); //set to ignore tabbing keys and treat them like regular presses
+        showTrade = false;
 
         //debug screen size
         //System.out.println("Width: " + this.getWidth());

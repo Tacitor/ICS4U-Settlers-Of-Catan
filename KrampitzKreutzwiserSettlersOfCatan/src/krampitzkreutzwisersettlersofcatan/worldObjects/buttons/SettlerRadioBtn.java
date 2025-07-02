@@ -32,6 +32,10 @@ public class SettlerRadioBtn extends SettlerComponent {
     private final static Image RADIO_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioBtnDisabled.png")).getImage();
     private final static Image RADIO_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/rBtnSelection.png")).getImage();
     private final static Image RADIO_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/radioHoverBtn.png")).getImage();
+    private final static Image BIG_RADIO_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/bigRadioBtn.png")).getImage();
+    private final static Image BIG_RADIO_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/bigRadioBtnDisabled.png")).getImage();
+    private final static Image BIG_RADIO_BTN_SELECTION = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/bigRBtnSelection.png")).getImage();
+    private final static Image BIG_RADIO_BTN_HOVER = new ImageIcon(ImageRef.class.getResource("settlerBtn/util/bigRadioHoverBtn.png")).getImage();
     //statics for the smaller radio buttons
     private final static Image RADIO_SML_BTN_BASE = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioSmallBtn.png")).getImage();
     private final static Image RADIO_SML_BTN_DISABLED = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/radioSmallBtnDisabled.png")).getImage();
@@ -53,8 +57,6 @@ public class SettlerRadioBtn extends SettlerComponent {
     private final static Image RADIO_BTN_3_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/3BtnText.png")).getImage();
     private final static Image RADIO_BTN_4_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/4BtnText.png")).getImage();
     //the texts for the long new radio buttons
-    private final static Image RADIO_BTN_LOCAL_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/localGame.png")).getImage();
-    private final static Image RADIO_BTN_ONLINE_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/onlineBtnText.png")).getImage();
     private final static Image RADIO_BTN_STD_PC_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/standardPcBtnText.png")).getImage();
     private final static Image RADIO_BTN_INFINITE_PC_TEXT = new ImageIcon(ImageRef.class.getResource("settlerBtn/mainMenu/radio/infiniteBtnText.png")).getImage();
     //texts for the client settins menu    
@@ -175,15 +177,22 @@ public class SettlerRadioBtn extends SettlerComponent {
             case 15:
             case 16:
             case 17:
-            case 18:
-            case 19:
-            case 20:
-            case 21:
-                //if type windowed dimestions or colour selection
+                //if type windowed dimestions
                 baseImage = RADIO_BTN_BASE;
                 disabledImage = RADIO_BTN_DISABLED;
                 selectionImage = RADIO_BTN_SELECTION;
                 hoverImage = RADIO_BTN_HOVER;
+                tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
+                break;
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+                //if type colour selection
+                baseImage = BIG_RADIO_BTN_BASE;
+                disabledImage = BIG_RADIO_BTN_DISABLED;
+                selectionImage = BIG_RADIO_BTN_SELECTION;
+                hoverImage = BIG_RADIO_BTN_HOVER;
                 tabSelectionImages = new Image[]{FOCUS_LEFT, FOCUS_RIGHT};
                 break;
             default:
@@ -237,12 +246,12 @@ public class SettlerRadioBtn extends SettlerComponent {
                 textImage = RADIO_BTN_NO_TEXT;
                 break;
             case 8:
-                //if type is city radio button
-                textImage = RADIO_BTN_LOCAL_TEXT;
+                //EMPTY SLOT. PLEASE REUSE THIS ONE
+                textImage = ERROR_IMAGE;
                 break;
             case 9:
-                //if type is city radio button
-                textImage = RADIO_BTN_ONLINE_TEXT;
+                //EMPTY SLOT. PLEASE REUSE THIS ONE
+                textImage = ERROR_IMAGE;
                 break;
             case 10:
                 //if type is city radio button
@@ -300,12 +309,24 @@ public class SettlerRadioBtn extends SettlerComponent {
     }
 
     /**
-     * Draw the radio button
+     * Draw the radio button. Both layers.
+     *
+     * @param g2d
+     * @param parent
+     */
+    public void draw(Graphics2D g2d, JComponent parent) {
+        drawLower(g2d, parent);
+        drawUpper(g2d, parent);
+
+    }
+
+    /**
+     * Draw the radio button. Just the lower layers like the base and text.
      *
      * @param g2d
      * @param parent - the parent responsible for the sizing
      */
-    public void draw(Graphics2D g2d, JComponent parent) {
+    public void drawLower(Graphics2D g2d, JComponent parent) {
 
         //draw the base        
         g2d.drawImage(baseImage,
@@ -321,6 +342,16 @@ public class SettlerRadioBtn extends SettlerComponent {
                 GenUtil.interoperableGetImgWidth(textImage, parent),
                 GenUtil.interoperableGetImgHeight(textImage, parent), null);
 
+    }
+
+    /**
+     * Draw the radio button. Just the upper layers like the selection overlay,
+     * tab selectors, enabled overlay, and mouse hover overlay.
+     *
+     * @param g2d
+     * @param parent
+     */
+    public void drawUpper(Graphics2D g2d, JComponent parent) {
         //draw the selected overlay if required
         if (selected) {
             g2d.drawImage(selectionImage,
