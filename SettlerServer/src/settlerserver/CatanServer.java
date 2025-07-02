@@ -565,21 +565,6 @@ public class CatanServer {
         }
 
         /**
-         * Send a string to the client
-         *
-         * @param msg
-         */
-        public void sendNewString(String msg) {
-            try {
-                dataOut.writeInt(1); //tell the client they are reciving a chat message
-                dataOut.writeUTF(msg);
-                dataOut.flush();
-            } catch (IOException e) {
-                ColourPrint.printRed("[Server " + catanServerID + "] IOException from SSC sendNewString()");
-            }
-        }
-
-        /**
          * Send a file to the client. Also update their chat so they know to
          * check for a new file
          *
@@ -590,7 +575,7 @@ public class CatanServer {
          */
         public void sendFile(byte[] fileData, String fileName, boolean justRolledDice) {
             try {
-                dataOut.writeInt(2); //tell the client they are reciving a file and chat message
+                dataOut.writeInt(2); //tell the client they are reciving a file
                 dataOut.writeInt(fileData.length); //send the length of the file
                 dataOut.writeUTF(fileName); //send the file name
                 dataOut.write(fileData, 0, fileData.length); //send the file
