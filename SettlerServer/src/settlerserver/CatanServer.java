@@ -1,7 +1,7 @@
 /*
  * Lukas Krampitz
  * Mar 27, 2021
- * A modified copy of the orginonal server code from the main project and package
+ * A modified copy of the original server code from the client project and package
  */
 package settlerserver;
 
@@ -84,7 +84,7 @@ public class CatanServer {
                         clients[newClientIndex] = ssc;
 
                         Thread t = new Thread(ssc);
-                        t.setName("[Server " + catanServerID + ": SSC" + numClients + "]");
+                        t.setName("[Server " + catanServerID + ": SSC #" + (newClientIndex + 1) + "]");
                         t.start();
 
                         /**
@@ -108,7 +108,7 @@ public class CatanServer {
     }
 
     /**
-     *
+     * Gracefully stop a CatanServer regardless of its current state.
      */
     public void requestStop() {
         //early return for servers that have already had a stop requested
@@ -234,6 +234,7 @@ public class CatanServer {
     }
 
     /**
+     * Accessor for maxClients
      *
      * @return
      */
@@ -242,6 +243,7 @@ public class CatanServer {
     }
 
     /**
+     * Accessor for catanServerID
      *
      * @return
      */
@@ -250,6 +252,10 @@ public class CatanServer {
     }
 
     /**
+     * Accessor for the colours that are already taken within the server. Acts
+     * as an inverse to colours available, but does not skip any player that has
+     * not selected a colour. For each player without a selected colour the
+     * function will include an int with a value of 0 in the returned array.
      *
      * @return
      */
@@ -675,6 +681,8 @@ public class CatanServer {
         }
 
         /**
+         * Simple string representation of a CatanServer. Just includes the
+         * clientID
          *
          * @return
          */
