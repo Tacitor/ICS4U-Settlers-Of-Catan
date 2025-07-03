@@ -35,6 +35,13 @@ public class SettlerServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        /**
+         * TODO: Only make the service and the rest if the user types "/start"
+         * or something. If not after 10 seconds just exit(). This so that if a
+         * user runs the .jar without attaching a CLI first then they will have
+         * no way of knowing the program is running, and no way of stopping it.
+         */
+
         //call to SettlerServer constuctor to make the aggregation server
         lobbyAggregation = new SettlerServer();
 
