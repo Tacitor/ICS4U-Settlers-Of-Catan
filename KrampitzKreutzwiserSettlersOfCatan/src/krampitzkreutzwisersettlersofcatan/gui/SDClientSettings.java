@@ -164,10 +164,9 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(120)));
         g2d.setColor(DomesticTradePanel.BEIGE_COLOUR);
-        //TODO: Update this string
         //Draw the Title
-        g2d.drawString("New Game Settings",
-                (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("New Game Settings") / 2),
+        g2d.drawString("Options",
+                (this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("Options") / 2),
                 localScaleInt(100));
 
         g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(70)));
