@@ -203,15 +203,17 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                  * resources. 3) An icon for what the play piece counts are
                  */
 
-                //see if this specific player dot should be drawn for a given lobby
-                for (int playerNum : lobbyStats[btn.getMode() - 1].getColoursTaken()) {
+                int[] colTaken = lobbyStats[btn.getMode() - 1].getColoursTaken();
+
+                //see if this specific player dot should be drawn for the lobby
+                for (int i = 0; i < colTaken.length; i++) {
 
                     //draw the player's indecator dot
-                    g2d.drawImage(ImageRef.PLAYER_DOTS[playerNum],
-                            btn.getXPos() + localScaleInt(250) + localScaleInt(40 * playerNum),
+                    g2d.drawImage(ImageRef.PLAYER_DOTS[colTaken[i]],
+                            btn.getXPos() + localScaleInt(250) + localScaleInt(40 * i),
                             btn.getYPos() + (getLocalImgHeight(btn.getBaseImage()) / 8 * 3),
-                            getLocalImgWidth(ImageRef.PLAYER_DOTS[playerNum]),
-                            getLocalImgHeight(ImageRef.PLAYER_DOTS[playerNum]), null);
+                            getLocalImgWidth(ImageRef.PLAYER_DOTS[colTaken[i]]),
+                            getLocalImgHeight(ImageRef.PLAYER_DOTS[colTaken[i]]), null);
 
                 }
             }

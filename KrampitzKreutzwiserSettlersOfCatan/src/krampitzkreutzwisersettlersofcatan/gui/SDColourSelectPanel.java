@@ -187,20 +187,21 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
 
         //=-=-=-=-=-=-=-=-=-= END OF the drawing of Settlerbuttons =-=-=-=-=-=-=-=-=-=
         //update the lobbyLbl text before drawing it.
-        //also draw the play dots at this point
+        //also draw the player dots at this point
         if (lobbyStats != null) {
             int lobbyNum = lobbyPort - CATAN_SERVER_PORT;
             lobbyLbl.setText("Lobby " + (lobbyNum) + "                " + lobbyStats[lobbyNum - 1].getNumClients() + "/" + lobbyStats[lobbyNum - 1].getMaxClients());
+            int[] colTaken = lobbyStats[lobbyNum - 1].getColoursTaken();
 
             //see if this specific player dot should be drawn for the lobby
-            for (int playerNum : lobbyStats[lobbyNum - 1].getColoursTaken()) {
+            for (int i = 0; i < colTaken.length; i++) {
 
                 //draw the player's indecator dot
-                g2d.drawImage(ImageRef.PLAYER_DOTS[playerNum],
-                        lobbyLbl.getXPos() + localScaleInt(190) + localScaleInt(40 * playerNum),
+                g2d.drawImage(ImageRef.PLAYER_DOTS[colTaken[i]],
+                        lobbyLbl.getXPos() + localScaleInt(190) + localScaleInt(40 * i),
                         lobbyLbl.getYPos() - localScaleInt(25),
-                        getLocalImgWidth(ImageRef.PLAYER_DOTS[playerNum]),
-                        getLocalImgHeight(ImageRef.PLAYER_DOTS[playerNum]), null);
+                        getLocalImgWidth(ImageRef.PLAYER_DOTS[colTaken[i]]),
+                        getLocalImgHeight(ImageRef.PLAYER_DOTS[colTaken[i]]), null);
 
             }
         }
@@ -233,7 +234,6 @@ public class SDColourSelectPanel extends javax.swing.JPanel implements MouseMoti
                 SettlerRadioBtn settlerRadioBtn = settlerRadioBtnGroup[i];
 
                 settlerRadioBtn.drawLower(g2d, this);
-                //TODO: rework this entire block. Need to have fixes positions for each PLAYER. That means that the colour posions need to be flexable. This also means that black may appear 2+ times.
 
                 //Add the player dots to the colour select buttons
                 g2d.drawImage(dots[i + 1],
