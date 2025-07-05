@@ -5,9 +5,11 @@
  */
 package settlerserver;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public class SettlerServer {
     //the number of clients currently connected
     private int latestClient;
     private boolean stopRequested;
+    private static boolean startSettlerServer = false;
     //An array of all the clients
     private ArrayList<ServerSideConnection> aggregationClients;
     private ArrayList<CatanServer> serverList;
@@ -35,18 +38,49 @@ public class SettlerServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        /**
-         * TODO: Only make the service and the rest if the user types "/start"
-         * or something. If not after 10 seconds just exit(). This so that if a
-         * user runs the .jar without attaching a CLI first then they will have
-         * no way of knowing the program is running, and no way of stopping it.
-         */
+        ColourPrint.printPurple("Please run command \"/start\" to begin.");
+        System.out.println("If not started SettlerServer will exit in 10 seconds.");
+        long startTime = System.currentTimeMillis();
 
-        //call to SettlerServer constuctor to make the aggregation server
-        lobbyAggregation = new SettlerServer();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        
+        String s;
 
-        lobbyAggregation.serverStartUp();
-        lobbyAggregation.acceptConnections();
+        while (!startSettlerServer && (System.currentTimeMillis() - startTime) < 10000) {
+
+            //check in periodically
+            try {
+                Thread.sleep(100);
+
+                if (bufferedReader.ready()) {
+                    s = bufferedReader.readLine();
+
+                    if (s.equalsIgnoreCase("")) {
+                        //Do nothing if the input is an empty String
+                    } else if (s.equalsIgnoreCase("/start")) {
+                        startSettlerServer = true;
+                    } else {
+                        ColourPrint.printRed("[Lobby Aggregation] The command " + s + " is not valid during start up.");
+                    }
+                }
+
+            } catch (InterruptedException e) {
+                ColourPrint.printRed("[Lobby Aggregation] InterruptedException from main()\n" + e);
+            } catch (IOException e) {
+                ColourPrint.printRed("[Lobby Aggregation] IOException from main()\n" + e);
+            }
+
+        }
+
+        if (startSettlerServer) {
+            //call to SettlerServer constuctor to make the aggregation server
+            lobbyAggregation = new SettlerServer();
+
+            lobbyAggregation.serverStartUp();
+            lobbyAggregation.acceptConnections();
+        } else {
+            System.out.println("SettlerServer not started. Goodbye.");
+        }
 
     }
 
@@ -215,12 +249,16 @@ public class SettlerServer {
                 ColourPrint.printPurple("[Lobby Aggregation] Valid commands are: \"/stop\", \"/list\", \"/restart\" (or \"/r\"), \"/update\", and \"/help\"");
             } else if (s[0].equalsIgnoreCase("/update")) {
                 propagateCatanServerChange();
+            } else if (s[0].equalsIgnoreCase("/start")) {
+                ColourPrint.printRed("[Lobby Aggregation] The command \"/start\" is ONLY valid during start up.");
             } else if (s[0].equalsIgnoreCase("")) {
                 //Do nothing if the input is an empty String
             } else {
                 ColourPrint.printRed("[Lobby Aggregation] The command " + s[0] + " is not recognised. Use \"/help\" for a list of valid commands.");
             }
         }
+
+        scanner.close();
     }
 
     /**
