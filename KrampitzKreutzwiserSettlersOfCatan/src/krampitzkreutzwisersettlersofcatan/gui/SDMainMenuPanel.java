@@ -414,6 +414,11 @@ public class SDMainMenuPanel extends javax.swing.JPanel implements MouseMotionLi
     public void keyPress(KeyEvent evt) {
 
         //pass on the KeyEvent to the right panel.
+        //Check if the SDClientSettings is active
+        if (sDClientSettings != null && sDClientSettings.isVisible()) {
+            //pass it on
+            sDClientSettings.keyPress(evt);
+        }
     }
 
     @Override

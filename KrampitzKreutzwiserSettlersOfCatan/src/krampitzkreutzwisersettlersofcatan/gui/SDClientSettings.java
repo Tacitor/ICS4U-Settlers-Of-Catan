@@ -6,11 +6,13 @@
 package krampitzkreutzwisersettlersofcatan.gui;
 
 import Audio.AudioRef;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -18,6 +20,7 @@ import javax.swing.JFrame;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerLbl;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerRadioBtn;
+import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerTxtBx;
 import textures.ImageRef;
 
 /**
@@ -27,6 +30,7 @@ import textures.ImageRef;
  * @author Tacitor
  */
 public class SDClientSettings extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
+    //TODO: Write these options to disk so that on load the same settings withh re-apply
 
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -47,6 +51,8 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     private SettlerRadioBtn[] settlerRadioShowBoarderBtns, settlerRadioTurnBeepBtns, settlerRadioDisplayModeBtns, settlerRadioWindowDimsBtns;
     //main array for all the radio buttons groups
     private SettlerRadioBtn[][] settlerRadioBtnGroups;
+    private SettlerTxtBx lobbyAggregationIPTxtBx;
+    private SettlerTxtBx[] settlerTxtBxs;
 
     //Fonts
     public Font COMPASS_GOLD;
@@ -125,6 +131,10 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         for (SettlerRadioBtn[] grp : settlerRadioBtnGroups) {
             SettlerRadioBtn.setUpGroup(grp);
         }
+
+        lobbyAggregationIPTxtBx = new SettlerTxtBx(true, 0);
+        lobbyAggregationIPTxtBx.setTextStr("www.lkrampitz.net");
+        settlerTxtBxs = new SettlerTxtBx[]{lobbyAggregationIPTxtBx};
 
     }
 
@@ -206,6 +216,11 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d, localScaleFactor);
         }
+
+        //draw all the text boxes
+        for (SettlerTxtBx txtBx : settlerTxtBxs) {
+            txtBx.draw(g2d, this);
+        }
     }
 
     /**
@@ -272,6 +287,9 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
 
         saveBtn.setXPos(exitBtn.getXPos());
         saveBtn.setYPos(exitBtn.getYPos() + getLocalImgHeight(exitBtn.getBaseImage()) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
+        
+        lobbyAggregationIPTxtBx.setXPos(100);
+        lobbyAggregationIPTxtBx.setYPos(100);
 
     }
 
@@ -321,7 +339,20 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
             }
         }
 
-        //repaint();
+        //check if the player clicked on one of the SettlerTxtBxs
+        for (SettlerTxtBx bx : settlerTxtBxs) {
+            if (evt.getX() > bx.getXPos()
+                    && evt.getY() > bx.getYPos()
+                    && evt.getX() < (bx.getXPos() + sDMenuFrame.getImgWidthLocal(bx.getBaseImage(), this))
+                    && evt.getY() < (bx.getYPos() + sDMenuFrame.getImgHeightLocal(bx.getBaseImage(), this))
+                    && bx.isEnabled()) { //and that it is enabled
+
+                //select the box
+                bx.setSelected(true);
+            } else {
+                bx.setSelected(false);
+            }
+        }
     }
 
     /**
@@ -381,6 +412,26 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
                 }
 
             }
+        }
+
+        //check if the player moved the mouse over one of the SettlerTxtBxs
+        for (SettlerTxtBx bx : settlerTxtBxs) {
+            if (mouseMotionPosX > bx.getXPos()
+                    && mouseMotionPosY > bx.getYPos()
+                    && mouseMotionPosX < (bx.getXPos() + sDMenuFrame.getImgWidthLocal(bx.getBaseImage(), this))
+                    && mouseMotionPosY < (bx.getYPos() + sDMenuFrame.getImgHeightLocal(bx.getBaseImage(), this))
+                    && bx.isEnabled()) { //and that it is enabled
+
+                //set the type of cursor to display for the mouse pointer
+                this.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+
+            } else {
+                //check if there is a non default cursor
+                if (this.getCursor().getType() != Cursor.DEFAULT_CURSOR) {
+                    this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+
         }
 
         repaint();
@@ -503,5 +554,22 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     @Override
     public int getLocalImgHeight(Image image) {
         return sDMenuFrame.getImgHeightLocal(image, this);
+    }
+
+    /**
+     * What to do when the user clicks a key on their keyboard This will be
+     * called by the SDMainMenuPanel which was called by the SDMenuFrame
+     *
+     * @param evt
+     */
+    public void keyPress(KeyEvent evt) {
+
+        //check if there is a selected text box ready for input
+        for (SettlerTxtBx bx : settlerTxtBxs) {
+            if (bx.isSelected() && bx.isEnabled()) { //and that it is enabled
+
+                bx.keyPress(evt);
+            }
+        }
     }
 }
