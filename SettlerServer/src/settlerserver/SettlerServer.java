@@ -39,11 +39,9 @@ public class SettlerServer {
      */
     public static void main(String[] args) {
         ColourPrint.printPurple("Please run command \"/start\" to begin.");
-        System.out.println("If not started SettlerServer will exit in 10 seconds.");
+        System.out.println("If not started SettlerServer will exit after 10 seconds.");
         long startTime = System.currentTimeMillis();
-
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        
         String s;
 
         while (!startSettlerServer && (System.currentTimeMillis() - startTime) < 10000) {
