@@ -42,7 +42,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     //The array for the buttons
     private SettlerBtn[] settlerBtns;
     //Settler Labels
-    private SettlerLbl showBoarderLbl, turnBeepLbl, displayModeLbl, windowDimsLbl;
+    private SettlerLbl showBoarderLbl, turnBeepLbl, displayModeLbl, windowDimsLbl, lobbyAggregationIPLbl;
     //The array for the buttons
     private SettlerLbl[] settlerLbls;
     //Settler Radio Buttons
@@ -99,8 +99,10 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         displayModeLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         windowDimsLbl = new SettlerLbl("Windowed Dimensions:");
         windowDimsLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
+        lobbyAggregationIPLbl = new SettlerLbl("Lobby URL or IP");
+        lobbyAggregationIPLbl.setForeground(DomesticTradePanel.BEIGE_COLOUR);
         //add them to the array
-        settlerLbls = new SettlerLbl[]{showBoarderLbl, turnBeepLbl, displayModeLbl, windowDimsLbl};
+        settlerLbls = new SettlerLbl[]{showBoarderLbl, turnBeepLbl, displayModeLbl, windowDimsLbl, lobbyAggregationIPLbl};
 
         //setup the radio buttons        
         showBoarderYesRBtn = new SettlerRadioBtn(true, false, 6);
@@ -133,7 +135,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         }
 
         lobbyAggregationIPTxtBx = new SettlerTxtBx(true, 0);
-        lobbyAggregationIPTxtBx.setTextStr("www.lkrampitz.net");
+        lobbyAggregationIPTxtBx.setTextStr(SDJoinLobbyPanel.CATAN_SERVER_URL);
         settlerTxtBxs = new SettlerTxtBx[]{lobbyAggregationIPTxtBx};
 
     }
@@ -163,7 +165,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         localScaleFactor = sDMenuFrame.calcScaleFactor(this);
 
         //update the button positions
-        settlerVarPos(g2d);
+        settlerVarPos();
 
         //draw the background image
         g2d.drawImage(ImageRef.WOOD_BACKGROUND,
@@ -226,21 +228,16 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
     /**
      * Update the positions of the SD Components
      */
-    private void settlerVarPos(Graphics2D g2d) {
+    private void settlerVarPos() {
+        Font lblFont = new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50));
         //Label Loop
-        showBoarderLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
-        turnBeepLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
-        displayModeLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
-        windowDimsLbl.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(50)));
-
-        Font tempFont = g2d.getFont();
-        g2d.setFont(new Font(COMPASS_GOLD.getName(), Font.PLAIN, localScaleInt(120)));
+        for (SettlerLbl settlerLbl : settlerLbls) {
+            settlerLbl.setFont(lblFont);
+        }
 
         //set positions
-        showBoarderLbl.setXPos((this.getWidth() / 2) - (g2d.getFontMetrics().stringWidth("New Game Settings") / 2)); //line up with the title
+        showBoarderLbl.setXPos(localScaleInt(400));
         showBoarderLbl.setYPos(localScaleInt(170));
-
-        g2d.setFont(tempFont);
 
         showBoarderYesRBtn.setXPos(showBoarderLbl.getXPos());
         showBoarderYesRBtn.setYPos(showBoarderLbl.getYPos() + localScaleInt(15));
@@ -281,16 +278,18 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         windowDims800x600RBtn.setXPos(windowDims720pRBtn.getXPos() + getLocalImgWidth(windowDims720pRBtn.getBaseImage()) + localScaleInt(6));
         windowDims800x600RBtn.setYPos(windowDims720pRBtn.getYPos());
 
+        lobbyAggregationIPLbl.setXPos(localScaleInt(1000));
+        lobbyAggregationIPLbl.setYPos(showBoarderLbl.getYPos());
+
+        lobbyAggregationIPTxtBx.setXPos(lobbyAggregationIPLbl.getXPos());
+        lobbyAggregationIPTxtBx.setYPos(showBoarderYesRBtn.getYPos());
+
         exitBtn.setXPos(this.getWidth() / 2 - sDMenuFrame.getImgWidthLocal(exitBtn.getBaseImage(), this) / 2);
         //Line this up with the exit button from the SDMainMenuPanel.java
         exitBtn.setYPos(localScaleInt(250) + ((localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT) + sDMenuFrame.getImgHeightLocal(exitBtn.getBaseImage(), this)) * 6));
 
         saveBtn.setXPos(exitBtn.getXPos());
         saveBtn.setYPos(exitBtn.getYPos() + getLocalImgHeight(exitBtn.getBaseImage()) + localScaleInt(SDMenuFrame.MENU_PACKING_HEIGHT));
-        
-        lobbyAggregationIPTxtBx.setXPos(100);
-        lobbyAggregationIPTxtBx.setYPos(100);
-
     }
 
     /**
@@ -544,6 +543,9 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         } else if (turnBeepNoRBtn.isSelected()) {
             AudioRef.setPlayTurnBeep(false);
         }
+        
+        //Update the LA host string
+        SDJoinLobbyPanel.CATAN_SERVER_URL = lobbyAggregationIPTxtBx.getTextStr();
     }
 
     @Override

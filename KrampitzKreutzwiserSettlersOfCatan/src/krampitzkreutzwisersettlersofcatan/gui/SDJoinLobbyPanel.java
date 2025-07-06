@@ -58,7 +58,7 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
     public Font COMPASS_GOLD;
     public Font COMPASS_GOLD_45;
 
-    public static String CATAN_SERVER_URL;
+    public static String CATAN_SERVER_URL = "www.lkrampitz.net";
     public static final int CATAN_SERVER_PORT = 25570;
 
     /**
@@ -67,7 +67,9 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
      * @param sDFrame
      */
     public SDJoinLobbyPanel(SDMenuFrame sDFrame) {
-        CATAN_SERVER_URL = Catan.DEBUG_SETTLER_SERVER ? "localhost" : "www.lkrampitz.net";
+        if (Catan.DEBUG_SETTLER_SERVER) {
+            CATAN_SERVER_URL = "localhost";
+        }
 
         sDMenuFrame = sDFrame;
 
