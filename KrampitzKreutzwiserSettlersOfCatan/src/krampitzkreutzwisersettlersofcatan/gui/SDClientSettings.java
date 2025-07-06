@@ -24,13 +24,12 @@ import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerTxtBx;
 import textures.ImageRef;
 
 /**
- * TODO: Add a text-box for the user to type in an IP/URL for an alternative
  * SettlerServer
  *
  * @author Tacitor
  */
 public class SDClientSettings extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
-    //TODO: Write these options to disk so that on load the same settings withh re-apply
+    //TODO: Write these options to disk so that on load the same settings will re-apply
 
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
@@ -543,7 +542,7 @@ public class SDClientSettings extends javax.swing.JPanel implements MouseMotionL
         } else if (turnBeepNoRBtn.isSelected()) {
             AudioRef.setPlayTurnBeep(false);
         }
-        
+
         //Update the LA host string
         SDJoinLobbyPanel.CATAN_SERVER_URL = lobbyAggregationIPTxtBx.getTextStr();
     }
