@@ -13,6 +13,7 @@ package settlerserver;
 public class ColourPrint {
     //TODO: Look into breaking this out into another project that can be compiled into a JAR and added as a library to both main projects.
     //This will then allow for more common shared code such as some enums perhaps for the different commands sent back and forth.
+    //This is not so easy. Might want to lump this in with the Apache NetBeans migration to a maven project too.
 
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_PURPLE = "\u001B[35m";
