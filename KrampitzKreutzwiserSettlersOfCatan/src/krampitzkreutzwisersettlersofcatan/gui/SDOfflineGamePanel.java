@@ -19,6 +19,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import krampitzkreutzwisersettlersofcatan.Catan;
+import krampitzkreutzwisersettlersofcatan.util.GenUtil;
 import krampitzkreutzwisersettlersofcatan.worldObjects.buttons.SettlerBtn;
 import textures.ImageRef;
 
@@ -57,8 +58,8 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDOfflineGamePanel. Calls the
-             * menu panel's click event method.
+             * Triggered when the user clicks on the SDOfflineGamePanel. Calls
+             * the menu panel's click event method.
              *
              * @param event
              */
@@ -267,7 +268,7 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
     private void newGameBtnActionPerformed() {
         //set the new game settings to know the new game will be offline
         sDMenuFrame.getSDMainMenuPanel().getSDNewGameSettingsPanel().setNewGameOffline(true);
-        
+
         // Hide this window and show the New Game Settings
         newGameBtn.setmouseHover(false);
         sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel().getSDNewGameSettingsPanel());
@@ -293,7 +294,7 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
                 //if it's a directory ignor it
                 if (f.isDirectory()) {
                     return true;
-                } else { //if it's a file only show it if it's a .catan file
+                } else { //if it's a file only show it if it's a .catan file 
                     return f.getName().toLowerCase().endsWith(".catan");
                 }
             }
@@ -307,41 +308,7 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
 
         //check if the user selected a file
         if (userLoadSelection == JFileChooser.APPROVE_OPTION) {
-
-            //test if it is a vailid save file
-            try {
-                File savefile = new File(saveFileLoader.getSelectedFile().getPath());
-                Scanner scanner = new Scanner(savefile);
-
-                //check if it is a vailid game save
-                if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
-                    JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
-                } else { //if it is a real save file
-                    //check if the next line hold the player count
-                    if (scanner.nextLine().equals("playerCount:")) {
-                        //set the player count
-                        GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
-                        sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
-
-                        sDMenuFrame.getSDMainMenuPanel().getGameFrame().loadFromFile(saveFileLoader.getSelectedFile().getPath());
-
-                    } else {
-                        JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-
-                //switch back to the main menu for when ever the game terminates
-                sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
-                // Hide the SDMenuFrame window and show the game
-                sDMenuFrame.setVisible(false);
-
-                //show the game                
-                sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(true);
-
-            } catch (FileNotFoundException e) {
-                JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
-            }
-
+            GenUtil.catanSaveFileLoad(this, sDMenuFrame, saveFileLoader.getSelectedFile().getPath(), true);
         } else { //if there was so file selected
             JOptionPane.showMessageDialog(null, "There was no file selected.", "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -351,44 +318,10 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
      * Load the Auto-save if there is one
      */
     private void loadAutosaveBtnActionPerformed() {
-        String autosaveLocation = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan";
+        String autosaveLocation = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming"
+                + File.separator + "SettlerDevs" + File.separator + "Catan" + File.separator + "autosave.catan";
 
-        //test if it is a vailid autosave file
-        try {
-            //use the predetermined auto save file location
-            File savefile = new File(autosaveLocation);
-            Scanner scanner = new Scanner(savefile);
-            
-            sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
-
-            //check if it is a vailid game save
-            if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
-                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan " + Catan.SAVE_FILE_VER + " save file.\nA new game was started instead", "Loading Error", JOptionPane.ERROR_MESSAGE);
-            } else { //if it is a real save file
-                //check if the next line hold the player count
-                if (scanner.nextLine().equals("playerCount:")) {
-                    //set the player count
-                    GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
-                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
-
-                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().loadFromFile(autosaveLocation);
-
-                } else {
-                    JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-
-            //switch back to the main menu for when ever the game terminates
-            sDMenuFrame.switchPanel(this, sDMenuFrame.getSDMainMenuPanel());
-            // Hide the SDMenuFrame window and show the game
-            sDMenuFrame.setVisible(false);
-
-            //show the game                
-            sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(true);
-
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "There was no autosave file detected:\n" + e, "No Autosave", JOptionPane.ERROR_MESSAGE);
-        }
+        GenUtil.catanSaveFileLoad(this, sDMenuFrame, autosaveLocation, true);
     }
 
     @Override

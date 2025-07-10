@@ -7,8 +7,15 @@ package krampitzkreutzwisersettlersofcatan.util;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
+import krampitzkreutzwisersettlersofcatan.gui.SDMenuFrame;
 import krampitzkreutzwisersettlersofcatan.gui.SDScaleImageResizeable;
 
 /**
@@ -21,7 +28,7 @@ public class GenUtil {
     private static int[] remainingRoadPieces; //an the size of the number of players (plus 1 for the 0th player). Hold the number of reads that each player has left to build.
     private static int[] remainingSettlementPieces;
     private static int[] remainingCityPieces;
-    
+
     public static Color BUTTON_TEXT_BROWN = new Color(57, 39, 32);
 
     /**
@@ -161,7 +168,7 @@ public class GenUtil {
      * @param parent
      * @return
      */
-     public static int interoperableGetImgWidth(Image image, JComponent parent) {
+    public static int interoperableGetImgWidth(Image image, JComponent parent) {
 
         //check if need to use gamepanel
         if (parent instanceof GamePanel) {
@@ -195,7 +202,7 @@ public class GenUtil {
             return 50;
         }
     }
-    
+
     /**
      * This method is used to make other methods interoperable with deprecated
      * called from the gamePanel and calls from other classes.
@@ -215,6 +222,67 @@ public class GenUtil {
         } else {
             System.out.println("ERROR: interoperableScaleInt() in SettlerRadioBtn does not have a case for this type of JComponent");
             return 50;
+        }
+    }
+
+    /**
+     * Given a filePath load this save game to the gamePanel. Has all the common
+     * functionality that is need for any SDMenuPanel that tries to load a save
+     * file.
+     *
+     * @param sender
+     * @param sDMenuFrame
+     * @param filePath
+     * @param offlineLoad
+     */
+    public static void catanSaveFileLoad(JPanel sender, SDMenuFrame sDMenuFrame, String filePath, boolean offlineLoad) {
+        //test if it is a vailid save file
+        try {
+            File savefile = new File(filePath);
+            Scanner scanner = new Scanner(savefile);
+
+            //reset the game                            
+            sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+
+            //check if it is a vailid game save
+            if (!scanner.nextLine().equals("SettlersOfCatanSave" + Catan.SAVE_FILE_VER)) {
+                String appendMsg = offlineLoad ? "\nA new game was started instead" : "";
+
+                JOptionPane.showMessageDialog(null, "The selected file is not a Settlers of Catan "
+                        + Catan.SAVE_FILE_VER + " save file." + appendMsg, "Loading Error", JOptionPane.ERROR_MESSAGE);
+            } else { //if it is a real save file
+                //check if the next line hold the player count
+                if (scanner.nextLine().equals("playerCount:")) {
+                    //set the player count
+                    GamePanel.setPlayerCount(Integer.parseInt(scanner.nextLine()));
+                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().resetGamePanel();
+
+                    sDMenuFrame.getSDMainMenuPanel().getGameFrame().loadFromFile(filePath);
+
+                    if (!offlineLoad) {
+                        //let the lobby selector to know not to reset certain Objects
+                        sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel().setJustMadeNewGame(true);
+
+                        //switch over to the lobby selection. Enforce needing an empty lobby
+                        sDMenuFrame.switchPanel(sender, sDMenuFrame.getSDMainMenuPanel().getSDJoinLobbyPanel());
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "The selected file does not contain the required player count data.", "Loading Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            if (offlineLoad) {
+                //switch back to the main menu for when ever the game terminates
+                sDMenuFrame.switchPanel(sender, sDMenuFrame.getSDMainMenuPanel());
+                // Hide the SDMenuFrame window and show the game
+                sDMenuFrame.setVisible(false);
+
+                //show the game                
+                sDMenuFrame.getSDMainMenuPanel().getGameFrame().setVisible(true);
+            }
+
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "There was an error loading the save file:\n" + e, "Loading Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
