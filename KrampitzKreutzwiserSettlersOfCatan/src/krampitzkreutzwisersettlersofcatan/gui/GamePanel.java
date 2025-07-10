@@ -33,7 +33,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
-import javax.swing.filechooser.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -328,32 +327,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseMotionListener
         //set a default save path
         saveAddress = System.getProperty("user.home") + "\\Desktop\\SettlersOfCatan.catan";
         //initialize the filechooser
-        saveFileChooser = new JFileChooser();
-        //create a filter for catan save files
-        FileFilter catanSaveFile = new FileFilter() {
-            //add the description
-            @Override
-            public String getDescription() {
-                return "Catan Save File (*.catan)";
-            }
-
-            //add the logic for the filter
-            @Override
-            public boolean accept(File f) {
-                //if it's a directory ignor it
-                if (f.isDirectory()) {
-                    return true;
-                } else { //if it's a file only show it if it's a .catan file
-                    return f.getName().toLowerCase().endsWith(".catan");
-                }
-            }
-        };
-        //add the filter
-        saveFileChooser.addChoosableFileFilter(catanSaveFile);
-        //set the new filter as the default
-        saveFileChooser.setFileFilter(catanSaveFile);
-        //set the name of the window
-        saveFileChooser.setDialogTitle("Select a file to save Settlers of Catan to:");
+        saveFileChooser = GenUtil.catanSaveFileChooser(this, "Select a Save File to Open:");
 
         // Fill the list of card ArrayLists with new ArrayLists and intialize
         // the victory point array (Both are the same size and can share a loop)

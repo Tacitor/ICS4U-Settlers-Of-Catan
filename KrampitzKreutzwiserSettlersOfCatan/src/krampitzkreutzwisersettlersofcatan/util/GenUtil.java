@@ -11,8 +11,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
 import krampitzkreutzwisersettlersofcatan.Catan;
 import krampitzkreutzwisersettlersofcatan.gui.GamePanel;
 import krampitzkreutzwisersettlersofcatan.gui.SDMenuFrame;
@@ -223,6 +225,44 @@ public class GenUtil {
             System.out.println("ERROR: interoperableScaleInt() in SettlerRadioBtn does not have a case for this type of JComponent");
             return 50;
         }
+    }
+
+    /**
+     * Set up a JFileChooser for catan save files.
+     *
+     * @param sender
+     * @param title
+     * @return
+     */
+    public static JFileChooser catanSaveFileChooser(JPanel sender, String title) {
+        JFileChooser saveFileLoader = new JFileChooser(); //make a new file chooser
+
+        //create a filter for catan save files
+        FileFilter catanSaveFile = new FileFilter() {
+            //add the description
+            @Override
+            public String getDescription() {
+                return "Catan Save File (*.catan)";
+            }
+
+            //add the logic for the filter
+            @Override
+            public boolean accept(File f) {
+                //if it's a directory ignore it
+                if (f.isDirectory()) {
+                    return true;
+                } else { //if it's a file only show it if it's a .catan file 
+                    return f.getName().toLowerCase().endsWith(".catan");
+                }
+            }
+        };
+
+        //set up the file chooser and call it
+        saveFileLoader.setDialogTitle(title);
+        saveFileLoader.addChoosableFileFilter(catanSaveFile);
+        saveFileLoader.setFileFilter(catanSaveFile);
+
+        return saveFileLoader;
     }
 
     /**
