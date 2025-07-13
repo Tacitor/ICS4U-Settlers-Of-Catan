@@ -274,7 +274,6 @@ public class SDOfflineGamePanel extends javax.swing.JPanel implements MouseMotio
      * Load in a previous game from a save file
      */
     private void loadGameBtnActionPerformed() {
-        //TODO: Test to see if online loading, offline loading, and load auto-save still work after the re-factor
         JFileChooser saveFileLoader = GenUtil.catanSaveFileChooser(this, "Select a Save File to Open:");
         int userLoadSelection = saveFileLoader.showOpenDialog(this);
 
