@@ -202,7 +202,8 @@ public class SDJoinLobbyPanel extends javax.swing.JPanel implements MouseMotionL
                  * TODO: Add in icons for what game settings are active in this
                  * lobby. Can have 1) A snake or crossed out snake for "Snake
                  * rules". 2) Something to indicate yes or no starting
-                 * resources. 3) An icon for what the play piece counts are
+                 * resources. 3) An icon for what the play piece counts are,
+                 * could be an ∞ or a crossed out ∞
                  */
 
                 int[] colTaken = lobbyStats[btn.getMode() - 1].getColoursTaken();
