@@ -21,8 +21,8 @@ public class Catan {
     public static final String SAVE_FILE_VER = "V15"; //the save file version needed
     public static final String GAME_VER = "pre-v6.2.0 - Native Neatened Networking"; //the version of the game/program
 
-    public static final boolean DEBUG_ONLINE_MODE = false; //if this is true then the game will lauch in decorated windowed 720p
-    public static final boolean DEBUG_SETTLER_SERVER = false; //if this is true then the game will connect to localhost, and not the specified URL/IP
+    public static final boolean DEBUG_ONLINE_MODE = true; //if this is true then the game will lauch in decorated windowed 720p
+    public static final boolean DEBUG_SETTLER_SERVER = true; //if this is true then the game will connect to localhost, and not the specified URL/IP
 
     //fast pulse vars
     private static long prevTime;
