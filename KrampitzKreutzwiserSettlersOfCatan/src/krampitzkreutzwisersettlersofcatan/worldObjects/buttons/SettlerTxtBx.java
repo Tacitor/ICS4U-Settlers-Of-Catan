@@ -197,15 +197,15 @@ public class SettlerTxtBx extends SettlerComponent {
             if (tabSelected) {
                 //draw the left
                 g2d.drawImage(tabSelectionImages[0],
-                        xPos - SDParent.localScaleInt(5),
-                        yPos - SDParent.localScaleInt(5),
+                        xPos,
+                        yPos,
                         SDParent.getLocalImgWidth(tabSelectionImages[0]),
                         SDParent.getLocalImgHeight(tabSelectionImages[0]),
                         null);
                 //draw the right
                 g2d.drawImage(tabSelectionImages[1],
-                        xPos + SDParent.getLocalImgWidth(baseImage) + SDParent.localScaleInt(5) - SDParent.getLocalImgWidth(tabSelectionImages[1]),
-                        yPos - SDParent.localScaleInt(5),
+                        xPos + SDParent.getLocalImgWidth(baseImage) - SDParent.getLocalImgWidth(tabSelectionImages[1]),
+                        yPos,
                         SDParent.getLocalImgWidth(tabSelectionImages[1]),
                         SDParent.getLocalImgHeight(tabSelectionImages[1]),
                         null);
