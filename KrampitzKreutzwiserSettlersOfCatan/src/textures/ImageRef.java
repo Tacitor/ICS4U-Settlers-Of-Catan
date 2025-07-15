@@ -97,6 +97,10 @@ public class ImageRef {
     private final static Image DOT_NONE = new ImageIcon(ImageRef.class.getResource("playerIcons/noneDot.png")).getImage();
     //array for the dots to be called on to get the correct colour for each player
     public final static Image[] PLAYER_DOTS = new Image[]{DOT_NONE, DOT_RED, DOT_BLUE, DOT_ORANGE, DOT_WHITE};
+    
+    //game state icons
+    public final static Image SNAKE_ICON = new ImageIcon(ImageRef.class.getResource("util/rulesSnakeYes.png")).getImage();
+    public final static Image NO_SNAKE_ICON = new ImageIcon(ImageRef.class.getResource("util/rulesSnakeNo.png")).getImage();
 
     //longest road tile thing
     public final static Image LONGEST_ROAD = new ImageIcon(ImageRef.class.getResource("bigCard/longestRoad.png")).getImage();

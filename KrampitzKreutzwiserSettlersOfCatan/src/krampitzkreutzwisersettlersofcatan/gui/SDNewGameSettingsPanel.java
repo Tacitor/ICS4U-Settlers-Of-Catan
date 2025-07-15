@@ -65,8 +65,8 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         //add a mouse listener that call the mouse click event handler
         addMouseListener(new MouseAdapter() {
             /**
-             * Triggered when the user clicks on the SDNewGameSettingsPanel. Calls the
-             * menu panel's click event method.
+             * Triggered when the user clicks on the SDNewGameSettingsPanel.
+             * Calls the menu panel's click event method.
              *
              * @param event
              */
@@ -223,6 +223,17 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
         for (SettlerLbl settlerLbl : settlerLbls) {
             settlerLbl.draw(g2d, localScaleFactor);
         }
+
+        //the start game button it needs extra decorations for the game settings
+        SettlerBtn btn = startGameBtn;
+        Image iSnake = snakeRulesYesRBtn.isSelected() ? ImageRef.SNAKE_ICON : ImageRef.NO_SNAKE_ICON;
+
+        g2d.drawImage(iSnake,
+                btn.getXPos() + localScaleInt(20),
+                btn.getYPos() - (getLocalImgHeight(iSnake) / 2) + (getLocalImgHeight(btn.getBaseImage()) / 2),
+                getLocalImgWidth(iSnake),
+                getLocalImgHeight(iSnake), this);
+
     }
 
     /**
