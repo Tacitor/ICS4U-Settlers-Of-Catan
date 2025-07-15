@@ -99,8 +99,10 @@ public class ImageRef {
     public final static Image[] PLAYER_DOTS = new Image[]{DOT_NONE, DOT_RED, DOT_BLUE, DOT_ORANGE, DOT_WHITE};
     
     //game state icons
-    public final static Image SNAKE_ICON = new ImageIcon(ImageRef.class.getResource("util/rulesSnakeYes.png")).getImage();
-    public final static Image NO_SNAKE_ICON = new ImageIcon(ImageRef.class.getResource("util/rulesSnakeNo.png")).getImage();
+    public final static Image RULES_SNAKE_YES = new ImageIcon(ImageRef.class.getResource("util/rulesSnakeYes.png")).getImage();
+    public final static Image RULES_SNAKE_NO = new ImageIcon(ImageRef.class.getResource("util/rulesSnakeNo.png")).getImage();
+    public final static Image RULES_PIECE_INF = new ImageIcon(ImageRef.class.getResource("util/rulesPieceInf.png")).getImage();
+    public final static Image RULES_PIECE_LIM = new ImageIcon(ImageRef.class.getResource("util/rulesPieceLim.png")).getImage();
 
     //longest road tile thing
     public final static Image LONGEST_ROAD = new ImageIcon(ImageRef.class.getResource("bigCard/longestRoad.png")).getImage();

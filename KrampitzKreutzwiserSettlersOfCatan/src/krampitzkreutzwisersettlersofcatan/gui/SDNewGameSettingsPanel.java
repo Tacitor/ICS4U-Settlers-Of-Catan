@@ -226,13 +226,18 @@ public class SDNewGameSettingsPanel extends javax.swing.JPanel implements MouseM
 
         //the start game button it needs extra decorations for the game settings
         SettlerBtn btn = startGameBtn;
-        Image iSnake = snakeRulesYesRBtn.isSelected() ? ImageRef.SNAKE_ICON : ImageRef.NO_SNAKE_ICON;
+        Image[] iImage = new Image[]{
+            snakeRulesYesRBtn.isSelected() ? ImageRef.RULES_SNAKE_YES : ImageRef.RULES_SNAKE_NO,
+            limitGmPcInfRBtn.isSelected() ? ImageRef.RULES_PIECE_INF : ImageRef.RULES_PIECE_LIM,
+            startResYesRBtn.isSelected() ? ImageRef.RULES_SNAKE_YES : ImageRef.RULES_SNAKE_NO};
 
-        g2d.drawImage(iSnake,
-                btn.getXPos() + localScaleInt(20),
-                btn.getYPos() - (getLocalImgHeight(iSnake) / 2) + (getLocalImgHeight(btn.getBaseImage()) / 2),
-                getLocalImgWidth(iSnake),
-                getLocalImgHeight(iSnake), this);
+        for (int i = 0; i < 3; i++) {
+            g2d.drawImage(iImage[i],
+                    btn.getXPos() + localScaleInt(20) + (localScaleInt(50) * i),
+                    btn.getYPos() - (getLocalImgHeight(iImage[i]) / 2) + (getLocalImgHeight(btn.getBaseImage()) / 2),
+                    getLocalImgWidth(iImage[i]),
+                    getLocalImgHeight(iImage[i]), this);
+        }
 
     }
 
