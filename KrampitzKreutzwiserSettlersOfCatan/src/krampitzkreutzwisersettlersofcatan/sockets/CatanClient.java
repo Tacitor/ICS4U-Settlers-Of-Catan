@@ -166,6 +166,7 @@ public class CatanClient extends JFrame {
                 while (!cscStopRequested) {
                     regularRecive();
                 }
+                //TODO ATS: Not hitting this line
                 System.out.println("[Client " + clientID + "] End reached for regularRecive()");
             });
             t.setName("CatanClient");
@@ -217,6 +218,21 @@ public class CatanClient extends JFrame {
                 firstClientGotStatup = false;
                 break;
             case 4: //make sure this is for a type == 4 startup command
+                /**
+                 * TODO ATS: Never make it here. Am I loosing a race condition?
+                 * Could be that the game start up command is missed. Try adding
+                 * a delay before sending out this command. Adding the delay
+                 * fixed nothing.Also an issue with the LA server, the stats
+                 * aren't being propagated properly. Investigate this now and
+                 * see why. It seems like the DataStream gets jammed up some
+                 * how. Even regressing to SocketTest the first transmission
+                 * makes it through no problem. The seconds one never dose. This
+                 * matches the behavior seen in the latest Catan beta. It is
+                 * possible the ATS network is doing strange filtering on the
+                 * DataStream terminators. Try this on the UoG commercial
+                 * network to see if the same issue is seen.
+                 */
+                System.out.println("Client 1 start command triggerd");
                 //place to store the boolean
                 //and assign it to the value the server sends
                 boolean recivedBoolean = csc.reciveBoolean();
@@ -240,6 +256,7 @@ public class CatanClient extends JFrame {
                 while (!cscStopRequested) {
                     regularRecive();
                 }
+                //TODO ATS: Not hitting this line
                 System.out.println("[Client 1] End reached for regularRecive()");
                 break;
             case 6: //If the SSC send out an early stop command.
@@ -949,7 +966,7 @@ public class CatanClient extends JFrame {
             int msg = 0;
 
             try {
-                msg = dataIn.readInt();
+                msg = dataIn.readInt(); //TODO ATS: Do we get stuck here? Test to see if we make it past this. Seemingly we do not...
             } catch (IOException ex) {
                 System.out.println("[Client " + clientID + "] IOException from CSC reciveType():\n" + ex);
 

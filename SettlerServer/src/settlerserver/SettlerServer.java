@@ -381,6 +381,7 @@ public class SettlerServer {
                             break;
 
                         case 3: //for a CSC triggerd termination
+                            //TODO ATS: Not hitting this line
                             System.out.println("[Lobby Aggregation] Stop request command #3 in SSC run() for ID#" + laID);
 
                             stopRequested = true;
