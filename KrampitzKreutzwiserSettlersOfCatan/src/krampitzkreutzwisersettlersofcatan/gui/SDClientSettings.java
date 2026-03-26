@@ -29,7 +29,7 @@ import textures.ImageRef;
  * @author Tacitor
  */
 public class SDClientSettings extends javax.swing.JPanel implements MouseMotionListener, SDScaleImageResizeable {
-    //TODO: Write these options to disk so that on load the same settings will re-apply
+    //TODO: Write these options to disk so that on load the same settings will re-apply. Try a JSON format to serialize them easily.
 
     private SDMenuFrame sDMenuFrame;
     private static double localScaleFactor; //The factor to scale this panel by when drawing elemets
